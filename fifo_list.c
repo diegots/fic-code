@@ -1,7 +1,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h> // XXX remove stdio.h
 
 #include "list.h"
 
