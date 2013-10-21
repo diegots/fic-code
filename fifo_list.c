@@ -4,7 +4,7 @@
 
 #include "list.h"
 
-/* Creates an empty list */
+/* Creates an empty list and returns a pointer to it. */
 list *create_list(list *l) {
 	list *aux = NULL;
 
@@ -17,7 +17,7 @@ list *create_list(list *l) {
 	return (l = aux);
 }
 
-/* Creates one new node */
+/* Creates one new list node.  */
 struct node *create_node(void *element, size_t s) {
 	struct node *n = NULL;
 
@@ -33,7 +33,7 @@ struct node *create_node(void *element, size_t s) {
 	return n;
 }
 
-/* Delete complete list */
+/* Delete given l list */
 void delete_list(list *l) {
 	struct node *n = NULL;
 
@@ -50,17 +50,17 @@ void delete_node(struct node *n) {
 	free(n);
 }
 
-/* Get current stored element */
+/* Get current stored element at the tail of the list */
 void *get_element(list *l) {
 	return l->first->element;
 }
 
-/* Get current node */
+/* Get current node at the tail of the list */
 struct node *get_node(list *l) {
 	return l->first;	
 }
  
-/* Inserts a new node in the list */
+/* Inserts a new node at the head of the list */
 list *insert_node(list *l, struct node *n) {
 	
 	if(l->first == NULL && l->last == NULL) {
@@ -74,7 +74,7 @@ list *insert_node(list *l, struct node *n) {
 	return l;
 }
 
-/* Passes to the next node in the list */
+/* Deletes current node and points to the next. Returns NULL on an empty list */
 list *next_element(list *l) {
 	struct node *n = NULL;
 
