@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "list.h"
+#include "fifo_list.h"
 
 /* Creates an empty list and returns a pointer to it. */
 list *create_list(list *l) {
