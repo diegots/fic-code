@@ -1,3 +1,7 @@
+/* Autor: Diego Trabazo Sardón
+ * Horario: Jueves 17:30/19:30
+ * Curso: 2013/2014 */
+
 #include "parse_cli.h"
 
 /* build_command_storage() prepares storage for user input
