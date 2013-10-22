@@ -1,7 +1,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "fifo_list.h"
 
 /* Creates an empty list and returns a pointer to it. */
@@ -29,18 +28,13 @@ struct node *create_node(void *element, size_t s) {
 
 	memcpy(n->element, element, s);
 	n->next = NULL;
-
 	return n;
 }
 
 /* Delete given l list */
 void delete_list(list *l) {
-	struct node *n = NULL;
-
-	while((n = get_node(l)) != NULL) {
+	while((l->first) != NULL)
 		l = next_element(l);
-	}
-
 	free(l);
 }
 
@@ -52,12 +46,18 @@ void delete_node(struct node *n) {
 
 /* Get current stored element at the tail of the list */
 void *get_element(list *l) {
-	return l->first->element;
+	struct node *n = get_node(l);
+
+	if(n != NULL)
+		return (void *) n->element;
+	return NULL;
 }
 
 /* Get current node at the tail of the list */
 struct node *get_node(list *l) {
-	return l->first;	
+	if((l->first) != NULL)
+		return l->first;
+	return NULL;
 }
  
 /* Inserts a new node at the head of the list */
@@ -68,7 +68,7 @@ list *insert_node(list *l, struct node *n) {
 		l->last = n;
 	} else {
 		l->last->next = n;
-		l->last = n;
+		l->last = l->last->next ;
 	}
 
 	return l;
@@ -78,9 +78,10 @@ list *insert_node(list *l, struct node *n) {
 list *next_element(list *l) {
 	struct node *n = NULL;
 
-	n = l->first;
-	l->first = l->first->next;
-	delete_node(n);
-	
+	if(l->first != NULL) {
+		n = l->first;
+		l->first = l->first->next;
+		delete_node(n);
+	}
 	return l;
 }
