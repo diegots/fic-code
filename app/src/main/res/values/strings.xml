@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lab00_LCA.Trabazo</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="but_kill_str">Kill</string>
+    <string name="but_count_str">Count</string>
+    <string name="count_str">Count: </string>
+</resources>
