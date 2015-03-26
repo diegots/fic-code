@@ -59,10 +59,24 @@ public class DataTestActivity extends ActionBarActivity {
     Button but_write;
     Button but_read;
 
+    private void init() {
+        tv_text = (TextView) findViewById(R.id.tv_text);
+        et_text = (EditText) findViewById(R.id.et_text);
+        but_hello = (Button) findViewById(R.id.but_hello);
+        but_write_int = (Button) findViewById(R.id.but_write_int);
+        spinner = (Spinner) findViewById(R.id.spinner);
+        but_read_int = (Button) findViewById(R.id.but_read_int);
+        but_write_ext = (Button) findViewById(R.id.but_write_ext);
+        but_read_ext = (Button) findViewById(R.id.but_read_ext);
+        but_read = (Button) findViewById(R.id.but_read);
+        but_write = (Button) findViewById(R.id.but_write);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data_test);
+        init();
 
         final SharedPreferences preferences = getSharedPreferences(PREF_TAG, Context.MODE_MULTI_PROCESS);
         String myData = preferences.getString(KEY_HELLO_MSG, "No value");
@@ -70,11 +84,8 @@ public class DataTestActivity extends ActionBarActivity {
         PreferenceManager.setDefaultValues(this, R.xml.options, false);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        tv_text = (TextView) findViewById(R.id.tv_text);
         tv_text.setText(myData);
-        et_text = (EditText) findViewById(R.id.et_text);
 
-        but_hello = (Button) findViewById(R.id.but_hello);
         but_hello.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,7 +99,7 @@ public class DataTestActivity extends ActionBarActivity {
                     Log.d(TAG, "[DataTestActivity] but_write_int onClick(), et_text empty -> doing nothing");
             }
         });
-        but_write_int = (Button) findViewById(R.id.but_write_int);
+
         but_write_int.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,8 +122,7 @@ public class DataTestActivity extends ActionBarActivity {
                     Log.d(TAG, "[DataTestActivity] but_write_int onClick(), et_text empty -> doing nothing");
             }
         });
-        spinner = (Spinner) findViewById(R.id.spinner);
-        but_read_int = (Button) findViewById(R.id.but_read_int);
+
         but_read_int.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,10 +147,9 @@ public class DataTestActivity extends ActionBarActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
         });
-        but_write_ext = (Button) findViewById(R.id.but_write_ext);
+
         but_write_ext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,7 +178,7 @@ public class DataTestActivity extends ActionBarActivity {
                 et_text.setText("");
             }
         });
-        but_read_ext = (Button) findViewById(R.id.but_read_ext);
+
         but_read_ext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,14 +206,14 @@ public class DataTestActivity extends ActionBarActivity {
                 }
             }
         });
-        but_read = (Button) findViewById(R.id.but_read);
+
         but_read.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
-        but_write = (Button) findViewById(R.id.but_write);
+
         but_write.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
