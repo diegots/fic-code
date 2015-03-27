@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 /* 1.e) Data is kept as an xml file in PREF_TAG.xml. It's name is defined in PREF_TAG String.
  * Full path is: /data/data/es.udc.psi14.lab06trabazo/shared_prefs/PREF_TAG.xml
@@ -41,10 +43,11 @@ import java.util.ArrayList;
 
 public class DataTestActivity extends ActionBarActivity {
 
-    final static String TAG = "LCA_TAG";
     final static String PREF_TAG = "PREF_TAG";
     final static String KEY_HELLO_MSG = "KEY_HELLO_MSG";
     final static String FILENAME = "hello_file.txt";
+    final static String TAG = "LCA_TAG";
+    final static String KEY_FN = "KEY_FN";
 
     TextView tv_text;
     EditText et_text;
@@ -210,13 +213,17 @@ public class DataTestActivity extends ActionBarActivity {
         but_read.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "[DataTestActivity] but_read onClick()");
 
+                sharedPreferences.getString(KEY_FN, getString(R.string.file_name));
             }
         });
 
         but_write.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "[DataTestActivity] but_write onClick()");
+
 
             }
         });

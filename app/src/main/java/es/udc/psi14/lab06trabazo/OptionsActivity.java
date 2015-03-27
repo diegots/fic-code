@@ -14,9 +14,6 @@ import android.widget.ListView;
 public class OptionsActivity extends PreferenceActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    final static String TAG = "LCA_TAG";
-    final static String KEY_FN = "KEY_FN";
-
     ListView listView;
     SharedPreferences sharedPreferences;
 
@@ -25,7 +22,7 @@ public class OptionsActivity extends PreferenceActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
         listView = (ListView) findViewById(android.R.id.list);
-        Log.d(TAG, "[OptionsActivity] onCreate()");
+        Log.d(DataTestActivity.TAG, "[OptionsActivity] onCreate()");
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.options);
@@ -66,20 +63,20 @@ public class OptionsActivity extends PreferenceActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "[OptionsActivity] onResume()");
+        Log.d(DataTestActivity.TAG, "[OptionsActivity] onResume()");
 
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         if(sharedPreferences == null)
-            Log.d(TAG, "[OptionsActivity] onResume() sharedPreferences is null");
-        else if ("".equals(sharedPreferences.getString(KEY_FN, getString(R.string.file_name))))
-            Log.d(TAG, "[OptionsActivity] onResume() string is null");
+            Log.d(DataTestActivity.TAG, "[OptionsActivity] onResume() sharedPreferences is null");
+        else if ("".equals(sharedPreferences.getString(DataTestActivity.KEY_FN, getString(R.string.file_name))))
+            Log.d(DataTestActivity.TAG, "[OptionsActivity] onResume() string is null");
         else {
             String file_name = getString(R.string.file_name);
-            String file_name_value = sharedPreferences.getString(KEY_FN, file_name);
-            Preference preference = findPreference(KEY_FN);
+            String file_name_value = sharedPreferences.getString(DataTestActivity.KEY_FN, file_name);
+            Preference preference = findPreference(DataTestActivity.KEY_FN);
 
             if (preference == null)
-                Log.d(TAG, "[OptionsActivity] onResume() preference is null");
+                Log.d(DataTestActivity.TAG, "[OptionsActivity] onResume() preference is null");
             else
                 preference.setSummary(file_name_value);
         }
@@ -87,12 +84,12 @@ public class OptionsActivity extends PreferenceActivity implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Log.d(TAG, "[OptionsActivity] onSharedPreferenceChanged()");
+        Log.d(DataTestActivity.TAG, "[OptionsActivity] onSharedPreferenceChanged()");
 
-        if (key.equals(KEY_FN)) {
+        if (key.equals(DataTestActivity.KEY_FN)) {
             Preference preference = findPreference(key);
             preference.setSummary(sharedPreferences.getString(key, "")); // show actual value
         } else
-            Log.d(TAG, "[OptionsActivity] onSharedPreferenceChanged() key is not KEY_FN: " + key);
+            Log.d(DataTestActivity.TAG, "[OptionsActivity] onSharedPreferenceChanged() key is not DataTestActivity.KEY_FN: " + key);
     }
 }
