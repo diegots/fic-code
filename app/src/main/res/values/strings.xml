@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Lab06.Trabazo</string>
-
     <string name="TAG">LCA_TAG</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>

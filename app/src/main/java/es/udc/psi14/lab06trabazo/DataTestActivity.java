@@ -45,9 +45,9 @@ public class DataTestActivity extends ActionBarActivity {
 
     final static String PREF_TAG = "PREF_TAG";
     final static String KEY_HELLO_MSG = "KEY_HELLO_MSG";
-    final static String FILENAME = "hello_file.txt";
     final static String TAG = "LCA_TAG";
     final static String KEY_FN = "KEY_FN";
+    final static String KEY_STORAGE_TYPE = "KEY_STORAGE_TYPE";
 
     TextView tv_text;
     EditText et_text;
@@ -112,7 +112,7 @@ public class DataTestActivity extends ActionBarActivity {
 
                     FileOutputStream fos;
                     try {
-                        fos = openFileOutput(FILENAME, Context.MODE_APPEND);
+                        fos = openFileOutput(getString(R.string.file_name), Context.MODE_APPEND);
                         fos.write((et_text_contents + "\n").getBytes());
                         fos.close();
                     } catch (FileNotFoundException e) {
@@ -133,7 +133,7 @@ public class DataTestActivity extends ActionBarActivity {
                     Log.d(TAG, "[DataTestActivity] but_read_int onClick()");
                     ArrayList<String> arrayList = new ArrayList<String>();
                     String line;
-                    FileInputStream fis = openFileInput(FILENAME);
+                    FileInputStream fis = openFileInput(getString(R.string.file_name));
                     InputStreamReader in = new InputStreamReader(fis);
                     BufferedReader br = new BufferedReader(in);
 
@@ -165,7 +165,7 @@ public class DataTestActivity extends ActionBarActivity {
                         try {
                             // Create path pointing to the root of the external storage
                             // (where application have permissions to save files)
-                            File file = new File(getExternalFilesDir(null), FILENAME);
+                            File file = new File(getExternalFilesDir(null), getString(R.string.file_name));
                             OutputStream os = new FileOutputStream(file, true);
                             os.write(et_text.getText().toString().getBytes());
                             // write data from textFile
@@ -189,7 +189,7 @@ public class DataTestActivity extends ActionBarActivity {
                 try {
                     ArrayList<String> arrayList = new ArrayList<String>();
                     String line;
-                    File file = new File(getExternalFilesDir(null), FILENAME);
+                    File file = new File(getExternalFilesDir(null), getString(R.string.file_name));
                     FileInputStream fis = new FileInputStream(file);
                     InputStreamReader in = new InputStreamReader(fis);
                     BufferedReader br = new BufferedReader(in);
@@ -215,7 +215,11 @@ public class DataTestActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Log.d(TAG, "[DataTestActivity] but_read onClick()");
 
-                sharedPreferences.getString(KEY_FN, getString(R.string.file_name));
+                //String s = sharedPreferences.getString(KEY_FN, getString(R.string.file_name));
+                String file_name = sharedPreferences.getString(KEY_FN, "");
+                String storage_type = sharedPreferences.getString(KEY_STORAGE_TYPE, "");
+                Log.d(TAG, "[DataTestActivity] but_read onClick(): read file pref: " + file_name);
+                Log.d(TAG, "[DataTestActivity] but_read onClick(): read storage type pref : " + storage_type);
             }
         });
 

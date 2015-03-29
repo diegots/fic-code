@@ -6,11 +6,10 @@
         <EditTextPreference
             android:key="KEY_FN"
             android:title="Storage file name"
-            android:defaultValue="myDataFile.txt"
-            android:summary="File name where data preferences will be kept"/>
+            android:defaultValue="myDataFile.txt"/>
 
         <ListPreference
-            android:key="option2"
+            android:key="KEY_STORAGE_TYPE"
             android:title="Storage type"
             android:entryValues="@array/storageCode"
             android:entries="@array/storage">
