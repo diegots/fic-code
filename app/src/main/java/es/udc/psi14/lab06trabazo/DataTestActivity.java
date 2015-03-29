@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
@@ -75,6 +76,101 @@ public class DataTestActivity extends ActionBarActivity {
         but_write = (Button) findViewById(R.id.but_write);
     }
 
+    private void readInternal () {
+        Log.d(TAG, "[DataTestActivity] readInternal()");
+        try {
+            ArrayList<String> arrayList = new ArrayList<String>();
+            String line;
+            FileInputStream fis = openFileInput(getString(R.string.file_name));
+            InputStreamReader in = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(in);
+
+            while ((line = br.readLine()) != null) { // read text line by line
+                arrayList.add(line + "\n"); // append in a variable
+            }
+
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>
+                    (DataTestActivity.this, android.R.layout.simple_list_item_1, arrayList);
+            spinner.setAdapter(arrayAdapter);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeInternal () {
+        String et_text_contents = et_text.getText().toString();
+        if (!"".equals(et_text_contents)) {
+            Log.d(TAG, "[DataTestActivity] writeInternal(), et_text not empty -> saving file");
+
+            FileOutputStream fos;
+            try {
+                fos = openFileOutput(getString(R.string.file_name), Context.MODE_APPEND);
+                fos.write((et_text_contents + "\n").getBytes());
+                fos.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            et_text.setText("");
+        } else
+            Log.d(TAG, "[DataTestActivity] writeInternal(), et_text empty -> doing nothing");
+    }
+
+    private void readExternal () {
+        Log.d(TAG, "[DataTestActivity] readExternal()");
+        try {
+            ArrayList<String> arrayList = new ArrayList<String>();
+            String line;
+            File file = new File(getExternalFilesDir(null), getString(R.string.file_name));
+            FileInputStream fis = new FileInputStream(file);
+            InputStreamReader in = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(in);
+
+            while ((line = br.readLine()) != null) { // read text line by line
+                arrayList.add(line + "\n"); // append in a variable
+            }
+
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>
+                    (DataTestActivity.this, android.R.layout.simple_list_item_1, arrayList);
+            spinner.setAdapter(arrayAdapter);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeExternal () {
+        Log.d(TAG, "[DataTestActivity] writeExternal()");
+        String et_text_contents = et_text.getText().toString();
+        if (!"".equals(et_text_contents)) {
+            String stateExternalStorage = Environment.getExternalStorageState();
+            if (Environment.MEDIA_MOUNTED.equals(stateExternalStorage)) {
+                // availability
+                try {
+                    // Create path pointing to the root of the external storage
+                    // (where application have permissions to save files)
+                    File file = new File(getExternalFilesDir(null), getString(R.string.file_name));
+                    OutputStream os = new FileOutputStream(file, true);
+                    os.write(et_text.getText().toString().getBytes());
+                    // write data from textFile
+                    os.close();
+                    // close file
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        et_text.setText("");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,50 +202,15 @@ public class DataTestActivity extends ActionBarActivity {
         but_write_int.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String et_text_contents = et_text.getText().toString();
-                if (!"".equals(et_text_contents)) {
-                    Log.d(TAG, "[DataTestActivity] but_write_int onClick(), et_text not empty -> saving file");
-
-                    FileOutputStream fos;
-                    try {
-                        fos = openFileOutput(getString(R.string.file_name), Context.MODE_APPEND);
-                        fos.write((et_text_contents + "\n").getBytes());
-                        fos.close();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    et_text.setText("");
-                } else
-                    Log.d(TAG, "[DataTestActivity] but_write_int onClick(), et_text empty -> doing nothing");
+                writeInternal();
             }
         });
 
         but_read_int.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    Log.d(TAG, "[DataTestActivity] but_read_int onClick()");
-                    ArrayList<String> arrayList = new ArrayList<String>();
-                    String line;
-                    FileInputStream fis = openFileInput(getString(R.string.file_name));
-                    InputStreamReader in = new InputStreamReader(fis);
-                    BufferedReader br = new BufferedReader(in);
-
-                    while ((line = br.readLine()) != null) { // read text line by line
-                        arrayList.add(line + "\n"); // append in a variable
-                    }
-
-                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>
-                            (DataTestActivity.this, android.R.layout.simple_list_item_1, arrayList);
-                    spinner.setAdapter(arrayAdapter);
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                Log.d(TAG, "[DataTestActivity] but_read_int onClick()");
+                readInternal();
             }
         });
 
@@ -157,28 +218,7 @@ public class DataTestActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "[DataTestActivity] but_write_ext onClick()");
-                String et_text_contents = et_text.getText().toString();
-                if (!"".equals(et_text_contents)) {
-                    String stateExternalStorage = Environment.getExternalStorageState();
-                    if (Environment.MEDIA_MOUNTED.equals(stateExternalStorage)) {
-                        // availability
-                        try {
-                            // Create path pointing to the root of the external storage
-                            // (where application have permissions to save files)
-                            File file = new File(getExternalFilesDir(null), getString(R.string.file_name));
-                            OutputStream os = new FileOutputStream(file, true);
-                            os.write(et_text.getText().toString().getBytes());
-                            // write data from textFile
-                            os.close();
-                            // close file
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                et_text.setText("");
+                writeExternal();
             }
         });
 
@@ -186,27 +226,7 @@ public class DataTestActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "[DataTestActivity] but_read_ext onClick()");
-                try {
-                    ArrayList<String> arrayList = new ArrayList<String>();
-                    String line;
-                    File file = new File(getExternalFilesDir(null), getString(R.string.file_name));
-                    FileInputStream fis = new FileInputStream(file);
-                    InputStreamReader in = new InputStreamReader(fis);
-                    BufferedReader br = new BufferedReader(in);
-
-                    while ((line = br.readLine()) != null) { // read text line by line
-                        arrayList.add(line + "\n"); // append in a variable
-                    }
-
-                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>
-                            (DataTestActivity.this, android.R.layout.simple_list_item_1, arrayList);
-                    spinner.setAdapter(arrayAdapter);
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                readExternal();
             }
         });
 
@@ -215,11 +235,23 @@ public class DataTestActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Log.d(TAG, "[DataTestActivity] but_read onClick()");
 
-                //String s = sharedPreferences.getString(KEY_FN, getString(R.string.file_name));
-                String file_name = sharedPreferences.getString(KEY_FN, "");
-                String storage_type = sharedPreferences.getString(KEY_STORAGE_TYPE, "");
-                Log.d(TAG, "[DataTestActivity] but_read onClick(): read file pref: " + file_name);
-                Log.d(TAG, "[DataTestActivity] but_read onClick(): read storage type pref : " + storage_type);
+                String fileName = sharedPreferences.getString(KEY_FN, "");
+                Log.d(TAG, "[DataTestActivity] but_read onClick(): read file pref: " + fileName);
+                String storageTypeCodeStr = sharedPreferences.getString(KEY_STORAGE_TYPE, "");
+                if ("".equals(storageTypeCodeStr))
+                    Log.d(TAG, "[DataTestActivity] but_read onClick(): storage type not selected.");
+                else {
+                    switch (Integer.parseInt(storageTypeCodeStr)) {
+                        case 0:
+                            Log.d(TAG, "[DataTestActivity] but_write onClick(): internal read");
+                            readInternal();
+                            break;
+                        case 1:
+                            Log.d(TAG, "[DataTestActivity] but_write onClick(): external read");
+                            readExternal();
+                            break;
+                    }
+                }
             }
         });
 
@@ -227,12 +259,26 @@ public class DataTestActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "[DataTestActivity] but_write onClick()");
-
-
+                String fileName = sharedPreferences.getString(KEY_FN, "");
+                Log.d(TAG, "[DataTestActivity] but_write onClick(): write file pref to: " + fileName);
+                String storageTypeCodeStr = sharedPreferences.getString(KEY_STORAGE_TYPE, "");
+                if ("".equals(storageTypeCodeStr))
+                    Log.d(TAG, "[DataTestActivity] but_write onClick(): storage type not selected.");
+                else {
+                    switch (Integer.parseInt(storageTypeCodeStr)) {
+                        case 0:
+                            Log.d(TAG, "[DataTestActivity] but_write onClick(): internal write");
+                            writeInternal();
+                            break;
+                        case 1:
+                            Log.d(TAG, "[DataTestActivity] but_write onClick(): external write");
+                            writeExternal();
+                            break;
+                    }
+                }
             }
         });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

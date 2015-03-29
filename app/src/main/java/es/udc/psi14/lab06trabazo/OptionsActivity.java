@@ -64,9 +64,9 @@ public class OptionsActivity extends PreferenceActivity implements
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    private void showStorageSummary(String key) {
-        String storageTypeCodeStr = sharedPreferences.getString(key, "");
-        ListPreference storageTypePref = (ListPreference) findPreference(key);
+    private void showStorageSummary() {
+        String storageTypeCodeStr = sharedPreferences.getString(DataTestActivity.KEY_STORAGE_TYPE, "");
+        ListPreference storageTypePref = (ListPreference) findPreference(DataTestActivity.KEY_STORAGE_TYPE);
         if ("".equals(storageTypeCodeStr)) {
             Log.d(DataTestActivity.TAG, "[OptionsActivity] onResume() storageTypeCode empty");
             return;
@@ -99,7 +99,7 @@ public class OptionsActivity extends PreferenceActivity implements
         file_name_pref.setSummary(file_name_value);
 
         // Set storage type preference
-        showStorageSummary(DataTestActivity.KEY_STORAGE_TYPE);
+        showStorageSummary();
     }
 
     @Override
@@ -111,7 +111,7 @@ public class OptionsActivity extends PreferenceActivity implements
             preference.setSummary(sharedPreferences.getString(key, "")); // show actual value
         } else if(key.equals(DataTestActivity.KEY_STORAGE_TYPE)) {
             // Set storage type preference
-            showStorageSummary(key);
+            showStorageSummary();
 
         } else
             Log.d(DataTestActivity.TAG, "[OptionsActivity] onSharedPreferenceChanged() key not known: " + key);
