@@ -65,7 +65,7 @@ let au3 = Auto.Af (q_states, sigma, initial_state, transitions, end_states);;
 
 
 (******************************************************************************)
-(************************** Some auxiliar functions ***************************)
+(***************************** Auxiliar functions *****************************)
 (******************************************************************************)
 (* get_arcs : draws conjunto of arcs from an automata *)
 let get_arcs (autom:Auto.af) = match autom with
@@ -77,12 +77,12 @@ let get_arc_symbol = function
   | Auto.Arco_af (_,_,s) -> s
 ;;
 
-(* get_arc_symbol : draws the initial node in an arc definition *)
+(* get_arc_initial_node : draws the initial node in an arc definition *)
 let get_arc_initial_node = function
   | Auto.Arco_af (inn,_,_) -> inn
 ;;
 
-(* get_arc_symbol : draws the end node in an arc definition *)
+(* get_arc_end_node : draws the end node in an arc definition *)
 let get_arc_end_node = function
   | Auto.Arco_af (_,enn,_) -> enn
 ;;
@@ -112,6 +112,14 @@ let get_list_states automata = Conj.list_of_conjunto (get_states automata);;
 
 (* get_list_transitions : draws conjunto of transitions and returns it as a list *)
 let get_list_transitions automata = Conj.list_of_conjunto (get_arcs automata);;
+
+(* get_relevant_transition : draws next available transition fron a state *)
+let rec get_relevant_transition state = function
+  | [] -> failwith "get_relevant_transition"
+  | h::t -> 
+    if get_arc_initial_node h = state then h,t 
+    else get_relevant_transition state t
+;;
 
 (******************************************************************************)
 (*********************************** es_afne **********************************)
@@ -179,18 +187,50 @@ let es_afd automata = es_afn automata && not (es_afne automata);;
  * 3. All alphabet symbols are used in one transition at least *)
 
 (* First condition *)
+(*
 let f automata = 
   let states = get_list_states automata in (* all states *)
   let transitions = get_list_transitions automata in (* all transitions *)
   let rec g (ns,nt) (ks,kt) = match ns with
-    | [] -> true  
-    | h::t -> match nt with
-      | [] -> (* TODO if there is previous, travel to previous else false *)
+    | [] -> true (* all states are reachable, end *) 
+    | h::t -> match nt with (* there are states to check *)
+      | [] -> if  (* TODO if there is previous, travel to previous else false *)
       | p::q -> (* TODO transitions not empty *)
   in g (states, transitions) ([],[])
 ;;
 
+let f automata = 
+  let states = get_list_states automata in (* all states *)
+  let transitions = get_list_transitions automata in (* all transitions *)
+ 
+  let rec g (ns,nt) pe = match ns with
+    | [] -> true (* all states are reachable, end *) 
+    | h::t -> match nt with (* there are states to check *)
+      | [] -> 
+        if List.length >= 1 then (* if there are previous states, do backtrack *)
+          let (ks,kt) = List.hd pe in g () (List.tl pe)
+        else false (* No more transitions to check, end *)
+      | p::q ->  (* TODO transitions not empty *)
+        
+  in g (states, transitions) [([],[])]
+;;
+*)
+
+let f automata = 
+  let states = get_list_states automata in (* all states *)
+  let arcs = get_list_transitions automata in (* all transitions *)
+  let init_state = get_initial_state automata in
+  let rec g end_state current_state arcs left_arcs =
+    if end_state = current_state then true
+    else 
+      let rt,tl = (get_relevant_transition current_state arcs) 
+      in g end_state (get_arc_end_node rt) arcs tl
+  in g end_state (List.head states) arcs [] (* TODO define end state *)
+;;
+
+
 (* Previous code that it's not going to be used again, i think.
+ * TODO delete
 let build_pairs automata = 
   let ini_state = get_initial_state automata in
   let states = Conj.suprimir ini_state (get_states automata) in
