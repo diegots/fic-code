@@ -54,7 +54,6 @@ let transitions = Conj.Conjunto [a1; a2; a3; a4; a5; a6];;
 let au2 = Auto.Af (q_states, sigma, initial_state, transitions, end_states);;
 
 (* Automata definition au3 *)
-let a1 = Auto.Arco_af (q0, q1, s1);;
 let a2 = Auto.Arco_af (q0, q2, s1);;
 let a3 = Auto.Arco_af (q1, q2, s1);;
 let a4 = Auto.Arco_af (q2, q0, s3);;
@@ -63,6 +62,20 @@ let a6 = Auto.Arco_af (q2, q3, s2);;
 let transitions = Conj.Conjunto [a2; a3; a4; a5; a6];;
 let au3 = Auto.Af (q_states, sigma, initial_state, transitions, end_states);;
 
+(* Automata definition au4 *)
+let q0 = Auto.Estado "0";;
+let q1 = Auto.Estado "1";;
+let s1 = Auto.Terminal "a";;
+let s2 = Auto.Terminal "b";;
+let s3 = Auto.Terminal "c";;
+let a1 = Auto.Arco_af (q0, q0, s1);;
+let a2 = Auto.Arco_af (q0, q1, s1);;
+let q_states = Conj.Conjunto [q0; q1];;
+let sigma = Conj.Conjunto [s1; s2; s3];;
+let initial_state = q0;;
+let transitions = Conj.Conjunto [a1; a2];;
+let end_states = Conj.Conjunto [q0];;
+let au4 = Auto.Af (q_states, sigma, initial_state, transitions, end_states);;
 
 (******************************************************************************)
 (***************************** Auxiliar functions *****************************)
@@ -218,16 +231,19 @@ let f automata =
 
 let f automata = 
   let states = get_list_states automata in (* all states *)
-  let arcs = get_list_transitions automata in (* all transitions *)
+  let arcs = get_list_transitions automata in (* all arcs *)
   let init_state = get_initial_state automata in
-  let rec g end_state current_state arcs left_arcs =
+  let rec fordward end_state current_state arcs left_arcs =
     if end_state = current_state then true
     else 
       let rt,tl = (get_relevant_transition current_state arcs) 
-      in g end_state (get_arc_end_node rt) arcs tl
-  in g end_state (List.head states) arcs [] (* TODO define end state *)
+      in fordward end_state (get_arc_end_node rt) arcs tl 
+  in 
+  let rec g = function 
+    | [] -> true 
+    | h::t -> fordward h init_state arcs [] && g t
+  in g states
 ;;
-
 
 (* Previous code that it's not going to be used again, i think.
  * TODO delete
@@ -283,3 +299,5 @@ let es_conexo automata =
   end_state_has_elements automata &&
   all_symbols_are_used automata
 ;;
+
+let out_str = f au4 in print_endline (string_of_bool out_str);;
