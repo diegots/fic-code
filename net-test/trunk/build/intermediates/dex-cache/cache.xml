@@ -2,32 +2,39 @@
 <items version="2" >
 
     <item
-        jar="/home/diego/AndroidStudioProjects/ApacheTest/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/classes.jar"
+        jar="/home/diego/AndroidStudioProjects/net-test/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/classes.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
-        <dex dex="/home/diego/AndroidStudioProjects/ApacheTest/app/build/intermediates/pre-dexed/debug/classes-9e284746bebf6872b78119e58ed75e8d3c5cfbed.jar" />
+        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
+        <dex dex="/home/diego/AndroidStudioProjects/net-test/app/build/intermediates/pre-dexed/debug/classes-2cb0048ef84208245e8a2a6d26f1f42f2555cb47.jar" />
     </item>
     <item
-        jar="/home/diego/AndroidStudioProjects/ApacheTest/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/libs/internal_impl-21.0.3.jar"
+        jar="/home/diego/AndroidStudioProjects/net-test/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/libs/internal_impl-21.0.3.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
-        <dex dex="/home/diego/AndroidStudioProjects/ApacheTest/app/build/intermediates/pre-dexed/debug/internal_impl-21.0.3-4740fc53d8f4bbfd55a290210f8357b63b039d2a.jar" />
+        <dex dex="/home/diego/AndroidStudioProjects/net-test/app/build/intermediates/pre-dexed/debug/internal_impl-21.0.3-a1dbb885c0f02ad96388194089ace45bc527c997.jar" />
+    </item>
+    <item
+        jar="/home/diego/AndroidStudioProjects/net-test/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
+        <dex dex="/home/diego/AndroidStudioProjects/net-test/app/build/intermediates/pre-dexed/debug/classes-20769fb0ad708604bb5f7d8da649f3248abc7e5e.jar" />
     </item>
     <item
         jar="/home/diego/Android/Sdk/extras/android/m2repository/com/android/support/support-annotations/21.0.3/support-annotations-21.0.3.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="4b74cefe1f0c1b819e7260c8627a14674e37fd35">
-        <dex dex="/home/diego/AndroidStudioProjects/ApacheTest/app/build/intermediates/pre-dexed/debug/support-annotations-21.0.3-29de6fa53a01132a687fcc6d24f2b1585c93cf63.jar" />
+        <dex dex="/home/diego/AndroidStudioProjects/net-test/app/build/intermediates/pre-dexed/debug/support-annotations-21.0.3-29de6fa53a01132a687fcc6d24f2b1585c93cf63.jar" />
     </item>
     <item
-        jar="/home/diego/AndroidStudioProjects/ApacheTest/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/classes.jar"
+        jar="/home/diego/AndroidStudioProjects/net-test/app/libs/rome-1.0.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
-        <dex dex="/home/diego/AndroidStudioProjects/ApacheTest/app/build/intermediates/pre-dexed/debug/classes-91290589e64afbfe44b8761e56e1bcd51a8eba88.jar" />
+        sha1="681104ed3e525037272533218185afbea3e40d04">
+        <dex dex="/home/diego/AndroidStudioProjects/net-test/app/build/intermediates/pre-dexed/debug/rome-1.0-e209103bbf82f2b4d8096d9ab77552c5ba5176a5.jar" />
     </item>
 
 </items>
