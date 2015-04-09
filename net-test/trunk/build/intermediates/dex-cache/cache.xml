@@ -2,6 +2,13 @@
 <items version="2" >
 
     <item
+        jar="/home/diego/AndroidStudioProjects/net-test/app/libs/rome-1.6.0-SNAPSHOT.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4b9daa8c58d5cb66b1c18556c4e7ac3522d9fde7">
+        <dex dex="/home/diego/AndroidStudioProjects/net-test/app/build/intermediates/pre-dexed/debug/rome-1.6.0-SNAPSHOT-34997d56a9cf597270289956947a6b162c32abec.jar" />
+    </item>
+    <item
         jar="/home/diego/AndroidStudioProjects/net-test/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/classes.jar"
         jumboMode="false"
         revision="21.1.2"
@@ -23,6 +30,34 @@
         <dex dex="/home/diego/AndroidStudioProjects/net-test/app/build/intermediates/pre-dexed/debug/classes-20769fb0ad708604bb5f7d8da649f3248abc7e5e.jar" />
     </item>
     <item
+        jar="/home/diego/AndroidStudioProjects/net-test/app/libs/jdom-2.0.6.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="6f14738ec2e9dd0011e343717fa624a10f8aab64">
+        <dex dex="/home/diego/AndroidStudioProjects/net-test/app/build/intermediates/pre-dexed/debug/jdom-2.0.6-88805cc45e18b797555df8c736230ae9b187ae07.jar" />
+    </item>
+    <item
+        jar="/home/diego/AndroidStudioProjects/net-test/app/libs/rome-utils-1.6.0-SNAPSHOT.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="5fb3fafdbb8336d011642216243b7b6a95a7cdad">
+        <dex dex="/home/diego/AndroidStudioProjects/net-test/app/build/intermediates/pre-dexed/debug/rome-utils-1.6.0-SNAPSHOT-9e053f716beecec8fbfb8b3d12084f84d6c725bc.jar" />
+    </item>
+    <item
+        jar="/home/diego/AndroidStudioProjects/net-test/app/libs/openbeans-1.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="c41a1082d08676a42c780dc77335afb636be113c">
+        <dex dex="/home/diego/AndroidStudioProjects/net-test/app/build/intermediates/pre-dexed/debug/openbeans-1.0-5bc2d523c145bdc18d8f9ffa4efb5e6fa899ba33.jar" />
+    </item>
+    <item
+        jar="/home/diego/AndroidStudioProjects/net-test/app/libs/slf4j-api-1.7.12.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="387a5ecb2fa27eef48036d666b060d8b65f272e1">
+        <dex dex="/home/diego/AndroidStudioProjects/net-test/app/build/intermediates/pre-dexed/debug/slf4j-api-1.7.12-97f4ed1678156e820e449543c616c5aa971b428e.jar" />
+    </item>
+    <item
         jar="/home/diego/Android/Sdk/extras/android/m2repository/com/android/support/support-annotations/21.0.3/support-annotations-21.0.3.jar"
         jumboMode="false"
         revision="21.1.2"
@@ -30,11 +65,11 @@
         <dex dex="/home/diego/AndroidStudioProjects/net-test/app/build/intermediates/pre-dexed/debug/support-annotations-21.0.3-29de6fa53a01132a687fcc6d24f2b1585c93cf63.jar" />
     </item>
     <item
-        jar="/home/diego/AndroidStudioProjects/net-test/app/libs/rome-1.0.jar"
+        jar="/home/diego/AndroidStudioProjects/net-test/app/libs/slf4j-android-1.7.12.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="681104ed3e525037272533218185afbea3e40d04">
-        <dex dex="/home/diego/AndroidStudioProjects/net-test/app/build/intermediates/pre-dexed/debug/rome-1.0-e209103bbf82f2b4d8096d9ab77552c5ba5176a5.jar" />
+        sha1="0836363df5159fb153dfbddbfcf09cede114614f">
+        <dex dex="/home/diego/AndroidStudioProjects/net-test/app/build/intermediates/pre-dexed/debug/slf4j-android-1.7.12-f8f6e3a943ffe9fb46e33798fc2f2b3d0ea17201.jar" />
     </item>
 
 </items>

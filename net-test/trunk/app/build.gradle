@@ -23,4 +23,10 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile files('libs/rome-1.0.jar')
+    compile files('libs/rome-1.6.0-SNAPSHOT.jar')
+    compile files('libs/slf4j-android-1.7.12.jar')
+    compile files('libs/slf4j-api-1.7.12.jar')
+    compile files('libs/rome-utils-1.6.0-SNAPSHOT.jar')
+    compile files('libs/openbeans-1.0.jar')
+    compile files('libs/jdom-2.0.6.jar')
 }

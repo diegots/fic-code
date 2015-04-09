@@ -1,31 +1,25 @@
 package es.udc.psi14.apachetest;
 
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.sun.syndication.feed.synd.SyndContent;
-import com.sun.syndication.feed.synd.SyndContentImpl;
-import com.sun.syndication.feed.synd.SyndEntry;
-import com.sun.syndication.feed.synd.SyndEntryImpl;
-import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.feed.synd.SyndFeedImpl;
-import com.sun.syndication.io.FeedException;
-import com.sun.syndication.io.SyndFeedOutput;
+import com.rometools.rome.feed.synd.SyndContent;
+import com.rometools.rome.feed.synd.SyndContentImpl;
+import com.rometools.rome.feed.synd.SyndEntry;
+import com.rometools.rome.feed.synd.SyndEntryImpl;
+import com.rometools.rome.feed.synd.SyndFeed;
+import com.rometools.rome.feed.synd.SyndFeedImpl;
+import com.rometools.rome.io.FeedException;
+import com.rometools.rome.io.SyndFeedOutput;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -34,8 +28,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.net.ssl.HttpsURLConnection;
 
 /* Two independent steps:
  * 1. Create RSS entry with available data
@@ -87,7 +79,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         if (b.getId() == testButton01.getId()) {
             new POST_Job().execute();
-            //createFeed(); // TODO This function ends with an exception
         }
     }
 
@@ -96,10 +87,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         protected String doInBackground(String... params) {
             Log.d(TAG, "POST_Job");
             //String requestBody = createFeed();
-            String requestBody = "This is the body\n";
+            //String requestBody = "This is the body\n";
+            String requestBody = createFeed();
             byte[] postData = requestBody.getBytes(Charset.forName("UTF-8"));
             int postDataLength = postData.length;
-            String request = "http://192.168.0.2/scripts/read_input.py";
+            String request = "http://192.168.0.6/scripts/read_input.py";
             URL url;
             try {
                 url = new URL(request);
@@ -165,7 +157,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 //        }
 //    }
 
-    // TODO Test this function.
     private String createFeed() {
         Log.d(TAG, "createFeed start");
         java.text.DateFormat DATE_PARSER = new SimpleDateFormat("yyyy-MM-dd");
