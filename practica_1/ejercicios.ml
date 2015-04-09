@@ -146,12 +146,14 @@ let get_list_states automata =
 let get_list_transitions automata = Conj.list_of_conjunto (get_arcs automata);;
 (* val get_list_transitions : Auto.af -> Auto.arco_af list = <fun> *)
 
-(* get_relevant_transition : draws next available transition fron a state *)
-let rec get_relevant_transition state = function
+(* get_relevant_transition : draws next valid transition fron a given state *)
+let rec get_relevant_transition path state = function
   | [] -> failwith "get_relevant_transition"
   | h::t -> 
-    if get_arc_initial_node h = state then h,t 
-    else get_relevant_transition state t
+    if get_arc_initial_node h = state then 
+      if List.mem (get_arc_end_node h) path then get_relevant_transition path state t
+      else h,t
+    else get_relevant_transition path state t
 ;;
 (* val get_relevant_transition :
   Auto.estado -> Auto.arco_af list -> Auto.arco_af * Auto.arco_af list =
@@ -229,16 +231,16 @@ let f automata =
   let arcs = get_list_transitions automata in (* all arcs *)
   let init_state = get_initial_state automata in
   let states = get_list_states automata in (* all states *)
-  let rec fordward current_state end_state left_arcs =
+  let rec fordward current_state end_state left_arcs path =
     let _ = print_endline (match current_state with Auto.Estado a -> a) in
     if current_state = end_state then true
     else 
-      let rt,tl = get_relevant_transition current_state left_arcs
-      in fordward (get_arc_end_node rt) end_state tl 
+      let rt,tl = get_relevant_transition path current_state left_arcs
+      in fordward (get_arc_end_node rt) end_state tl (current_state :: path)
   in 
   let rec g = function 
     | [] -> true 
-    | h::t -> let _ = print_endline ("next: "^(match h with Auto.Estado a -> a)) in fordward init_state h arcs  && g t
+    | h::t -> let _ = print_endline ("next: "^(match h with Auto.Estado a -> a)) in fordward init_state h arcs [initial_state] && g t
   in g states
 ;;
 
