@@ -84,6 +84,12 @@ let au5 = Ergo.af_of_string au5;;
 let au6 = "0 1 2 3; a b c; 0; 3; 0 1 a; 1 2 b; 2 3 a;";;
 let au6 = Ergo.af_of_string au6;;
 
+let au7 = "0 1 2 3 4; a b c; 0; 1 3; 0 1 a; 1 1 b; 1 2 a; 2 0 epsilon; 2 3 epsilon; 2 3 c; 0 4 b;";;
+let au7 = Ergo.af_of_string au7;;
+
+let au8 = "0 1 2 3 4 5; a b c; 0; 1 3; 0 1 a; 1 1 b; 1 2 a; 2 0 epsilon; 2 3 epsilon; 2 3 c; 5 5 b;";;
+let au8 = Ergo.af_of_string au8;;
+
 (******************************************************************************)
 (***************************** Auxiliar functions *****************************)
 (******************************************************************************)
@@ -226,22 +232,24 @@ let es_afd automata = es_afn automata && not (es_afne automata);;
  * 3. All alphabet symbols are used in one transition at least *)
 
 (* First condition *)
-(* TODO get_relevant_transition must be called again if next state was already visited *)
-let f automata = 
+let all_reachable automata = 
   let arcs = get_list_transitions automata in (* all arcs *)
   let init_state = get_initial_state automata in
   let states = get_list_states automata in (* all states *)
-  let rec fordward current_state end_state left_arcs path =
+  let rec aux current_state end_state left_arcs path =
     let _ = print_endline (match current_state with Auto.Estado a -> a) in
-    if current_state = end_state then true
-    else 
-      let rt,tl = get_relevant_transition path current_state left_arcs
-      in fordward (get_arc_end_node rt) end_state tl (current_state :: path)
+      if current_state = end_state then true
+      else try
+        let rt,tl = get_relevant_transition path current_state left_arcs 
+        in aux (get_arc_end_node rt) end_state tl (current_state :: path)
+      with Failure "get_relevant_transition" -> match path with
+          | [] -> false
+          | p::q -> aux p end_state left_arcs q (* backtrack *)
   in 
-  let rec g = function 
+  let rec check_next = function 
     | [] -> true 
-    | h::t -> let _ = print_endline ("next: "^(match h with Auto.Estado a -> a)) in fordward init_state h arcs [initial_state] && g t
-  in g states
+    | h::t -> let _ = print_endline ("next: "^(match h with Auto.Estado a -> a)) in aux init_state h arcs [initial_state] && check_next t
+  in check_next states
 ;;
 
 (* Second condition *)
@@ -265,11 +273,11 @@ let all_symbols_are_used automata =
 ;;
 
 let es_conexo automata = 
-  f automata && (* TODO change f name *)
+  all_reachable automata && 
   end_state_has_elements automata &&
   all_symbols_are_used automata
 ;;
 
-let out_str = f au5 in print_endline (string_of_bool out_str);; 
-(* Graf.dibuja_af au6;; *)
+let out_str = all_reachable au8 in print_endline (string_of_bool out_str);; 
+Graf.dibuja_af au8;; 
 
