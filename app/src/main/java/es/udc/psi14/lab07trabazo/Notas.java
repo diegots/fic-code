@@ -6,8 +6,19 @@ public class Notas {
     private String nombre;
     private String apellido;
     private String materia;
-    private boolean mencion;
+    private String mencion;
     private float nota;
+
+    public Notas() {}
+
+    public Notas(int id, String nombre, String apellido, String materia, String mencion, float nota) {
+        this.id = id;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.materia = materia;
+        this.mencion = mencion;
+        this.nota = nota;
+    }
 
     public int getId() {
         return id;
@@ -41,11 +52,11 @@ public class Notas {
         this.materia = materia;
     }
 
-    public boolean getMencion() {
+    public String getMencion() {
         return mencion;
     }
 
-    public void setMencion(boolean mencion) {
+    public void setMencion(String mencion) {
         this.mencion = mencion;
     }
 

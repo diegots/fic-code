@@ -34,7 +34,6 @@ public class NuevaNota extends ActionBarActivity implements View.OnClickListener
 
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -64,19 +63,23 @@ public class NuevaNota extends ActionBarActivity implements View.OnClickListener
 
         if (b.getId() == R.id.bt_add) {
             NotasDataBaseHelper ndbh = new NotasDataBaseHelper(this);
+            Notas notas = new Notas();
+
+            // TODO check that all fields are not empty
             String nombre = et_nombre.getText().toString();
             String apellido = et_apellido.getText().toString();
             String materia = et_materia.getText().toString();
-            boolean mencion = Boolean.parseBoolean(et_mencion.getText().toString());
+            String mencion = et_mencion.getText().toString();
             float nota = Float.parseFloat(et_nota.getText().toString());
-            Notas notas = new Notas();
+
             notas.setNombre(nombre);
             notas.setApellido(apellido);
             notas.setMateria(materia);
             notas.setMencion(mencion);
             notas.setNota(nota);
+
             long code = ndbh.insertNota(notas);
-            if (code!=-1) Toast.makeText(this, "Nuevo dato", Toast.LENGTH_LONG).show();
+            if (code!=-1) Toast.makeText(this, "Nuevo dato, Id: " + code, Toast.LENGTH_LONG).show();
             finish();
         }
 

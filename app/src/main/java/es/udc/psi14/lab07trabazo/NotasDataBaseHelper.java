@@ -13,7 +13,7 @@ public class NotasDataBaseHelper extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
 
     public static final String TABLA_NOTAS = "notas";
-    public static final String COL_ID = "id";
+    public static final String COL_ID = "_id";
     public static final String COL_NOMBRE = "nombre";
     public static final String COL_APELLIDO = "apellido";
     public static final String COL_MATERIA = "materia";
@@ -29,14 +29,15 @@ public class NotasDataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String DATABASE_CREATE = "create table" + TABLA_NOTAS + " ( "
+        String DATABASE_CREATE = "create table " + TABLA_NOTAS + " ( "
         + COL_ID + " integer primary key autoincrement, "
         + COL_NOMBRE + " text not null, "
         + COL_APELLIDO + " text not null, "
         + COL_MATERIA + " text not null, "
-        + COL_MENCION + " numeric not null "
+        + COL_MENCION + " text not null, "
         + COL_NOTA + " real not null);";
 
+        Log.d(dbTestActivity.TAG, "[NotasDataBaseHelper] onCreate: " + DATABASE_CREATE);
         db.execSQL(DATABASE_CREATE);
 
     }
@@ -67,7 +68,7 @@ public class NotasDataBaseHelper extends SQLiteOpenHelper {
     }
 
     public void updateNota(Notas notas) {
-        long idNot = notas.getId();
+        long idNota = notas.getId();
         ContentValues cv = new ContentValues();
         cv.put(COL_NOMBRE, notas.getNombre());
         cv.put(COL_APELLIDO, notas.getApellido());
@@ -75,7 +76,7 @@ public class NotasDataBaseHelper extends SQLiteOpenHelper {
         cv.put(COL_MENCION, notas.getMencion());
         cv.put(COL_NOTA, notas.getNota());
 
-        getWritableDatabase().update(TABLA_NOTAS, cv, COL_ID+ " = " + idNot, null);
+        getWritableDatabase().update(TABLA_NOTAS, cv, COL_ID + " = " + idNota, null);
     }
 
     public Cursor getNotas() {

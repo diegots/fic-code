@@ -10,5 +10,6 @@
     <string name="tv_mencion">Mencion</string>
     <string name="tv_nota">Nota</string>
     <string name="bt_add">Add</string>
+    <string name="msg">Número total registros: </string>
 
 </resources>
