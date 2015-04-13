@@ -17,7 +17,7 @@ public class NotasDataBaseHelper extends SQLiteOpenHelper {
     public static final String COL_NOMBRE = "nombre";
     public static final String COL_APELLIDO = "apellido";
     public static final String COL_MATERIA = "materia";
-    public static final String COL_MENCION = "mención";
+    public static final String COL_MENCION = "mencion";
     public static final String COL_NOTA = "nota";
     public static final String [] NOTAS_TODAS_COL =
         {COL_ID, COL_NOMBRE, COL_APELLIDO, COL_MATERIA, COL_MENCION, COL_NOTA};
@@ -91,7 +91,7 @@ public class NotasDataBaseHelper extends SQLiteOpenHelper {
 
     public Cursor getNotas(String COL, String value) {
         return getWritableDatabase().query(true, TABLA_NOTAS, NOTAS_TODAS_COL,
-                COL + " like ’%" + value + "%’", null, null, null, null, null);
+                COL + " like '%" + value + "%'", null, null, null, null, null);
     }
 
     public Cursor getNotas2(String COL, String value) {

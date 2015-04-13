@@ -3,9 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".dbTestActivity">
 
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
-
     <item
         android:title="Add"
         android:id="@+id/action_add"
@@ -18,4 +15,16 @@
         app:showAsAction="always">
     </item>
 
+    <item
+        android:title="Filter"
+        android:id="@+id/action_filter"
+        app:showAsAction="never">
+    </item>
+
+    <item
+        android:title="Sort"
+        android:id="@+id/action_sort"
+        app:showAsAction="never">
+    </item>
 </menu>
+

@@ -2,7 +2,7 @@ package es.udc.psi14.lab07trabazo;
 
 public class Notas {
 
-    private int id;
+    long id;
     private String nombre;
     private String apellido;
     private String materia;
@@ -11,7 +11,7 @@ public class Notas {
 
     public Notas() {}
 
-    public Notas(int id, String nombre, String apellido, String materia, String mencion, float nota) {
+    public Notas(long id, String nombre, String apellido, String materia, String mencion, float nota) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -20,11 +20,11 @@ public class Notas {
         this.nota = nota;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

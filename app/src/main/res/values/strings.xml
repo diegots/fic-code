@@ -7,9 +7,10 @@
     <string name="tv_nombre">Nombre</string>
     <string name="tv_apellido">Apellido</string>
     <string name="tv_materia">Materia</string>
-    <string name="tv_mencion">Mencion</string>
+    <string name="tv_mencion">Mención</string>
     <string name="tv_nota">Nota</string>
     <string name="bt_add">Add</string>
+    <string name="bt_edit">Edit</string>
     <string name="msg">Número total registros: </string>
 
 </resources>
