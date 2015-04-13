@@ -1,12 +1,14 @@
 package es.udc.psi14.lab07trabazo;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -14,30 +16,29 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
-
-import java.util.ArrayList;
+import android.widget.TextView;
 
 
 public class dbTestActivity extends ActionBarActivity implements DialogInterface.OnClickListener{
 
+    final static String PREF_TAG = "PREF_TAG";
     final static String TAG = "LCA_TAG";
+    final static String KEY_CHOSEN_COLUMN_ID = "KEY_CHOSEN_COLUMN_ID";
+    final static String KEY_CHOSEN_COLUMN = "KEY_CHOSEN_COLUMN";
+
     ListView lv;
     TextView tv;
     NotasDataBaseHelper notasdb;
     CharSequence [] allColumnNames;
+    int chosenColumnId;
     String chosenColumn;
+    SharedPreferences sharedPreferences;
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -87,6 +88,12 @@ public class dbTestActivity extends ActionBarActivity implements DialogInterface
 
         notasdb = new NotasDataBaseHelper(this);
         allColumnNames = notasdb.getAllColumnNames();
+
+        // Recover preference values (AlertDialog values)
+        sharedPreferences = getSharedPreferences(PREF_TAG, Context.MODE_MULTI_PROCESS);
+        chosenColumnId = sharedPreferences.getInt(KEY_CHOSEN_COLUMN_ID, 0);
+        chosenColumn = sharedPreferences.getString(KEY_CHOSEN_COLUMN, "_id");
+
     }
 
     @Override
@@ -103,7 +110,6 @@ public class dbTestActivity extends ActionBarActivity implements DialogInterface
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_add) {
             Log.d(TAG, "[dbTestActivity] onOptionsItemSelected: action add");
             startActivity(new Intent(this, NuevaNota.class));
@@ -117,7 +123,7 @@ public class dbTestActivity extends ActionBarActivity implements DialogInterface
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder
                 .setTitle("Pick column and order")
-                .setSingleChoiceItems(allColumnNames, -1, this);
+                .setSingleChoiceItems(allColumnNames, chosenColumnId, this);
 
             builder.setPositiveButton("Ascending", new DialogInterface.OnClickListener() {
                 @Override
@@ -173,6 +179,8 @@ public class dbTestActivity extends ActionBarActivity implements DialogInterface
                     alertDialog.dismiss();
                 }
             });
+            //builder.setSingleChoiceItems(allColumnNames, chosenColumnId, this);
+
 
             AlertDialog alert = builder.create();
             ViewGroup viewGroup = new LinearLayout(this);
@@ -180,19 +188,20 @@ public class dbTestActivity extends ActionBarActivity implements DialogInterface
 
             ListView listView = (ListView) view.findViewById(R.id.alert_list_view);
             ArrayAdapter<CharSequence> arrayAdapter = new ArrayAdapter<>
-                (this,android.R.layout.simple_list_item_single_choice, allColumnNames);
+                (this,android.R.layout.select_dialog_singlechoice, allColumnNames);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     final String item = (String) parent.getItemAtPosition(position);
-                    Log.d(TAG, "onItemClick: selected_item:" +  item);
-                    chosenColumn = item;
+                    Log.d(TAG, "onItemClick: selected_item: " + item);
+                    
+                    dialogOnClick(position, item);
                 }
             });
 
             listView.setAdapter(arrayAdapter);
-
             alert.setView(view);
+            listView.setSelection(chosenColumnId);
             alert.show();
         }
 
@@ -232,10 +241,23 @@ public class dbTestActivity extends ActionBarActivity implements DialogInterface
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
+        Log.d(TAG, "onClick");
         AlertDialog alertDialog = (AlertDialog) dialog;
         alertDialog.getButton(which);
-        Log.d(TAG, "But: " + which);
-        chosenColumn = allColumnNames[which].toString();
+        Log.d(TAG, "onClick: But: " + which);
 
+        dialogOnClick(which, allColumnNames[which].toString());
+    }
+
+    private void dialogOnClick(int cColumnId, String cColumn) {
+
+        chosenColumnId = cColumnId;
+        chosenColumn = cColumn;
+
+        // Saving preferences
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_CHOSEN_COLUMN, chosenColumn);
+        editor.putInt(KEY_CHOSEN_COLUMN_ID, chosenColumnId);
+        editor.commit();
     }
 }
