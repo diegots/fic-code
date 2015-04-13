@@ -25,7 +25,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 
-public class dbTestActivity extends ActionBarActivity implements DialogInterface.OnClickListener{
+public class dbTestActivity extends ActionBarActivity implements DialogInterface.OnClickListener {
 
     final static String PREF_TAG = "PREF_TAG";
     final static String TAG = "LCA_TAG";
@@ -194,7 +194,7 @@ public class dbTestActivity extends ActionBarActivity implements DialogInterface
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     final String item = (String) parent.getItemAtPosition(position);
                     Log.d(TAG, "onItemClick: selected_item: " + item);
-                    
+
                     dialogOnClick(position, item);
                 }
             });
@@ -203,6 +203,8 @@ public class dbTestActivity extends ActionBarActivity implements DialogInterface
             alert.setView(view);
             listView.setSelection(chosenColumnId);
             alert.show();
+        } else if (id == R.id.cpTest) {
+            startActivity(new Intent(this, cpTestActivity.class));
         }
 
         return super.onOptionsItemSelected(item);

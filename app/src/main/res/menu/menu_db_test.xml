@@ -4,6 +4,12 @@
     tools:context=".dbTestActivity">
 
     <item
+        android:title="cpTest"
+        android:id="@+id/cpTest"
+        app:showAsAction="always">
+    </item>
+
+    <item
         android:title="Add"
         android:id="@+id/action_add"
         app:showAsAction="always">

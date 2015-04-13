@@ -12,5 +12,6 @@
     <string name="bt_add">Add</string>
     <string name="bt_edit">Edit</string>
     <string name="msg">Número total registros: </string>
+    <string name="title_activity_cp_test">cpTestActivity</string>
 
 </resources>
