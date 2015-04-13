@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NotasDataBaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "notas.db";
@@ -79,11 +82,15 @@ public class NotasDataBaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().update(TABLA_NOTAS, cv, COL_ID + " = " + idNota, null);
     }
 
+    // getNotas: get all table data
     public Cursor getNotas() {
         return getWritableDatabase().query(TABLA_NOTAS, null, null, null,
                 null,null, null);
     }
 
+
+
+    // getNota: get the table entry that matches "COL_NOTA=nota"
     public Cursor getNota(int nota) {
         return getWritableDatabase().query(TABLA_NOTAS, null, COL_NOTA+"=?",
                 new String[] { String.valueOf(nota) }, null, null, null);
@@ -99,5 +106,24 @@ public class NotasDataBaseHelper extends SQLiteOpenHelper {
                 " like ? ", new String[] {"%"+value+"%"}, null, null, null);
     }
 
+    // getNotas:
+    public Cursor getNotasOrdered(String orderBy) {
+        return getWritableDatabase().query(TABLA_NOTAS, null, null, null, null, null, orderBy);
+    }
 
+    public CharSequence [] getAllColumnNames () {
+
+        // TODO skip "_id" column
+        Cursor cursor = getWritableDatabase().rawQuery("PRAGMA table_info('"+ TABLA_NOTAS  + "')", null);
+        int i = cursor.getCount();
+        CharSequence [] charSequence = new CharSequence[i];
+        i = 0;
+
+        while (cursor.moveToNext()) {
+            charSequence[i] = cursor.getString(1);
+            i++;
+        }
+
+        return charSequence;
+    }
 }

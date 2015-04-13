@@ -1,7 +1,10 @@
 package es.udc.psi14.lab07trabazo;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,19 +13,31 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 
-public class dbTestActivity extends ActionBarActivity {
+
+public class dbTestActivity extends ActionBarActivity implements DialogInterface.OnClickListener{
 
     final static String TAG = "LCA_TAG";
     ListView lv;
     TextView tv;
     NotasDataBaseHelper notasdb;
+    CharSequence [] allColumnNames;
+    String chosenColumn;
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -41,7 +56,7 @@ public class dbTestActivity extends ActionBarActivity {
             case R.id.context_menu_borrar:
                 info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
                 notasdb.deleteNota((int) info.id);
-                actualizar_lista(notasdb.getNotas()); // actualiza la listView
+                update_list(notasdb.getNotas()); // actualiza la listView
                 Log.d(TAG, "[dbTestActivity] onContextItemSelected: deleted item  with id: "
                     + info.id);
                 return true;
@@ -71,6 +86,7 @@ public class dbTestActivity extends ActionBarActivity {
         lv.setOnCreateContextMenuListener(this);
 
         notasdb = new NotasDataBaseHelper(this);
+        allColumnNames = notasdb.getAllColumnNames();
     }
 
     @Override
@@ -94,14 +110,96 @@ public class dbTestActivity extends ActionBarActivity {
             return true;
         } else if (id == R.id.action_update) {
             Log.d(TAG, "[dbTestActivity] onOptionsItemSelected: action update");
-            actualizar_lista(notasdb.getNotas());
+            update_list(notasdb.getNotas());
             return true;
+        } else if (id == R.id.action_sort) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder
+                .setTitle("Pick column and order")
+                .setSingleChoiceItems(allColumnNames, -1, this);
+
+            builder.setPositiveButton("Ascending", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    Log.d(TAG, "[dbTestActivity] onOptionsItemSelected: order ASC by " + chosenColumn);
+                    Cursor cursor =
+                        notasdb.getNotasOrdered(chosenColumn + " ASC");
+                    update_list(cursor);
+                }
+            });
+            builder.setNegativeButton("Descending", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    Log.d(TAG, "[dbTestActivity] onOptionsItemSelected: order ASC by " + chosenColumn);
+                    Cursor cursor =
+                            notasdb.getNotasOrdered(chosenColumn + " DESC");
+                    update_list(cursor);
+                }
+            });
+            builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    AlertDialog alertDialog = (AlertDialog) dialog;
+                    alertDialog.dismiss();
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+
+        } else if (id == R.id.action_filter) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Filter criteria:");
+            builder.setPositiveButton("Sort", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    AlertDialog alertDialog = (AlertDialog) dialog;
+                    EditText editText = (EditText) alertDialog.getWindow().findViewById(R.id.alert_edit_text);
+
+                    Cursor cursor =
+                            notasdb.getNotas(chosenColumn, editText.getText().toString());
+                    update_list(cursor);
+
+                }
+            });
+            builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    AlertDialog alertDialog = (AlertDialog) dialog;
+                    alertDialog.dismiss();
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            ViewGroup viewGroup = new LinearLayout(this);
+            View view = alert.getLayoutInflater().inflate(R.layout.alert_dialog, viewGroup);
+
+            ListView listView = (ListView) view.findViewById(R.id.alert_list_view);
+            ArrayAdapter<CharSequence> arrayAdapter = new ArrayAdapter<>
+                (this,android.R.layout.simple_list_item_single_choice, allColumnNames);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    final String item = (String) parent.getItemAtPosition(position);
+                    Log.d(TAG, "onItemClick: selected_item:" +  item);
+                    chosenColumn = item;
+                }
+            });
+
+            listView.setAdapter(arrayAdapter);
+
+            alert.setView(view);
+            alert.show();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void actualizar_lista(Cursor cursorNotas) {
+    private void update_list(Cursor cursorNotas) {
         Log.d(TAG, "[dbTestActivity] actualizar_lista");
         tv.setText(getString(R.string.msg) + " " + String.valueOf(cursorNotas.getCount()));
 
@@ -121,7 +219,7 @@ public class dbTestActivity extends ActionBarActivity {
             R.id.nota
         };
 
-        SimpleCursorAdapter adapter2 = new SimpleCursorAdapter(
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(
             this,
             R.layout.list_row,
             cursorNotas,
@@ -129,6 +227,15 @@ public class dbTestActivity extends ActionBarActivity {
             ints,
             0);
 
-        lv.setAdapter(adapter2);
+        lv.setAdapter(adapter);
+    }
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        AlertDialog alertDialog = (AlertDialog) dialog;
+        alertDialog.getButton(which);
+        Log.d(TAG, "But: " + which);
+        chosenColumn = allColumnNames[which].toString();
+
     }
 }
