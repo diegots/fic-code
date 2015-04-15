@@ -32,13 +32,13 @@ public class SocketTask extends AsyncTask<String, String, String> {
     protected String doInBackground(String[] params) {
 
         Socket clientSocket = null;
-        PrintWriter out = null;
+        PrintWriter out;
         BufferedReader in = null;
 
         // Get params
-        String hostname = (String) params[0];
-        int portNumber = Integer.parseInt((String) params[1]);
-        String message = (String) params[2];
+        String hostname = params[0];
+        int portNumber = Integer.parseInt(params[1]);
+        String message = params[2];
 
         StringBuffer bufferData = new StringBuffer();
         String rawData;

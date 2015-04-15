@@ -6,9 +6,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,46 +23,35 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 
-public class NetActiv extends ActionBarActivity implements View.OnClickListener {
+public class NetActiv extends ActionBarActivity implements View.OnClickListener,
+        CompoundButton.OnCheckedChangeListener {
 
     final static String TAG = "LCA_TAG";
-    final static String HARDCODED_MESSAGE = "Test message";
-    final static String HARDCODED_HOSTNAME = "192.168.0.7";
-    final static String HARDCODED_PORT_NUMBER = "12321";
+    final static String HARDCODED_ECHO_MESSAGE = "This is the echo message";
+    final static String HARDCODED_ECHO_HOSTNAME = "localhost";
+    final static String HARDCODED_ECHO_PORT_NUMBER = "12321";
+    final static String HARDCODED_HTTP_MESSAGE = "GET /index.html";
+    final static String HARDCODED_HTTP_HOSTNAME = "http://www.google.com";
+    final static String HARDCODED_HTTP_PORT_NUMBER = "80";
+
     Button but_send;
     Button but_cancel;
+    ToggleButton but_msg_type;
     EditText et_host;
     EditText et_port;
     EditText et_msg;
     TextView tv_line;
     TextView tv_display;
-
-    public void updateDisplay(String data) {
-        tv_display.setText(data);
-    }
+    WebView webview;
+    String hostname;
+    String portNumber;
+    String message;
 
     private void but_send_f () {
 
-        // Get hostname
-        String hostname = et_host.getText().toString();
-        if ("".equals(hostname)) {
-            hostname = HARDCODED_HOSTNAME;
-            et_host.setText(HARDCODED_HOSTNAME);
-        }
-
-        // Get port number
-        String portNumber = et_port.getText().toString();
-        if ("".equals(portNumber)) {
-            portNumber = HARDCODED_PORT_NUMBER;
-            et_port.setText(HARDCODED_PORT_NUMBER);
-        }
-
-        // Get message
-        String message = et_msg.getText().toString();
-        if ("".equals(message)) {
-            message = HARDCODED_MESSAGE;
-            et_msg.setText(HARDCODED_MESSAGE);
-        }
+        et_host.setText(hostname);
+        et_port.setText(portNumber);
+        et_msg.setText(message);
 
         SocketTask socketTask = new SocketTask(this);
         try {
@@ -75,6 +68,10 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener 
     private void but_cancel_f () {
         // Clear tv_display
         tv_display.setText("");
+    }
+
+    private void but_msg_type_f () {
+
     }
 
     @Override
@@ -98,6 +95,8 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener 
         et_msg = (EditText) findViewById(R.id.et_msg);
         tv_display = (TextView) findViewById(R.id.tv_display);
         tv_line = (TextView) findViewById(R.id.tv_line);
+        webview = (WebView) findViewById(R.id.webview);
+        but_msg_type = (ToggleButton) findViewById(R.id.but_msg_type);
     }
 
     @Override
@@ -108,6 +107,8 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener 
         init();
         but_send.setOnClickListener(this);
         but_cancel.setOnClickListener(this);
+        but_msg_type.setOnCheckedChangeListener(this);
+        setDefaultBehaviour(but_msg_type.isChecked());
     }
 
 
@@ -126,5 +127,32 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener 
         int id = item.getItemId();
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            setDefaultBehaviour(isChecked);
+    }
+
+    void setDefaultBehaviour (boolean isChecked) {
+        hostname = et_host.getText().toString();
+        portNumber = et_port.getText().toString();
+        message = et_msg.getText().toString();
+
+        // HTTP message
+        if (isChecked && "".equals(hostname))
+            hostname = HARDCODED_HTTP_HOSTNAME;
+        if (isChecked && "".equals(portNumber))
+            portNumber = HARDCODED_HTTP_PORT_NUMBER;
+        if (isChecked && "".equals(message))
+            message = HARDCODED_HTTP_MESSAGE;
+
+        // ECHO message
+        if (!isChecked && "".equals(hostname))
+            hostname = HARDCODED_ECHO_HOSTNAME;
+        if (!isChecked && "".equals(portNumber))
+            portNumber = HARDCODED_ECHO_PORT_NUMBER;
+        if (!isChecked && "".equals(message))
+            message = HARDCODED_ECHO_MESSAGE;
     }
 }

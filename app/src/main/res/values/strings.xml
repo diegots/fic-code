@@ -9,7 +9,8 @@
     <string name="tv_msg">Message: </string>
     <string name="title_activity_socket_task">SocketTask</string>
     <string name="tv_last_echo_line">Last line: </string>
-
+    <string name="echo_message">ECHO</string>
+    <string name="http_message">HTTP</string>
 
 
 </resources>

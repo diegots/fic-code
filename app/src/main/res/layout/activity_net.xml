@@ -7,76 +7,133 @@
     android:orientation="vertical"
     tools:context=".NetActiv">
 
-    <TableLayout
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_host"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_host"/>
 
-        <TableRow>
+        <FrameLayout android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
             <TextView
-                android:id="@+id/tv_host"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tv_host"/>
+                android:text="0000"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible"/>
             <EditText
                 android:id="@+id/et_host"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </TableRow>
-        <TableRow>
+                android:layout_height="match_parent"/>
+        </FrameLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_port"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_port"/>
+
+        <FrameLayout android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
             <TextView
-                android:id="@+id/tv_port"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tv_port"/>
+                android:text="0000"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible"/>
             <EditText
                 android:id="@+id/et_port"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </TableRow>
-        <TableRow>
+                android:layout_height="match_parent"/>
+        </FrameLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_msg"/>
+        <FrameLayout android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
             <TextView
-                android:id="@+id/tv_msg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tv_msg"/>
+                android:text="0000"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible"/>
             <EditText
                 android:id="@+id/et_msg"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </TableRow>
-        <TableRow>
-            <Button
-                android:id="@+id/but_send"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/but_send"/>
+                android:layout_height="match_parent"/>
+        </FrameLayout>
+    </LinearLayout>
 
-            <Button
-                android:id="@+id/but_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/but_cancel"/>
-        </TableRow>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/but_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/but_send"/>
 
-        <TableRow>
-            <TextView
-                android:id="@+id/tv_last_echo_line"
-                android:text="@string/tv_last_echo_line"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:id="@+id/tv_line"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/but_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/but_cancel"/>
 
-        </TableRow>
-    </TableLayout>
+        <ToggleButton
+            android:id="@+id/but_msg_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOff="@string/echo_message"
+            android:textOn="@string/http_message"
+            android:checked="false"/>
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_last_echo_line"
+            android:text="@string/tv_last_echo_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/tv_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_display"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/tv_display"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
 
+        <WebView
+            android:id="@+id/webview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+        </WebView>
+    </LinearLayout>
 </LinearLayout>
