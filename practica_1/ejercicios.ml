@@ -81,14 +81,18 @@ let au4 = Auto.Af (q_states, sigma, initial_state, transitions, end_states);;
 let au5 = "0 1 2 3; a b c; 0; 1 3; 0 1 a; 1 1 b; 1 2 a; 2 0 epsilon; 2 3 epsilon; 2 3 c;";;
 let au5 = Ergo.af_of_string au5;;
 
-let au6 = "0 1 2 3; a b c; 0; 3; 0 1 a; 1 2 b; 2 3 a;";;
-let au6 = Ergo.af_of_string au6;;
+let au6 = "0 1 2 3 4; a b c; 0; 3; 0 1 a; 1 2 b; 2 3 a; 0 2 a; 0 4 b;";;
+let au6 = Ergo.af_of_string au6;; 
 
 let au7 = "0 1 2 3 4; a b c; 0; 1 3; 0 1 a; 1 1 b; 1 2 a; 2 0 epsilon; 2 3 epsilon; 2 3 c; 0 4 b;";;
 let au7 = Ergo.af_of_string au7;;
 
 let au8 = "0 1 2 3 4 5; a b c; 0; 1 3; 0 1 a; 1 1 b; 1 2 a; 2 0 epsilon; 2 3 epsilon; 2 3 c; 5 5 b;";;
 let au8 = Ergo.af_of_string au8;;
+
+let au9 = "0 1 2 3 4; a b c; 0; 3; 0 1 a; 1 2 b; 2 3 a; 0 4 b;";;
+let au9 = Ergo.af_of_string au9;; 
+
 
 (******************************************************************************)
 (***************************** Auxiliar functions *****************************)
@@ -164,6 +168,18 @@ let rec get_relevant_transition path state = function
 (* val get_relevant_transition :
   Auto.estado -> Auto.arco_af list -> Auto.arco_af * Auto.arco_af list =
   <fun> *)
+
+let get_next_state_afd state symbol automata =
+  let arcs = get_arcs automata in
+  let rec aux  = function
+    | Conj.Conjunto [] -> failwith "get_relevant_transition_afd"
+    | Conj.Conjunto (h::t) ->
+      let i = get_arc_initial_node h in
+      let s = get_arc_symbol h in
+        if i = state && s = symbol then get_arc_end_node h
+        else aux (Conj.Conjunto t)
+  in aux arcs
+;;
 
 
 (******************************************************************************)
@@ -248,7 +264,9 @@ let all_reachable automata =
   in 
   let rec check_next = function 
     | [] -> true 
-    | h::t -> let _ = print_endline ("next: "^(match h with Auto.Estado a -> a)) in aux init_state h arcs [initial_state] && check_next t
+    | h::t -> 
+    let _ = print_endline ("next: "^(match h with Auto.Estado a -> a)) 
+    in aux init_state h arcs [initial_state] && check_next t
   in check_next states
 ;;
 
@@ -278,6 +296,61 @@ let es_conexo automata =
   all_symbols_are_used automata
 ;;
 
-let out_str = all_reachable au8 in print_endline (string_of_bool out_str);; 
-Graf.dibuja_af au8;; 
+(* let out_str = all_reachable au8 in print_endline (string_of_bool out_str);; *)
+(* Graf.dibuja_af au8;; *)
+
+
+(******************************************************************************)
+(******************************** escaner_afn *********************************)
+(******************************************************************************)
+let escaner_afn cadena (Auto.Af (_, _, inicial, _, finales) as a) =
+
+   let rec aux = function
+
+        (Conj.Conjunto [], _) ->
+           false
+
+      | (actuales, []) ->
+           not (Conj.es_vacio (Conj.interseccion actuales finales))
+
+      | (actuales, simbolo :: t) ->
+           aux (Auto.avanza simbolo actuales a, t)
+
+   in
+      aux (Conj.Conjunto [inicial], cadena)
+   ;;
+
+(* let cad1 = Ergo.cadena_of_string "a b";;
+ * let cad2 = Ergo.cadena_of_string "a a";;
+ * let cad3 = Ergo.cadena_of_string "a b a";;
+ * let out_str = escaner_afn cad3 au6 in print_endline ("'" ^ 
+ *   (Ergo.string_of_cadena cad3) ^ "' on automata is " ^ (string_of_bool out_str));;
+ * Graf.dibuja_af au6;; *)
+
+
+(******************************************************************************)
+(******************************** escaner_afd *********************************)
+(******************************************************************************)
+let string_of_stado s = match s with Auto.Estado st -> st;;
+let string_of_symbol s = match s with Auto.Terminal st -> st | Auto.No_terminal s -> s;;
+
+let escaner_afd cadena (Auto.Af (_, _, inicial, _, finales) as a) =
+  let rec aux state = function
+    | [] -> not (Conj.es_vacio (Conj.interseccion (Conj.Conjunto [state]) finales))
+    | h::t -> 
+      try 
+       let next_state = get_next_state_afd state h a in 
+       let _ = print_endline ("from state: " ^ (string_of_stado state) ^ " with " ^ (string_of_symbol h) ^ " to " ^ (string_of_stado next_state)) in
+         aux next_state t
+      with Failure "get_relevant_transition_afd"  -> false
+  in let _ = print_endline ("initial state: " ^ (string_of_stado inicial)) in aux inicial cadena
+;;
+
+(* let cad1 = Ergo.cadena_of_string "a b";;
+ * let cad2 = Ergo.cadena_of_string "a a";;
+ * let cad3 = Ergo.cadena_of_string "a b a";;
+ * let out_str = escaner_afd cad2 au9 in print_endline ("'" ^ 
+ *   (Ergo.string_of_cadena cad2) ^ "' on automata is " ^ (string_of_bool out_str));;
+ * Graf.dibuja_af au9;; *)
+
 
