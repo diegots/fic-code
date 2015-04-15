@@ -19,17 +19,21 @@ import java.net.Socket;
 
 public class SocketTask extends AsyncTask<String, String, String> {
 
+    NetActiv netActiv;
     private Context context;
+    private final static String banner = "[SocketTask] ";
 
     public SocketTask(Context context) {
         super();
-        this.context = context;
+        netActiv = (NetActiv) context;
     }
 
     @Override
     protected String doInBackground(String[] params) {
 
-        Socket clientSocket;
+        Socket clientSocket = null;
+        PrintWriter out = null;
+        BufferedReader in = null;
 
         // Get params
         String hostname = (String) params[0];
@@ -40,34 +44,50 @@ public class SocketTask extends AsyncTask<String, String, String> {
         String rawData;
 
         try {
-            Log.d(NetActiv.TAG, "Opening socket to: " + hostname + ":" + portNumber);
+            Log.d(NetActiv.TAG, banner + "doInBackground: Opening socket to: " + hostname + ":" + portNumber);
             clientSocket = new Socket(hostname, portNumber);
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(
+            out = new PrintWriter(clientSocket.getOutputStream(), true);
+            in = new BufferedReader(
                     new InputStreamReader(clientSocket.getInputStream()));
 
+            Log.d(NetActiv.TAG, banner + "doInBackground: sending '" + message + "'");
             out.println(message);
-            while (in.ready() && (rawData = in.readLine()) != null) {
-
-                bufferData.append(rawData);
+            Thread.sleep((long) 200);
+            boolean inReady = in.ready();
+            Log.d(NetActiv.TAG, banner + "doInBackground: in.ready: " + Boolean.toString(inReady));
+            while (inReady && (rawData = in.readLine()) != null) {
+                Log.d(NetActiv.TAG, banner + "doInBackground: while rawdata: " + rawData);
                 publishProgress(rawData);
-
-
+                bufferData.append(rawData + "\n");
+                Thread.sleep((long) 200);
+                inReady = in.ready();
+                Log.d(NetActiv.TAG, banner + "doInBackground: while in.ready: " + Boolean.toString(inReady));
             }
-            clientSocket.close();
-
         } catch (IOException ioe) {
-            Log.d(NetActiv.TAG, "IOException: " + ioe.getMessage());
-        }
+            Log.d(NetActiv.TAG, banner + "doInBackground: " + ioe.getMessage());
+            return ioe.getMessage();
+        } catch (InterruptedException ie) {
+            Log.d(NetActiv.TAG, banner + "doInBackground: " + ie.getMessage());
+        } finally {
+            try {
+                if (in != null)
+                    in.close();
+                if (clientSocket != null)
+                    clientSocket.close();
+            } catch (IOException ioe) {
+                Log.d(NetActiv.TAG, banner + "doInBackground: " + ioe.getMessage());
+            }
 
+        }
+        Log.d(NetActiv.TAG, banner + "doInBackground finishing");
         return bufferData.toString();
     }
 
     @Override
     protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
-        Log.d("LCA_TAG", "[SocketTask] - onProgressUpdate: " + values[0]);
-        NetActiv netActiv = (NetActiv) context;
-        netActiv.tv_display.setText(values[0]);
+        Log.d("LCA_TAG", banner + "onProgressUpdate Given value: " + values[0]);
+
+        netActiv.tv_line.setText(values[0]);
     }
 }

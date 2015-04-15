@@ -30,6 +30,7 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener 
     EditText et_host;
     EditText et_port;
     EditText et_msg;
+    TextView tv_line;
     TextView tv_display;
 
     public void updateDisplay(String data) {
@@ -59,21 +60,15 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener 
             et_msg.setText(HARDCODED_MESSAGE);
         }
 
-        String result;
-
         SocketTask socketTask = new SocketTask(this);
         try {
-            result = socketTask.execute(hostname, portNumber, message).get().toString();
+            String result = socketTask.execute(hostname, portNumber, message).get().toString();
             tv_display.setText(result);
         } catch (ExecutionException ee) {
             Log.d(NetActiv.TAG, "IOException: " + ee.getMessage());
         } catch (InterruptedException ie) {
             Log.d(NetActiv.TAG, "IOException: " + ie.getMessage());
         }
-
-
-
-
 
     }
 
@@ -102,7 +97,7 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener 
         et_port = (EditText) findViewById(R.id.et_port);
         et_msg = (EditText) findViewById(R.id.et_msg);
         tv_display = (TextView) findViewById(R.id.tv_display);
-
+        tv_line = (TextView) findViewById(R.id.tv_line);
     }
 
     @Override
@@ -112,8 +107,7 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener 
 
         init();
         but_send.setOnClickListener(this);
-
-
+        but_cancel.setOnClickListener(this);
     }
 
 

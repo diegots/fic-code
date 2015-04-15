@@ -8,8 +8,8 @@
     <string name="tv_port">Port: </string>
     <string name="tv_msg">Message: </string>
     <string name="title_activity_socket_task">SocketTask</string>
+    <string name="tv_last_echo_line">Last line: </string>
 
-    <string name="hello_world">Hello world!</string>
 
 
 </resources>
