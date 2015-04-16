@@ -16,4 +16,10 @@
     <string name="but_clear">Clr</string>
     <string name="but_reload">Re</string>
     <string name="but_get">Get</string>
+    <string name="title_activity_post">PostActiv</string>
+    <string name="tv_user_name">User name: </string>
+    <string name="tv_passwd">Password: </string>
+    <string name="tv_ip">IP: </string>
+    <string name="action_post_activ">PostActiv</string>
+
 </resources>

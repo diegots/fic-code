@@ -22,6 +22,10 @@
             android:name=".SocketTask"
             android:label="@string/title_activity_socket_task" >
         </activity>
+        <activity
+            android:name=".PostActiv"
+            android:label="@string/title_activity_post" >
+        </activity>
     </application>
 
 </manifest>

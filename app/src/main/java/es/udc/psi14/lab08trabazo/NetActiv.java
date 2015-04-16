@@ -1,12 +1,16 @@
 package es.udc.psi14.lab08trabazo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -21,14 +25,20 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener,
         CompoundButton.OnCheckedChangeListener, View.OnLongClickListener {
 
     final static String TAG = "LCA_TAG";
+    private final static String banner = "[NetActiv] ";
+
     final static String HARDCODED_ECHO_MESSAGE = "This is the echo message";
     final static String HARDCODED_ECHO_HOSTNAME = "localhost";
     final static String HARDCODED_ECHO_PORT_NUMBER = "12321";
     final static String HARDCODED_HTTP_MESSAGE = "GET /inicio.html";
     final static String HARDCODED_HTTP_HOSTNAME = "gac.udc.es";
     final static String HARDCODED_HTTP_PORT_NUMBER = "80";
-    private final static String banner = "[NetActiv] ";
 
+    Button but_back;
+    Button but_forward;
+    Button but_clear;
+    Button but_reload;
+    Button but_get;
     Button but_send;
     Button but_cancel;
     ToggleButton but_msg_type;
@@ -42,6 +52,22 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener,
     String portNumber;
     String message;
     LinearLayout ll_web_view;
+
+    private class Callback extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading (
+                WebView view, String url) { return false; }
+    }
+
+    private void onGet (View view) {
+        String url = et_host.getText().toString();
+        if (!url.startsWith("http://www.")) url = "http://www." + url;
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setBuiltInZoomControls(true);
+        webView.setWebViewClient(new Callback());
+        webView.loadUrl(url);
+    }
 
     private void but_send_f () {
 
@@ -81,7 +107,6 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener,
         }
     }
 
-
     void setDefaultBehaviour (boolean isChecked) {
         Log.d(TAG, banner + "setDefaultBehaviour");
         hostname = et_host.getText().toString();
@@ -107,7 +132,7 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener,
         Log.d(TAG, banner + "setDefaultBehaviour message: " + message);
     }
 
-    void init () {
+    void initViews () {
         but_send = (Button) findViewById(R.id.but_send);
         but_cancel = (Button) findViewById(R.id.but_cancel);
         et_host = (EditText) findViewById(R.id.et_host);
@@ -118,20 +143,37 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener,
         webView = (WebView) findViewById(R.id.web_view);
         but_msg_type = (ToggleButton) findViewById(R.id.but_msg_type);
         ll_web_view = (LinearLayout) findViewById(R.id.ll_web_view);
+        but_back = (Button) findViewById(R.id.but_back);
+        but_forward = (Button) findViewById(R.id.but_forward);
+        but_clear = (Button) findViewById(R.id.but_clear);
+        but_reload = (Button) findViewById(R.id.but_reload);
+        but_get = (Button) findViewById(R.id.but_get);
+
+        but_send.setOnClickListener(this);
+        but_cancel.setOnClickListener(this);
+        but_msg_type.setOnCheckedChangeListener(this);
+        but_back.setOnClickListener(this);
+        but_forward.setOnClickListener(this);
+        but_clear.setOnClickListener(this);
+        but_reload.setOnClickListener(this);
+        but_get.setOnClickListener(this);
+        tv_display.setOnLongClickListener(this);
+
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_net);
-
         Log.d(TAG, banner + "onCreate");
-        init();
-        but_send.setOnClickListener(this);
-        but_cancel.setOnClickListener(this);
-        but_msg_type.setOnCheckedChangeListener(this);
+
+        // Avoid showing keyboard on activity start.
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        initViews();
+
         setDefaultBehaviour(but_msg_type.isChecked());
-        tv_display.setOnLongClickListener(this);
+
     }
 
 
@@ -149,6 +191,12 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener,
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if (id == R.id.action_post_activ) {
+            startActivity(new Intent(this, PostActiv.class));
+            return true;
+        }
+
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -164,6 +212,26 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener,
                 Log.d(TAG, banner + "onClick: send button");
                 but_send_f();
                 break;
+            case R.id.but_back:
+                Log.d(TAG, banner + "onClick: back button");
+                webView.goBack();
+                break;
+            case R.id.but_forward:
+                Log.d(TAG, banner + "onClick: forward button");
+                webView.goForward();
+                break;
+            case R.id.but_clear:
+                Log.d(TAG, banner + "onClick: clear button");
+                webView.clearHistory();
+                break;
+            case R.id.but_reload:
+                Log.d(TAG, banner + "onClick: reload button");
+                webView.reload();
+                break;
+            case R.id.but_get:
+                Log.d(TAG, banner + "onClick: get button");
+                onGet(null);
+                break;
         }
     }
 
@@ -173,7 +241,7 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener,
         TextView textView = (TextView) v;
         if (textView.getId() == R.id.tv_display) {
             Log.d(TAG, banner + "onLongClick: calling showHideWView");
-            showHideBrowser ();
+            showHideBrowser();
             return true;
         }
 
