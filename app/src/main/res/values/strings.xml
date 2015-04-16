@@ -11,6 +11,9 @@
     <string name="tv_last_echo_line">Last line: </string>
     <string name="echo_message">ECHO</string>
     <string name="http_message">HTTP</string>
-
-
+    <string name="but_back">Bac</string>
+    <string name="but_forward">Fo</string>
+    <string name="but_clear">Clr</string>
+    <string name="but_reload">Re</string>
+    <string name="but_get">Get</string>
 </resources>

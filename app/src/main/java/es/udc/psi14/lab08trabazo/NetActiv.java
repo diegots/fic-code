@@ -1,7 +1,7 @@
 package es.udc.psi14.lab08trabazo;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,29 +10,24 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 
 public class NetActiv extends ActionBarActivity implements View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener {
+        CompoundButton.OnCheckedChangeListener, View.OnLongClickListener {
 
     final static String TAG = "LCA_TAG";
     final static String HARDCODED_ECHO_MESSAGE = "This is the echo message";
     final static String HARDCODED_ECHO_HOSTNAME = "localhost";
     final static String HARDCODED_ECHO_PORT_NUMBER = "12321";
-    final static String HARDCODED_HTTP_MESSAGE = "GET /index.html";
-    final static String HARDCODED_HTTP_HOSTNAME = "http://www.google.com";
+    final static String HARDCODED_HTTP_MESSAGE = "GET /inicio.html";
+    final static String HARDCODED_HTTP_HOSTNAME = "gac.udc.es";
     final static String HARDCODED_HTTP_PORT_NUMBER = "80";
+    private final static String banner = "[NetActiv] ";
 
     Button but_send;
     Button but_cancel;
@@ -42,10 +37,11 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener,
     EditText et_msg;
     TextView tv_line;
     TextView tv_display;
-    WebView webview;
+    WebView webView;
     String hostname;
     String portNumber;
     String message;
+    LinearLayout ll_web_view;
 
     private void but_send_f () {
 
@@ -68,23 +64,47 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener,
     private void but_cancel_f () {
         // Clear tv_display
         tv_display.setText("");
+        et_host.setText("");
+        et_port.setText("");
+        et_msg.setText("");
     }
 
-    private void but_msg_type_f () {
-
-    }
-
-    @Override
-    public void onClick(View v) {
-        Button b = (Button) v;
-        switch (b.getId()) {
-            case R.id.but_cancel:
-                but_cancel_f();
-                break;
-            case R.id.but_send:
-                but_send_f();
-                break;
+    /* Show or hides webView when a long click is performed to tv_display */
+    private void showHideBrowser() {
+        if (ll_web_view.getVisibility() == View.VISIBLE) {
+            Log.d(TAG, banner + "showHideWView: hiding webView");
+            ll_web_view.setVisibility(View.INVISIBLE);
         }
+        else {
+            Log.d(TAG, banner + "showHideWView: unhiding webView");
+            ll_web_view.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    void setDefaultBehaviour (boolean isChecked) {
+        Log.d(TAG, banner + "setDefaultBehaviour");
+        hostname = et_host.getText().toString();
+        portNumber = et_port.getText().toString();
+        message = et_msg.getText().toString();
+
+        // HTTP message
+        if (isChecked && "".equals(hostname))
+            hostname = HARDCODED_HTTP_HOSTNAME;
+        if (isChecked && "".equals(portNumber))
+            portNumber = HARDCODED_HTTP_PORT_NUMBER;
+        if (isChecked && "".equals(message))
+            message = HARDCODED_HTTP_MESSAGE;
+
+        // ECHO message
+        if (!isChecked && "".equals(hostname))
+            hostname = HARDCODED_ECHO_HOSTNAME;
+        if (!isChecked && "".equals(portNumber))
+            portNumber = HARDCODED_ECHO_PORT_NUMBER;
+        if (!isChecked && "".equals(message))
+            message = HARDCODED_ECHO_MESSAGE;
+
+        Log.d(TAG, banner + "setDefaultBehaviour message: " + message);
     }
 
     void init () {
@@ -95,8 +115,9 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener,
         et_msg = (EditText) findViewById(R.id.et_msg);
         tv_display = (TextView) findViewById(R.id.tv_display);
         tv_line = (TextView) findViewById(R.id.tv_line);
-        webview = (WebView) findViewById(R.id.webview);
+        webView = (WebView) findViewById(R.id.web_view);
         but_msg_type = (ToggleButton) findViewById(R.id.but_msg_type);
+        ll_web_view = (LinearLayout) findViewById(R.id.ll_web_view);
     }
 
     @Override
@@ -104,11 +125,13 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_net);
 
+        Log.d(TAG, banner + "onCreate");
         init();
         but_send.setOnClickListener(this);
         but_cancel.setOnClickListener(this);
         but_msg_type.setOnCheckedChangeListener(this);
         setDefaultBehaviour(but_msg_type.isChecked());
+        tv_display.setOnLongClickListener(this);
     }
 
 
@@ -130,29 +153,36 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener,
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            setDefaultBehaviour(isChecked);
+    public void onClick(View v) {
+        Button b = (Button) v;
+        switch (b.getId()) {
+            case R.id.but_cancel:
+                Log.d(TAG, banner + "onClick: cancel button");
+                but_cancel_f();
+                break;
+            case R.id.but_send:
+                Log.d(TAG, banner + "onClick: send button");
+                but_send_f();
+                break;
+        }
     }
 
-    void setDefaultBehaviour (boolean isChecked) {
-        hostname = et_host.getText().toString();
-        portNumber = et_port.getText().toString();
-        message = et_msg.getText().toString();
+    @Override
+    public boolean onLongClick(View v) {
 
-        // HTTP message
-        if (isChecked && "".equals(hostname))
-            hostname = HARDCODED_HTTP_HOSTNAME;
-        if (isChecked && "".equals(portNumber))
-            portNumber = HARDCODED_HTTP_PORT_NUMBER;
-        if (isChecked && "".equals(message))
-            message = HARDCODED_HTTP_MESSAGE;
+        TextView textView = (TextView) v;
+        if (textView.getId() == R.id.tv_display) {
+            Log.d(TAG, banner + "onLongClick: calling showHideWView");
+            showHideBrowser ();
+            return true;
+        }
 
-        // ECHO message
-        if (!isChecked && "".equals(hostname))
-            hostname = HARDCODED_ECHO_HOSTNAME;
-        if (!isChecked && "".equals(portNumber))
-            portNumber = HARDCODED_ECHO_PORT_NUMBER;
-        if (!isChecked && "".equals(message))
-            message = HARDCODED_ECHO_MESSAGE;
+        return false;
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(TAG, banner + "onCheckedChanged");
+        setDefaultBehaviour(isChecked);
     }
 }

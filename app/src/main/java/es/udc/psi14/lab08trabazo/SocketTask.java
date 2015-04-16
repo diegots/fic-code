@@ -84,6 +84,13 @@ public class SocketTask extends AsyncTask<String, String, String> {
     }
 
     @Override
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+
+        netActiv.webView.loadData(s, "text/html","UTF-8");
+    }
+
+    @Override
     protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
         Log.d("LCA_TAG", banner + "onProgressUpdate Given value: " + values[0]);
