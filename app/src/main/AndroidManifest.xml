@@ -26,6 +26,18 @@
             android:name=".PostActiv"
             android:label="@string/title_activity_post" >
         </activity>
+        <activity
+            android:name=".PostTask"
+            android:label="@string/title_activity_post_task" >
+        </activity>
+        <activity
+            android:name=".JsonTask"
+            android:label="@string/title_activity_json_task" >
+        </activity>
+        <activity
+            android:name=".XmlTask"
+            android:label="@string/title_activity_xml_task" >
+        </activity>
     </application>
 
 </manifest>

@@ -48,10 +48,11 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener,
     TextView tv_line;
     TextView tv_display;
     WebView webView;
+    LinearLayout ll_web_view;
+
     String hostname;
     String portNumber;
     String message;
-    LinearLayout ll_web_view;
 
     private class Callback extends WebViewClient {
         @Override
@@ -80,9 +81,9 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener,
             String result = socketTask.execute(hostname, portNumber, message).get().toString();
             tv_display.setText(result);
         } catch (ExecutionException ee) {
-            Log.d(NetActiv.TAG, "IOException: " + ee.getMessage());
+            Log.d(TAG, banner + ee.getMessage());
         } catch (InterruptedException ie) {
-            Log.d(NetActiv.TAG, "IOException: " + ie.getMessage());
+            Log.d(TAG, banner + ie.getMessage());
         }
 
     }
@@ -195,7 +196,6 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener,
             startActivity(new Intent(this, PostActiv.class));
             return true;
         }
-
 
         return super.onOptionsItemSelected(item);
     }

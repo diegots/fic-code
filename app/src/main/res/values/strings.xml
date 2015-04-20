@@ -21,5 +21,13 @@
     <string name="tv_passwd">Password: </string>
     <string name="tv_ip">IP: </string>
     <string name="action_post_activ">PostActiv</string>
+    <string name="title_activity_post_task">PostTask</string>
+    <string name="post_activ_but_send">POST</string>
+    <string name="post_activ_but_json">JSON</string>
+    <string name="post_activ_but_xml">XML</string>
+    <string name="title_activity_json_task">JsonTask</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_xml_task">XmlTask</string>
 
 </resources>
