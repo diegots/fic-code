@@ -26,8 +26,13 @@
     <string name="post_activ_but_json">JSON</string>
     <string name="post_activ_but_xml">XML</string>
     <string name="title_activity_json_task">JsonTask</string>
-
-    <string name="hello_world">Hello world!</string>
+    <string name="action_server_activ">ServerActiv</string>
     <string name="title_activity_xml_task">XmlTask</string>
+    <string name="title_activity_server">ServerActiv</string>
+    <string name="hello_world">hello_world</string>
+    <string name="server_activ_but_listen">Listen</string>
+    <string name="server_activ_but_close">Close</string>
+    <string name="server_activ_et_port_text">Port: </string>
+    <string name="server_activ_tv_ip_text">Server IP: </string>
 
 </resources>

@@ -2,10 +2,6 @@ package es.udc.psi14.lab08trabazo;
 
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;

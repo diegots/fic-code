@@ -2,16 +2,10 @@ package es.udc.psi14.lab08trabazo;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -86,7 +80,7 @@ public class SocketTask extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-
+        Log.d(NetActiv.TAG, banner + "onPostExecute");
         netActiv.webView.loadData(s, "text/html","UTF-8");
     }
 

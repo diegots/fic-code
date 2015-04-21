@@ -16,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.concurrent.ExecutionException;
@@ -62,11 +63,22 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener,
 
     private void onGet (View view) {
         String url = et_host.getText().toString();
-        if (!url.startsWith("http://www.")) url = "http://www." + url;
+
+        if ("".equals(url)) {
+            Toast.makeText(this, banner + "onGet: URL empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!url.startsWith("http://www."))
+            url = "http://www." + url;
+
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setBuiltInZoomControls(true);
+
         webView.setWebViewClient(new Callback());
+
+        Log.d(TAG, banner + "onGet url: " + url);
         webView.loadUrl(url);
     }
 
@@ -177,7 +189,6 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener,
 
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -194,6 +205,9 @@ public class NetActiv extends ActionBarActivity implements View.OnClickListener,
 
         if (id == R.id.action_post_activ) {
             startActivity(new Intent(this, PostActiv.class));
+            return true;
+        } else if (id == R.id.action_server_activ) {
+            startActivity(new Intent(this, ServerActiv.class));
             return true;
         }
 

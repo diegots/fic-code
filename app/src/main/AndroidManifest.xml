@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="es.udc.psi14.lab08trabazo" >
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -37,6 +38,10 @@
         <activity
             android:name=".XmlTask"
             android:label="@string/title_activity_xml_task" >
+        </activity>
+        <activity
+            android:name=".ServerActiv"
+            android:label="@string/title_activity_server" >
         </activity>
     </application>
 
