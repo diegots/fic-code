@@ -61,16 +61,21 @@ class ClientHandler implements Runnable {
     Socket clientSocket;
     Handler handler;
 
-    private void sendDataToUI (String key, String data) {
+    private void sendDataToUI (String key, String id, String data) {
 
         Bundle b = new Bundle();
         Message m = new Message();
 
-        b.putString(key, data);
+        String [] sa = {id, data};
+        b.putStringArray(key, sa);
         m.setData(b);
         handler.sendMessage(m);
 
         Log.d(NetActiv.TAG, banner + "sendDataToUI: " + data);
+    }
+
+    private String createClientID (String ip, String port) {
+        return ip + ":" + port;
     }
 
     public ClientHandler(Socket s, Handler handler) throws SocketException {
@@ -78,13 +83,18 @@ class ClientHandler implements Runnable {
         Log.d(NetActiv.TAG, banner + "handling connection, #" + connectionId);
 
         clientSocket = s;
-        clientSocket.setSoTimeout(10000); // Client socket ends after 10 seconds
+        clientSocket.setSoTimeout(30000); // Client socket ends after 10 seconds
         this.handler = handler;
     }
 
     public void run() {
 
-        sendDataToUI(ServerActiv.KEY_CLIENT_THREAD_IP, clientSocket.getInetAddress().getHostAddress());
+        String address = clientSocket.getInetAddress().getHostAddress();
+        String port = clientSocket.getPort() + "";
+        String id = createClientID(address, port);
+
+        sendDataToUI(ServerActiv.KEY_CLIENT_THREAD_IP, id, address);
+        sendDataToUI(ServerActiv.KEY_CLIENT_THREAD_PORT, id, port);
 
         PrintWriter out = null;
         BufferedReader in = null;
@@ -95,7 +105,7 @@ class ClientHandler implements Runnable {
             while((inputLine = in.readLine()) != null){
                 outputLine = inputLine;
                 Log.d(NetActiv.TAG, banner + "received: " + outputLine);
-                sendDataToUI(ServerActiv.KEY_CLIENT_THREAD_LINE, outputLine);
+                sendDataToUI(ServerActiv.KEY_CLIENT_THREAD_LINE, id, outputLine);
                 out.write(outputLine+"\n");
                 out.flush();
                 if (outputLine.equals("exit"))
@@ -110,7 +120,7 @@ class ClientHandler implements Runnable {
                 clientSocket.close();
 
                 String endMsg = "closing connection, #" + connectionId;
-                sendDataToUI(ServerActiv.KEY_CLIENT_THREAD_ENDLINE, endMsg);
+                sendDataToUI(ServerActiv.KEY_CLIENT_THREAD_ENDLINE, id, endMsg);
                 Log.d(NetActiv.TAG, banner + endMsg);
             } catch (IOException e) {
                 e.printStackTrace();

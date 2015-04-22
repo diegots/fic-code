@@ -17,11 +17,20 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+
 public class ServerActiv extends ActionBarActivity implements View.OnClickListener {
 
     private final static String banner = "[ServerActiv] ";
 
     final static String KEY_CLIENT_THREAD_IP = "KEY_CLIENT_THREAD_IP";
+    final static String KEY_CLIENT_THREAD_PORT = "KEY_CLIENT_THREAD_PORT";
     final static String KEY_CLIENT_THREAD_LINE = "KEY_CLIENT_THREAD_LINE";
     final static String KEY_CLIENT_THREAD_ENDLINE = "KEY_CLIENT_THREAD_ENDLINE";
     final static int HARDCODED_SERVER_PORT = 10500;
@@ -35,9 +44,9 @@ public class ServerActiv extends ActionBarActivity implements View.OnClickListen
     ScrollView server_activ_scrollView;
 
     int port;
-    StringBuilder str_tv_display;
     ServerThread serverThread;
     Handler serverActivHandler;
+    HashMap<String, List<String>> clientsData;
 
     void setDefaultPort () {
 
@@ -84,8 +93,6 @@ public class ServerActiv extends ActionBarActivity implements View.OnClickListen
 
         server_activ_but_listen.setOnClickListener(this);
         server_activ_but_close.setOnClickListener(this);
-
-        server_activ_tv_ip.setText(getIpAddr());
     }
 
     @Override
@@ -93,20 +100,21 @@ public class ServerActiv extends ActionBarActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_server);
 
-        initViews ();
+        initViews();
+        server_activ_tv_ip.setText(getIpAddr());
 
         // Avoid showing keyboard on activity start.
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         serverActivHandler = new ServerActivHander(this);
-        str_tv_display = new StringBuilder();
+        clientsData = new HashMap<>();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_server, menu);
-        return true;
+        //getMenuInflater().inflate(R.menu.menu_server, menu);
+        return false;
     }
 
     @Override
@@ -155,24 +163,58 @@ class ServerActivHander extends Handler {
     public void handleMessage(Message msg) {
         super.handleMessage(msg);
 
-        String line = "";
-        if (msg.getData().getString(ServerActiv.KEY_CLIENT_THREAD_IP) != null)
-            line = msg.getData().getString(ServerActiv.KEY_CLIENT_THREAD_IP);
-        else if (msg.getData().getString(ServerActiv.KEY_CLIENT_THREAD_LINE) != null)
-            line = msg.getData().getString(ServerActiv.KEY_CLIENT_THREAD_LINE);
-        else if (msg.getData().getString(ServerActiv.KEY_CLIENT_THREAD_ENDLINE) != null)
-            line = msg.getData().getString(ServerActiv.KEY_CLIENT_THREAD_ENDLINE);
+        Bundle b = msg.getData();
+        String [] data = {};
+        String id;
+        String receivedLine;
 
-        serverActiv.str_tv_display.append(line).append("\n");
-        serverActiv.server_activ_tv_display.setText(serverActiv.str_tv_display);
+        if (b.getStringArray(ServerActiv.KEY_CLIENT_THREAD_IP) != null)
+            data = b.getStringArray(ServerActiv.KEY_CLIENT_THREAD_IP);
+        else if (b.getStringArray(ServerActiv.KEY_CLIENT_THREAD_PORT) != null)
+            data = b.getStringArray(ServerActiv.KEY_CLIENT_THREAD_PORT);
+        else if (b.getStringArray(ServerActiv.KEY_CLIENT_THREAD_LINE) != null)
+            data = b.getStringArray(ServerActiv.KEY_CLIENT_THREAD_LINE);
+        else if (b.getStringArray(ServerActiv.KEY_CLIENT_THREAD_ENDLINE) != null)
+            data = b.getStringArray(ServerActiv.KEY_CLIENT_THREAD_ENDLINE);
+
+        id = data[0];
+        receivedLine = data[1];
+
+        insertData(id, receivedLine);
+        showData(id);
+
+        Log.d(NetActiv.TAG, banner + "handleMessage: " + id + " " + receivedLine);
+
+    }
+
+    private void showData (String id) {
+
+        List<String> l = serverActiv.clientsData.get(id);
+        StringBuilder b = new StringBuilder();
+        Iterator<String> il = l.iterator();
+        while (il.hasNext())
+            b.append(il.next());
+
+        serverActiv.server_activ_tv_display.setText(b.toString());
         serverActiv.server_activ_scrollView.post(new Runnable() {
             public void run() {
                 serverActiv.server_activ_scrollView.fullScroll(ScrollView.FOCUS_DOWN);
             }
         });
+    }
 
-        Log.d(NetActiv.TAG, banner + "handleMessage: " + line);
+    private void insertData (String id, String receivedLine) {
+        if (serverActiv.clientsData.containsKey(id)) {
+            // Key already in HashMap
+            List<String> l = serverActiv.clientsData.get(id);
+            l.add(receivedLine + "\n");
 
+        } else {
+            // Key not found
+            List<String> l = new ArrayList<>();
+            l.add(receivedLine + "\n");
+            serverActiv.clientsData.put(id, l);
+        }
     }
 }
 
