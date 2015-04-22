@@ -1,23 +1,29 @@
 package es.udc.psi14.lab08trabazo;
 
+import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
-
 
 public class ServerActiv extends ActionBarActivity implements View.OnClickListener {
 
     private final static String banner = "[ServerActiv] ";
 
+    final static String KEY_CLIENT_THREAD_IP = "KEY_CLIENT_THREAD_IP";
+    final static String KEY_CLIENT_THREAD_LINE = "KEY_CLIENT_THREAD_LINE";
+    final static String KEY_CLIENT_THREAD_ENDLINE = "KEY_CLIENT_THREAD_ENDLINE";
     final static int HARDCODED_SERVER_PORT = 10500;
 
     Button server_activ_but_listen;
@@ -26,9 +32,12 @@ public class ServerActiv extends ActionBarActivity implements View.OnClickListen
     TextView server_activ_tv_ip;
     TextView server_activ_tv_client;
     TextView server_activ_tv_display;
+    ScrollView server_activ_scrollView;
 
-    ServerThread serverThread;
     int port;
+    StringBuilder str_tv_display;
+    ServerThread serverThread;
+    Handler serverActivHandler;
 
     void setDefaultPort () {
 
@@ -52,9 +61,8 @@ public class ServerActiv extends ActionBarActivity implements View.OnClickListen
         }
 
         Log.d(NetActiv.TAG, banner + "but_listen_f: starting Echo Server on port " + port);
-        serverThread = new ServerThread("serverThread", port);
+        serverThread = new ServerThread("serverThread", port, serverActivHandler);
         serverThread.start();
-
     }
 
     public String getIpAddr() { // permissions INTERNET & ACCESS_WIFI_STATE
@@ -72,6 +80,7 @@ public class ServerActiv extends ActionBarActivity implements View.OnClickListen
         server_activ_tv_ip = (TextView) findViewById(R.id.server_activ_tv_ip);
         server_activ_tv_client = (TextView) findViewById(R.id.server_activ_tv_client);
         server_activ_tv_display = (TextView) findViewById(R.id.server_activ_tv_display);
+        server_activ_scrollView = (ScrollView) findViewById(R.id.server_activ_scrollView);
 
         server_activ_but_listen.setOnClickListener(this);
         server_activ_but_close.setOnClickListener(this);
@@ -85,8 +94,13 @@ public class ServerActiv extends ActionBarActivity implements View.OnClickListen
         setContentView(R.layout.activity_server);
 
         initViews ();
-    }
 
+        // Avoid showing keyboard on activity start.
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        serverActivHandler = new ServerActivHander(this);
+        str_tv_display = new StringBuilder();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -128,6 +142,40 @@ public class ServerActiv extends ActionBarActivity implements View.OnClickListen
     }
 }
 
+class ServerActivHander extends Handler {
+
+    private final static String banner = "[ServerActivHander] ";
+    ServerActiv serverActiv;
+
+    ServerActivHander (Context context) {
+        serverActiv = (ServerActiv) context;
+    }
+
+    @Override
+    public void handleMessage(Message msg) {
+        super.handleMessage(msg);
+
+        String line = "";
+        if (msg.getData().getString(ServerActiv.KEY_CLIENT_THREAD_IP) != null)
+            line = msg.getData().getString(ServerActiv.KEY_CLIENT_THREAD_IP);
+        else if (msg.getData().getString(ServerActiv.KEY_CLIENT_THREAD_LINE) != null)
+            line = msg.getData().getString(ServerActiv.KEY_CLIENT_THREAD_LINE);
+        else if (msg.getData().getString(ServerActiv.KEY_CLIENT_THREAD_ENDLINE) != null)
+            line = msg.getData().getString(ServerActiv.KEY_CLIENT_THREAD_ENDLINE);
+
+        serverActiv.str_tv_display.append(line).append("\n");
+        serverActiv.server_activ_tv_display.setText(serverActiv.str_tv_display);
+        serverActiv.server_activ_scrollView.post(new Runnable() {
+            public void run() {
+                serverActiv.server_activ_scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        });
+
+        Log.d(NetActiv.TAG, banner + "handleMessage: " + line);
+
+    }
+}
+
 class ServerThread extends Thread {
     private final static String banner = "[ServerThread] ";
 
@@ -135,15 +183,17 @@ class ServerThread extends Thread {
     EchoServer echoServer;
     Handler handler;
 
-    public ServerThread(String name, int port) {
+    public ServerThread(String name, int port, Handler handler) {
         super (name);
         this.port = port;
+        this.handler = handler;
     }
 
     public void run() {
         Log.d(NetActiv.TAG, banner + "run: start EchoServer");
-        echoServer = new EchoServer();
+        echoServer = new EchoServer(handler);
         echoServer.start(port);
+
     }
 
     public void terminate() {
