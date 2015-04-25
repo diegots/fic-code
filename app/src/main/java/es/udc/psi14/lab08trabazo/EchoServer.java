@@ -13,6 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class EchoServer {
 
@@ -27,10 +28,11 @@ public class EchoServer {
     }
 
     public void start(int port) {
+        Thread clientThread;
         try {
             serverSocket = new ServerSocket(port);
             while(running){
-                Thread clientThread = new Thread(new ClientHandler(serverSocket.accept(), handler));
+                clientThread = new Thread(new ClientHandler(serverSocket.accept(), handler));
                 clientThread.start();
             }
 
@@ -40,6 +42,7 @@ public class EchoServer {
             try {
                 Log.d(NetActiv.TAG, banner + "closing server socket");
                 serverSocket.close();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

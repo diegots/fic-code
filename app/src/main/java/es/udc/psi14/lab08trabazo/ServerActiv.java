@@ -14,10 +14,15 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -42,6 +47,7 @@ public class ServerActiv extends ActionBarActivity implements View.OnClickListen
     TextView server_activ_tv_client;
     TextView server_activ_tv_display;
     ScrollView server_activ_scrollView;
+    ListView server_activ_list_view;
 
     int port;
     ServerThread serverThread;
@@ -57,9 +63,21 @@ public class ServerActiv extends ActionBarActivity implements View.OnClickListen
 
     void but_close_f () {
 
-        serverThread.terminate();
-        server_activ_tv_display.setText("");
-        server_activ_tv_ip.setText("");
+        if (serverThread != null) {
+            serverThread.terminate(port);
+            server_activ_tv_display.setText("");
+            server_activ_tv_ip.setText("");
+            clientsData.clear();
+            Log.d(NetActiv.TAG, banner + "but_close_f: Echo server finished");
+
+
+            serverThread = null;
+        } else {
+            Log.d(NetActiv.TAG, banner + "but_close_f: No Echo server running!");
+            Toast.makeText(this, "No Echo server running!", Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 
     void but_listen_f () {
@@ -70,8 +88,14 @@ public class ServerActiv extends ActionBarActivity implements View.OnClickListen
         }
 
         Log.d(NetActiv.TAG, banner + "but_listen_f: starting Echo Server on port " + port);
-        serverThread = new ServerThread("serverThread", port, serverActivHandler);
-        serverThread.start();
+        if (serverThread != null) {
+            Toast.makeText(this, "Echo server already running!", Toast.LENGTH_SHORT).show();
+            Log.d(NetActiv.TAG, banner + "but_listen_f: echo server already running!");
+        } else {
+            serverThread = new ServerThread("serverThread", port, serverActivHandler);
+            serverThread.start();
+            Log.d(NetActiv.TAG, banner + "but_listen_f: starting Echo Server on port " + port);
+        }
     }
 
     public String getIpAddr() { // permissions INTERNET & ACCESS_WIFI_STATE
@@ -90,6 +114,7 @@ public class ServerActiv extends ActionBarActivity implements View.OnClickListen
         server_activ_tv_client = (TextView) findViewById(R.id.server_activ_tv_client);
         server_activ_tv_display = (TextView) findViewById(R.id.server_activ_tv_display);
         server_activ_scrollView = (ScrollView) findViewById(R.id.server_activ_scrollView);
+        server_activ_list_view = (ListView) findViewById(R.id.server_activ_list_view);
 
         server_activ_but_listen.setOnClickListener(this);
         server_activ_but_close.setOnClickListener(this);
@@ -238,8 +263,9 @@ class ServerThread extends Thread {
 
     }
 
-    public void terminate() {
+    public void terminate(int port) {
         Log.d(NetActiv.TAG, banner + "terminate");
         echoServer.terminate();
     }
+
 }
