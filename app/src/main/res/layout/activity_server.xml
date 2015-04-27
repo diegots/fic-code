@@ -10,7 +10,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_weight="1">
 
         <Button
             android:id="@+id/server_activ_but_listen"
@@ -28,12 +29,12 @@
             android:id="@+id/server_activ_list_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
         <TextView
             android:id="@+id/server_activ_et_port_text"
@@ -45,7 +46,12 @@
             android:id="@+id/server_activ_et_port"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
         <TextView
             android:id="@+id/server_activ_tv_ip_text"
             android:layout_width="wrap_content"
@@ -61,12 +67,14 @@
     <TextView
         android:id="@+id/server_activ_tv_client"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
 
     <ScrollView
         android:id="@+id/server_activ_scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="16">
 
         <TextView
             android:id="@+id/server_activ_tv_display"
