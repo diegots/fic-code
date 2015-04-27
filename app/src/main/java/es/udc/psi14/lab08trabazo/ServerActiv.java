@@ -12,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -29,8 +31,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
-public class ServerActiv extends ActionBarActivity implements View.OnClickListener {
+public class ServerActiv extends ActionBarActivity implements View.OnClickListener,
+        AdapterView.OnItemClickListener {
 
     private final static String banner = "[ServerActiv] ";
 
@@ -53,6 +57,7 @@ public class ServerActiv extends ActionBarActivity implements View.OnClickListen
     ServerThread serverThread;
     Handler serverActivHandler;
     HashMap<String, List<String>> clientsData;
+    ArrayAdapter<String> clientsArrayAdapter;
 
     void setDefaultPort () {
 
@@ -68,16 +73,14 @@ public class ServerActiv extends ActionBarActivity implements View.OnClickListen
             server_activ_tv_display.setText("");
             server_activ_tv_ip.setText("");
             clientsData.clear();
+            clientsArrayAdapter.clear();
+            serverThread = null;
             Log.d(NetActiv.TAG, banner + "but_close_f: Echo server finished");
 
-
-            serverThread = null;
         } else {
             Log.d(NetActiv.TAG, banner + "but_close_f: No Echo server running!");
             Toast.makeText(this, "No Echo server running!", Toast.LENGTH_SHORT).show();
         }
-
-
     }
 
     void but_listen_f () {
@@ -118,6 +121,7 @@ public class ServerActiv extends ActionBarActivity implements View.OnClickListen
 
         server_activ_but_listen.setOnClickListener(this);
         server_activ_but_close.setOnClickListener(this);
+        server_activ_list_view.setOnItemClickListener(this);
     }
 
     @Override
@@ -133,6 +137,8 @@ public class ServerActiv extends ActionBarActivity implements View.OnClickListen
 
         serverActivHandler = new ServerActivHander(this);
         clientsData = new HashMap<>();
+        clientsArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+
     }
 
     @Override
@@ -173,6 +179,28 @@ public class ServerActiv extends ActionBarActivity implements View.OnClickListen
                 break;
         }
     }
+
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        final String item = (String) parent.getItemAtPosition(position);
+        Log.d(NetActiv.TAG, banner + "onItemClick: listView item selected: " + item);
+
+        List<String> l = clientsData.get(item);
+        StringBuilder b = new StringBuilder();
+        Iterator<String> il = l.iterator();
+        while (il.hasNext())
+            b.append(il.next());
+
+        server_activ_tv_display.setText(b.toString());
+        server_activ_scrollView.post(new Runnable() {
+            public void run() {
+                server_activ_scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        });
+
+    }
 }
 
 class ServerActivHander extends Handler {
@@ -206,26 +234,17 @@ class ServerActivHander extends Handler {
         receivedLine = data[1];
 
         insertData(id, receivedLine);
-        showData(id);
+        updateClientsListView();
 
         Log.d(NetActiv.TAG, banner + "handleMessage: " + id + " " + receivedLine);
 
     }
 
-    private void showData (String id) {
-
-        List<String> l = serverActiv.clientsData.get(id);
-        StringBuilder b = new StringBuilder();
-        Iterator<String> il = l.iterator();
-        while (il.hasNext())
-            b.append(il.next());
-
-        serverActiv.server_activ_tv_display.setText(b.toString());
-        serverActiv.server_activ_scrollView.post(new Runnable() {
-            public void run() {
-                serverActiv.server_activ_scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-            }
-        });
+    void updateClientsListView () {
+        Set<String> s = serverActiv.clientsData.keySet();
+        serverActiv.clientsArrayAdapter.clear();
+        serverActiv.clientsArrayAdapter.addAll(s);
+        serverActiv.server_activ_list_view.setAdapter(serverActiv.clientsArrayAdapter);
     }
 
     private void insertData (String id, String receivedLine) {
