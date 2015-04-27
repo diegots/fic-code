@@ -23,10 +23,14 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -109,6 +113,34 @@ public class ServerActiv extends ActionBarActivity implements View.OnClickListen
                 (ip >> 16 & 0xff), (ip >> 24 & 0xff));
     }
 
+    public String getIpAddr2() {
+
+        Enumeration<NetworkInterface> en;
+
+        try {
+
+
+            for (en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+
+                NetworkInterface intf = en.nextElement();
+
+                for (Enumeration<InetAddress> eIpAddr = intf.getInetAddresses();
+                     eIpAddr.hasMoreElements();) {
+
+                    InetAddress inet = eIpAddr.nextElement();
+                    if (!inet.isLoopbackAddress() && !inet.isLinkLocalAddress()) {
+                        Log.d(NetActiv.TAG, banner + "getIpAddr2: setting ip: " + inet.getHostAddress());
+                        return inet.getHostAddress();
+                    }
+
+                }
+            }
+        } catch (SocketException se) {
+            Log.d(NetActiv.TAG, banner + "getIpAddr2: couldn't get IP address!");
+        }
+        return "0.0.0.0";
+    }
+
     void initViews () {
         server_activ_but_listen = (Button) findViewById(R.id.server_activ_but_listen);
         server_activ_but_close = (Button) findViewById(R.id.server_activ_but_close);
@@ -130,7 +162,8 @@ public class ServerActiv extends ActionBarActivity implements View.OnClickListen
         setContentView(R.layout.activity_server);
 
         initViews();
-        server_activ_tv_ip.setText(getIpAddr());
+        //server_activ_tv_ip.setText(getIpAddr());
+        server_activ_tv_ip.setText(getIpAddr2());
 
         // Avoid showing keyboard on activity start.
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
