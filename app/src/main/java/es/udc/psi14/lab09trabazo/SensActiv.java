@@ -1,20 +1,30 @@
 package es.udc.psi14.lab09trabazo;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.support.v7.app.ActionBarActivity;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import java.util.Iterator;
 import java.util.List;
@@ -22,7 +32,8 @@ import java.util.List;
 public class SensActiv extends ActionBarActivity implements
         View.OnClickListener,
         AdapterView.OnItemClickListener,
-        SensorEventListener {
+        SensorEventListener,
+        CompoundButton.OnCheckedChangeListener {
 
     final static String TAG = "LCA_TAG";
     private final static String banner = "[SensActiv] ";
@@ -33,10 +44,25 @@ public class SensActiv extends ActionBarActivity implements
     TextView tv_z;
     Button but_check;
     ListView list_view;
+    ToggleButton tb_alarm;
+    EditText et_time;
+    EditText et_url;
 
     SensorManager sensorManager;
     List<Sensor> sensorList;
     ArrayAdapter<String> sensorArrayAdapter;
+    AlarmManager alarmManager;
+    PendingIntent alarmPendingIntent;
+
+    void setAlarm () {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(et_url.getText().toString()));
+        alarmPendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        alarmManager.set(
+            AlarmManager.ELAPSED_REALTIME,
+            SystemClock.elapsedRealtime() + Integer.parseInt(et_time.getText().toString()),
+            alarmPendingIntent);
+    }
 
     void initViews () {
         sens_activ = (TextView) findViewById(R.id.sens_activ);
@@ -45,16 +71,18 @@ public class SensActiv extends ActionBarActivity implements
         tv_z = (TextView) findViewById(R.id.tv_z);
         but_check = (Button) findViewById(R.id.but_check);
         list_view = (ListView) findViewById(R.id.list_view);
+        tb_alarm = (ToggleButton) findViewById(R.id.tb_alarm);
+        et_time = (EditText) findViewById(R.id.et_time);
+        et_url = (EditText) findViewById(R.id.et_url);
 
         but_check.setOnClickListener(this);
         list_view.setOnItemClickListener(this);
+        tb_alarm.setOnCheckedChangeListener(this);
     }
 
     void initVariables () {
-
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
-
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
     }
 
     @Override
@@ -65,6 +93,10 @@ public class SensActiv extends ActionBarActivity implements
         initViews();
         initVariables();
 
+        // Avoid showing keyboard on activity start.
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        Log.d(TAG, banner + "onCreate");
     }
 
     @Override
@@ -98,12 +130,20 @@ public class SensActiv extends ActionBarActivity implements
         while (is.hasNext())
             sensorArrayAdapter.add(is.next().getName());
         list_view.setAdapter(sensorArrayAdapter);
+
+        Log.d(TAG, banner + "onClick");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         sensorManager.unregisterListener(this);
+
+        // Assuming than app is going to Paused state because of alarm, so change toggle button
+        // state.
+        tb_alarm.setChecked(false);
+
+        Log.d(TAG, banner + "onPause");
     }
 
     @Override
@@ -115,6 +155,8 @@ public class SensActiv extends ActionBarActivity implements
         sensorManager.registerListener(this, mySens, SensorManager.SENSOR_DELAY_NORMAL);
 
         sens_activ.setText(mySens.getName().toString());
+
+        Log.d(TAG, banner + "onItemClick");
     }
 
     @Override
@@ -130,6 +172,22 @@ public class SensActiv extends ActionBarActivity implements
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        Log.d(TAG, banner + "onAccuracyChanged");
+    }
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+        if (isChecked) {
+            tb_alarm.setChecked(true);
+            setAlarm();
+            Log.d(TAG, banner + "onCheckedChanged: toggle but to true & setting alarm");
+        }
+        else {
+            tb_alarm.setChecked(false);
+            alarmManager.cancel(alarmPendingIntent);
+            Log.d(TAG, banner + "onCheckedChanged: toggle but to false");
+
+        }
     }
 }

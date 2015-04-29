@@ -1,7 +1,13 @@
 <resources>
     <string name="app_name">Lab09.Trabazo</string>
 
-    <string name="but_check">Check!</string>
+    <string name="but_check">Check sensors</string>
     <string name="action_settings">Settings</string>
+    <string name="tb_alarm_on">Unset alarm</string>
+    <string name="tb_alarm_off">Set alarm</string>
+    <string name="tv_time">Time: </string>
+    <string name="tv_url">URL: </string>
+    <string name="et_time">9000</string>
+    <string name="et_url">http://www.fic.udc.es</string>
 
 </resources>
