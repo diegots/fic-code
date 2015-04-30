@@ -1,7 +1,7 @@
 net-test/trunk/.gradle
 net-test/trunk/local.properties
-net-test/trunk/.idea/workspace.xml
-net-test/trunk/.idea/libraries
 net-test/trunk/.DS_Store
 net-test/trunk/build
 net-test/trunk/trunk.iml
+net-test/trunk/.idea/
+net-test/trunk/app/app.iml

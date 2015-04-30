@@ -1,13 +1,16 @@
 package es.udc.psi14.apachetest;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.rometools.rome.feed.synd.SyndContent;
 import com.rometools.rome.feed.synd.SyndContentImpl;
@@ -37,17 +40,28 @@ import java.util.List;
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
     final static String TAG = "SimpleHTTP";
+    private final static String banner = "[MainActivity] ";
+
     Button testButton01;
-    String data_field_1;
+    TextView tv_device_id;
+
+    String deviceId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        data_field_1 = "generated field data 1";
+        // Init Views
         testButton01 = (Button) findViewById(R.id.testButton01);
+        tv_device_id = (TextView) findViewById(R.id.tv_device_id);
+
+        // Set View listeners
         testButton01.setOnClickListener(this);
+
+        // Get and show device ID
+        deviceId = getDeviceId();
+        tv_device_id.setText(deviceId);
 
     }
 
@@ -85,7 +99,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private class POST_Job extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
-            Log.d(TAG, "POST_Job");
+            Log.d(TAG, banner + "POST_Job");
             //String requestBody = createFeed();
             //String requestBody = "This is the body\n";
             String requestBody = createFeed();
@@ -107,58 +121,21 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 DataOutputStream wr = new DataOutputStream(cox.getOutputStream());
                 wr.write(postData);
                 int responseCode = cox.getResponseCode();
-                Log.d(TAG, "POST_Job: responseCode: " + responseCode);
+                Log.d(TAG, banner + "POST_Job: responseCode: " + responseCode);
                 wr.flush();
                 wr.close();
             } catch (MalformedURLException murle) {
-                Log.d(TAG, "POST_Job: URL exception" + murle.getMessage());
+                Log.d(TAG, banner + "POST_Job: URL exception" + murle.getMessage());
             } catch (IOException ioe) {
-                Log.d(TAG, "POST_Job: IO exception" + ioe.getMessage());
+                Log.d(TAG, banner + "POST_Job: IO exception" + ioe.getMessage());
             }
 
             return "";
         }
     }
 
-//    GET request example. Not needed, POST is a better way
-//    private class GET_Job extends AsyncTask<String, Void, String> {
-//        @Override
-//        protected String doInBackground(String... params) {
-//            String url = "http://192.168.1.132/";
-//            final String USER_AGENT = "Mozilla/5.0";
-//
-//            try {
-//                URL obj = new URL(url);
-//                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-//                con.setRequestMethod("GET");
-//                con.setRequestProperty("User-Agent", USER_AGENT);
-//
-//                int responseCode = con.getResponseCode();
-//
-//                Log.d(TAG, "\nSending 'GET' request to URL : " + url);
-//                Log.d(TAG, "Response Code : " + responseCode);
-//
-//                BufferedReader in = new BufferedReader(
-//                        new InputStreamReader(con.getInputStream()));
-//                String inputLine;
-//                StringBuffer response = new StringBuffer();
-//                while ((inputLine = in.readLine()) != null) {
-//                    response.append(inputLine);
-//                }
-//                in.close();
-//                Log.d(TAG, response.toString());
-//
-//            } catch (MalformedURLException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            return "";
-//        }
-//    }
-
     private String createFeed() {
-        Log.d(TAG, "createFeed start");
+        Log.d(TAG, banner + "createFeed start");
         java.text.DateFormat DATE_PARSER = new SimpleDateFormat("yyyy-MM-dd");
         String feedType = "rss_2.0";
 
@@ -179,7 +156,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         try {
             entry.setPublishedDate(DATE_PARSER.parse("2004-06-08"));
         } catch (ParseException pe) {
-            Log.d(TAG, "createFeed: " + pe.getMessage());
+            Log.d(TAG, banner + "createFeed: " + pe.getMessage());
         }
         description = new SyndContentImpl();
         description.setType("text/plain");
@@ -193,7 +170,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         try {
             entry.setPublishedDate(DATE_PARSER.parse("2004-06-16"));
         } catch (ParseException pe) {
-            Log.d(TAG, "createFeed: " + pe.getMessage());
+            Log.d(TAG, banner + "createFeed: " + pe.getMessage());
         }
         description = new SyndContentImpl();
         description.setType("text/plain");
@@ -207,9 +184,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         try {
             outFeed = output.outputString(feed);
         } catch (FeedException fe) {
-            Log.d(TAG, "createFeed: " + fe.getMessage());
+            Log.d(TAG, banner + "createFeed: " + fe.getMessage());
         }
         return outFeed;
     }
 
+    private String getDeviceId () {
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        return tm.getDeviceId();
+
+    }
 }
