@@ -9,7 +9,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.rometools.rome.feed.synd.SyndContent;
@@ -40,28 +42,105 @@ import java.util.List;
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
     final static String TAG = "SimpleHTTP";
-    private final static String banner = "[MainActivity] ";
+    final static String BANNER = "[MainActivity] ";
 
-    Button testButton01;
+    final static String SERVER_IP = "192.168.1.134";
+    final static String POST_FEED_URL = "http://" + SERVER_IP + "/scripts/read_input.py";
+
+    Button bt_send_data;
     TextView tv_device_id;
+    EditText et_server_ip;
 
     String deviceId;
+
+    void initViews () {
+        bt_send_data = (Button) findViewById(R.id.bt_send_data);
+        tv_device_id = (TextView) findViewById(R.id.tv_device_id);
+        et_server_ip = (EditText) findViewById(R.id.et_server_ip);
+
+        bt_send_data.setOnClickListener(this);
+    }
+
+    private String getDeviceId () {
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        return tm.getDeviceId();
+
+    }
+
+    private String createFeed() {
+
+        Log.d(TAG, BANNER + "createFeed");
+
+        java.text.DateFormat DATE_PARSER = new SimpleDateFormat("yyyy-MM-dd");
+        String feedType = "rss_2.0";
+
+        String feedTitle = "Sample Feed (created with ROME)";
+        String feedLink = "http://rome.dev.java.net";
+        String feedDescr = "This feed has been created using ROME (Java syndication utilities";
+
+        String entryTitle = "ROME v1.0";
+        String entryLink = "http://wiki.java.net/bin/view/Javawsxml/Rome01";
+        String entryDate = "2004-06-08";
+
+        // Entry description data
+        String descrType = "text/plain";
+        String descrValue = "Initial release of ROME";
+
+        // Creating feed
+        SyndFeed feed = new SyndFeedImpl();
+        feed.setFeedType(feedType);
+        feed.setTitle(feedTitle);
+        feed.setLink(feedLink);
+        feed.setDescription(feedDescr);
+
+        // Entry datatypes
+        List entries = new ArrayList();
+        SyndEntry entry = new SyndEntryImpl();
+        SyndContent description;
+
+        // Creating entry
+        entry.setTitle(entryTitle);
+        entry.setLink(entryLink);
+        try {
+            entry.setPublishedDate(DATE_PARSER.parse(entryDate));
+        } catch (ParseException pe) {
+            Log.d(TAG, BANNER + "createFeed: " + pe.getMessage());
+        }
+        description = new SyndContentImpl();
+        description.setType(descrType);
+        description.setValue(descrValue);
+        entry.setDescription(description);
+
+        // Adding entries to list, then to feed
+        entries.add(entry);
+        feed.setEntries(entries);
+
+        // Obtaining feed XML as String
+        SyndFeedOutput output = new SyndFeedOutput();
+        String outFeed = "";
+        try {
+            outFeed = output.outputString(feed);
+        } catch (FeedException fe) {
+            Log.d(TAG, BANNER + "createFeed: " + fe.getMessage());
+        }
+
+        return outFeed;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Init Views
-        testButton01 = (Button) findViewById(R.id.testButton01);
-        tv_device_id = (TextView) findViewById(R.id.tv_device_id);
+        initViews();
+        Log.d(TAG, BANNER + "onCreate: views set up");
 
-        // Set View listeners
-        testButton01.setOnClickListener(this);
+        // Avoid showing keyboard on activity start.
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         // Get and show device ID
         deviceId = getDeviceId();
-        tv_device_id.setText(deviceId);
+        tv_device_id.setText(tv_device_id.getText() + deviceId);
 
     }
 
@@ -91,107 +170,48 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public void onClick(View v) {
         Button b = (Button) v;
 
-        if (b.getId() == testButton01.getId()) {
-            new POST_Job().execute();
+        if (b.getId() == bt_send_data.getId()) {
+            new POST_Job().execute(createFeed());
         }
     }
 
     private class POST_Job extends AsyncTask<String, Void, String> {
+        final static String BANNER = "[POST_Job] ";
+
         @Override
         protected String doInBackground(String... params) {
-            Log.d(TAG, banner + "POST_Job");
-            //String requestBody = createFeed();
-            //String requestBody = "This is the body\n";
-            String requestBody = createFeed();
+            Log.d(TAG, BANNER + "POST_Job");
+
+            String requestBody = params[0];
             byte[] postData = requestBody.getBytes(Charset.forName("UTF-8"));
             int postDataLength = postData.length;
-            String request = "http://192.168.0.6/scripts/read_input.py";
+
             URL url;
             try {
-                url = new URL(request);
+                url = new URL(POST_FEED_URL);
                 HttpURLConnection cox= (HttpURLConnection) url.openConnection();
                 cox.setDoOutput(true);
                 cox.setDoInput(true);
                 cox.setInstanceFollowRedirects(false);
                 cox.setRequestMethod("POST");
-                cox.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded");
-                cox.setRequestProperty( "charset", "utf-8");
-                cox.setRequestProperty( "Content-Length", Integer.toString(postDataLength));
+                cox.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                cox.setRequestProperty("charset", "utf-8");
+                cox.setRequestProperty("Content-Length", Integer.toString(postDataLength));
                 cox.setUseCaches(false);
+                Log.d(TAG, BANNER + "doInBackground: Sending data to : " + POST_FEED_URL);
                 DataOutputStream wr = new DataOutputStream(cox.getOutputStream());
                 wr.write(postData);
                 int responseCode = cox.getResponseCode();
-                Log.d(TAG, banner + "POST_Job: responseCode: " + responseCode);
+                Log.d(TAG, BANNER + "doInBackground: responseCode: " + responseCode);
                 wr.flush();
                 wr.close();
             } catch (MalformedURLException murle) {
-                Log.d(TAG, banner + "POST_Job: URL exception" + murle.getMessage());
+                Log.d(TAG, BANNER + "doInBackground " + murle.getMessage());
             } catch (IOException ioe) {
-                Log.d(TAG, banner + "POST_Job: IO exception" + ioe.getMessage());
+                Log.d(TAG, BANNER + "doInBackground " + ioe.getMessage());
             }
 
             return "";
         }
-    }
-
-    private String createFeed() {
-        Log.d(TAG, banner + "createFeed start");
-        java.text.DateFormat DATE_PARSER = new SimpleDateFormat("yyyy-MM-dd");
-        String feedType = "rss_2.0";
-
-        SyndFeed feed = new SyndFeedImpl();
-        feed.setFeedType(feedType);
-
-        feed.setTitle("Sample Feed (created with ROME)");
-        feed.setLink("http://rome.dev.java.net");
-        feed.setDescription("This feed has been created using ROME (Java syndication utilities");
-
-        List entries = new ArrayList();
-        SyndEntry entry;
-        SyndContent description;
-
-        entry = new SyndEntryImpl();
-        entry.setTitle("ROME v1.0");
-        entry.setLink("http://wiki.java.net/bin/view/Javawsxml/Rome01");
-        try {
-            entry.setPublishedDate(DATE_PARSER.parse("2004-06-08"));
-        } catch (ParseException pe) {
-            Log.d(TAG, banner + "createFeed: " + pe.getMessage());
-        }
-        description = new SyndContentImpl();
-        description.setType("text/plain");
-        description.setValue("Initial release of ROME");
-        entry.setDescription(description);
-        entries.add(entry);
-
-        entry = new SyndEntryImpl();
-        entry.setTitle("ROME v2.0");
-        entry.setLink("http://wiki.java.net/bin/view/Javawsxml/Rome02");
-        try {
-            entry.setPublishedDate(DATE_PARSER.parse("2004-06-16"));
-        } catch (ParseException pe) {
-            Log.d(TAG, banner + "createFeed: " + pe.getMessage());
-        }
-        description = new SyndContentImpl();
-        description.setType("text/plain");
-        description.setValue("Bug fixes, minor API changes and some new features");
-        entry.setDescription(description);
-        entries.add(entry);
-
-        feed.setEntries(entries);
-        SyndFeedOutput output = new SyndFeedOutput();
-        String outFeed = "";
-        try {
-            outFeed = output.outputString(feed);
-        } catch (FeedException fe) {
-            Log.d(TAG, banner + "createFeed: " + fe.getMessage());
-        }
-        return outFeed;
-    }
-
-    private String getDeviceId () {
-        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        return tm.getDeviceId();
-
     }
 }
