@@ -3,5 +3,5 @@
 
     <string name="main_activity">Main activity TextView</string>
     <string name="action_settings">Settings</string>
-    <string name="testButton01">Start!</string>
+    <string name="testButton01">Send data</string>
 </resources>
