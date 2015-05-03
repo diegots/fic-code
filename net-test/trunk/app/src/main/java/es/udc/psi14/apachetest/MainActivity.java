@@ -140,7 +140,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         // Get and show device ID
         deviceId = getDeviceId();
-        tv_device_id.setText(tv_device_id.getText() + deviceId);
+        tv_device_id.setText(getString(R.string.tv_device_id) + deviceId);
 
     }
 
@@ -172,6 +172,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         if (b.getId() == bt_send_data.getId()) {
             new POST_Job().execute(createFeed(deviceId));
+            Log.d(TAG, BANNER + "onClick: executed POST_Job task");
         }
     }
 
@@ -214,4 +215,5 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             return "";
         }
     }
+
 }
