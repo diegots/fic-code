@@ -67,14 +67,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     }
 
-    private String createFeed() {
+    private String createFeed(String deviceId) {
 
         Log.d(TAG, BANNER + "createFeed");
 
         java.text.DateFormat DATE_PARSER = new SimpleDateFormat("yyyy-MM-dd");
         String feedType = "rss_2.0";
 
-        String feedTitle = "Sample Feed (created with ROME)";
+        String feedTitle = deviceId; // feedTitle is IMEI device
         String feedLink = "http://rome.dev.java.net";
         String feedDescr = "This feed has been created using ROME (Java syndication utilities";
 
@@ -171,7 +171,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         Button b = (Button) v;
 
         if (b.getId() == bt_send_data.getId()) {
-            new POST_Job().execute(createFeed());
+            new POST_Job().execute(createFeed(deviceId));
         }
     }
 

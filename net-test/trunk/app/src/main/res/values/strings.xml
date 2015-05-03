@@ -6,5 +6,7 @@
     <string name="bt_send_data">Send data</string>
     <string name="tv_device_id">Device IMEI: </string>
     <string name="et_server_ip">192.168.1.134</string>
-    <string name="tv_server_ip">Server IP: </string>
+    <string name="tv_server_ip">Server IP:
+
+    </string>
 </resources>
