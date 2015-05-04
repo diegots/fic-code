@@ -71,7 +71,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private String createFeed(String deviceId) {
 
-        //java.text.DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Log.d(TAG, BANNER + "createFeed");
+
         java.text.DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
         String feedType = "rss_2.0";
 
@@ -134,6 +135,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         initViews();
+        Log.d(TAG, BANNER + "onCreate: views set up");
 
         // Avoid showing keyboard on activity start.
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -174,6 +176,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         if (b.getId() == bt_send_data.getId()) {
             new POST_Job().execute(createFeed(deviceId), et_server_ip.getText().toString());
+            Log.d(TAG, BANNER + "onClick: executed POST_Job task");
         }
     }
 
@@ -182,6 +185,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         @Override
         protected String doInBackground(String... params) {
+            Log.d(TAG, BANNER + "POST_Job");
 
             String requestBody = params[0];
             byte[] postData = requestBody.getBytes(Charset.forName("UTF-8"));
@@ -201,11 +205,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 cox.setRequestProperty("charset", "utf-8");
                 cox.setRequestProperty("Content-Length", Integer.toString(postDataLength));
                 cox.setUseCaches(false);
+                Log.d(TAG, BANNER + "doInBackground: Sending data to : " + urlStr);
 
                 DataOutputStream wr = new DataOutputStream(cox.getOutputStream());
                 wr.write(postData);
                 int responseCode = cox.getResponseCode();
-
+                Log.d(TAG, BANNER + "doInBackground: responseCode: " + responseCode);
+                
                 wr.flush();
                 wr.close();
             } catch (MalformedURLException murle) {
