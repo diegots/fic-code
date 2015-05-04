@@ -32,6 +32,7 @@ import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /* Two independent steps:
@@ -44,14 +45,16 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     final static String TAG = "SimpleHTTP";
     final static String BANNER = "[MainActivity] ";
 
-    final static String SERVER_IP = "192.168.1.134";
-    final static String POST_FEED_URL = "http://" + SERVER_IP + "/scripts/read_input.py";
+    final static String DEV_SERVER_IP = "192.168.1.134";
+    final static String POST_FEED_URL_START = "http://";
+    final static String POST_FEED_URL_END = "/scripts/read_input.py";
 
     Button bt_send_data;
     TextView tv_device_id;
     EditText et_server_ip;
 
     String deviceId;
+    String serverIp;
 
     void initViews () {
         bt_send_data = (Button) findViewById(R.id.bt_send_data);
@@ -71,7 +74,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         Log.d(TAG, BANNER + "createFeed");
 
-        java.text.DateFormat DATE_PARSER = new SimpleDateFormat("yyyy-MM-dd");
+        //java.text.DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        java.text.DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
         String feedType = "rss_2.0";
 
         String feedTitle = deviceId; // feedTitle is IMEI device
@@ -80,7 +84,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         String entryTitle = "ROME v1.0";
         String entryLink = "http://wiki.java.net/bin/view/Javawsxml/Rome01";
-        String entryDate = "2004-06-08";
+        String entryDate = dateFormat.format(new Date());
 
         // Entry description data
         String descrType = "text/plain";
@@ -102,7 +106,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         entry.setTitle(entryTitle);
         entry.setLink(entryLink);
         try {
-            entry.setPublishedDate(DATE_PARSER.parse(entryDate));
+            entry.setPublishedDate(dateFormat.parse(entryDate));
         } catch (ParseException pe) {
             Log.d(TAG, BANNER + "createFeed: " + pe.getMessage());
         }
@@ -138,6 +142,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         // Avoid showing keyboard on activity start.
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
+        et_server_ip.setText(DEV_SERVER_IP);
+
         // Get and show device ID
         deviceId = getDeviceId();
         tv_device_id.setText(getString(R.string.tv_device_id) + deviceId);
@@ -171,7 +177,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         Button b = (Button) v;
 
         if (b.getId() == bt_send_data.getId()) {
-            new POST_Job().execute(createFeed(deviceId));
+            new POST_Job().execute(createFeed(deviceId), et_server_ip.getText().toString());
             Log.d(TAG, BANNER + "onClick: executed POST_Job task");
         }
     }
@@ -187,9 +193,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             byte[] postData = requestBody.getBytes(Charset.forName("UTF-8"));
             int postDataLength = postData.length;
 
+            String urlStr = POST_FEED_URL_START + params[1] + POST_FEED_URL_END;
+
             URL url;
             try {
-                url = new URL(POST_FEED_URL);
+                url = new URL(urlStr);
                 HttpURLConnection cox= (HttpURLConnection) url.openConnection();
                 cox.setDoOutput(true);
                 cox.setDoInput(true);
@@ -199,7 +207,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 cox.setRequestProperty("charset", "utf-8");
                 cox.setRequestProperty("Content-Length", Integer.toString(postDataLength));
                 cox.setUseCaches(false);
-                Log.d(TAG, BANNER + "doInBackground: Sending data to : " + POST_FEED_URL);
+                Log.d(TAG, BANNER + "doInBackground: Sending data to : " + urlStr);
                 DataOutputStream wr = new DataOutputStream(cox.getOutputStream());
                 wr.write(postData);
                 int responseCode = cox.getResponseCode();
