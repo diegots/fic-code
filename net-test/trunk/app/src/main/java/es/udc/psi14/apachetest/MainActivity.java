@@ -105,6 +105,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         entry.setLink(entryLink);
         try {
             entry.setPublishedDate(dateFormat.parse(entryDate));
+
         } catch (ParseException pe) {
             Log.d(TAG, BANNER + "createFeed: " + pe.getMessage());
         }
@@ -139,6 +140,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         // Avoid showing keyboard on activity start.
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
 
         et_server_ip.setText(DEV_SERVER_IP);
 
@@ -175,7 +177,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         Button b = (Button) v;
 
         if (b.getId() == bt_send_data.getId()) {
+
             new POST_Job().execute(createFeed(deviceId), et_server_ip.getText().toString());
+
             Log.d(TAG, BANNER + "onClick: executed POST_Job task");
         }
     }
@@ -196,6 +200,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             URL url;
             try {
                 url = new URL(urlStr);
+
                 HttpURLConnection cox= (HttpURLConnection) url.openConnection();
                 cox.setDoOutput(true);
                 cox.setDoInput(true);
@@ -205,13 +210,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 cox.setRequestProperty("charset", "utf-8");
                 cox.setRequestProperty("Content-Length", Integer.toString(postDataLength));
                 cox.setUseCaches(false);
+
                 Log.d(TAG, BANNER + "doInBackground: Sending data to : " + urlStr);
 
                 DataOutputStream wr = new DataOutputStream(cox.getOutputStream());
                 wr.write(postData);
                 int responseCode = cox.getResponseCode();
                 Log.d(TAG, BANNER + "doInBackground: responseCode: " + responseCode);
-                
+
                 wr.flush();
                 wr.close();
             } catch (MalformedURLException murle) {
