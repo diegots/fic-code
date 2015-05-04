@@ -1,0 +1,24 @@
+Using Segueme server scripts
+----------------------------
+
+Server side code uses Apache's default configuration. The only extra software
+needed is Python version 3. Apache must be able to handle an Python script.
+
+Development web server's directory looks like:
+diego@debian-psi:~$ ls -lh /var/www/
+total 12K
+drwx------ 2 www-data www-data 4.0K May  3 01:34 feed
+-rw-r--r-- 1 root     root      177 Mar  9 12:48 index.html
+drwxr-xr-x 2 root     root     4.0K May  3 01:35 scripts
+
+Debian is being used here but of course any properly configured web server or
+SO can be employed. Also, Python interpreter must be able to write to "feed"
+directory and "scripts" should contain provided "read_input.py" script that 
+needs execution permissions.
+
+So, web server receives data in:
+http://SERVER_IP/scripts/read_input.py
+And writes it to:
+http://SERVER_IP/feed/DEVICE_IMEI.xml
+
+
