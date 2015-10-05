@@ -3,12 +3,9 @@
 import sys
 import os
 
-from gi.repository import Gtk
-
 src_path = os.path.dirname(os.path.dirname(os.path.realpath("controller.py")))
 sys.path.append(src_path)
 import view.mainWindow
-import view.aboutWindow
 
 
 tag = "controller.py : "
@@ -24,8 +21,17 @@ class Controller:
     #
     def lauch_widgets(self):
         print(tag + "Launching widgets") 
-        view.mainWindow.MainWindow()
-        Gtk.main()
+        view.mainWindow.MainWindow(self)
+        print(tag + "Graphic library main loop ended. Nothing left to do, finishing up!")
+
+    #
+    # action: what pagination button was pressed 
+    #
+    def pageAction(self, action):
+        print (tag + "pageAction " + action)
+
+    def uploadAction(self):
+        print (tag + "uploadAction")
 
 # 
 # import sys

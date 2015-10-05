@@ -10,8 +10,11 @@ tag = "mainWindow.py : "
 # View is the main class that hosts all the main window widgets
 #
 class MainWindow:
-    def __init__(self):
+    def __init__(self, controller):
         print(tag + "Constructor init")
+
+        self.controller = controller
+
         self.builder = Gtk.Builder()
         # Añadir la vista
         self.builder.add_from_file("view/interface.glade")  
@@ -26,6 +29,7 @@ class MainWindow:
 
         # mostrar la ventana principal
         self.principal_window.show()
+        Gtk.main()
 
         
     # Widget's association
@@ -64,18 +68,23 @@ class MainWindow:
     # Handlers
     def on_first(self,w):
         print(tag + "on_first")
+        self.controller.pageAction("first")
 
     def on_previous(self,w):
         print(tag + "on_previous")
+        self.controller.pageAction("previous")
 
     def on_next(self,w):
         print(tag + "on_next")
+        self.controller.pageAction("next")
 
     def on_last(self,w):
         print(tag + "on_last")
+        self.controller.pageAction("last")
 
     def on_upload(self, w):
         print(tag + "on_upload")
+        self.controller.uploadAction()
 
     def on_acercaDe(self, w):
         print(tag + "on_acercaDe")
