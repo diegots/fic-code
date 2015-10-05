@@ -1,26 +1,36 @@
 #!/usr/bin/python3
 
-
 from gi.repository import Gtk, Gdk, GLib, GObject
 
+import view.aboutWindow
+
+tag = "mainWindow.py : "
 
 #
-# View is the main class that hosts all the app widgets
+# View is the main class that hosts all the main window widgets
 #
 class MainWindow:
     def __init__(self):
+        print(tag + "Constructor init")
         self.builder = Gtk.Builder()
         # Añadir la vista
-        self.builder.add_from_file("interface.glade")  
+        self.builder.add_from_file("view/interface.glade")  
         # Añadir ños elementos que nos interesan 
-        self.principal_w = builder.get_object("window1")
+        self.principal_window = self.builder.get_object("window1")
         # Conectar a eventos
         self.builder.connect_signals(self)  # conectar eventos        
-        self.principal_w.connect("delete-event", Gtk.main_quit)
+        self.principal_window.connect("delete-event", Gtk.main_quit)
+
+        self.cargar_elementos()
+        self.asignar_eventos()
+
         # mostrar la ventana principal
-        self.principal_w.show()
+        self.principal_window.show()
+
         
+    # Widget's association
     def cargar_elementos(self):
+        print(tag + "cargar_elementos")
         self.taskList      = self.builder.get_object("liststore1")
         self.treeView      = self.builder.get_object("treeview2")
         self.firstBtn      = self.builder.get_object("button1")
@@ -29,80 +39,47 @@ class MainWindow:
         self.lastBtn       = self.builder.get_object("button4")
         self.uploadBtn     = self.builder.get_object("button6")
         self.aboutBtn      = self.builder.get_object("button5")
-        self.combobox      = self.builder.get_object("comboboxtext1")
+        self.comboBox      = self.builder.get_object("comboboxtext1")
         self.exactCheckBox = self.builder.get_object("checkbutton1")
         self.caseCheckBox  = self.builder.get_object("checkbutton2")
         self.searchEntry   = self.builder.get_object("searchentry1")
         
+
+    # Link signals with handlers
     def asignar_eventos(self):
-        select = self.treeview.get_selection()
-        select.connect("changed", self.on_tree_selection_changed)
+        print(tag + "asignar_eventos")
 
-    
-    def on_tree_selection_changed(self,w): 
-        selection = self.treeview.get_selection()
-        selection.set_mode(Gtk.SelectionMode.SINGLE) 
-        self.model, self.tree_iter =  selection.get_selected()
-        self.rowSelected = True
-            
-            
-    # Eventos
-    #def on_load(self):
-    
-    #def on_rowSelected(self, w):        
-        
+        self.firstBtn.connect      ("clicked",        self.on_first)
+        self.previousBtn.connect   ("clicked",        self.on_previous)
+        self.nextBtn.connect       ("clicked",        self.on_next)
+        self.lastBtn.connect       ("clicked",        self.on_last)
+        self.uploadBtn.connect     ("clicked",        self.on_upload)
+        self.aboutBtn.connect      ("clicked",        self.on_acercaDe)
+        self.comboBox.connect      ("changed",        self.on_search)
+        self.exactCheckBox.connect ("toggled",        self.on_search)
+        self.caseCheckBox.connect  ("toggled",        self.on_search)
+        self.searchEntry.connect   ("search-changed", self.on_search)
 
-    #def on_upload(self, w):
-        #MVCModel.MVCModel.uploadBook(self, book_data, file_path, security_token)
-        
-    #def on_Advancedsearch(self,w):
-        
-        
-    # def on_first(self,w): # XXX
-    
-    # def on_previous(self,w): # XXX
-        
-    # def on_next(self,w): # XXX
-    
-    # def on_last(self,w): # XXX
-        
-    
-    #Update a view
-    
-    # def update_list(self): # XXX
-        
-    # def setVisible_uploadBtn(self): # XXX
-        
-    
-        
-    # Message Dialog    
-    def error_dialog(self, message):
-        # gtk.MessageDialog(parent=None, flags=0, type=gtk.MESSAGE_INFO, buttons=gtk.BUTTONS_NONE, message_format=None)
-        dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, None)
-        dialog.format_secondary_text(message)
-        dialog.run()
-        dialog.hide()
-        
-    def warning_dialog(self, message):
-        dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.WARNING, Gtk.ButtonsType.OK_CANCEL, None)
-        dialog.format_secondary_text(message) 
-        response = dialog.run()
-        r = True
-        if response == Gtk.ResponseType.OK:
-            r = True
-        elif response == Gtk.ResponseType.CANCEL:
-            r = False
-        dialog.hide()
-        return r
-        
-    def question_dialog(self, message):
-        dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO, None)
-        dialog.format_secondary_text(message)
-        response = dialog.run()
-        r = True
-        if response == Gtk.ResponseType.YES:
-            r = True
-        elif response == Gtk.ResponseType.NO:
-            r = False
-        dialog.hide()
-        return r
+
+    # Handlers
+    def on_first(self,w):
+        print(tag + "on_first")
+
+    def on_previous(self,w):
+        print(tag + "on_previous")
+
+    def on_next(self,w):
+        print(tag + "on_next")
+
+    def on_last(self,w):
+        print(tag + "on_last")
+
+    def on_upload(self, w):
+        print(tag + "on_upload")
+
+    def on_acercaDe(self, w):
+        print(tag + "on_acercaDe")
+        view.aboutWindow.AboutWindow()
+            
+    def on_search(self, w):
+        print(tag + "on_search")
