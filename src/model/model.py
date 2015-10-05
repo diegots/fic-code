@@ -3,34 +3,36 @@
 import json
 import os.path
 
-class model():
-    def loadFile(self):
+
+tag = "model.py : "
+
+
+class Model:
+
+#    def __init__(self):
+#        return self
+
+    def loadJsonFile(self):
 
         # Path to the json db file
-#        json_db_path = os.path.abspath("json/db_books.json")
-        abs_path = os.path.basename("model.py")
-        abs_path = os.path.abspath(abs_path)
-        print (abs_path)
-        json_db_path = ""
-#        print (json_db_path)
+        path = os.path.realpath("model.py")
+        path = os.path.dirname(path)
+        path = os.path.dirname(path)
+        path = os.path.join(path, "json")
+        path = os.path.join(path, "db_books.json")
+        print (tag + "loading JSON from: " + path)
 	
-
-        if os.path.exists(json_db_path):
+        if os.path.exists(path):
             # open() arguments other that filename are not mandatory
-            f = open(json_db_path, "r", encoding="utf8") 
+            f = open(path, "r", encoding="utf8") 
 
             d = f.read() # returns an io.TextIOWrapper object
             self.json_data = json.loads(d)
             return self.json_data
 
         else:
-            # print("File", os.path.basename(json_db_path), "not found on:", json_db_path)
-            return []
+            raise FileNotFoundError(path)
 
-
-m = model()
-print (m.loadFile())
-# print (type (m.loadFile))
 
 
 # keywords: user inserted keywords

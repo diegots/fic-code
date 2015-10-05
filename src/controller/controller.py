@@ -6,6 +6,7 @@ import os
 src_path = os.path.dirname(os.path.dirname(os.path.realpath("controller.py")))
 sys.path.append(src_path)
 import view.mainWindow
+import model.model
 
 
 tag = "controller.py : "
@@ -14,12 +15,15 @@ tag = "controller.py : "
 class Controller:
     def __init__(self):
         print(tag + "Controller contructor")
-        self.lauch_widgets()
+        self.model = model.model.Model()
+        self.data = self.model.loadJsonFile()
+        self.launchWidgets()
+
 
     #
     # Launch widgets
     #
-    def lauch_widgets(self):
+    def launchWidgets(self):
         print(tag + "Launching widgets") 
         view.mainWindow.MainWindow(self)
         print(tag + "Graphic library main loop ended. Nothing left to do, finishing up!")
@@ -33,16 +37,19 @@ class Controller:
     def uploadAction(self):
         print (tag + "uploadAction")
 
-# 
-# import sys
-# import os
-# import view
-# 
-# 
-# tag = "main.py : "
-# 
-# 
-# #
+
+class ConfigFile:
+
+    #
+    # Default config file path, used if not tell otherwise
+    #
+    def build_default_file_config_path():
+        p = os.path.split(main_executable)[0]
+        p = os.path.split(p)[0]
+        p = os.path.join(p, "json/db_books.json")
+        return (p)
+
+
 # # Pring some help in the std input
 # #
 # def show_help():
@@ -52,14 +59,7 @@ class Controller:
 #     print (s)
 # 
 # 
-# #
-# # Launch views
-# #
-# def lauch_program():
-#     print(tag + "Should launch main program now...") # XXX
-#     View.main()
-# 
-# 
+ 
 # #
 # # Check if given config file path is a file
 # #
@@ -71,14 +71,6 @@ class Controller:
 #         return False
 # 
 # 
-# #
-# # Default config file path, used if not tell otherwise
-# #
-# def build_default_file_config_path():
-#     p = os.path.split(main_executable)[0]
-#     p = os.path.split(p)[0]
-#     p = os.path.join(p, "json/db_books.json")
-#     return (p)
 # 
 # #
 # # Check number of arguments and select required config file
