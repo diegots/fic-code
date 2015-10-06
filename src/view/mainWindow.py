@@ -21,6 +21,7 @@ class MainWindow:
         # Conectar a eventos
         self.builder.connect_signals(self)  # conectar eventos        
         self.principal_window.connect("delete-event", Gtk.main_quit)
+        self.principal_window.connect("show", self.on_loadListStore)
 
         self.cargar_elementos()
         self.asignar_eventos()
@@ -95,6 +96,11 @@ class MainWindow:
     def on_search(self, w):
         print(tag + "on_search")
 
+    def on_loadListStore(self, w):
+        print("test load list store")
+        self.controller.requestData(self)
+        
+
     # Prepare the treeView to host info
     def prepareTreeView(self):
 
@@ -115,6 +121,5 @@ class MainWindow:
 
     # Services to the controller
     def populateDataWiget(self, data):
-        for l in data:
-            for k,v in l.items():
-                self.listStore.append(v)
+        for v in data:
+            self.listStore.append([v["author"], v["title"]])

@@ -11,6 +11,7 @@ tag = "controller.py : "
 
 
 class Controller:
+    
     def __init__(self):
         print(tag + "Controller contructor")
         self.model = model.model.Model()
@@ -23,7 +24,6 @@ class Controller:
     #
     def launchWidgets(self):
         print(tag + "Launching widgets") 
-        view.mainWindow.populateDataWiget(self, self.data)
         view.mainWindow.MainWindow(self)
         print(tag + "Graphic library main loop ended. Nothing left to do, finishing up!")
 
@@ -36,6 +36,9 @@ class Controller:
     def uploadAction(self):
         print (tag + "uploadAction")
 
+    def requestData(self, view):
+        view.populateDataWiget(self.data)
+
 
 class ConfigFile:
 
@@ -47,7 +50,6 @@ class ConfigFile:
         p = os.path.split(p)[0]
         p = os.path.join(p, "json/db_books.json")
         return (p)
-
 
 # # Pring some help in the std input
 # #
