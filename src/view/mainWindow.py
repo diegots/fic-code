@@ -96,6 +96,17 @@ class MainWindow:
     def on_search(self, w):
         print(tag + "on_search")
 
+        if w is self.comboBox:
+            print(tag + "on_search: I am the ComboBox")
+            print("User selected: " +  w.get_active_text())
+        elif w is self.exactCheckBox:
+            print(tag + "on_search: I am the ExactCheckBox")
+        elif w is self.caseCheckBox:
+            print(tag + "on_search: I am the CaseCheckBox")
+        elif w is self.searchEntry:
+            print(tag + "on_search: I am the SearchEntry")
+
+
     def on_loadListStore(self, w):
         print("test load list store")
         self.controller.requestData(self)
@@ -108,6 +119,9 @@ class MainWindow:
         rendererTitle = Gtk.CellRendererText()
         # This is the title column
         treeTitleCol = Gtk.TreeViewColumn('Title', rendererTitle, text=0)
+        # Make the column sortable
+        treeTitleCol.set_sort_column_id(0)
+        treeTitleCol.set_resizable(True)
         # Adding the column to the treeView
         self.treeView.append_column(treeTitleCol)
 
@@ -115,6 +129,8 @@ class MainWindow:
         rendererAuthor= Gtk.CellRendererText()
         # This is the author column
         treeAuthorCol = Gtk.TreeViewColumn('Author', rendererAuthor, text=1)
+        # Make the column sortable
+        treeAuthorCol.set_sort_column_id(1)
         # Adding the column to the treeView
         self.treeView.append_column(treeAuthorCol)
 
