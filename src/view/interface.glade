@@ -185,21 +185,6 @@ Diego Trabazo Sardón
                 <child internal-child="selection">
                   <object class="GtkTreeSelection" id="treeview-selection2"/>
                 </child>
-                <child>
-                  <object class="GtkTreeViewColumn" id="treeviewcolumn1">
-                    <property name="resizable">True</property>
-                    <property name="title" translatable="yes">Title</property>
-                    <property name="reorderable">True</property>
-                    <property name="sort_indicator">True</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkTreeViewColumn" id="treeviewcolumn2">
-                    <property name="title" translatable="yes">Author</property>
-                    <property name="reorderable">True</property>
-                    <property name="sort_indicator">True</property>
-                  </object>
-                </child>
               </object>
             </child>
           </object>

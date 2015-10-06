@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 import sys
 import os
 
@@ -25,6 +23,7 @@ class Controller:
     #
     def launchWidgets(self):
         print(tag + "Launching widgets") 
+        view.mainWindow.populateDataWiget(self, self.data)
         view.mainWindow.MainWindow(self)
         print(tag + "Graphic library main loop ended. Nothing left to do, finishing up!")
 

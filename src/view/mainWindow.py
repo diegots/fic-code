@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 from gi.repository import Gtk, Gdk, GLib, GObject
 
 import view.aboutWindow
@@ -27,6 +25,8 @@ class MainWindow:
         self.cargar_elementos()
         self.asignar_eventos()
 
+        self.prepareTreeView()
+
         # mostrar la ventana principal
         self.principal_window.show()
         Gtk.main()
@@ -35,8 +35,10 @@ class MainWindow:
     # Widget's association
     def cargar_elementos(self):
         print(tag + "cargar_elementos")
-        self.taskList      = self.builder.get_object("liststore1")
+        self.listStore     = self.builder.get_object("liststore1")
         self.treeView      = self.builder.get_object("treeview2")
+        self.treeTitleCol  = self.builder.get_object("treeviewcolumn1")
+        self.treeTitleAuth = self.builder.get_object("treeviewcolumn2")
         self.firstBtn      = self.builder.get_object("button1")
         self.previousBtn   = self.builder.get_object("button2")
         self.nextBtn       = self.builder.get_object("button3")
@@ -92,3 +94,27 @@ class MainWindow:
             
     def on_search(self, w):
         print(tag + "on_search")
+
+    # Prepare the treeView to host info
+    def prepareTreeView(self):
+
+        # Renderer for the title column
+        rendererTitle = Gtk.CellRendererText()
+        # This is the title column
+        treeTitleCol = Gtk.TreeViewColumn('Title', rendererTitle, text=0)
+        # Adding the column to the treeView
+        self.treeView.append_column(treeTitleCol)
+
+        # Renderer for the author column
+        rendererAuthor= Gtk.CellRendererText()
+        # This is the author column
+        treeAuthorCol = Gtk.TreeViewColumn('Author', rendererAuthor, text=1)
+        # Adding the column to the treeView
+        self.treeView.append_column(treeAuthorCol)
+
+
+    # Services to the controller
+    def populateDataWiget(self, data):
+        for l in data:
+            for k,v in l.items():
+                self.listStore.append(v)
