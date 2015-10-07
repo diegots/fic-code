@@ -19,24 +19,26 @@ class Controller:
         self.launchWidgets()
 
 
-    #
-    # Launch widgets
-    #
+    # Launch widgets sending controller as a parameter
     def launchWidgets(self):
         print(tag + "Launching widgets") 
         view.mainWindow.MainWindow(self)
         print(tag + "Graphic library main loop ended. Nothing left to do, finishing up!")
 
-    #
     # action: what pagination button was pressed 
-    #
     def pageAction(self, action):
         print (tag + "pageAction " + action)
 
     def uploadAction(self):
         print (tag + "uploadAction")
 
+    #
+    # Services available to the view module
+    #
+
+    # requestData send current available data to the view module
     def requestData(self, view):
+        print(tag + "requestData: sending data to view widget")
         view.populateDataWiget(self.data)
 
 

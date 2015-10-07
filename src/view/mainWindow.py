@@ -14,61 +14,66 @@ class MainWindow:
         self.controller = controller
 
         self.builder = Gtk.Builder()
-        # Añadir la vista
-        self.builder.add_from_file("view/interface.glade")  
-        # Añadir ños elementos que nos interesan 
-        self.principal_window = self.builder.get_object("window1")
-        # Conectar a eventos
+        # Read widgets from XML file
+        self.builder.add_from_file("view/interface.glade") # XXX fix path build
+
+        # Connect to events
         self.builder.connect_signals(self)  # conectar eventos        
-        self.principal_window.connect("delete-event", Gtk.main_quit)
-        self.principal_window.connect("show", self.on_loadListStore)
 
         self.cargar_elementos()
         self.asignar_eventos()
 
         self.prepareTreeView()
+        self.loadListStore(self)
 
-        # mostrar la ventana principal
+        # Show main windows and enter Gtk events loop
         self.principal_window.show()
         Gtk.main()
 
+    #
+    # Init stuff
+    #
         
     # Widget's association
     def cargar_elementos(self):
         print(tag + "cargar_elementos")
-        self.listStore     = self.builder.get_object("liststore1")
-        self.treeView      = self.builder.get_object("treeview2")
-        self.treeTitleCol  = self.builder.get_object("treeviewcolumn1")
-        self.treeTitleAuth = self.builder.get_object("treeviewcolumn2")
-        self.firstBtn      = self.builder.get_object("button1")
-        self.previousBtn   = self.builder.get_object("button2")
-        self.nextBtn       = self.builder.get_object("button3")
-        self.lastBtn       = self.builder.get_object("button4")
-        self.uploadBtn     = self.builder.get_object("button6")
-        self.aboutBtn      = self.builder.get_object("button5")
-        self.comboBox      = self.builder.get_object("comboboxtext1")
-        self.exactCheckBox = self.builder.get_object("checkbutton1")
-        self.caseCheckBox  = self.builder.get_object("checkbutton2")
-        self.searchEntry   = self.builder.get_object("searchentry1")
+        self.principal_window = self.builder.get_object("window1")
+        self.listStore        = self.builder.get_object("liststore1")
+        self.treeView         = self.builder.get_object("treeview2")
+        self.treeTitleCol     = self.builder.get_object("treeviewcolumn1")
+        self.treeTitleAuth    = self.builder.get_object("treeviewcolumn2")
+        self.firstBtn         = self.builder.get_object("button1")
+        self.previousBtn      = self.builder.get_object("button2")
+        self.nextBtn          = self.builder.get_object("button3")
+        self.lastBtn          = self.builder.get_object("button4")
+        self.uploadBtn        = self.builder.get_object("button6")
+        self.aboutBtn         = self.builder.get_object("button5")
+        self.comboBox         = self.builder.get_object("comboboxtext1")
+        self.exactCheckBox    = self.builder.get_object("checkbutton1")
+        self.caseCheckBox     = self.builder.get_object("checkbutton2")
+        self.searchEntry      = self.builder.get_object("searchentry1")
         
 
     # Link signals with handlers
     def asignar_eventos(self):
         print(tag + "asignar_eventos")
 
-        self.firstBtn.connect      ("clicked",        self.on_first)
-        self.previousBtn.connect   ("clicked",        self.on_previous)
-        self.nextBtn.connect       ("clicked",        self.on_next)
-        self.lastBtn.connect       ("clicked",        self.on_last)
-        self.uploadBtn.connect     ("clicked",        self.on_upload)
-        self.aboutBtn.connect      ("clicked",        self.on_acercaDe)
-        self.comboBox.connect      ("changed",        self.on_search)
-        self.exactCheckBox.connect ("toggled",        self.on_search)
-        self.caseCheckBox.connect  ("toggled",        self.on_search)
-        self.searchEntry.connect   ("search-changed", self.on_search)
+        self.principal_window.connect("delete-event",   Gtk.main_quit)
+        self.firstBtn.connect        ("clicked",        self.on_first)
+        self.previousBtn.connect     ("clicked",        self.on_previous)
+        self.nextBtn.connect         ("clicked",        self.on_next)
+        self.lastBtn.connect         ("clicked",        self.on_last)
+        self.uploadBtn.connect       ("clicked",        self.on_upload)
+        self.aboutBtn.connect        ("clicked",        self.on_acercaDe)
+        self.comboBox.connect        ("changed",        self.on_search)
+        self.exactCheckBox.connect   ("toggled",        self.on_search)
+        self.caseCheckBox.connect    ("toggled",        self.on_search)
+        self.searchEntry.connect     ("search-changed", self.on_search)
 
 
-    # Handlers
+    #
+    # Event handlers
+    #
     def on_first(self,w):
         print(tag + "on_first")
         self.controller.pageAction("first")
@@ -106,14 +111,16 @@ class MainWindow:
         elif w is self.searchEntry:
             print(tag + "on_search: I am the SearchEntry")
 
-
-    def on_loadListStore(self, w):
-        print("test load list store")
+    # 
+    # Private functions
+    #
+    def loadListStore(self, w):
+        print(tag + "loadListStore: requesting data from the controller")
         self.controller.requestData(self)
-        
 
     # Prepare the treeView to host info
     def prepareTreeView(self):
+        print(tag + "prepareTreeView")
 
         # Renderer for the title column
         rendererTitle = Gtk.CellRendererText()
@@ -121,6 +128,7 @@ class MainWindow:
         treeTitleCol = Gtk.TreeViewColumn('Title', rendererTitle, text=0)
         # Make the column sortable
         treeTitleCol.set_sort_column_id(0)
+        # Make the column user resizable
         treeTitleCol.set_resizable(True)
         # Adding the column to the treeView
         self.treeView.append_column(treeTitleCol)
@@ -135,7 +143,10 @@ class MainWindow:
         self.treeView.append_column(treeAuthorCol)
 
 
-    # Services to the controller
+    #
+    # Services avaibable to the controller module
+    #
     def populateDataWiget(self, data):
+        print(tag + "populateDataWiget")
         for v in data:
             self.listStore.append([v["author"], v["title"]])
