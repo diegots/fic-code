@@ -1,5 +1,5 @@
-i view,mport sys
-import os
+import view
+import os.path, sys
 
 src_path = os.path.dirname(os.path.dirname(os.path.realpath("controller.py")))
 sys.path.append(src_path)

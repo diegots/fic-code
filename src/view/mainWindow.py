@@ -160,5 +160,5 @@ class MainWindow:
         self.listStore.clear()
 
         for v in data:
-            self.listStore.append([v["author"], v["title"]])
+            self.listStore.append([v["title"], v["author"]])
 
