@@ -31,7 +31,8 @@ class Model:
 
         else:
             raise FileNotFoundError(path)
-
+    
+    
     def doSearch(self, keywords, exactMatch, caseSensitive, field):
         print(tag + "do_search")
         new_dict = []
@@ -41,19 +42,21 @@ class Model:
         
         if field == "All fields":
             print("field == all_fields")
-            new_dict = self.searchAll(self.json_data, keywords, exactMatch, caseSensitive)
+            # new_dict = self.searchByAllFields(self.json_data, keywords, exactMatch, caseSensitive)
+            new_dict = self.seachByField("author", self.json_data, keywords, exactMatch, caseSensitive) 
+            new_dict = self.seachByField("title", new_dict, keywords, exactMatch, caseSensitive) 
 
         elif field == "Author":
             print("field == author")  
-            new_dict = self.seachAuthor(self.json_data, keywords, exactMatch, caseSensitive)
+            new_dict = self.seachByField("author", self.json_data, keywords, exactMatch, caseSensitive) 
 
-        elif field == "Title":
             print("field == title")
-            new_dict = self.seachTitle(self.json_data, keywords, exactMatch, caseSensitive)
+            new_dict = self.seachByField("title", self.json_data, keywords, exactMatch, caseSensitive)
 
         return new_dict
-
-    def searchAll(self, data, keywords, exactMatch, caseSensitive):     
+    
+    
+    def searchByAllFields(self, data, keywords, exactMatch, caseSensitive):     
         search = []
         for dicti in data:
             if keywords in dicti.get("author") or keywords in dicti.get("title"):
@@ -63,26 +66,80 @@ class Model:
         return search 
 
 
-    def seachAuthor(self, data, keywords, exactMatch, caseSensitive):
+    def seachByField(self, field, data, keywords, exactMatch, caseSensitive):
+        print ("Search by field")
         search = []
-        for dicti in data: 
-            if keywords in dicti.get("author"):
-                search.append(dicti)
-                print("Result: " + dicti.get("author"))
+        if exactMatch:
+            print ("EXACT MATCH")
+            if caseSensitive:
+                for dicti in data:
+                    if keywords == dicti.get(field):
+                        search.append(dicti) 
+                        
+            elif (not caseSensitive):
+                keywords1 = keywords.upper()
+                print("PALABRA 1 :", keywords)                
+                for dicti in data:
+                    keywords2 = dicti.get(field).upper()
+                    print("PALABRA 2 :", keywords2)                    
+                    if keywords1 == keywords2:
+                        print("ES VERDAD PALABRA 1 Y PALABRA 2")
+                        search.append(dicti)    
+
+        elif (not exactMatch):
+            print ("NOT EXACT MATCH")
+            if caseSensitive:
+                for dicti in data:
+                    if keywords in dicti.get(field):
+                        search.append(dicti)
+                        
+            elif (not caseSensitive):
+                keywords1 = keywords.upper()
+                print("PALABRA 1 :", keywords)
+                for dicti in data:
+                    keywords2 = dicti.get(field).upper()
+                    print("PALABRA 2 :", keywords2)                    
+                    if keywords1 in keywords2:
+                        print("ES VERDAD PALABRA 1 Y PALABRA 2")                        
+                        search.append(dicti)                
+                    
+                                                                        
         print ("PRINT QUERY RESULTS")
         print (search)
         return search                 
 
-    def seachTitle(self, data, keywords, exactMatch, caseSensitive): 
-        search = []
-        for dicti in data: 
-            if keywords in dicti.get("title"):
-                search.append(dicti)
-                print("Result: " + dicti.get("title"))
-        print ("PRINT QUERY RESULTS")
-        print (search)
-        return search                 
-                
+    
+# 
+#     def searchAll(self, data, keywords, exactMatch, caseSensitive):     
+#         search = []
+#         for dicti in data:
+#             if keywords in dicti.get("author") or keywords in dicti.get("title"):
+#                 search.append(dicti)
+#         print ("PRINT QUERY RESULTS")
+#         print (search)
+#         return search 
+# 
+# 
+#     def seachAuthor(self, data, keywords, exactMatch, caseSensitive):
+#         search = []
+#         for dicti in data: 
+#             if keywords in dicti.get("author"):
+#                 search.append(dicti)
+#                 print("Result: " + dicti.get("author"))
+#         print ("PRINT QUERY RESULTS")
+#         print (search)
+#         return search                 
+# 
+#     def seachTitle(self, data, keywords, exactMatch, caseSensitive): 
+#         search = []
+#         for dicti in data: 
+#             if keywords in dicti.get("title"):
+#                 search.append(dicti)
+#                 print("Result: " + dicti.get("title"))
+#         print ("PRINT QUERY RESULTS")
+#         print (search)
+#         return search                 
+#                 
 
   
 # keywords: user inserted keywords
