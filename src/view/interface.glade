@@ -226,7 +226,7 @@ Diego Trabazo Sardón
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkCheckButton" id="checkbutton1">
-                        <property name="label" translatable="yes">Exact match</property>
+                        <property name="label" translatable="yes">Exact Field</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
