@@ -101,15 +101,22 @@ class MainWindow:
     def on_search(self, w):
         print(tag + "on_search")
 
-        if w is self.comboBox:
-            print(tag + "on_search: I am the ComboBox")
-            print("User selected: " +  w.get_active_text())
-        elif w is self.exactCheckBox:
-            print(tag + "on_search: I am the ExactCheckBox")
-        elif w is self.caseCheckBox:
-            print(tag + "on_search: I am the CaseCheckBox")
-        elif w is self.searchEntry:
-            print(tag + "on_search: I am the SearchEntry")
+        keywords = self.searchEntry.get_text()
+        field = self.comboBox.get_active_text()
+        case = self.caseCheckBox.get_active()
+        exact = self.exactCheckBox.get_active()
+  
+        self.controller.doSearch(self, keywords, exact, case, field)        
+
+#         if w is self.comboBox:
+#             print(tag + "on_search: I am the ComboBox")
+#             print("User selected: " +  w.get_active_text())
+#         elif w is self.exactCheckBox:
+#             print(tag + "on_search: I am the ExactCheckBox")
+#         elif w is self.caseCheckBox:
+#             print(tag + "on_search: I am the CaseCheckBox")
+#         elif w is self.searchEntry:
+#             print(tag + "on_search: I am the SearchEntry")
 
     # 
     # Private functions
@@ -148,5 +155,10 @@ class MainWindow:
     #
     def populateDataWiget(self, data):
         print(tag + "populateDataWiget")
+
+        # Make sure listStore is empty before adding new data
+        self.listStore.clear()
+
         for v in data:
             self.listStore.append([v["author"], v["title"]])
+

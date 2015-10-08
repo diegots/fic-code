@@ -1,4 +1,4 @@
-import sys
+i view,mport sys
 import os
 
 src_path = os.path.dirname(os.path.dirname(os.path.realpath("controller.py")))
@@ -41,6 +41,13 @@ class Controller:
         print(tag + "requestData: sending data to view widget")
         view.populateDataWiget(self.data)
 
+    def doSearch(self, view, keywords, exactMatch, caseSensitive, field):
+        print(tag + "doSearch")
+        new_data = self.model.doSearch(keywords, exactMatch, caseSensitive, field)
+        view.populateDataWiget(new_data)
+        
+
+        
 
 class ConfigFile:
 
