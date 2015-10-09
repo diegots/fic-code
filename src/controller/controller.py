@@ -1,11 +1,9 @@
-import view
 import os.path, sys
 
 src_path = os.path.dirname(os.path.dirname(os.path.realpath("controller.py")))
 sys.path.append(src_path)
 import view.mainWindow
 import model.model
-
 
 tag = "controller.py : "
 
@@ -46,7 +44,8 @@ class Controller:
         new_data = self.model.doSearch(keywords, exactMatch, caseSensitive, field)
         view.populateDataWiget(new_data)
         
-
+    def doUpload(self, book_data):
+        self.model.upload(book_data)
         
 
 class ConfigFile:

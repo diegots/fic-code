@@ -1,6 +1,7 @@
 import json
 import os.path
-
+import time
+import random
 
 tag = "model.py : "
 
@@ -32,30 +33,34 @@ class Model:
         else:
             raise FileNotFoundError(path)
     
+    def upload(self, book_data):
+        time.sleep(random.uniform(3,6))
     
     def doSearch(self, keywords, exactMatch, caseSensitive, field):
-        print(tag + "do_search")
+        print(tag + "doSearch")
         new_dict = []
+
         # Well, if no keywords were passed, just return all data
         if not len(keywords):
             return self.json_data
         
         if field == "All fields":
-            print("field == all_fields")
+            print(tag + "doSearch: field == all_fields")
             new_dict = self.searchByAllFields(self.json_data, keywords, exactMatch, caseSensitive)
 
         elif field == "Author":
-            print("field == author")  
+            print(tag + "doSearch: field == author")  
             new_dict = self.seachByField("author", self.json_data, keywords, exactMatch, caseSensitive) 
 
         elif field == "Title":
-            print("field == title")
+            print(tag + "doSearch: field == title")
             new_dict = self.seachByField("title", self.json_data, keywords, exactMatch, caseSensitive)
 
         return new_dict
     
     
     def searchByAllFields(self, data, keywords, exactMatch, caseSensitive):     
+        print (tag + "searchByAllFields")
         search = []
         if exactMatch:
             if caseSensitive:
@@ -79,13 +84,11 @@ class Model:
                     if keywords.upper() in dicti.get("author").upper() or keywords.upper() in dicti.get("title").upper():
                             search.append(dicti)
                             
-                
-        print (search)
         return search 
 
 
     def seachByField(self, field, data, keywords, exactMatch, caseSensitive):
-        print ("Search by field")
+        print (tag + "seachByField")
         search = []
         
         if exactMatch:
@@ -110,15 +113,4 @@ class Model:
                     if keywords.upper() in dicti.get(field).upper():
                             search.append(dicti)
 
-                                                                        
-        print (search)
         return search                 
-
-
-
-  
-# keywords: user inserted keywords
-# fieldType: 0 performs an AND search, 1 author, 2 for title
-# exactMatch: true or false
-# isCapital: true or false
-# def search(self, keywords, fieldType, exactMatch, isCapital):

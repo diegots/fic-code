@@ -38,31 +38,24 @@ class MainWindow:
     def cargar_elementos(self):
         print(tag + "cargar_elementos")
         self.principal_window = self.builder.get_object("window1")
-        self.listStore = self.builder.get_object("liststore1")
-        self.treeView = self.builder.get_object("treeview2")
-        self.treeTitleCol = self.builder.get_object("treeviewcolumn1")
-        self.treeTitleAuth = self.builder.get_object("treeviewcolumn2")
-        self.firstBtn = self.builder.get_object("button1")
-        self.previousBtn = self.builder.get_object("button2")
-        self.nextBtn = self.builder.get_object("button3")
-        self.lastBtn = self.builder.get_object("button4")
-        self.uploadBtn = self.builder.get_object("button6")
-        self.aboutBtn = self.builder.get_object("button5")
-        self.comboBox = self.builder.get_object("comboboxtext1")
-        self.exactCheckBox = self.builder.get_object("checkbutton1")
-        self.caseCheckBox = self.builder.get_object("checkbutton2")
-        self.searchEntry = self.builder.get_object("searchentry1")
-        
+        self.listStore        = self.builder.get_object("liststore1")
+        self.treeView         = self.builder.get_object("treeview2")
+        self.treeTitleCol     = self.builder.get_object("treeviewcolumn1")
+        self.treeTitleAuth    = self.builder.get_object("treeviewcolumn2")
+        self.uploadBtn        = self.builder.get_object("button6")
+        self.aboutBtn         = self.builder.get_object("button5")
+        self.comboBox         = self.builder.get_object("comboboxtext1")
+        self.exactCheckBox    = self.builder.get_object("checkbutton1")
+        self.caseCheckBox     = self.builder.get_object("checkbutton2")
+        self.searchEntry      = self.builder.get_object("searchentry1")
+        self.progressBar      = self.builder.get_object("progressbar1")
+        self.treeSelection    = self.builder.get_object("treeview-selection10")
 
     # Link signals with handlers
     def asignar_eventos(self):
         print(tag + "asignar_eventos")
 
         self.principal_window.connect("delete-event", Gtk.main_quit)
-        self.firstBtn.connect        ("clicked", self.on_first)
-        self.previousBtn.connect     ("clicked", self.on_previous)
-        self.nextBtn.connect         ("clicked", self.on_next)
-        self.lastBtn.connect         ("clicked", self.on_last)
         self.uploadBtn.connect       ("clicked", self.on_upload)
         self.aboutBtn.connect        ("clicked", self.on_acercaDe)
         self.comboBox.connect        ("changed", self.on_search)
@@ -92,7 +85,10 @@ class MainWindow:
 
     def on_upload(self, w):
         print(tag + "on_upload")
-        self.controller.uploadAction()
+
+        (model, pathlist) = self.treeSelection.get_selected_rows()
+
+        self.controller.doUpload(model)
 
     def on_acercaDe(self, w):
         print(tag + "on_acercaDe")
@@ -107,16 +103,6 @@ class MainWindow:
         exact = self.exactCheckBox.get_active()
   
         self.controller.doSearch(self, keywords, exact, case, field)        
-
-#         if w is self.comboBox:
-#             print(tag + "on_search: I am the ComboBox")
-#             print("User selected: " +  w.get_active_text())
-#         elif w is self.exactCheckBox:
-#             print(tag + "on_search: I am the ExactCheckBox")
-#         elif w is self.caseCheckBox:
-#             print(tag + "on_search: I am the CaseCheckBox")
-#         elif w is self.searchEntry:
-#             print(tag + "on_search: I am the SearchEntry")
 
     # 
     # Private functions
@@ -161,4 +147,3 @@ class MainWindow:
 
         for v in data:
             self.listStore.append([v["title"], v["author"]])
-
