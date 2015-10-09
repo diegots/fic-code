@@ -26,6 +26,8 @@ class MainWindow:
 
         self.prepareTreeView()
         self.loadListStore(self)
+        self.progressBar.set_visible(False)        
+        self.context_id = self.status_bar.get_context_id("Statusbar example")
 
         # Show main windows and enter Gtk events loop
         self.principal_window.show()
@@ -48,9 +50,11 @@ class MainWindow:
         self.comboBox = self.builder.get_object("comboboxtext1")
         self.exactCheckBox = self.builder.get_object("checkbutton1")
         self.caseCheckBox = self.builder.get_object("checkbutton2")
+        self.selectCheckBox = self.builder.get_object("checkbutton3")
         self.searchEntry = self.builder.get_object("searchentry1")
         self.progressBar = self.builder.get_object("progressbar1")
         self.treeSelection = self.builder.get_object("treeview-selection10")
+        self.status_bar = self.builder.get_object("statusbar1")
 
     # Link signals with handlers
     def asignar_eventos(self):
@@ -62,34 +66,26 @@ class MainWindow:
         self.comboBox.connect        ("changed", self.on_search)
         self.exactCheckBox.connect   ("toggled", self.on_search)
         self.caseCheckBox.connect    ("toggled", self.on_search)
+        self.selectCheckBox.connect  ("toggled", self.on_selectItems)
         self.searchEntry.connect     ("search-changed", self.on_search)
 
 
     #
     # Event handlers
     #
-    def on_first(self, w):
-        print(tag + "on_first")
-        self.controller.pageAction("first")
-
-    def on_previous(self, w):
-        print(tag + "on_previous")
-        self.controller.pageAction("previous")
-
-    def on_next(self, w):
-        print(tag + "on_next")
-        self.controller.pageAction("next")
-
-    def on_last(self, w):
-        print(tag + "on_last")
-        self.controller.pageAction("last")
-
+    
     def on_upload(self, w):
         print(tag + "on_upload")
-
         # Get selected items
         model, pathList = self.treeSelection.get_selected_rows()
-
+        selected = self.treeSelection.count_selected_rows()
+        
+        if selected == 0:
+            dialog = view.dialog.MessageDialog()
+            message = "You should select at least a item"
+            dialog.info_dialog(self.principal_window, message)
+            return
+            
         data = []
 
         columns = self.treeView.get_columns()
@@ -110,21 +106,25 @@ class MainWindow:
             selectedDict.update({colNames[1]: colValue1})
 
             data.append(selectedDict)
-            
+        
+        self.status_bar.push(self.context_id, "Status: uploaded")            
         self.controller.doUpload(data)
 
+
+        
+        
     def on_acercaDe(self, w):
         print(tag + "on_acercaDe")
+        self.status_bar.push(self.context_id, "")        
         view.aboutWindow.AboutWindow()
             
     def on_search(self, w):
         print(tag + "on_search")
-
         keywords = self.searchEntry.get_text()
         field = self.comboBox.get_active_text()
         case = self.caseCheckBox.get_active()
         exact = self.exactCheckBox.get_active()
-  
+        self.status_bar.push(self.context_id, "Status: search results ")                
         self.controller.doSearch(self, keywords, exact, case, field)        
 
     def on_main_quit(self, widget, event, donnees=None):
@@ -137,6 +137,13 @@ class MainWindow:
         else:
             Gtk.main_quit()
             return False
+
+    def on_selectItems(self, w):
+        active = self.selectCheckBox.get_active()
+        if active:
+            self.treeSelection.select_all()
+        else:
+            self.treeSelection.unselect_all()
         
     # 
     # Private functions
@@ -144,7 +151,7 @@ class MainWindow:
     def loadListStore(self, w):
         print(tag + "loadListStore: requesting data from the controller")
         self.controller.requestData(self)
-
+        
     # Prepare the treeView to host info
     def prepareTreeView(self):
         print(tag + "prepareTreeView")
