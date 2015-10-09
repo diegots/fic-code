@@ -86,9 +86,31 @@ class MainWindow:
     def on_upload(self, w):
         print(tag + "on_upload")
 
-        (model, pathlist) = self.treeSelection.get_selected_rows()
+        # Get selected items
+        model, pathList = self.treeSelection.get_selected_rows()
 
-        self.controller.doUpload(model)
+        data = []
+
+        columns = self.treeView.get_columns()
+        colNames = []
+        for col in columns:
+            colNames.append(col.get_title())
+
+        for path in pathList:
+            treeIter = model.get_iter(path) 
+
+            colValue0 = model.get_value(treeIter, 0) 
+            colName0 = colNames[0]          
+            colValue1 = model.get_value(treeIter, 1) 
+            colName1 = colNames[1]          
+
+            selectedDict = {}
+            selectedDict.update({colNames[0]: colValue0})
+            selectedDict.update({colNames[1]: colValue1})
+
+            data.append(selectedDict)
+            
+        self.controller.doUpload(data)
 
     def on_acercaDe(self, w):
         print(tag + "on_acercaDe")
