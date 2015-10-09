@@ -1,6 +1,7 @@
 from gi.repository import Gtk, Gdk, GLib, GObject
 
 import view.aboutWindow
+import view.dialog
 
 tag = "mainWindow.py : "
 
@@ -38,24 +39,24 @@ class MainWindow:
     def cargar_elementos(self):
         print(tag + "cargar_elementos")
         self.principal_window = self.builder.get_object("window1")
-        self.listStore        = self.builder.get_object("liststore1")
-        self.treeView         = self.builder.get_object("treeview2")
-        self.treeTitleCol     = self.builder.get_object("treeviewcolumn1")
-        self.treeTitleAuth    = self.builder.get_object("treeviewcolumn2")
-        self.uploadBtn        = self.builder.get_object("button6")
-        self.aboutBtn         = self.builder.get_object("button5")
-        self.comboBox         = self.builder.get_object("comboboxtext1")
-        self.exactCheckBox    = self.builder.get_object("checkbutton1")
-        self.caseCheckBox     = self.builder.get_object("checkbutton2")
-        self.searchEntry      = self.builder.get_object("searchentry1")
-        self.progressBar      = self.builder.get_object("progressbar1")
-        self.treeSelection    = self.builder.get_object("treeview-selection10")
+        self.listStore = self.builder.get_object("liststore1")
+        self.treeView = self.builder.get_object("treeview2")
+        self.treeTitleCol = self.builder.get_object("treeviewcolumn1")
+        self.treeTitleAuth = self.builder.get_object("treeviewcolumn2")
+        self.uploadBtn = self.builder.get_object("button6")
+        self.aboutBtn = self.builder.get_object("button5")
+        self.comboBox = self.builder.get_object("comboboxtext1")
+        self.exactCheckBox = self.builder.get_object("checkbutton1")
+        self.caseCheckBox = self.builder.get_object("checkbutton2")
+        self.searchEntry = self.builder.get_object("searchentry1")
+        self.progressBar = self.builder.get_object("progressbar1")
+        self.treeSelection = self.builder.get_object("treeview-selection10")
 
     # Link signals with handlers
     def asignar_eventos(self):
         print(tag + "asignar_eventos")
 
-        self.principal_window.connect("delete-event", Gtk.main_quit)
+        self.principal_window.connect("delete-event", self.on_main_quit)
         self.uploadBtn.connect       ("clicked", self.on_upload)
         self.aboutBtn.connect        ("clicked", self.on_acercaDe)
         self.comboBox.connect        ("changed", self.on_search)
@@ -126,6 +127,17 @@ class MainWindow:
   
         self.controller.doSearch(self, keywords, exact, case, field)        
 
+    def on_main_quit(self, widget, event, donnees=None):
+        print("destroy signal occurred")
+        dialog = view.dialog.MessageDialog()
+        message = "Are you sure to close the Library Managenment?"
+        respuesta = dialog.question_dialog(self.principal_window, message)
+        if not respuesta:
+            return True
+        else:
+            Gtk.main_quit()
+            return False
+        
     # 
     # Private functions
     #
