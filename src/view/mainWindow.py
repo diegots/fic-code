@@ -9,8 +9,7 @@ import os
 APP = "library"
 DIR = "locale"
 
-#locale.setlocale(locale.LC_ALL, "en_IN.utf8")
-locale.setlocale(locale.LC_ALL, "es_ES.utf8")
+locale.setlocale(locale.LC_ALL, "")
 LOCALE_DIR = os.path.join(os.path.dirname(__file__), DIR)
 locale.bindtextdomain(APP, LOCALE_DIR)
 gettext.bindtextdomain(APP, LOCALE_DIR)
