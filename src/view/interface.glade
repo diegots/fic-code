@@ -267,7 +267,7 @@ Diego Trabazo Sardón
             <property name="can_focus">False</property>
             <child>
               <object class="GtkCheckButton" id="checkbutton3">
-                <property name="label" translatable="yes" context="Seleccionar todos los elementos de la lista">Select all list items</property>
+                <property name="label" translatable="yes">Select all list items</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>

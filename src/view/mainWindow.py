@@ -2,7 +2,22 @@ from gi.repository import Gtk, Gdk, GLib, GObject
 
 import view.aboutWindow
 import view.dialog
+import locale
+import gettext
+import os
 
+APP = "library"
+DIR = "locale"
+
+#locale.setlocale(locale.LC_ALL, "en_IN.utf8")
+locale.setlocale(locale.LC_ALL, "es_ES.utf8")
+LOCALE_DIR = os.path.join(os.path.dirname(__file__), DIR)
+locale.bindtextdomain(APP, LOCALE_DIR)
+gettext.bindtextdomain(APP, LOCALE_DIR)
+gettext.textdomain(APP)
+_ = gettext.gettext
+N_ = gettext.ngettext
+          
 tag = "mainWindow.py : "
 
 #
@@ -13,11 +28,12 @@ class MainWindow:
         print(tag + "Constructor init")
 
         self.controller = controller
-
+        
         self.builder = Gtk.Builder()
-        # Read widgets from XML file
+        #Translate the app
+        self.builder.set_translation_domain(APP)  
+        #load the view 
         self.builder.add_from_file("view/interface.glade")  # XXX fix path build
-
         # Connect to events
         self.builder.connect_signals(self)  # conectar eventos        
 
@@ -82,8 +98,9 @@ class MainWindow:
         
         if selected == 0:
             dialog = view.dialog.MessageDialog()
-            message = "You should select at least a item"
-            dialog.info_dialog(self.principal_window, message)
+            message = _('You should select at least a item')
+            titleDialog = _('UPDATE')
+            dialog.info_dialog(self.principal_window, message, titleDialog)
             return
             
         data = []
@@ -106,8 +123,8 @@ class MainWindow:
             selectedDict.update({colNames[1]: colValue1})
 
             data.append(selectedDict)
-        
-        self.status_bar.push(self.context_id, "Status: uploaded")            
+        status = _('Status: uploaded')
+        self.status_bar.push(self.context_id, status)            
         self.controller.doUpload(data)
 
 
@@ -123,15 +140,17 @@ class MainWindow:
         keywords = self.searchEntry.get_text()
         field = self.comboBox.get_active_text()
         case = self.caseCheckBox.get_active()
-        exact = self.exactCheckBox.get_active()
-        self.status_bar.push(self.context_id, "Status: search results ")                
+        exact = self.exactCheckBox.get_active()        
+        status = _('Status: search results')
+        self.status_bar.push(self.context_id, status)                
         self.controller.doSearch(self, keywords, exact, case, field)        
 
     def on_main_quit(self, widget, event, donnees=None):
         print("destroy signal occurred")
         dialog = view.dialog.MessageDialog()
-        message = "Are you sure to close the Library Managenment?"
-        respuesta = dialog.question_dialog(self.principal_window, message)
+        message = _('Are you sure to close the Library Managenment?')
+        titleDialog = _('Close Library Managenment')
+        respuesta = dialog.question_dialog(self.principal_window, message, titleDialog)
         if not respuesta:
             return True
         else:
@@ -159,7 +178,8 @@ class MainWindow:
         # Renderer for the title column
         rendererTitle = Gtk.CellRendererText()
         # This is the title column
-        treeTitleCol = Gtk.TreeViewColumn('Title', rendererTitle, text=0)
+        columnTitle = _('Title')
+        treeTitleCol = Gtk.TreeViewColumn(columnTitle, rendererTitle, text=0)
         # Make the column sortable
         treeTitleCol.set_sort_column_id(0)
         # Make the column user resizable
@@ -170,7 +190,9 @@ class MainWindow:
         # Renderer for the author column
         rendererAuthor = Gtk.CellRendererText()
         # This is the author column
-        treeAuthorCol = Gtk.TreeViewColumn('Author', rendererAuthor, text=1)
+        
+        columnAuthor = _('Author')
+        treeAuthorCol = Gtk.TreeViewColumn(columnAuthor, rendererAuthor, text=1)
         # Make the column sortable
         treeAuthorCol.set_sort_column_id(1)
         # Adding the column to the treeView
