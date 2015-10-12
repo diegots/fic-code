@@ -2,7 +2,7 @@
 
 import controller.controller
 
-tag = "main.py : "
+tag = "main.py        : "
 
 #class Main:
 #    def __init__(self):

@@ -1,7 +1,6 @@
 from gi.repository import Gtk
 
 class MessageDialog:
-           
         
     def question_dialog(self, widget, message, titleDialog):
         dialog = Gtk.MessageDialog(widget, 0, Gtk.MessageType.QUESTION,

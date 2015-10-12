@@ -3,7 +3,7 @@ import os.path
 import time
 import random
 
-tag = "model.py : "
+tag = "model.py       : "
 
 
 class Model:

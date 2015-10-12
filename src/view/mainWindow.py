@@ -17,7 +17,7 @@ gettext.textdomain(APP)
 _ = gettext.gettext
 N_ = gettext.ngettext
           
-tag = "mainWindow.py : "
+tag = "mainWindow.py  : "
 
 #
 # View is the main class that hosts all the main window widgets
@@ -97,8 +97,8 @@ class MainWindow:
         
         if selected == 0:
             dialog = view.dialog.MessageDialog()
-            message = _('You should select at least a item')
-            titleDialog = _('UPDATE')
+            message = _('You should select at least an item')
+            titleDialog = _('Update')
             dialog.info_dialog(self.principal_window, message, titleDialog)
             return
             
@@ -122,13 +122,13 @@ class MainWindow:
             selectedDict.update({colNames[1]: colValue1})
 
             data.append(selectedDict)
+
+        self.controller.doUpload(data) # Sends data to controller
+
+        # Show user some info in the status bar
         status = _('Status: uploaded')
         self.status_bar.push(self.context_id, status)            
-        self.controller.doUpload(data)
 
-
-        
-        
     def on_acercaDe(self, w):
         print(tag + "on_acercaDe")
         self.status_bar.push(self.context_id, "")        
@@ -140,12 +140,14 @@ class MainWindow:
         field = self.comboBox.get_active_text()
         case = self.caseCheckBox.get_active()
         exact = self.exactCheckBox.get_active()        
-        status = _('Status: search results')
-        self.status_bar.push(self.context_id, status)                
         self.controller.doSearch(self, keywords, exact, case, field)        
 
+        # Show user some info in the status bar
+        status = _('Status: search results')
+        self.status_bar.push(self.context_id, status)                
+
     def on_main_quit(self, widget, event, donnees=None):
-        print("destroy signal occurred")
+        print(tag + "on_main_quit: destroy signal occurred")
         dialog = view.dialog.MessageDialog()
         message = _('Are you sure to close the Library Managenment?')
         titleDialog = _('Close Library Managenment')

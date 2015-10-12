@@ -5,7 +5,7 @@ sys.path.append(src_path)
 import view.mainWindow
 import model.model
 
-tag = "controller.py : "
+tag = "controller.py  : "
 
 
 class Controller:
