@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os.path, sys
 
 src_path = os.path.dirname(os.path.dirname(os.path.realpath("controller.py")))
