@@ -20,9 +20,9 @@ class MessageDialog:
         dialog = Gtk.MessageDialog(widget, 0, Gtk.MessageType.INFO,
             Gtk.ButtonsType.OK, titleDialog)
         dialog.format_secondary_text(message)
-        r = dialog.run()
-        if r == Gtk.ResponseType.OK:
-            dialog.destroy()
+        dialog.run()
+        dialog.destroy()
+       
         
     def error_dialog(self, widget, message, titleDialog):
         dialog = Gtk.MessageDialog(widget, 0, Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, titleDialog)

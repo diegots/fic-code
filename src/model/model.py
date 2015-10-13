@@ -4,6 +4,9 @@ import json
 import os.path
 import time
 import random
+import threading
+
+from gi.repository import GObject
 
 tag = "model.py       : "
 
@@ -36,7 +39,7 @@ class Model:
             raise FileNotFoundError(path)
     
     def upload(self, book_data):
-        time.sleep(random.uniform(3,6))
+       doWork().start()
     
     def doSearch(self, keywords, exactMatch, caseSensitive, field):
         print(tag + "doSearch")
@@ -116,3 +119,9 @@ class Model:
                             search.append(dicti)
 
         return search                 
+
+class doWork(threading.Thread):
+    def run(self): 
+        print(tag + "run")
+        time.sleep(random.uniform(3,6))
+        GObject.idle_add(self.print_end)

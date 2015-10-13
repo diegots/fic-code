@@ -31,3 +31,6 @@
 	LANG=C
 	LANG=es_ES.utf8 ./main.py 
 	LANG=en_IN.utf8 ./main.py 
+
+	LANGUAGE=es_ES.utf8 ./main.py 
+	LANGUAGE=en_IN.utf8 ./main.py 
