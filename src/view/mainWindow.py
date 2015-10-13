@@ -47,6 +47,7 @@ class MainWindow:
         self.progressBar.set_visible(False)        
         self.context_id = self.status_bar.get_context_id("Statusbar example")
 
+
         # Show main windows and enter Gtk events loop
         self.principal_window.show()
         Gtk.main()
@@ -127,7 +128,11 @@ class MainWindow:
             data.append(selectedDict)
 
         # self.controller.doUpload(data) # Sends data to controller
-        doUpload(data, self.controller).start()
+        doUpload(data, self.controller, self).start()
+
+        # Set timeout to update progressBar and make it visible
+        self.timeout_id = GObject.timeout_add(100, self.on_timeout, None)
+        self.progressBar.set_visible(True)
 
         # Show user some info in the status bar
         status = _('Status: uploaded')
@@ -172,6 +177,16 @@ class MainWindow:
     # 
     # Private functions
     #
+
+    def on_timeout(self, user_data):
+        self.progressBar.pulse()
+        return True
+
+    def uploadDone(self): 
+        print(tag + "uploadDone")
+        GObject.source_remove(self.timeout_id)
+        self.progressBar.set_visible(False)
+
     def loadListStore(self, w):
         print(tag + "loadListStore: requesting data from the controller")
         self.controller.requestData(self)
@@ -203,7 +218,6 @@ class MainWindow:
         # Adding the column to the treeView
         self.treeView.append_column(treeAuthorCol)
 
-
     #
     # Services avaibable to the controller module
     #
@@ -217,15 +231,13 @@ class MainWindow:
             self.listStore.append([v["title"], v["author"]])
 
 class doUpload(threading.Thread):
-    def __init__(self, data, controller):
+    def __init__(self, data, controller, view):
         threading.Thread.__init__(self) 
         self.data = data
         self.controller = controller
+        self.view = view
 
     def run(self):
         print(tag + "run")
         self.controller.doUpload(self.data) # Sends data to controller
-        GObject.idle_add(self.uploadDone)
-
-    def uploadDone(self):
-        print("Should stop progressBar")
+        GObject.idle_add(self.view.uploadDone)
