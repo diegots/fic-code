@@ -1,0 +1,36 @@
+1) Crear la plantilla de traducción (.pot)
+
+	xgettext -k_ -kN_ -o messages.pot mainWindow.py interface.glade 
+	
+	
+2) Generar el fichero de traducciones (*.po)
+
+	msginit --locale en_IN.utf8 --output-file en_IN.po --input messages.pot
+	msginit --locale es_ES.utf8 --output-file es_ES.po --input messages.pot
+	
+3) Editando el fichero de traducciones (*.po)
+
+	mkdir -p locale/es_ES/LC_MESSAGES		
+	mkdir -p locale/en_IN/LC_MESSAGES
+	
+	gedit en_IN.po
+	gedit es_ES.po
+	
+4) Creación del fichero de equivalencias (*.mo)
+
+	msgfmt es_ES.po -o locale/es_ES/LC_MESSAGES/library.mo
+	msgfmt en_IN.po -o locale/en_IN/LC_MESSAGES/library.mo
+	
+
+5) Usar el antiguo fichero de traducciones (*.po) con una nueva plantilla (*.pot)
+
+	xgettext programita.py -o nuevo.pot
+	msgmerge antiguo.po nuevo.pot -o nuevo_es.po
+	
+6) Lengua a utilizar
+	LANG=C
+	LANG=es_ES.utf8 ./main.py 
+	LANG=en_IN.utf8 ./main.py 
+
+	LANGUAGE=es_ES.utf8 ./main.py 
+	LANGUAGE=en_IN.utf8 ./main.py 

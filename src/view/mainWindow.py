@@ -7,6 +7,7 @@ import view.dialog
 import locale
 import gettext
 import os
+import threading
 
 APP = "library"
 DIR = "locale"
@@ -125,7 +126,8 @@ class MainWindow:
 
             data.append(selectedDict)
 
-        self.controller.doUpload(data) # Sends data to controller
+        # self.controller.doUpload(data) # Sends data to controller
+        doUpload(data, self.controller).start()
 
         # Show user some info in the status bar
         status = _('Status: uploaded')
@@ -213,3 +215,17 @@ class MainWindow:
 
         for v in data:
             self.listStore.append([v["title"], v["author"]])
+
+class doUpload(threading.Thread):
+    def __init__(self, data, controller):
+        threading.Thread.__init__(self) 
+        self.data = data
+        self.controller = controller
+
+    def run(self):
+        print(tag + "run")
+        self.controller.doUpload(self.data) # Sends data to controller
+        GObject.idle_add(self.uploadDone)
+
+    def uploadDone(self):
+        print("Should stop progressBar")
