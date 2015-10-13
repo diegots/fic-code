@@ -87,11 +87,18 @@ class MainWindow:
         self.caseCheckBox.connect    ("toggled", self.on_search)
         self.selectCheckBox.connect  ("toggled", self.on_selectItems)
         self.searchEntry.connect     ("search-changed", self.on_search)
+        self.treeView.connect        ("cursor-changed", self.on_cell_changed)
 
 
     #
     # Event handlers
     #
+
+    def on_cell_changed(self, w):
+
+        active = self.selectCheckBox.get_active()
+        if active:
+            self.selectCheckBox.set_active(False)
     
     def on_upload(self, w):
         print(tag + "on_upload")
@@ -127,7 +134,9 @@ class MainWindow:
 
             data.append(selectedDict)
 
-        # self.controller.doUpload(data) # Sends data to controller
+        self.uploadBtn.set_sensitive(False)
+
+        # Sends data to controller
         doUpload(data, self.controller, self).start()
 
         # Set timeout to update progressBar and make it visible
@@ -186,6 +195,7 @@ class MainWindow:
         print(tag + "uploadDone")
         GObject.source_remove(self.timeout_id)
         self.progressBar.set_visible(False)
+        self.uploadBtn.set_sensitive(True)
 
     def loadListStore(self, w):
         print(tag + "loadListStore: requesting data from the controller")
