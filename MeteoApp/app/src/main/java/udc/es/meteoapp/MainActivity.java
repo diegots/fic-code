@@ -1,43 +1,54 @@
 package udc.es.meteoapp;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements
+        MainFragment.OnItemSelectedListener {
+
+    String TAG = "MeteoApp";
+
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d(TAG, "MainActivity: onCreate");
 
-        // Get localities from resource file and fill the ListView
-        final String[] locality = getResources().getStringArray(R.array.locality);
-        ListView localityListView = (ListView) findViewById(R.id.localityListView);
-        localityListView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, locality));
+        if (findViewById(R.id.place_detail_container) != null) {
+            Log.d(TAG, "MainActivity: onCreate - two panes");
+            mTwoPane = true;
 
-        AdapterView.OnItemClickListener oicl = new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                TextView tv = (TextView) view;
-                // Toast.makeText(getApplicationContext(), "item: " + tv.getText(), Toast.LENGTH_SHORT).show();
-
-                Intent intent = new Intent(MainActivity.this, PlacesActivity.class);
-                intent.putExtra("Place", tv.getText());
-                startActivity(intent);
-
-            }
-        };
-        localityListView.setOnItemClickListener(oicl);
+            // In two-pane mode, list items should be given the
+            // 'activated' state when touched.
+            // TODO
+        }
     }
 
 
+    @Override
+    public void onItemSelected(String locality_id) {
+        Log.d(TAG, "MainActivity: onItemSelected");
 
+        if (mTwoPane) {
+            // In two-pane mode, show the detail view in this activity by
+            // adding or replacing the detail fragment using a
+            // fragment transaction.
+            // TODO
+            Log.d(TAG, "MainActivity: onItemSelected - two pane");
+
+        } else {
+            Log.d(TAG, "MainActivity: onItemSelected - one pane - locality_id: " + locality_id);
+            // In single-pane mode, simply start the detail activity
+            // for the selected item ID.
+            Intent placesIntent = new Intent(this, PlacesActivity.class);
+            placesIntent.putExtra(PlacesFragment.ARG_LOCALITY_ID, locality_id);
+            startActivity(placesIntent);
+        }
+    }
 }
