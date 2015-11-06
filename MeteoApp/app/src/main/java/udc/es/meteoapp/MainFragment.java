@@ -80,4 +80,8 @@ public class MainFragment extends ListFragment {
         public void onItemSelected(String id);
     }
 
+    public void setActivateOnItemClick(boolean activateOnItemClick) {
+        // TODO
+    }
+
 }

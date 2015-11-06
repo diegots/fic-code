@@ -26,10 +26,10 @@ public class MainActivity extends ActionBarActivity implements
 
             // In two-pane mode, list items should be given the
             // 'activated' state when touched.
-            // TODO
+            ((MainFragment) getFragmentManager().
+                    findFragmentById(R.id.place_detail)).setActivateOnItemClick(true);
         }
     }
-
 
     @Override
     public void onItemSelected(String locality_id) {
@@ -39,8 +39,14 @@ public class MainActivity extends ActionBarActivity implements
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
             // fragment transaction.
-            // TODO
             Log.d(TAG, "MainActivity: onItemSelected - two pane");
+
+            Bundle arguments = new Bundle();
+            arguments.putString(PlacesFragment.ARG_LOCALITY_ID, locality_id);
+            PlacesFragment fragment = new PlacesFragment();
+            getFragmentManager().beginTransaction()
+                .replace(R.id.place_detail_container, fragment)
+                .commit();
 
         } else {
             Log.d(TAG, "MainActivity: onItemSelected - one pane - locality_id: " + locality_id);

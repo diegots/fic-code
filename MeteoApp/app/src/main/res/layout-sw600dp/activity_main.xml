@@ -3,9 +3,14 @@
 <!-- https://developer.android.com/intl/es/training/multiscreen/screensizes.html-->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:showDividers="middle"
+
+    tools:context=".MainActivity">
 
     <!-- This layout is a two pane layout -->
     <fragment
