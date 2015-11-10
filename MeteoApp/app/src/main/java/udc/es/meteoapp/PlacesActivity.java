@@ -48,29 +48,3 @@ public class PlacesActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 }
-
-
-
-//package udc.es.meteoapp;
-//
-//import android.locality_name.Intent;
-//import android.support.v7.app.ActionBarActivity;
-//import android.os.Bundle;
-//import android.widget.TextView;
-//
-//public class PlacesActivity extends ActionBarActivity {
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_places_detail);
-//
-//        TextView tv_locality_name = (TextView) findViewById(R.locality_id.tv_locality_name);
-//
-//        Intent intent = getIntent();
-//        String locality = intent.getExtras().getString("Place");
-//        tv_locality_name.setText(locality);
-//
-//    }
-//}
-

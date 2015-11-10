@@ -24,18 +24,8 @@ public class PlacesFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "PlacesFragment: onCreate");
 
-//        if(getArguments() == null) {
-//            Log.d(TAG, "getArguments null");
-//        } else
-//            Log.d(TAG, "getArguments NOT null");
-
-        if(getArguments().containsKey(ARG_LOCALITY_ID)) {
-
+        if (getArguments().containsKey(ARG_LOCALITY_ID))
             mItem = PlacesContent.ITEM_MAP.get(getArguments().getString(ARG_LOCALITY_ID));
-        } else {
-            Log.d(TAG, "BBBBBBBBBBB");
-        }
-
     }
 
     @Override
