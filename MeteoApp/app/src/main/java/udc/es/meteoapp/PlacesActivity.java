@@ -22,6 +22,7 @@ public class PlacesActivity extends ActionBarActivity {
 
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
+            Log.d(TAG, "PlacesActivity: onCreate: " + PlacesFragment.ARG_LOCALITY_ID);
             arguments.putString(PlacesFragment.ARG_LOCALITY_ID,
                     getIntent().getStringExtra(PlacesFragment.ARG_LOCALITY_ID));
             PlacesFragment fragment = new PlacesFragment();
@@ -52,7 +53,7 @@ public class PlacesActivity extends ActionBarActivity {
 
 //package udc.es.meteoapp;
 //
-//import android.content.Intent;
+//import android.locality_name.Intent;
 //import android.support.v7.app.ActionBarActivity;
 //import android.os.Bundle;
 //import android.widget.TextView;

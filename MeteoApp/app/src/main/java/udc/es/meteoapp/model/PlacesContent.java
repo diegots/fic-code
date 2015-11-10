@@ -1,6 +1,5 @@
-package udc.es.meteoapp.modelo;
+package udc.es.meteoapp.model;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Helper class for providing sample content for user interfaces created by
+ * Helper class for providing sample locality_name for user interfaces created by
  * Android template wizards.
  * <p/>
  * TODO: Replace all uses of this class before publishing your app.
@@ -47,20 +46,39 @@ public class PlacesContent {
     }
 
     /**
-     * A dummy item representing a piece of content.
+     * An item representing a locality.
      */
     public static class PlaceItem {
         public String locality_id;
-        public String content;
+        public String api_id;
+        public String locality_name;
+        public Details details;
 
-        public PlaceItem(String locality_id, String content) {
+        public PlaceItem(String locality_id, String locality_name) {
             this.locality_id = locality_id;
-            this.content = content;
+            this.locality_name = locality_name;
         }
 
         @Override
         public String toString() {
-            return content;
+            return locality_name;
         }
+    }
+    public static class Details {
+
+        public String sky_state;
+        public String temperature;
+        public String wind;
+        public String precipitation_amount;
+        public String relative_humidity;
+        public String cloud_area_fraction;
+        public String air_pressure_at_sea_level;
+        public String snow_level;
+        public String sea_water_temperature;
+        public String significative_wave_height;
+        public String mean_wave_direction;
+        public String relative_peak_period;
+        public String sea_water_salinity;
+
     }
 }

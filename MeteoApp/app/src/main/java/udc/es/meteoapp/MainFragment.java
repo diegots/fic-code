@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import udc.es.meteoapp.modelo.PlacesContent;
+import udc.es.meteoapp.model.PlacesContent;
 
 /**
  * A fragment representing a list of Items.
@@ -36,9 +36,9 @@ public class MainFragment extends ListFragment {
 
         Log.d(TAG, "MainFragment: onCreate");
 
-        // TODO: Change Adapter to display your content
+        // TODO: Change Adapter to display your locality_name
         setListAdapter(new ArrayAdapter<PlacesContent.PlaceItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, PlacesContent.ITEMS));
+            android.R.layout.simple_list_item_1, android.R.id.text1, PlacesContent.ITEMS));
     }
 
 
