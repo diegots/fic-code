@@ -14,6 +14,9 @@ import java.util.Map;
  */
 public class PlacesContent {
 
+    final static String apiKey =
+            "NZ3eChGun9GfjW2N3LLV41OrIncNd18Tzi8tZ8AjKm0517Afua3LNYq8cWNS2sm3";
+
     /**
      * An array of sample (dummy) items.
      */
@@ -50,9 +53,9 @@ public class PlacesContent {
      */
     public static class PlaceItem {
         public String locality_id;
-        public String api_id;
         public String locality_name;
-        public Details details;
+        String api_id;
+        Details details;
 
         public PlaceItem(String locality_id, String locality_name) {
             this.locality_id = locality_id;
@@ -63,9 +66,10 @@ public class PlacesContent {
         public String toString() {
             return locality_name;
         }
-    }
-    public static class Details {
 
+    }
+
+    public static class Details {
         public String sky_state;
         public String temperature;
         public String wind;

@@ -1,13 +1,14 @@
 package udc.es.meteoapp;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.app.ListFragment;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import udc.es.meteoapp.model.Model;
 import udc.es.meteoapp.model.PlacesContent;
 
 /**
@@ -21,6 +22,8 @@ public class MainFragment extends ListFragment {
 
     String TAG = "MeteoApp";
 
+    Model model;
+
     private OnItemSelectedListener itemSelectedListener;
 
     /**
@@ -31,14 +34,24 @@ public class MainFragment extends ListFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "MainFragment: onStart");
+
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Log.d(TAG, "MainFragment: onCreate");
+
+        model = new Model();
 
         // TODO: Change Adapter to display your locality_name
         setListAdapter(new ArrayAdapter<PlacesContent.PlaceItem>(getActivity(),
             android.R.layout.simple_list_item_1, android.R.id.text1, PlacesContent.ITEMS));
+
+
     }
 
 
@@ -70,18 +83,25 @@ public class MainFragment extends ListFragment {
         Log.d(TAG, "MainFragment: onListItemClick");
 
         if (null != itemSelectedListener) {
+
+            String locality_id = PlacesContent.ITEMS.get(position).locality_id;
+            String locality_name = PlacesContent.ITEMS.get(position).locality_name;
+            Log.d(TAG, "MainFragment: onListItemClick - locality_id: " + locality_id);
+            model.findLocality(locality_name);
+
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            itemSelectedListener.onItemSelected(PlacesContent.ITEMS.get(position).locality_id);
+            itemSelectedListener.onItemSelected(locality_id);
         }
+    }
+
+    public void setActivateOnItemClick(boolean activateOnItemClick) {
+        // TODO
     }
 
     public interface OnItemSelectedListener {
         public void onItemSelected(String id);
     }
 
-    public void setActivateOnItemClick(boolean activateOnItemClick) {
-        // TODO
-    }
 
 }

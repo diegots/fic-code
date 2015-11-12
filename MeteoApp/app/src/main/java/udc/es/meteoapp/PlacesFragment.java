@@ -14,7 +14,7 @@ import udc.es.meteoapp.model.PlacesContent;
 public class PlacesFragment extends Fragment {
 
     String TAG = "MeteoApp";
-    public static final String ARG_LOCALITY_ID = "locality_id";
+    public static final String ARG_LOCALITY_ID = "locality_name";
     private PlacesContent.PlaceItem mItem;
 
     public PlacesFragment() {}

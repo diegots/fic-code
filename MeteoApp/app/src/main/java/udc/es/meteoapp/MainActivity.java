@@ -52,7 +52,7 @@ public class MainActivity extends ActionBarActivity implements
             Log.d(TAG, "MainActivity: onItemSelected " + PlacesFragment.ARG_LOCALITY_ID + " Value: " + locality_id);
 
         } else {
-            Log.d(TAG, "MainActivity: onItemSelected - one pane - locality_id: " + locality_id);
+            Log.d(TAG, "MainActivity: onItemSelected - one pane - locality_name: " + locality_id);
             // In single-pane mode, simply start the detail activity
             // for the selected item ID.
             Intent placesIntent = new Intent(this, PlacesActivity.class);
