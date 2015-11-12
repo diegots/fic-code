@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 import udc.es.meteoapp.model.Model;
 import udc.es.meteoapp.model.PlacesContent;
 
@@ -25,7 +27,8 @@ public class PlacesFragment extends Fragment {
     Handler handler;
     Model model;
 
-    public PlacesFragment() {}
+    public PlacesFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,8 +50,10 @@ public class PlacesFragment extends Fragment {
 
         rootView = inflater.inflate(R.layout.fragment_places_detail, container, false);
 
-        if (mItem != null)
+        if (mItem != null) {
             ((TextView) rootView.findViewById(R.id.place_name)).setText(mItem.locality_name);
+
+        }
 
         return rootView;
     }
@@ -62,15 +67,46 @@ public class PlacesFragment extends Fragment {
             Log.d(TAG, "handleMessage: localitiesBudle");
 
             Bundle localitiesBudle = msg.getData();
+
+
+            String name = localitiesBudle.get("name").toString();
+            String province = localitiesBudle.get("province").toString();
+            String municipality = localitiesBudle.get("municipality").toString();
+
             Log.d(TAG, "handleMessage: localitiesBudle " + localitiesBudle.get("id"));
             Log.d(TAG, "handleMessage: localitiesBudle " + localitiesBudle.get("municipality"));
             Log.d(TAG, "handleMessage: localitiesBudle " + localitiesBudle.get("name"));
             Log.d(TAG, "handleMessage: localitiesBudle " + localitiesBudle.get("province"));
             Log.d(TAG, "handleMessage: localitiesBudle " + localitiesBudle.get("type"));
 
-            mItem.locality_municipality = (String) localitiesBudle.get("municipality");
-            ((TextView) rootView.findViewById(R.id.place_municipality)).setText(mItem.locality_municipality);
 
+            Log.d(TAG, "handleMessage: antes de iguales ");
+
+            boolean iguales = checkLocality(name, municipality, province, mItem);
+            Log.d(TAG, "handleMessage: despues de iguales " + iguales);
+
+            if (iguales) {
+                mItem.locality_municipality = municipality;
+                ((TextView) rootView.findViewById(R.id.place_municipality)).setText(mItem.locality_municipality);
+            }
+
+        }
+
+        public Boolean checkLocality(String name, String municipality, String province, PlacesContent.PlaceItem place) {
+
+            boolean n = place.locality_name.equalsIgnoreCase(name);
+            Log.d(TAG, "handleMessage: place name"+ place.locality_name +" name "+ name);
+            Log.d(TAG, "handleMessage: name iguales " + n);
+
+            boolean m = place.locality_municipality.equalsIgnoreCase(municipality);
+            Log.d(TAG, "handleMessage: place municipality"+ place.locality_municipality +" municipality "+ municipality);
+            Log.d(TAG, "handleMessage: municipality iguales " + m);
+
+            boolean p = place.locality_province.equalsIgnoreCase(province);
+            Log.d(TAG, "handleMessage: place province"+ place.locality_province +" province "+ province);
+            Log.d(TAG, "handleMessage: province iguales " + p);
+
+            return (m & n & p);
         }
     }
 }

@@ -51,8 +51,7 @@ public class PlacesContent {
 
     };
 
-    private static String[] province = {
-            "Pontevedra", "A Coruña", "Ourense", "Lugo", "A Coruña", "Pontevedra", "A Coruña",
+    private static String[] province = {"Pontevedra", "A Coruña", "Ourense", "Lugo", "A Coruña", "Pontevedra", "A Coruña",
             "A Coruña", "Pontevedra", "A Coruña", "A Coruña", "A Coruña", "Lugo", "Pontevedra",
             "A Coruña", "A Coruña", "Pontevedra", "Pontevedra", "A Coruña", "Pontevedra", "Pontevedra",
             "Pontevedra", "Lugo", "A Coruña", "Pontevedra", "A Coruña", "Pontevedra", "Pontevedra", "Ourense",
