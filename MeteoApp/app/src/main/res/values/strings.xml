@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">MeteoApp</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="place_name_tag">Name: </string>
+    <string name="place_municipality_tag">Municipality: </string>
+    <string name="place_province_tag">Province: </string>
+    <string name="place_type_tag">Type: </string>
 </resources>
