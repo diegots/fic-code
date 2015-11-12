@@ -1,41 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
 
     android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:orientation="vertical">
+    android:layout_width="match_parent">
 
-
-    <TextView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-
-        android:layout_width="match_parent"
+    <ScrollView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/place_name"
-        style="?android:attr/textAppearanceLarge"
-        android:padding="16dp"
-        android:textIsSelectable="true"
+        android:id="@+id/scrollView" >
 
-        tools:context=".PlacesFragment"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <TextView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:tools="http://schemas.android.com/tools"
 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/place_municipality"
-        style="?android:attr/textAppearanceLarge"
-        android:padding="16dp"
-        android:textIsSelectable="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/place_name_tag"
+                        style="?android:attr/textAppearanceLarge"
+                    android:padding="16dp"
+                    android:textIsSelectable="true"
+                    android:text="@string/place_name_tag"
+                    tools:context=".PlacesFragment"/>
 
-        tools:context=".PlacesFragment"/>
+                <TextView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:tools="http://schemas.android.com/tools"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/place_name"
+                        style="?android:attr/textAppearanceLarge"
+                    android:padding="16dp"
+                    android:textIsSelectable="true"
+
+                    tools:context=".PlacesFragment"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:tools="http://schemas.android.com/tools"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/place_municipality_tag"
+                        style="?android:attr/textAppearanceLarge"
+                    android:padding="16dp"
+                    android:textIsSelectable="true"
+                    android:text="@string/place_municipality_tag"
+                    tools:context=".PlacesFragment"/>
+
+                <TextView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:tools="http://schemas.android.com/tools"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/place_municipality"
+                        style="?android:attr/textAppearanceLarge"
+                    android:padding="16dp"
+                    android:textIsSelectable="true"
+
+                    tools:context=".PlacesFragment"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:tools="http://schemas.android.com/tools"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/place_province_tag"
+                        style="?android:attr/textAppearanceLarge"
+                    android:padding="16dp"
+                    android:textIsSelectable="true"
+                    android:text="@string/place_province_tag"
+                    tools:context=".PlacesFragment"/>
+
+                <TextView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:tools="http://schemas.android.com/tools"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/place_province"
+                    style="?android:attr/textAppearanceLarge"
+                    android:padding="16dp"
+                    android:textIsSelectable="true"
+
+                    tools:context=".PlacesFragment"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:tools="http://schemas.android.com/tools"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/place_type_tag"
+                    style="?android:attr/textAppearanceLarge"
+                    android:padding="16dp"
+                    android:textIsSelectable="true"
+                    android:text="@string/place_type_tag"
+                    tools:context=".PlacesFragment"/>
+
+                <TextView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:tools="http://schemas.android.com/tools"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/place_type"
+                    style="?android:attr/textAppearanceLarge"
+                    android:padding="16dp"
+                    android:textIsSelectable="true"
+
+                    tools:context=".PlacesFragment"/>
+            </LinearLayout>
+        </LinearLayout>
 
 
-</LinearLayout>
+
+    </ScrollView>
+</FrameLayout>
 
