@@ -29,13 +29,24 @@ public class PlacesContent {
 
     private static String[] localities = {
         "Vigo", "A Coruña", "Ourense", "Lugo", "Santiago de Compostela", "Pontevedra", "Ferrol",
-        "Narón", "Vilagarcía de Arousa", "Oleiros", "Carballo", "Arteixo", "Ames", "Redondela",
+        "Narón", "Vilagarcía", "Oleiros", "Carballo", "Arteixo", "Ames", "Redondela",
         "Culleredo", "Ribeira", "Cangas", "Marín", "Cambre", "Estrada", "Lalín", "Moaña",
         "Monforte de Lemos", "Boiro", "Porriño", "Teo", "Sanxenxo", "Tui", "Poio", "Viveiro", "Mos",
         "Sada", "Vilalba", "Verín", "Noia", "Carballiño", "Gondomar", "Barco de Valdeorras",
         "Tomiño", "Sarria", "Fene", "Cambados", "Betanzos", "Ordes", "Bueu", "Baiona", "Rianxo",
         "Laracha"
     };
+
+    private static String[] municipality = {
+        "VIGO", "CORUÑA (A)", "OURENSE", "LUGO", "SANTIAGO DE COMPOSTELA", "PONTEVEDRA", "FERROL",
+        "PONTES DE GARCÍA RODRIGUEZ (AS)", "VILAGARCÍA DE AROUSA"
+    };
+
+    private static String[] province = {
+        "Pontevedra", "A Coruña", "Ourense", "Lugo", "A Coruña", "Pontevedra", "A Coruña",
+        "A Coruña", "Pontevedra"
+    };
+
 
     static {
         Arrays.sort(localities);
@@ -54,6 +65,7 @@ public class PlacesContent {
     public static class PlaceItem {
         public String locality_id;
         public String locality_name;
+        public String locality_municipality;
         String api_id;
         Details details;
 

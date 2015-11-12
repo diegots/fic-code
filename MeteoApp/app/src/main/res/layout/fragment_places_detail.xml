@@ -1,15 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<TextView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
 
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:textAppearance="?android:attr/textAppearanceMedium"
-    android:id="@+id/place_detail"
-        style="?android:attr/textAppearanceLarge"
-    android:padding="16dp"
-    android:textIsSelectable="true"
+    android:layout_width="match_parent"
+    android:orientation="vertical">
 
-    tools:context=".PlacesFragment"/>
+
+    <TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/place_name"
+        style="?android:attr/textAppearanceLarge"
+        android:padding="16dp"
+        android:textIsSelectable="true"
+
+        tools:context=".PlacesFragment"/>
+
+    <TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/place_municipality"
+        style="?android:attr/textAppearanceLarge"
+        android:padding="16dp"
+        android:textIsSelectable="true"
+
+        tools:context=".PlacesFragment"/>
+
+
+</LinearLayout>
+

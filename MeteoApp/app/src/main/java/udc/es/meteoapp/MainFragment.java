@@ -24,8 +24,6 @@ import udc.es.meteoapp.model.PlacesContent;
 public class MainFragment extends ListFragment {
 
     String TAG = "MeteoApp";
-    Handler handler;
-    Model model;
 
     private OnItemSelectedListener itemSelectedListener;
 
@@ -47,8 +45,6 @@ public class MainFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "MainFragment: onCreate");
-        handler = new Handler();
-        model = new Model(handler);
 
         // TODO: Change Adapter to display your locality_name
         setListAdapter(new ArrayAdapter<PlacesContent.PlaceItem>(getActivity(),
@@ -56,7 +52,6 @@ public class MainFragment extends ListFragment {
 
 
     }
-
 
     @Override
     public void onAttach(Activity activity) {
@@ -90,7 +85,6 @@ public class MainFragment extends ListFragment {
             String locality_id = PlacesContent.ITEMS.get(position).locality_id;
             String locality_name = PlacesContent.ITEMS.get(position).locality_name;
             Log.d(TAG, "MainFragment: onListItemClick - locality_id: " + locality_id);
-            model.findLocality(locality_name);
 
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
@@ -106,19 +100,4 @@ public class MainFragment extends ListFragment {
         public void onItemSelected(String id);
     }
 
-}
-
-class getLocalityHandler extends Handler{
-    String TAG = "MeteoApp";
-
-    @Override
-    public void handleMessage(Message msg) {
-        super.handleMessage(msg);
-        Log.d(TAG, "handleMessage: localitiesBudle");
-
-        Bundle localitiesBudle = msg.getData();
-        Log.d(TAG, "handleMessage: localitiesBudle" + localitiesBudle.get("id"));
-        String [] data = {};
-
-    }
 }
