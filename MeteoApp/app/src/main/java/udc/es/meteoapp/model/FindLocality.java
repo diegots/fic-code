@@ -136,7 +136,9 @@ class FindLocality extends Thread {
             JSONResponseHandler json = new JSONResponseHandler();
             list = json.getLocalities(response);
             Log.d(TAG, "FindLocality: run - found: '" + list.get(0).get("id") + "' ID");
-
+            Message message = new Message();
+            message.setData(list.get(0));
+            handler.sendMessage(message);
         } catch (ClientProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {

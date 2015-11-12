@@ -3,10 +3,13 @@ package udc.es.meteoapp;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import android.os.Handler;
 
 import udc.es.meteoapp.model.Model;
 import udc.es.meteoapp.model.PlacesContent;
@@ -21,7 +24,7 @@ import udc.es.meteoapp.model.PlacesContent;
 public class MainFragment extends ListFragment {
 
     String TAG = "MeteoApp";
-
+    Handler handler;
     Model model;
 
     private OnItemSelectedListener itemSelectedListener;
@@ -44,8 +47,8 @@ public class MainFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "MainFragment: onCreate");
-
-        model = new Model();
+        handler = new Handler();
+        model = new Model(handler);
 
         // TODO: Change Adapter to display your locality_name
         setListAdapter(new ArrayAdapter<PlacesContent.PlaceItem>(getActivity(),
@@ -103,5 +106,19 @@ public class MainFragment extends ListFragment {
         public void onItemSelected(String id);
     }
 
+}
 
+class getLocalityHandler extends Handler{
+    String TAG = "MeteoApp";
+
+    @Override
+    public void handleMessage(Message msg) {
+        super.handleMessage(msg);
+        Log.d(TAG, "handleMessage: localitiesBudle");
+
+        Bundle localitiesBudle = msg.getData();
+        Log.d(TAG, "handleMessage: localitiesBudle" + localitiesBudle.get("id"));
+        String [] data = {};
+
+    }
 }
