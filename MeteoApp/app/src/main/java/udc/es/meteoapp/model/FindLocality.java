@@ -1,13 +1,13 @@
 package udc.es.meteoapp.model;
 
 import android.net.http.AndroidHttpClient;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.json.JSONArray;
@@ -58,13 +58,12 @@ class FindLocality extends Thread {
         return url;
     }
 
-    private class JSONResponseHandler implements ResponseHandler<List<String>> {
+    private class JSONResponseHandler{
 
-        @Override
-        public List<String> handleResponse(HttpResponse httpResponse) throws IOException {
+        public List<Bundle> getLocalities(HttpResponse httpResponse) throws IOException {
             Log.d(TAG, "handleResponse");
 
-            List<String> result = new ArrayList<>();
+            List<Bundle> result = new ArrayList<>();
 
             String JSONResp = new BasicResponseHandler().handleResponse(httpResponse);
             //Log.d(TAG, "JSONResponseHandler: " + JSONResp);
@@ -93,7 +92,14 @@ class FindLocality extends Thread {
                             String name = jsonObject.getString("name");
                             String province = jsonObject.getString("province");
                             String type = jsonObject.getString("type");
+                            Bundle bundle = new Bundle();
+                            bundle.putString("id", id);
+                            bundle.putString("municipality",municipality);
+                            bundle.putString("name", name);
+                            bundle.putString("province",province);
+                            bundle.putString("type",type);
 
+                            result.add(bundle);
                             Log.d(TAG, "JSONResponseHandler: "
                                     + "id: " + id
                                     + " municipality:" + municipality
@@ -121,17 +127,23 @@ class FindLocality extends Thread {
         List<String> result = new ArrayList<>();
         AndroidHttpClient client = AndroidHttpClient.newInstance("");
         HttpGet request = new HttpGet(queryURL);
+        HttpResponse response = null;
 
-        List<String> ls = new ArrayList<>();
-        JSONResponseHandler respHandler = new JSONResponseHandler();
+        List<Bundle> list = new ArrayList<>();
 
         try {
-            ls = client.execute(request, respHandler);
+            response = client.execute(request);
+            JSONResponseHandler json = new JSONResponseHandler();
+            list = json.getLocalities(response);
+            Log.d(TAG, "FindLocality: run - found: '" + list.get(0).get("id") + "' ID");
+
         } catch (ClientProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
     }
 }
 
