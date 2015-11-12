@@ -1,10 +1,13 @@
 package udc.es.meteoapp.model;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * Helper class for providing sample locality_name for user interfaces created by
@@ -13,6 +16,7 @@ import java.util.Map;
  * TODO: Replace all uses of this class before publishing your app.
  */
 public class PlacesContent {
+    String TAG = "MeteoApp";
 
     final static String apiKey =
             "NZ3eChGun9GfjW2N3LLV41OrIncNd18Tzi8tZ8AjKm0517Afua3LNYq8cWNS2sm3";
@@ -28,30 +32,40 @@ public class PlacesContent {
     public static Map<String, PlaceItem> ITEM_MAP = new HashMap<String, PlaceItem>();
 
     private static String[] localities = {
-        "Vigo", "A Coruña", "Ourense", "Lugo", "Santiago de Compostela", "Pontevedra", "Ferrol",
-        "Narón", "Vilagarcía", "Oleiros", "Carballo", "Arteixo", "Ames", "Redondela",
-        "Culleredo", "Ribeira", "Cangas", "Marín", "Cambre", "Estrada", "Lalín", "Moaña",
-        "Monforte de Lemos", "Boiro", "Porriño", "Teo", "Sanxenxo", "Tui", "Poio", "Viveiro", "Mos",
-        "Sada", "Vilalba", "Verín", "Noia", "Carballiño", "Gondomar", "Barco de Valdeorras",
-        "Tomiño", "Sarria", "Fene", "Cambados", "Betanzos", "Ordes", "Bueu", "Baiona", "Rianxo",
-        "Laracha"
+            "Vigo", "A Coruña", "Ourense", "Lugo", "Santiago de Compostela", "Pontevedra", "Ferrol",
+            "Narón", "Vilagarcía", "Oleiros", "Carballo", "Arteixo", "Praia das Catedrais", "Redondela",
+            "Culleredo", "Santa Uxía de Ribeira", "Cangas", "Marín", "Cambre", "A Estrada", "Lalín", "Moaña",
+            "Monforte de Lemos", "Boiro", "O Porriño", "Praia Carnota", "Sanxenxo", "Tui", "A Peroxa",
+            "Viveiro (Santa María e Santiago)", "Praia de Sada", "Vilalba", "Verín", "Noia", "Carballiño",
+            "Gondomar", "Foz", "Manzaneda", "Vigo de Sarria", "Fene", "Cambados", "Betanzos", "Ordes",
+            "Bueu", "Baiona", "Rianxo", "Laracha"
     };
 
     private static String[] municipality = {
-        "VIGO", "CORUÑA (A)", "OURENSE", "LUGO", "SANTIAGO DE COMPOSTELA", "PONTEVEDRA", "FERROL",
-        "PONTES DE GARCÍA RODRIGUEZ (AS)", "VILAGARCÍA DE AROUSA"
+            "VIGO", "CORUÑA (A)", "OURENSE", "LUGO", "SANTIAGO DE COMPOSTELA", "PONTEVEDRA", "FERROL",
+            "PONTES DE GARCÍA RODRIGUEZ (AS)", "VILAGARCÍA DE AROUSA", "OLEIROS", "CARBALLO", "ARTEIXO",
+            "RIBADEO", "REDONDELA", "CULLEREDO", "RIBEIRA", "CANGAS", "MARÍN", "CAMBRE", "GONDOMAR", "LALÍN", "MOAÑA",
+            "MONFORTE DE LEMOS", "PORTO DO SON", "PORRIÑO (O)", "CARNOTA", "SANXENXO", "TUI", "PEROXA (A)", "VIVEIRO", "SADA",
+            "VILALBA", "VERÍN", "NOIA", "CARBALLIÑO (O)", "GONDOMAR", "FOZ", "MANZANEDA", "SARRIA", "FENE", "CAMBADOS",
+            "BETANZOS", "ORDES", "BUEU", "BAIONA", "RIANXO", "LARACHA (A)"
+
     };
 
     private static String[] province = {
-        "Pontevedra", "A Coruña", "Ourense", "Lugo", "A Coruña", "Pontevedra", "A Coruña",
-        "A Coruña", "Pontevedra"
+            "Pontevedra", "A Coruña", "Ourense", "Lugo", "A Coruña", "Pontevedra", "A Coruña",
+            "A Coruña", "Pontevedra", "A Coruña", "A Coruña", "A Coruña", "Lugo", "Pontevedra",
+            "A Coruña", "A Coruña", "Pontevedra", "Pontevedra", "A Coruña", "Pontevedra", "Pontevedra",
+            "Pontevedra", "Lugo", "A Coruña", "Pontevedra", "A Coruña", "Pontevedra", "Pontevedra", "Ourense",
+            "Lugo", "A Coruña", "Lugo", "Ourense", "A Coruña", "Ourense", "Pontevedra", "Lugo", "Ourense", "Lugo",
+            "A Coruña", "Pontevedra", "A Coruña", "A Coruña", "Pontevedra", "Pontevedra", "A Coruña", "A Coruña"
     };
 
 
     static {
         Arrays.sort(localities);
-        for(int i = 0; i<localities.length; i++)
-            addItem(new PlaceItem((i+1)+"", localities[i]));
+        for (int i = 0; i < localities.length; i++)
+            addItem(new PlaceItem((i + 1) + "", localities[i], municipality[i], province[i]));
+
     }
 
     private static void addItem(PlaceItem item) {
@@ -66,10 +80,13 @@ public class PlacesContent {
         public String locality_id;
         public String locality_name;
         public String locality_municipality;
+        public String locality_province;
         String api_id;
         Details details;
 
-        public PlaceItem(String locality_id, String locality_name) {
+        public PlaceItem(String locality_id, String locality_name, String locality_municipality, String locality_province) {
+            this.locality_municipality = locality_municipality;
+            this.locality_province = locality_province;
             this.locality_id = locality_id;
             this.locality_name = locality_name;
         }
