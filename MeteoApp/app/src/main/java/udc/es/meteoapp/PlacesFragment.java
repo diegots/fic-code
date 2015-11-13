@@ -67,7 +67,7 @@ public class PlacesFragment extends Fragment {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Log.d(TAG, "GetLocalityHandler: handleMessage");
+            Log.d(TAG, "GetLocalityHandlerHMIA: handleMessage");
 
             Bundle bundle = new Bundle();
 

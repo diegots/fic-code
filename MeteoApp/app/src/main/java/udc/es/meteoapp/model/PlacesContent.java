@@ -1,9 +1,7 @@
 package udc.es.meteoapp.model;
 
-import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,27 +31,27 @@ public class PlacesContent {
 
     private static String[] localities = {
             "Vigo", "A Coruña", "Ourense", "Lugo", "Santiago de Compostela", "Pontevedra", "Ferrol",
-            "Narón", "Vilagarcía", "Oleiros", "Carballo", "Arteixo", "Praia das Catedrais", "Redondela",
-            "Culleredo", "Santa Uxía de Ribeira", "Cangas", "Marín", "Cambre", "A Estrada", "Lalín", "Moaña",
+            "O Narón", "Vilagarcía", "Oleiros", "Carballo", "Arteixo", "Praia das Catedrais", "Redondela",
+            "Culleredo", "Ponteareas", "Cangas", "Marín", "Cambre", "A Estrada", "Lalín", "Moaña",
             "Monforte de Lemos", "Boiro", "O Porriño", "Praia Carnota", "Sanxenxo", "Tui", "A Peroxa",
             "Viveiro (Santa María e Santiago)", "Praia de Sada", "Vilalba", "Verín", "Noia", "Carballiño",
             "Gondomar", "Foz", "Manzaneda", "Vigo de Sarria", "Fene", "Cambados", "Betanzos", "Ordes",
-            "Bueu", "Baiona", "Rianxo", "Laracha"
+            "Bueu", "Baiona", "Rianxo", "A Laracha"
     };
 
     private static String[] municipality = {
             "VIGO", "CORUÑA (A)", "OURENSE", "LUGO", "SANTIAGO DE COMPOSTELA", "PONTEVEDRA", "FERROL",
-            "PONTES DE GARCÍA RODRIGUEZ (AS)", "VILAGARCÍA DE AROUSA", "OLEIROS", "CARBALLO", "ARTEIXO",
-            "RIBADEO", "REDONDELA", "CULLEREDO", "RIBEIRA", "CANGAS", "MARÍN", "CAMBRE", "GONDOMAR", "LALÍN", "MOAÑA",
+            "PONTES DE GARCÍA RODRÍGUEZ (AS)","VILAGARCÍA DE AROUSA", "OLEIROS", "CARBALLO", "ARTEIXO",
+            "RIBADEO", "REDONDELA", "CULLEREDO", "PONTEAREAS", "CANGAS", "MARÍN", "CAMBRE", "GONDOMAR", "LALÍN", "MOAÑA",
             "MONFORTE DE LEMOS", "PORTO DO SON", "PORRIÑO (O)", "CARNOTA", "SANXENXO", "TUI", "PEROXA (A)", "VIVEIRO", "SADA",
             "VILALBA", "VERÍN", "NOIA", "CARBALLIÑO (O)", "GONDOMAR", "FOZ", "MANZANEDA", "SARRIA", "FENE", "CAMBADOS",
             "BETANZOS", "ORDES", "BUEU", "BAIONA", "RIANXO", "LARACHA (A)"
 
     };
 
-    private static String[] province = {"Pontevedra", "A Coruña", "Ourense", "Lugo", "A Coruña", "Pontevedra", "A Coruña",
-            "A Coruña", "Pontevedra", "A Coruña", "A Coruña", "A Coruña", "Lugo", "Pontevedra",
-            "A Coruña", "A Coruña", "Pontevedra", "Pontevedra", "A Coruña", "Pontevedra", "Pontevedra",
+    private static String[] province = {"Pontevedra", "A Coruña", "Ourense", "Lugo", "A Coruña", "Pontevedra",
+            "A Coruña", "A Coruña", "Pontevedra", "A Coruña", "A Coruña", "A Coruña", "Lugo", "Pontevedra",
+            "A Coruña", "Pontevedra", "Pontevedra", "Pontevedra", "A Coruña", "Pontevedra", "Pontevedra",
             "Pontevedra", "Lugo", "A Coruña", "Pontevedra", "A Coruña", "Pontevedra", "Pontevedra", "Ourense",
             "Lugo", "A Coruña", "Lugo", "Ourense", "A Coruña", "Ourense", "Pontevedra", "Lugo", "Ourense", "Lugo",
             "A Coruña", "Pontevedra", "A Coruña", "A Coruña", "Pontevedra", "Pontevedra", "A Coruña", "A Coruña"

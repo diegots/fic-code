@@ -104,8 +104,6 @@ public class Model {
                 + name);
         Log.d(TAG, "GetLocalityHandler: checkLocality: names are " + n);
 
-
-
         boolean m = place.locality_municipality.equalsIgnoreCase(municipality);
         Log.d(TAG, "GetLocalityHandler: checkLocality: STORED: "
                 + place.locality_municipality + " RECEIVED: " + municipality);
@@ -117,6 +115,7 @@ public class Model {
         Log.d(TAG, "GetLocalityHandler: checkLocality: provinces are " + p);
 
         Log.d(TAG, "GetLocalityHandler: checkLocality: RESULT " + ((m && n) && p));
+
         return ((m && n) && p);
     }
 

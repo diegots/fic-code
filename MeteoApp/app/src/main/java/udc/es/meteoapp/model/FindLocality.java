@@ -153,14 +153,3 @@ class FindLocality extends Thread {
     }
 }
 
-//class FindLocalityHandler extends Handler {
-//
-//    String TAG = "MeteoApp";
-//
-//    @Override
-//    public void handleMessage(Message msg) {
-//        super.handleMessage(msg);
-//        Log.d(TAG, "FindLocalityHandler: handleMessage");
-//
-//    }
-//}
