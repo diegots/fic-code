@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -27,8 +28,7 @@ public class PlacesFragment extends Fragment {
     Handler handler;
     Model model;
 
-    public PlacesFragment() {
-    }
+    public PlacesFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,8 +39,11 @@ public class PlacesFragment extends Fragment {
         model = new Model(handler);
 
         if (getArguments().containsKey(ARG_LOCALITY_ID)) {
-            mItem = PlacesContent.ITEM_MAP.get(getArguments().getString(ARG_LOCALITY_ID));
-            model.findLocality(mItem.locality_name);
+
+            Log.d(TAG, "PlacesFragment: onCreate: locality_id: " + getArguments().getString(ARG_LOCALITY_ID));
+
+            Bundle b = model.getPlaceItem(getArguments().getString(ARG_LOCALITY_ID));
+            model.findLocality(b);
         }
     }
 
@@ -64,49 +67,29 @@ public class PlacesFragment extends Fragment {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Log.d(TAG, "handleMessage: localitiesBudle");
+            Log.d(TAG, "GetLocalityHandler: handleMessage");
 
-            Bundle localitiesBudle = msg.getData();
+            Bundle bundle = new Bundle();
 
+            try {
+                bundle = model.parseLocalityData(msg.getData());
 
-            String name = localitiesBudle.get("name").toString();
-            String province = localitiesBudle.get("province").toString();
-            String municipality = localitiesBudle.get("municipality").toString();
-
-            Log.d(TAG, "handleMessage: localitiesBudle " + localitiesBudle.get("id"));
-            Log.d(TAG, "handleMessage: localitiesBudle " + localitiesBudle.get("municipality"));
-            Log.d(TAG, "handleMessage: localitiesBudle " + localitiesBudle.get("name"));
-            Log.d(TAG, "handleMessage: localitiesBudle " + localitiesBudle.get("province"));
-            Log.d(TAG, "handleMessage: localitiesBudle " + localitiesBudle.get("type"));
-
-
-            Log.d(TAG, "handleMessage: antes de iguales ");
-
-            boolean iguales = checkLocality(name, municipality, province, mItem);
-            Log.d(TAG, "handleMessage: despues de iguales " + iguales);
-
-            if (iguales) {
-                mItem.locality_municipality = municipality;
-                ((TextView) rootView.findViewById(R.id.place_municipality)).setText(mItem.locality_municipality);
+                Log.d(TAG, "GetLocalityHandler: handleMessage: valid data: "
+                        + bundle.getString("id")
+                        + bundle.getString("municipality"));
+            } catch (IllegalArgumentException e) {
+                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
             }
 
-        }
+            ((TextView) rootView.findViewById(R.id.place_name)).
+                    setText(bundle.getString("name"));
+            ((TextView) rootView.findViewById(R.id.place_municipality)).
+                    setText(bundle.getString("municipality"));
+            ((TextView) rootView.findViewById(R.id.place_province)).
+                    setText(bundle.getString("province"));
+            ((TextView) rootView.findViewById(R.id.place_type)).
+                    setText(bundle.getString("type"));
 
-        public Boolean checkLocality(String name, String municipality, String province, PlacesContent.PlaceItem place) {
-
-            boolean n = place.locality_name.equalsIgnoreCase(name);
-            Log.d(TAG, "handleMessage: place name"+ place.locality_name +" name "+ name);
-            Log.d(TAG, "handleMessage: name iguales " + n);
-
-            boolean m = place.locality_municipality.equalsIgnoreCase(municipality);
-            Log.d(TAG, "handleMessage: place municipality"+ place.locality_municipality +" municipality "+ municipality);
-            Log.d(TAG, "handleMessage: municipality iguales " + m);
-
-            boolean p = place.locality_province.equalsIgnoreCase(province);
-            Log.d(TAG, "handleMessage: place province"+ place.locality_province +" province "+ province);
-            Log.d(TAG, "handleMessage: province iguales " + p);
-
-            return (m & n & p);
         }
     }
 }
