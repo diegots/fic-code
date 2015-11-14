@@ -26,7 +26,6 @@ class FindLocality extends Thread {
     String locality_name;
     String locality_id;
     String apiKey;
-    String queryURL;
 
     public FindLocality(String threadName, Handler handler, String locality_id, String locality_name,
                         String apiKey) {
@@ -60,89 +59,95 @@ class FindLocality extends Thread {
 
     private class JSONResponseHandler{
 
-    public ArrayList<Bundle> getLocalities(HttpResponse httpResponse) throws IOException {
-        Log.d(TAG, "JSONResponseHandler: getLocalities");
+        public ArrayList<Bundle> getLocalities(HttpResponse httpResponse) throws IOException {
+            Log.d(TAG, "JSONResponseHandler: getLocalities");
 
-        ArrayList<Bundle> result = new ArrayList<>();
+            ArrayList<Bundle> result = new ArrayList<>();
 
-        String JSONResp = new BasicResponseHandler().handleResponse(httpResponse);
-        //Log.d(TAG, "JSONResponseHandler: " + JSONResp);
-        Log.d(TAG, "JSONResponseHandler: status code: " + httpResponse.getStatusLine().getStatusCode());
+            String JSONResp = new BasicResponseHandler().handleResponse(httpResponse);
+            //Log.d(TAG, "JSONResponseHandler: " + JSONResp);
+            Log.d(TAG, "JSONResponseHandler: status code: " + httpResponse.getStatusLine()
+                .getStatusCode());
 
-        JSONTokener jt = new JSONTokener(JSONResp);
-        //Log.d(TAG, "JSONResponseHandler: " + jt.toString());
+            JSONTokener jt = new JSONTokener(JSONResp);
+            //Log.d(TAG, "JSONResponseHandler: " + jt.toString());
 
-        JSONObject object;
-        JSONArray jsonArray = new JSONArray();
+            JSONObject object;
+            JSONArray jsonArray = new JSONArray();
 
-        try {
-            while (jt.more()) {
-                object = (JSONObject) jt.nextValue();
+            try {
+                while (jt.more()) {
+                    object = (JSONObject) jt.nextValue();
 
-                if(object.has("features"))
-                    jsonArray = object.getJSONArray("features");
+                    if(object.has("features"))
+                        jsonArray = object.getJSONArray("features");
 
-                for (int i = 0; i<jsonArray.length(); i++) {
-                    JSONObject tmp = (JSONObject) jsonArray.get(i);
-                    //Log.d(TAG, "JSONResponseHandler: " + tmp.toString());
+                    for (int i = 0; i<jsonArray.length(); i++) {
+                        JSONObject tmp = (JSONObject) jsonArray.get(i);
+                        //Log.d(TAG, "JSONResponseHandler: " + tmp.toString());
 
-                    if(tmp.has("properties")) {
-                        JSONObject jsonObject = tmp.getJSONObject("properties");
-                        String id = jsonObject.getString("id");
-                        String municipality = jsonObject.getString("municipality");
-                        String name = jsonObject.getString("name");
-                        String province = jsonObject.getString("province");
-                        String type = jsonObject.getString("type");
+                        if(tmp.has("properties")) {
+                            JSONObject jsonObject = tmp.getJSONObject("properties");
+                            String id = jsonObject.getString("id");
+                            String municipality = jsonObject.getString("municipality");
+                            String name = jsonObject.getString("name");
+                            String province = jsonObject.getString("province");
+                            String type = jsonObject.getString("type");
 
-                        Bundle bundle = new Bundle();
-                        bundle.putString("id", id);
-                        bundle.putString("municipality",municipality);
-                        bundle.putString("name", name);
-                        bundle.putString("province",province);
-                        bundle.putString("type",type);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("id", id);
+                            bundle.putString("municipality",municipality);
+                            bundle.putString("name", name);
+                            bundle.putString("province",province);
+                            bundle.putString("type",type);
 
-                        result.add(bundle);
-                        Log.d(TAG, "JSONResponseHandler: "
-                                + "id: " + id
-                                + " municipality:" + municipality
-                                + " name:" + name
-                                + " province:" + province
-                                + " type:" + type);
+                            result.add(bundle);
+                            Log.d(TAG, "JSONResponseHandler: "
+                                    + "id: " + id
+                                    + " municipality:" + municipality
+                                    + " name:" + name
+                                    + " province:" + province
+                                    + " type:" + type);
+                        }
                     }
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
-        return result;
+            return result;
         }
     }
 
     @Override
     public void run() {
         super.run();
-        queryURL = buildQueryURL(locality_name);
         Log.d(TAG, "FindLocality: run: looking for: '" + locality_name + "'");
+
+        String queryURL = buildQueryURL(locality_name);
 
         AndroidHttpClient client = AndroidHttpClient.newInstance("");
         HttpGet request = new HttpGet(queryURL);
-        HttpResponse response = null;
 
+        // Store locality_id, which is the internal id used to identify the PlaceItem
         Bundle bundle = new Bundle();
         bundle.putString("locality_id", locality_id);
 
-        ArrayList<Bundle> list;
-
         try {
-            response = client.execute(request);
-            JSONResponseHandler json = new JSONResponseHandler();
-            list = json.getLocalities(response);
-            //Log.d(TAG, "FindLocality: run: run - found: '" + list.get(0).get("id") + "' ID");
+            // Connect to API and execute query
+            HttpResponse response = client.execute(request);
 
+            // Parse received data
+            JSONResponseHandler json = new JSONResponseHandler();
+            ArrayList<Bundle> list = json.getLocalities(response);
+            //Log.d(TAG, "FindLocality: run: Found: '" + list.get(0).get("id") + "' ID");
+
+            // Prepare data to be sent back
             bundle.putParcelableArrayList("received_data", list);
             Message message = new Message();
             message.setData(bundle);
+
+            // Send data to main thread
             handler.sendMessage(message);
 
         } catch (ClientProtocolException e) {

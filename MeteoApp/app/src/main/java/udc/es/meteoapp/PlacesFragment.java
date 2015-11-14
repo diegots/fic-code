@@ -70,7 +70,6 @@ public class PlacesFragment extends Fragment {
             Log.d(TAG, "GetLocalityHandlerHMIA: handleMessage");
 
             Bundle bundle = new Bundle();
-            Bundle detailsBundle = new Bundle();
 
             try {
                 bundle = model.parseLocalityData(msg.getData());
@@ -104,6 +103,11 @@ public class PlacesFragment extends Fragment {
             Log.d(TAG, "RetrieveForecastHandler: handleMessage");
 
             // TODO proccess received Bundle
+            Bundle bundle = msg.getData();
+            Log.d(TAG, "RetrieveForecastHandler: handleMessage: precipitation_amount "
+                + bundle.getString("precipitation_amount"));
+            Log.d(TAG, "RetrieveForecastHandler: handleMessage: precipitation_amount_value "
+                    + bundle.getString("precipitation_amount_value"));
 
             // TODO fill TextViews with data
         }
