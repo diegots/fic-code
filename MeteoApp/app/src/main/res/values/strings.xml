@@ -1,8 +1,20 @@
 <resources>
     <string name="app_name">MeteoApp</string>
-
     <string name="place_name_tag">Name: </string>
     <string name="place_municipality_tag">Municipality: </string>
     <string name="place_province_tag">Province: </string>
     <string name="place_type_tag">Type: </string>
+    <string name ="place_sky_state_tag">Skype state: </string>
+    <string name ="place_temperature_tag">Temperature: </string>
+    <string name ="place_wind_tag">Wind: </string>
+    <string name ="place_precipitation_amount_tag">Precipitation: </string>
+    <string name ="place_relative_humidity_tag">Humidity: </string>
+    <string name ="place_cloud_area_fraction_tag">Cloud area fraction: </string>
+    <string name ="place_air_pressure_at_sea_level_tag">Air pressure at sea level: </string>
+    <string name ="place_sea_water_temperature_tag">Water temperature: </string>
+    <string name ="place_snow_level_tag">Snow level: </string>
+    <string name ="place_significative_wave_height_tag">Wave_height: </string>
+    <string name ="place_mean_wave_direction_tag">Wave_direction: </string>
+    <string name ="place_relative_peak_period_tag">Relative peak period: </string>
+    <string name ="place_sea_water_salinity_tag">Sea_water_salinity: </string>;
 </resources>
