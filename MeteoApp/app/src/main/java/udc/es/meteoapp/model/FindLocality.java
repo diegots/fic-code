@@ -149,8 +149,12 @@ class FindLocality extends Thread {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            // Explanation on why use filally:
+            // http://javabasico.osmosislatina.com/curso/progavanza2/trycatch.htm
+            client.close();
         }
-        client.close();
+
     }
 }
 

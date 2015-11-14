@@ -77,7 +77,7 @@ public class PlacesContent {
         public String locality_name;
         public String locality_municipality;
         public String locality_province;
-        String api_id;
+        public String locality_api_id;
         Details details;
 
         public PlaceItem(String locality_id, String locality_name, String locality_municipality, String locality_province) {

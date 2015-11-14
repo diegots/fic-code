@@ -12,8 +12,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
-
 import udc.es.meteoapp.model.Model;
 import udc.es.meteoapp.model.PlacesContent;
 
@@ -26,6 +24,7 @@ public class PlacesFragment extends Fragment {
     View rootView;
 
     Handler handler;
+    Handler retrieveForecastHandler;
     Model model;
 
     public PlacesFragment() {}
@@ -36,7 +35,8 @@ public class PlacesFragment extends Fragment {
         Log.d(TAG, "PlacesFragment: onCreate");
 
         handler = new GetLocalityHandler();
-        model = new Model(handler);
+        retrieveForecastHandler = new RetrieveForecastHandler();
+        model = new Model(handler, retrieveForecastHandler);
 
         if (getArguments().containsKey(ARG_LOCALITY_ID)) {
 
@@ -70,12 +70,13 @@ public class PlacesFragment extends Fragment {
             Log.d(TAG, "GetLocalityHandlerHMIA: handleMessage");
 
             Bundle bundle = new Bundle();
+            Bundle detailsBundle = new Bundle();
 
             try {
                 bundle = model.parseLocalityData(msg.getData());
 
                 Log.d(TAG, "GetLocalityHandler: handleMessage: valid data: "
-                        + bundle.getString("id")
+                        + bundle.getString("id") + ", "
                         + bundle.getString("municipality"));
             } catch (IllegalArgumentException e) {
                 Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -90,6 +91,21 @@ public class PlacesFragment extends Fragment {
             ((TextView) rootView.findViewById(R.id.place_type)).
                     setText(bundle.getString("type"));
 
+            // Now ID is known, so forecast can be retrieved
+            model.retrieveForecast(bundle.getString("id"));
+        }
+    }
+
+    class RetrieveForecastHandler extends Handler {
+        @Override
+
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Log.d(TAG, "RetrieveForecastHandler: handleMessage");
+
+            // TODO proccess received Bundle
+
+            // TODO fill TextViews with data
         }
     }
 }

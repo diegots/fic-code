@@ -1,25 +1,29 @@
 package udc.es.meteoapp.model;
 
 
-import android.graphics.AvoidXfermode;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
 import java.util.ArrayList;
 
-import udc.es.meteoapp.PlacesFragment;
-
 public class Model {
 
     String TAG = "MeteoApp";
 
-    FindLocality findLocality;
     Handler handler;
+    Handler retrieveForecastHandler;
 
-    public Model(Handler handler) {
+    public Model(Handler handler, Handler retrieveForecastHandler) {
         this.handler = handler;
+        this.retrieveForecastHandler = retrieveForecastHandler;
+    }
 
+    public void retrieveForecast(String locality_api_id) {
+        Log.d(TAG, "Model: retrieveForecast");
+        RetrieveForecast retrieveForecast = new RetrieveForecast("", retrieveForecastHandler,
+            locality_api_id);
+        retrieveForecast.start();
     }
 
     public void findLocality(Bundle item) {
@@ -27,7 +31,8 @@ public class Model {
         String name = item.getString("name");
         String id = item.getString("id");
         Log.d(TAG, "Model: findLocality: name: " + name + " id: " + id);
-        findLocality =
+
+        FindLocality findLocality =
             new FindLocality("findLocality", handler, id, name, PlacesContent.apiKey);
         findLocality.start();
     }
@@ -96,7 +101,6 @@ public class Model {
 
     private Boolean checkLocality(String name, String municipality, String province,
                                   PlacesContent.PlaceItem place) {
-
 
         boolean n = place.locality_name.equalsIgnoreCase(name);
 
