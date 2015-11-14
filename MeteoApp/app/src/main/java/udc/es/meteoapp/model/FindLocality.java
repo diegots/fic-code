@@ -150,6 +150,7 @@ class FindLocality extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        client.close();
     }
 }
 

@@ -34,7 +34,7 @@ public class PlacesContent {
             "O Narón", "Vilagarcía", "Oleiros", "Carballo", "Arteixo", "Praia das Catedrais", "Redondela",
             "Culleredo", "Ponteareas", "Cangas", "Marín", "Cambre", "A Estrada", "Lalín", "Moaña",
             "Monforte de Lemos", "Boiro", "O Porriño", "Praia Carnota", "Sanxenxo", "Tui", "A Peroxa",
-            "Viveiro (Santa María e Santiago)", "Praia de Sada", "Vilalba", "Verín", "Noia", "Carballiño",
+            "Celanova", "Praia de Sada", "Vilalba", "Verín", "Noia", "A Fonsagrada",
             "Gondomar", "Foz", "Manzaneda", "Vigo de Sarria", "Fene", "Cambados", "Betanzos", "Ordes",
             "Bueu", "Baiona", "Rianxo", "A Laracha"
     };
@@ -43,8 +43,8 @@ public class PlacesContent {
             "VIGO", "CORUÑA (A)", "OURENSE", "LUGO", "SANTIAGO DE COMPOSTELA", "PONTEVEDRA", "FERROL",
             "PONTES DE GARCÍA RODRÍGUEZ (AS)","VILAGARCÍA DE AROUSA", "OLEIROS", "CARBALLO", "ARTEIXO",
             "RIBADEO", "REDONDELA", "CULLEREDO", "PONTEAREAS", "CANGAS", "MARÍN", "CAMBRE", "GONDOMAR", "LALÍN", "MOAÑA",
-            "MONFORTE DE LEMOS", "PORTO DO SON", "PORRIÑO (O)", "CARNOTA", "SANXENXO", "TUI", "PEROXA (A)", "VIVEIRO", "SADA",
-            "VILALBA", "VERÍN", "NOIA", "CARBALLIÑO (O)", "GONDOMAR", "FOZ", "MANZANEDA", "SARRIA", "FENE", "CAMBADOS",
+            "MONFORTE DE LEMOS", "PORTO DO SON", "PORRIÑO (O)", "CARNOTA", "SANXENXO", "TUI", "PEROXA (A)", "CELANOVA", "SADA",
+            "VILALBA", "VERÍN", "NOIA", "A FONSAGRADA", "GONDOMAR", "FOZ", "MANZANEDA", "SARRIA", "FENE", "CAMBADOS",
             "BETANZOS", "ORDES", "BUEU", "BAIONA", "RIANXO", "LARACHA (A)"
 
     };
@@ -53,9 +53,10 @@ public class PlacesContent {
             "A Coruña", "A Coruña", "Pontevedra", "A Coruña", "A Coruña", "A Coruña", "Lugo", "Pontevedra",
             "A Coruña", "Pontevedra", "Pontevedra", "Pontevedra", "A Coruña", "Pontevedra", "Pontevedra",
             "Pontevedra", "Lugo", "A Coruña", "Pontevedra", "A Coruña", "Pontevedra", "Pontevedra", "Ourense",
-            "Lugo", "A Coruña", "Lugo", "Ourense", "A Coruña", "Ourense", "Pontevedra", "Lugo", "Ourense", "Lugo",
+            "Ourense", "A Coruña", "Lugo", "Ourense", "A Coruña", "Lugo", "Pontevedra", "Lugo", "Ourense", "Lugo",
             "A Coruña", "Pontevedra", "A Coruña", "A Coruña", "Pontevedra", "Pontevedra", "A Coruña", "A Coruña"
     };
+
 
     static {
         for (int i = 0; i < localities.length; i++)

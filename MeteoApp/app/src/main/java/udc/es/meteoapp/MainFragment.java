@@ -11,6 +11,11 @@ import android.widget.ListView;
 
 import android.os.Handler;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import udc.es.meteoapp.model.Model;
 import udc.es.meteoapp.model.PlacesContent;
 
@@ -47,8 +52,9 @@ public class MainFragment extends ListFragment {
         Log.d(TAG, "MainFragment: onCreate");
 
         // TODO: Change Adapter to display your locality_name
+        List<PlacesContent.PlaceItem> p = PlacesContent.ITEMS;
         setListAdapter(new ArrayAdapter<PlacesContent.PlaceItem>(getActivity(),
-            android.R.layout.simple_list_item_1, android.R.id.text1, PlacesContent.ITEMS));
+                android.R.layout.simple_list_item_1, android.R.id.text1, p));
 
 
     }
