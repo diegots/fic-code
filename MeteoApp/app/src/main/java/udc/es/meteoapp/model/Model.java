@@ -21,8 +21,8 @@ public class Model {
 
     public void retrieveForecast(String locality_api_id) {
         Log.d(TAG, "Model: retrieveForecast");
-        RetrieveForecast retrieveForecast = new RetrieveForecast("", retrieveForecastHandler,
-            locality_api_id);
+        RetrieveForecast retrieveForecast = new RetrieveForecast("retrieveForecast",
+            retrieveForecastHandler, locality_api_id, PlacesContent.apiKey);
         retrieveForecast.start();
     }
 
