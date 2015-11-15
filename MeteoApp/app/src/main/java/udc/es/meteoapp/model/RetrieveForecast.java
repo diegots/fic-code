@@ -81,18 +81,16 @@ public class RetrieveForecast extends Thread {
 
             // Parse received data
             JSONRetrieveForecasHandler jsonHandler = new JSONRetrieveForecasHandler();
-            Bundle forecast;
+            Bundle forecast = null;
             try {
                 forecast = jsonHandler.getForecast(response);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-//
-//            // Prepare data to be sent back
-//            Bundle retrievedForecast = new Bundle();
-//            retrievedForecast.putParcelableArrayList("received_data", forecast);
+
+            // Prepare data to be sent back
             Message message = new Message();
-//            message.setData(retrievedForecast);
+            message.setData(forecast);
 
             // Send data to main thread
             handler.sendMessage(message);
@@ -138,19 +136,31 @@ public class RetrieveForecast extends Thread {
                     jsonObj = days.getJSONObject(0);
 
                     JSONArray variables = jsonObj.getJSONArray("variables");
-
+                    //Log.d(TAG, "JSONResponseHandler: getForecast: variables: " + variables.length());
                     for (int i = 0; i<variables.length(); i++) {
-                        jsonObj = (JSONObject) variables.get(i);
-                        String name = jsonObj.getString("name");
+                        JSONObject var = (JSONObject) variables.get(i);
+                        String name = var.getString("name");
+                        //Log.d(TAG, "JSONResponseHandler: getForecast: variables names: " + name);
 
                         if ("precipitation_amount".equals(name)) {
-                            result = precipitation(jsonObj, result);
+                            result.putString("precipitation_amount", name);
+                            getPrecipitation(var, result);
+
                         } else if ("sky_state".equals(name)) {
+                            result.putString("sky_state", name);
+                            getSkyState(var, result);
                             Log.d(TAG, "JSONResponseHandler: getForecast: SKY_STATE");
+
                         } else if ("temperature".equals(name)) {
+                            result.putString("temperature", name);
+                            getTemperature(var, result);
                             Log.d(TAG, "JSONResponseHandler: getForecast: TEMP");
+
                         } else if ("wind".equals(name)) {
+                            result.putString("wind", name);
+                            getWind(var, result);
                             Log.d(TAG, "JSONResponseHandler: getForecast: WIND");
+
                         }
                     }
                 }
@@ -163,12 +173,40 @@ public class RetrieveForecast extends Thread {
         }
     }
 
-    private Bundle precipitation (JSONObject jsonObject, Bundle bundle) throws JSONException {
+    private void getPrecipitation (JSONObject jsonObject, Bundle bundle) throws JSONException {
+        Log.d(TAG, "JSONResponseHandler: getPrecipitation");
+
         JSONArray jsonArray = jsonObject.getJSONArray("values");
         JSONObject j = jsonArray.getJSONObject(0);
 
-        bundle.putString("precipitation_amount", "precipitation_amount");
         bundle.putString("precipitation_amount_value", j.getString("value"));
-        return bundle;
+    }
+
+    private void getSkyState(JSONObject jsonObject, Bundle bundle) throws JSONException {
+        Log.d(TAG, "JSONResponseHandler: getSkyState");
+
+        JSONArray jsonArray = jsonObject.getJSONArray("values");
+        JSONObject j = jsonArray.getJSONObject(0);
+
+        bundle.putString("sky_state_value", j.getString("value"));
+    }
+
+    private void getTemperature(JSONObject jsonObject, Bundle bundle) throws JSONException {
+        Log.d(TAG, "JSONResponseHandler: getTemperature");
+
+        JSONArray jsonArray = jsonObject.getJSONArray("values");
+        JSONObject j = jsonArray.getJSONObject(0);
+
+        bundle.putString("temperature_value", j.getString("value"));
+    }
+
+    private void getWind(JSONObject jsonObject, Bundle bundle)  throws JSONException {
+        Log.d(TAG, "JSONResponseHandler: getWind");
+
+        JSONArray jsonArray = jsonObject.getJSONArray("values");
+        JSONObject j = jsonArray.getJSONObject(0);
+
+        bundle.putString("wind_direction_value", j.getString("directionValue"));
+        bundle.putString("wind_module_value", j.getString("moduleValue"));
     }
 }

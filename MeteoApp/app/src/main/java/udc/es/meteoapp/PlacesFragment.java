@@ -109,6 +109,22 @@ public class PlacesFragment extends Fragment {
             Log.d(TAG, "RetrieveForecastHandler: handleMessage: precipitation_amount_value "
                     + bundle.getString("precipitation_amount_value"));
 
+            Log.d(TAG, "RetrieveForecastHandler: handleMessage: sky_state "
+                    + bundle.getString("sky_state"));
+            Log.d(TAG, "RetrieveForecastHandler: handleMessage: sky_state_value "
+                    + bundle.getString("sky_state_value"));
+
+            Log.d(TAG, "RetrieveForecastHandler: handleMessage: temperature "
+                    + bundle.getString("temperature"));
+            Log.d(TAG, "RetrieveForecastHandler: handleMessage: temperature_value "
+                    + bundle.getString("temperature_value"));
+
+            Log.d(TAG, "RetrieveForecastHandler: handleMessage: wind "
+                    + bundle.getString("wind"));
+            Log.d(TAG, "RetrieveForecastHandler: handleMessage: wind_direction_value "
+                    + bundle.getString("wind_direction_value"));
+            Log.d(TAG, "RetrieveForecastHandler: handleMessage: wind_module_value "
+                    + bundle.getString("wind_module_value"));
             // TODO fill TextViews with data
         }
     }
