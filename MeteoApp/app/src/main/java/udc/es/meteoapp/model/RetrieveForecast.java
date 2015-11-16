@@ -37,13 +37,15 @@ public class RetrieveForecast extends Thread {
     }
 
     private String buildQueryURL () {
-        String vars = "sky_state,temperature,wind,precipitation_amount";
+        String vars = "sky_state,temperature,wind,precipitation_amount,relative_humidity," +
+                "cloud_area_fraction,snow_level"+ ",air_pressure_at_sea_level," +
+                "significative_wave_height,relative_peak_period,mean_wave_direction," +
+                "sea_water_temperature,sea_water_salinity";
 
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); // Format any date like this
 
         long date = Calendar.getInstance().getTimeInMillis();
         String startTime = format.format(new Date(date));
-        //Log.d(TAG, "RetrieveForecast: buildQueryURL: startTime: " + startTime);
 
         // date is not currently used but needed to get a n-hour forecast, that is, just assign
         // values to delay variable accordingly
@@ -140,7 +142,7 @@ public class RetrieveForecast extends Thread {
                     for (int i = 0; i<variables.length(); i++) {
                         JSONObject var = (JSONObject) variables.get(i);
                         String name = var.getString("name");
-                        //Log.d(TAG, "JSONResponseHandler: getForecast: variables names: " + name);
+                        Log.d(TAG, "JSONResponseHandler: getForecast: variables names: " + name);
 
                         if ("precipitation_amount".equals(name)) {
                             result.putString("precipitation_amount", name);
@@ -161,7 +163,46 @@ public class RetrieveForecast extends Thread {
                             getWind(var, result);
                             Log.d(TAG, "JSONResponseHandler: getForecast: WIND");
 
+                        }else if ("snow_level".equals(name)){
+                            result.putString("snow_level", name);
+                            getSnowLevel(var, result);
+                            Log.d(TAG,"JSONResponseHandler: getForecast: snow_level");
+
+                        } else if("relative_humidity".equals(name)){
+                            result.putString("relative_humidity", name);
+                            getRelative_humidity(var, result);
+                            Log.d(TAG,"JSONResponseHandler: getForecast: relative_humidity");
+
+                        }else if("cloud_area_fraction".equals(name)){
+                            result.putString("cloud_area_fraction", name);
+                            getCloud_area_fraction(var, result);
+                            Log.d(TAG,"JSONResponseHandler: getForecast: cloud_area_fraction");
+                        }else if("air_pressure_at_sea_level".equals(name)){
+                            result.putString("air_pressure_at_sea_level", name);
+                            getCloud_area_fraction(var, result);
+                            getAir_pressure_at_sea_level(var, result);
+                        }else if("sea_water_temperature".equals(name)){
+                            result.putString("sea_water_temperature", name);
+                            getCloud_area_fraction(var, result);
+                            getSea_water_temperature(var, result);
+                        }else if("significative_wave_height".equals(name)){
+                            result.putString("significative_wave_height", name);
+                            getCloud_area_fraction(var, result);
+                            getSignificative_wave_height(var, result);
+                        }else if("mean_wave_direction".equals(name)){
+                            result.putString("mean_wave_direction", name);
+                            getCloud_area_fraction(var, result);
+                            getMean_wave_direction(var,result);
+                        }else if("relative_peak_period".equals(name)){
+                            result.putString("relative_peak_period", name);
+                            getCloud_area_fraction(var, result);
+                            getRelative_peak_period(var, result);
+                        }else if("sea_water_salinity".equals(name)){
+                            result.putString("sea_water_salinity", name);
+                            getCloud_area_fraction(var, result);
+                            getSea_water_salinity(var, result);
                         }
+
                     }
                 }
 
@@ -175,6 +216,7 @@ public class RetrieveForecast extends Thread {
 
     private void getPrecipitation (JSONObject jsonObject, Bundle bundle) throws JSONException {
         Log.d(TAG, "JSONResponseHandler: getPrecipitation");
+        bundle.putString("precipitation_amount_units", jsonObject.getString("units"));
 
         JSONArray jsonArray = jsonObject.getJSONArray("values");
         JSONObject j = jsonArray.getJSONObject(0);
@@ -187,13 +229,17 @@ public class RetrieveForecast extends Thread {
 
         JSONArray jsonArray = jsonObject.getJSONArray("values");
         JSONObject j = jsonArray.getJSONObject(0);
+        bundle.putString("sky_state_url", j.getString("iconURL"));
+        Log.d(TAG, "JSONResponseHandler: getSkyState sky_state_url " + j.getString("iconURL"));
 
         bundle.putString("sky_state_value", j.getString("value"));
+        bundle.putString("sky_state_value", j.getString("value"));
+
     }
 
     private void getTemperature(JSONObject jsonObject, Bundle bundle) throws JSONException {
         Log.d(TAG, "JSONResponseHandler: getTemperature");
-
+        bundle.putString("temperature_units", jsonObject.getString("units"));
         JSONArray jsonArray = jsonObject.getJSONArray("values");
         JSONObject j = jsonArray.getJSONObject(0);
 
@@ -202,11 +248,113 @@ public class RetrieveForecast extends Thread {
 
     private void getWind(JSONObject jsonObject, Bundle bundle)  throws JSONException {
         Log.d(TAG, "JSONResponseHandler: getWind");
+        bundle.putString("wind_module_units", jsonObject.getString("moduleUnits"));
+        bundle.putString("wind_direction_units", jsonObject.getString("directionUnits"));
+
 
         JSONArray jsonArray = jsonObject.getJSONArray("values");
         JSONObject j = jsonArray.getJSONObject(0);
 
         bundle.putString("wind_direction_value", j.getString("directionValue"));
         bundle.putString("wind_module_value", j.getString("moduleValue"));
+        bundle.putString("wind_direction_iconURL", j.getString("iconURL"));
+
+    }
+
+    private void  getSnowLevel(JSONObject jsonObject, Bundle bundle) throws JSONException{
+        Log.d(TAG, "JSONResponseHandler: getSnow_level");
+        bundle.putString("snow_level_units", jsonObject.getString("units"));
+
+        JSONArray jsonArray = jsonObject.getJSONArray("values");
+        JSONObject j = jsonArray.getJSONObject(0);
+        bundle.putString("snow_level_value", j.getString("value"));
+
+    }
+
+    private void getSnow_precipitation(JSONObject jsonObject, Bundle bundle) throws JSONException{
+        Log.d(TAG, "JSONResponseHandler: getSnow_precipitation");
+
+        JSONArray jsonArray = jsonObject.getJSONArray("values");
+        JSONObject j = jsonArray.getJSONObject(0);
+
+        bundle.putString("snow_precipitation_value", j.getString("value"));
+    }
+
+    private void getRelative_humidity(JSONObject jsonObject, Bundle bundle) throws JSONException{
+        Log.d(TAG, "JSONResponseHandler: getRelative_humidity");
+        bundle.putString("relative_humidity_units", jsonObject.getString("units"));
+        JSONArray jsonArray = jsonObject.getJSONArray("values");
+        JSONObject j = jsonArray.getJSONObject(0);
+
+        bundle.putString("relative_humidity_value", j.getString("value"));
+    }
+
+    private void getCloud_area_fraction(JSONObject jsonObject, Bundle bundle) throws JSONException{
+        Log.d(TAG, "JSONResponseHandler: getCloud_area_fraction");
+        bundle.putString("cloud_area_fraction_units", jsonObject.getString("units"));
+        JSONArray jsonArray = jsonObject.getJSONArray("values");
+        JSONObject j = jsonArray.getJSONObject(0);
+
+        bundle.putString("cloud_area_fraction_value", j.getString("value"));
+    }
+
+    /*Beach */
+    private void getAir_pressure_at_sea_level(JSONObject jsonObject, Bundle bundle) throws JSONException {
+        Log.d(TAG, "JSONResponseHandler: getAir_pressure_at_sea_level");
+        bundle.putString("air_pressure_at_sea_level_units", jsonObject.getString("units"));
+        JSONArray jsonArray = jsonObject.getJSONArray("values");
+        JSONObject j = jsonArray.getJSONObject(0);
+        bundle.putString("air_pressure_at_sea_level_value", j.getString("value"));
+    }
+
+    private void getSignificative_wave_height(JSONObject jsonObject, Bundle bundle) throws JSONException{
+        Log.d(TAG, "JSONResponseHandler: getSignificative_wave_height");
+        bundle.putString("significative_wave_height_units", jsonObject.getString("units"));
+
+        JSONArray jsonArray = jsonObject.getJSONArray("values");
+        JSONObject j = jsonArray.getJSONObject(0);
+
+        bundle.putString("significative_wave_height_value", j.getString("value"));
+    }
+
+    private void getRelative_peak_period(JSONObject jsonObject, Bundle bundle) throws JSONException{
+        Log.d(TAG, "JSONResponseHandler: getRelative_peak_period");
+        bundle.putString("relative_peak_period_units", jsonObject.getString("units"));
+
+        JSONArray jsonArray = jsonObject.getJSONArray("values");
+        JSONObject j = jsonArray.getJSONObject(0);
+
+        bundle.putString("relative_peak_period_value", j.getString("value"));
+    }
+
+    private void getMean_wave_direction(JSONObject jsonObject, Bundle bundle) throws JSONException{
+        Log.d(TAG, "JSONResponseHandler: getMean_wave_direction");
+        bundle.putString("mean_wave_direction_units", jsonObject.getString("units"));
+
+        JSONArray jsonArray = jsonObject.getJSONArray("values");
+        JSONObject j = jsonArray.getJSONObject(0);
+
+        bundle.putString("mean_wave_direction_value", j.getString("value"));
+        bundle.putString("mean_wave_direction_url", j.getString("iconURL"));
+    }
+
+    private void getSea_water_temperature(JSONObject jsonObject, Bundle bundle) throws JSONException{
+        Log.d(TAG, "JSONResponseHandler: getSea_water_temperature");
+        bundle.putString("sea_water_temperature_units", jsonObject.getString("units"));
+
+        JSONArray jsonArray = jsonObject.getJSONArray("values");
+        JSONObject j = jsonArray.getJSONObject(0);
+
+        bundle.putString("sea_water_temperature_value", j.getString("value"));
+    }
+
+    private void getSea_water_salinity(JSONObject jsonObject, Bundle bundle) throws JSONException{
+        Log.d(TAG, "JSONResponseHandler: getSea_water_salinity");
+        bundle.putString("sea_water_salinity_units", jsonObject.getString("units"));
+
+        JSONArray jsonArray = jsonObject.getJSONArray("values");
+        JSONObject j = jsonArray.getJSONObject(0);
+
+        bundle.putString("sea_water_salinity_value", j.getString("value"));
     }
 }

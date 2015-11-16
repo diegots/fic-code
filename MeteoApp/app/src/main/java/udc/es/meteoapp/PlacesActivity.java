@@ -46,5 +46,6 @@ public class PlacesActivity extends ActionBarActivity {
 
         Log.d(TAG, "PlacesActivity: onOptionsItemSelected");
         return super.onOptionsItemSelected(item);
+
     }
 }
