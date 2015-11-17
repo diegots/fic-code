@@ -244,7 +244,7 @@
             <!-- End wind Data -->
 
 
-            <!-- Wind_directiodata -->
+            <!-- Wind_directio data -->
             <ImageView
                 android:id="@+id/place_wind_direction_icon"
                 android:layout_width="32dp"
@@ -270,9 +270,9 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="1dp"
                 android:textStyle="bold"
+                android:layout_alignBottom="@+id/place_wind_direction_tag"
                 android:layout_alignTop="@+id/place_wind_direction_tag"
-                android:layout_toRightOf="@+id/sea_mean_wave_direction_tag"
-                android:layout_toEndOf="@+id/sea_mean_wave_direction_tag" />
+                android:layout_toRightOf="@+id/place_wind_direction_tag"/>
             <!-- End wind Data -->
 
             <!-- precipitation data -->
@@ -335,8 +335,11 @@
                 android:paddingLeft="1dp"
                 android:textStyle="bold"
                 android:layout_alignTop="@+id/place_relative_humidity_tag"
-                android:layout_alignLeft="@+id/place_snow_level"
-                android:layout_alignStart="@+id/place_snow_level" />
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentRight="false"
+                android:layout_alignWithParentIfMissing="false"
+                android:layout_toRightOf="@+id/place_relative_humidity_tag" />
             <!-- End humidity Data -->
 
 
@@ -524,7 +527,7 @@
                 android:text="value"
                 android:textStyle="bold"
                 android:layout_alignParentBottom="true"
-                android:layout_alignLeft="@+id/place_precipitation_amount"
+                android:layout_alignRight="@+id/place_precipitation_amount"
                 android:layout_alignStart="@+id/place_precipitation_amount"
                 android:visibility="invisible" />
 

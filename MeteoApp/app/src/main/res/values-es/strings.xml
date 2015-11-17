@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="app_name">MeteoApp</string>
+<string name="place_name_tag">Nombre </string>
+<string name="place_municipality_tag">Municipio: </string>
+<string name="place_province_tag">Provincia: </string>
+<string name="place_type_tag">Tipo: </string>
+<string name ="place_sky_state_tag">Estado del cielo </string>
+<string name ="place_temperature_tag">Temperature </string>
+<string name ="place_wind_tag">Viento: </string>
+<string name ="place_wind_direction_tag">Direccion del viento: </string>
+
+<string name ="place_precipitation_amount_tag">Precipitaciones: </string>
+<string name ="place_relative_humidity_tag">Humedad relativa: </string>
+<string name ="place_cloud_area_fraction_tag">Proporción nublada: </string>
+<string name ="place_air_pressure_at_sea_level_tag">Preción del aire: </string>
+<string name ="place_snow_level_tag">Cota de nieve: </string>
+<string name ="sea_sea_water_temperature_tag">Temperatura del agua: </string>
+<string name ="sea_significative_wave_height_tag">Altura de ola: </string>
+<string name ="sea_mean_wave_direction_tag">Dirección de la ola: </string>
+<string name ="sea_relative_peak_period_tag">Periodo punto de la ola </string>
+<string name ="sea_sea_water_salinity_tag">Salinidad: </string>
+
+<string name = "tempUnit_tag"> °C</string>
+</resources>
