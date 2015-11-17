@@ -193,21 +193,6 @@ public class PlacesFragment extends Fragment {
                         " " + bundle.getString("significative_wave_height_units"));
             }
 
-            /*relative_peak_period*/
-            String relative_peak_period_value = bundle.getString("relative_peak_period_value");
-            Log.d(TAG, "fillISeaPlaces: handleMessage: relative_peak_period_value "
-                    + relative_peak_period_value);
-
-            if (relative_peak_period_value != null) {
-
-                TextView text = (TextView) rootView.findViewById(R.id.sea_relative_peak_period);
-                TextView tag = (TextView) rootView.findViewById(R.id.sea_relative_peak_period_tag);
-
-                tag.setVisibility(View.VISIBLE);
-                text.setVisibility(View.VISIBLE);
-                text.setText(relative_peak_period_value + " " +
-                        " " + bundle.getString("relative_peak_period_units"));
-            }
 
             /*mean_wave_direction*/
             String mean_wave_direction_value = bundle.getString("mean_wave_direction_value");
@@ -218,7 +203,7 @@ public class PlacesFragment extends Fragment {
 
             if (mean_wave_direction_value != null) {
 
-                ImageView image = (ImageView) rootView.findViewById(R.id.sea_mean_wave_direction_icon2);
+                ImageView image = (ImageView) rootView.findViewById(R.id.sea_mean_wave_direction_icon);
                 TextView text = (TextView) rootView.findViewById(R.id.sea_mean_wave_direction);
                 TextView tag = (TextView) rootView.findViewById(R.id.sea_mean_wave_direction_tag);
 
@@ -260,7 +245,7 @@ public class PlacesFragment extends Fragment {
             if (sea_water_salinity_value != null) {
 
                 TextView text = (TextView) rootView.findViewById(R.id.sea_water_salinity);
-                TextView tag = (TextView) rootView.findViewById(R.id.sea_water_salinity_Tag);
+                TextView tag = (TextView) rootView.findViewById(R.id.sea_water_salinity_tag);
 
                 tag.setVisibility(View.VISIBLE);
                 text.setVisibility(View.VISIBLE);
@@ -268,8 +253,6 @@ public class PlacesFragment extends Fragment {
                         " " + bundle.getString("sea_water_salinity_units"));
 
             }
-
-
 
 
         }
@@ -287,7 +270,7 @@ public class PlacesFragment extends Fragment {
 
         public void loadWindImage(String url) {
             /*Load wind image */
-            ImageView image = (ImageView) rootView.findViewById(R.id.place_wind_direction_icon2);
+            ImageView image = (ImageView) rootView.findViewById(R.id.place_wind_direction_icon);
             new LoadImageAsyncTask(image).execute(url);
 
 

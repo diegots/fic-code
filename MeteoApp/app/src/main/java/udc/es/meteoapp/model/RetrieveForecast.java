@@ -179,27 +179,21 @@ public class RetrieveForecast extends Thread {
                             Log.d(TAG,"JSONResponseHandler: getForecast: cloud_area_fraction");
                         }else if("air_pressure_at_sea_level".equals(name)){
                             result.putString("air_pressure_at_sea_level", name);
-                            getCloud_area_fraction(var, result);
                             getAir_pressure_at_sea_level(var, result);
                         }else if("sea_water_temperature".equals(name)){
                             result.putString("sea_water_temperature", name);
-                            getCloud_area_fraction(var, result);
                             getSea_water_temperature(var, result);
                         }else if("significative_wave_height".equals(name)){
                             result.putString("significative_wave_height", name);
-                            getCloud_area_fraction(var, result);
                             getSignificative_wave_height(var, result);
                         }else if("mean_wave_direction".equals(name)){
                             result.putString("mean_wave_direction", name);
-                            getCloud_area_fraction(var, result);
                             getMean_wave_direction(var,result);
                         }else if("relative_peak_period".equals(name)){
                             result.putString("relative_peak_period", name);
-                            getCloud_area_fraction(var, result);
                             getRelative_peak_period(var, result);
                         }else if("sea_water_salinity".equals(name)){
                             result.putString("sea_water_salinity", name);
-                            getCloud_area_fraction(var, result);
                             getSea_water_salinity(var, result);
                         }
 
@@ -290,8 +284,11 @@ public class RetrieveForecast extends Thread {
     }
 
     private void getCloud_area_fraction(JSONObject jsonObject, Bundle bundle) throws JSONException{
-        Log.d(TAG, "JSONResponseHandler: getCloud_area_fraction");
+        Log.d(TAG, "JSONResponseHandler: getCloud_area_fraction ");
         bundle.putString("cloud_area_fraction_units", jsonObject.getString("units"));
+        Log.d(TAG, "JSONResponseHandler: getCloud_area_fraction UNITS " + jsonObject.getString("units"));
+
+
         JSONArray jsonArray = jsonObject.getJSONArray("values");
         JSONObject j = jsonArray.getJSONObject(0);
 

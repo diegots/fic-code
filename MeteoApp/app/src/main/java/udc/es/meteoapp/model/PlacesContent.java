@@ -57,10 +57,11 @@ public class PlacesContent {
             "A Coruña", "Pontevedra", "A Coruña", "A Coruña", "Pontevedra", "Pontevedra", "A Coruña", "A Coruña"
     };
 
-
     static {
+
         for (int i = 0; i < localities.length; i++)
             addItem(new PlaceItem((i + 1) + "", localities[i], municipality[i], province[i]));
+
 
     }
 
