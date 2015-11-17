@@ -17,7 +17,6 @@ import org.json.JSONTokener;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -37,10 +36,20 @@ public class RetrieveForecast extends Thread {
     }
 
     private String buildQueryURL () {
-        String vars = "sky_state,temperature,wind,precipitation_amount,relative_humidity," +
-                "cloud_area_fraction,snow_level"+ ",air_pressure_at_sea_level," +
-                "significative_wave_height,relative_peak_period,mean_wave_direction," +
-                "sea_water_temperature,sea_water_salinity";
+        String vars =
+            "sky_state"                 + "," +
+            "temperature"               + "," +
+            "wind"                      + "," +
+            "precipitation_amount"      + "," +
+            "relative_humidity"         + "," +
+            "cloud_area_fraction"       + "," +
+            "snow_level"                + "," +
+            "air_pressure_at_sea_level" + "," +
+            "significative_wave_height" + "," +
+            "relative_peak_period"      + "," +
+            "mean_wave_direction"       + "," +
+            "sea_water_temperature"     + "," +
+            "sea_water_salinity";
 
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); // Format any date like this
 
@@ -109,12 +118,11 @@ public class RetrieveForecast extends Thread {
         public Bundle getForecast(HttpResponse httpResponse) throws IOException, JSONException {
             Log.d(TAG, "JSONRetrieveForecasHandler: getForecast");
 
-            // ArrayList to store JSON parsed result
-            //ArrayList<Bundle> result = new ArrayList<>();
+            // Bundle to store JSON parsed result
             Bundle result = new Bundle();
 
             String JSONResp = new BasicResponseHandler().handleResponse(httpResponse);
-            //Log.d(TAG, "JSONRetrieveForecasHandler: getForecast: " + JSONResp);
+            Log.d(TAG, "JSONRetrieveForecasHandler: getForecast: " + JSONResp);
             Log.d(TAG, "JSONResponseHandler: getForecast: status code: " + httpResponse.getStatusLine()
                     .getStatusCode());
 
@@ -147,6 +155,7 @@ public class RetrieveForecast extends Thread {
                         if ("precipitation_amount".equals(name)) {
                             result.putString("precipitation_amount", name);
                             getPrecipitation(var, result);
+                            Log.d(TAG, "JSONResponseHandler: getForecast: PRECIPITATION_AMOUNT");
 
                         } else if ("sky_state".equals(name)) {
                             result.putString("sky_state", name);
@@ -163,36 +172,42 @@ public class RetrieveForecast extends Thread {
                             getWind(var, result);
                             Log.d(TAG, "JSONResponseHandler: getForecast: WIND");
 
-                        }else if ("snow_level".equals(name)){
+                        }else if ("snow_level".equals(name)) {
                             result.putString("snow_level", name);
                             getSnowLevel(var, result);
                             Log.d(TAG,"JSONResponseHandler: getForecast: snow_level");
 
-                        } else if("relative_humidity".equals(name)){
+                        } else if("relative_humidity".equals(name)) {
                             result.putString("relative_humidity", name);
                             getRelative_humidity(var, result);
                             Log.d(TAG,"JSONResponseHandler: getForecast: relative_humidity");
 
-                        }else if("cloud_area_fraction".equals(name)){
+                        }else if("cloud_area_fraction".equals(name)) {
                             result.putString("cloud_area_fraction", name);
                             getCloud_area_fraction(var, result);
                             Log.d(TAG,"JSONResponseHandler: getForecast: cloud_area_fraction");
-                        }else if("air_pressure_at_sea_level".equals(name)){
+
+                        }else if("air_pressure_at_sea_level".equals(name)) {
                             result.putString("air_pressure_at_sea_level", name);
                             getAir_pressure_at_sea_level(var, result);
-                        }else if("sea_water_temperature".equals(name)){
+
+                        } else if("sea_water_temperature".equals(name)) {
                             result.putString("sea_water_temperature", name);
                             getSea_water_temperature(var, result);
-                        }else if("significative_wave_height".equals(name)){
+
+                        } else if("significative_wave_height".equals(name)) {
                             result.putString("significative_wave_height", name);
                             getSignificative_wave_height(var, result);
-                        }else if("mean_wave_direction".equals(name)){
+
+                        } else if("mean_wave_direction".equals(name)) {
                             result.putString("mean_wave_direction", name);
                             getMean_wave_direction(var,result);
-                        }else if("relative_peak_period".equals(name)){
+
+                        } else if("relative_peak_period".equals(name)) {
                             result.putString("relative_peak_period", name);
                             getRelative_peak_period(var, result);
-                        }else if("sea_water_salinity".equals(name)){
+
+                        } else if("sea_water_salinity".equals(name)) {
                             result.putString("sea_water_salinity", name);
                             getSea_water_salinity(var, result);
                         }
@@ -208,6 +223,7 @@ public class RetrieveForecast extends Thread {
         }
     }
 
+    /* General variables */
     private void getPrecipitation (JSONObject jsonObject, Bundle bundle) throws JSONException {
         Log.d(TAG, "JSONResponseHandler: getPrecipitation");
         bundle.putString("precipitation_amount_units", jsonObject.getString("units"));
@@ -255,7 +271,7 @@ public class RetrieveForecast extends Thread {
 
     }
 
-    private void  getSnowLevel(JSONObject jsonObject, Bundle bundle) throws JSONException{
+    private void getSnowLevel(JSONObject jsonObject, Bundle bundle) throws JSONException{
         Log.d(TAG, "JSONResponseHandler: getSnow_level");
         bundle.putString("snow_level_units", jsonObject.getString("units"));
 
@@ -286,16 +302,19 @@ public class RetrieveForecast extends Thread {
     private void getCloud_area_fraction(JSONObject jsonObject, Bundle bundle) throws JSONException{
         Log.d(TAG, "JSONResponseHandler: getCloud_area_fraction ");
         bundle.putString("cloud_area_fraction_units", jsonObject.getString("units"));
-        Log.d(TAG, "JSONResponseHandler: getCloud_area_fraction UNITS " + jsonObject.getString("units"));
-
 
         JSONArray jsonArray = jsonObject.getJSONArray("values");
         JSONObject j = jsonArray.getJSONObject(0);
 
         bundle.putString("cloud_area_fraction_value", j.getString("value"));
+
+        Log.d(TAG, "JSONResponseHandler: getCloud_area_fraction units: "
+                + jsonObject.getString("units"));
+        Log.d(TAG, "JSONResponseHandler: getCloud_area_fraction value: "
+                + j.getString("value"));
     }
 
-    /*Beach */
+    /* Beach variables */
     private void getAir_pressure_at_sea_level(JSONObject jsonObject, Bundle bundle) throws JSONException {
         Log.d(TAG, "JSONResponseHandler: getAir_pressure_at_sea_level");
         bundle.putString("air_pressure_at_sea_level_units", jsonObject.getString("units"));
