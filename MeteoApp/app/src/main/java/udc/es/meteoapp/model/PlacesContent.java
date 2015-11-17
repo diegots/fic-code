@@ -29,33 +29,27 @@ public class PlacesContent {
      */
     public static Map<String, PlaceItem> ITEM_MAP = new HashMap<String, PlaceItem>();
 
-    private static String[] localities = {
-            "Vigo", "A Coruña", "Ourense", "Lugo", "Santiago de Compostela", "Pontevedra", "Ferrol",
-            "O Narón", "Vilagarcía", "Oleiros", "Carballo", "Arteixo", "Praia das Catedrais", "Redondela",
-            "Culleredo", "Ponteareas", "Cangas", "Marín", "Cambre", "A Estrada", "Lalín", "Moaña",
-            "Monforte de Lemos", "Boiro", "O Porriño", "Praia Carnota", "Sanxenxo", "Tui", "A Peroxa",
-            "Celanova", "Praia de Sada", "Vilalba", "Verín", "Noia", "A Fonsagrada",
-            "Gondomar", "Foz", "Manzaneda", "Vigo de Sarria", "Fene", "Cambados", "Betanzos", "Ordes",
-            "Bueu", "Baiona", "Rianxo", "A Laracha"
-    };
 
-    private static String[] municipality = {
-            "VIGO", "CORUÑA (A)", "OURENSE", "LUGO", "SANTIAGO DE COMPOSTELA", "PONTEVEDRA", "FERROL",
-            "PONTES DE GARCÍA RODRÍGUEZ (AS)","VILAGARCÍA DE AROUSA", "OLEIROS", "CARBALLO", "ARTEIXO",
-            "RIBADEO", "REDONDELA", "CULLEREDO", "PONTEAREAS", "CANGAS", "MARÍN", "CAMBRE", "GONDOMAR", "LALÍN", "MOAÑA",
-            "MONFORTE DE LEMOS", "PORTO DO SON", "PORRIÑO (O)", "CARNOTA", "SANXENXO", "TUI", "PEROXA (A)", "CELANOVA", "SADA",
-            "VILALBA", "VERÍN", "NOIA", "A FONSAGRADA", "GONDOMAR", "FOZ", "MANZANEDA", "SARRIA", "FENE", "CAMBADOS",
-            "BETANZOS", "ORDES", "BUEU", "BAIONA", "RIANXO", "LARACHA (A)"
+    private static String[] localities = {"A Coruña", "A Estrada", "A Fonsagrada", "A Laracha", "A Peroxa",
+            "Arteixo", "Baiona", "Betanzos", "Boiro", "Bueu", "Cambados", "Cambre", "Cangas", "Carballo",
+            "Celanova", "Culleredo", "Fene", "Ferrol", "Foz", "Gondomar", "Lalín", "Lugo", "Manzaneda", "Marín",
+            "Moaña", "Monforte de Lemos", "Noia", "O Narón", "O Porriño", "Oleiros", "Ordes", "Ourense", "Ponteareas",
+            "Pontevedra", "Praia Carnota", "Praia das Catedrais", "Praia de Sada", "Redondela", "Rianxo",
+            "Santiago de Compostela", "Sanxenxo", "Tui", "Verín", "Vigo", "Vigo de Sarria", "Vilagarcía", "Vilalba"};
 
-    };
 
-    private static String[] province = {"Pontevedra", "A Coruña", "Ourense", "Lugo", "A Coruña", "Pontevedra",
-            "A Coruña", "A Coruña", "Pontevedra", "A Coruña", "A Coruña", "A Coruña", "Lugo", "Pontevedra",
-            "A Coruña", "Pontevedra", "Pontevedra", "Pontevedra", "A Coruña", "Pontevedra", "Pontevedra",
-            "Pontevedra", "Lugo", "A Coruña", "Pontevedra", "A Coruña", "Pontevedra", "Pontevedra", "Ourense",
-            "Ourense", "A Coruña", "Lugo", "Ourense", "A Coruña", "Lugo", "Pontevedra", "Lugo", "Ourense", "Lugo",
-            "A Coruña", "Pontevedra", "A Coruña", "A Coruña", "Pontevedra", "Pontevedra", "A Coruña", "A Coruña"
-    };
+    private static String[] municipality = {"CORUÑA (A)", "GONDOMAR", "A FONSAGRADA", "LARACHA (A)", "PEROXA (A)", "ARTEIXO", "BAIONA", "BETANZOS", "PORTO DO SON", "BUEU", "CAMBADOS", "CAMBRE", "CANGAS", "CARBALLO",
+            "CELANOVA", "CULLEREDO", "FENE", "FERROL", "FOZ", "GONDOMAR", "LALÍN", "LUGO", "MANZANEDA",
+            "MARÍN", "MOAÑA", "MONFORTE DE LEMOS", "NOIA", "PONTES DE GARCÍA RODRÍGUEZ (AS)", "PORRIÑO (O)", "OLEIROS", "ORDES",
+            "OURENSE", "PONTEAREAS", "PONTEVEDRA","CARNOTA", "RIBADEO", "SADA", "REDONDELA", "RIANXO", "SANTIAGO DE COMPOSTELA",
+            "SANXENXO", "TUI", "VERÍN", "VIGO", "SARRIA", "VILAGARCÍA DE AROUSA", "VILALBA"};
+
+    private static String[] province = {"A Coruña", "Pontevedra", "Lugo", "A Coruña", "Ourense", "A Coruña", "Pontevedra",
+            "A Coruña", "A Coruña", "Pontevedra", "Pontevedra", "A Coruña", "Pontevedra", "A Coruña", "Ourense", "A Coruña",
+            "A Coruña", "A Coruña", "Lugo", "Pontevedra", "Pontevedra", "Lugo", "Ourense", "Pontevedra", "Pontevedra","Lugo",
+            "A Coruña","A Coruña", "Pontevedra", "A Coruña", "A Coruña", "Ourense", "Pontevedra", "Pontevedra", "A Coruña",
+            "Lugo", "A Coruña", "Pontevedra", "A Coruña","A Coruña", "Pontevedra", "Pontevedra", "Ourense", "Pontevedra",
+            "Lugo", "Pontevedra","Lugo"};
 
     static {
 

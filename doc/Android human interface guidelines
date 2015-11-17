@@ -1,0 +1,32 @@
+-------------------------------------------------------------------------------
+		Android Human Interface Guidelines
+-------------------------------------------------------------------------------
+
+Puntos que has comprobado y las modificaciones que fueron necesarias:
+
+1.- Los objetos reales son más divertidos que los botones y los menús: En nuestra aplicación el usuario puede
+tocar la lista y pulsar el elemento que desea, para que esta le muestre con detalle el tiempo.
+
+2.- Las imágenes son más prácticas que las palabras: En nuestra app hemos incluido imágenes, esto ayuda
+a que se pueda apreciar más los datos. 
+
+3.- Solo muéstrame lo que necesito, cuando lo necesito: En nuestro caso mostramos los campos relevantes dependiendo
+el tipo de localidad, si por ejemplo es un sitio de mar mostramos la temperatura del agua. En otros casos mostramos
+más información según lo que nos de el api. 
+
+4.- Siempre debo saber dónde me encuentro: Nuestra app cuenta con esta característica ya que se utiliza
+un patrón Master-Detail, con la consiguiente facilidad de uso.
+
+5.- Fomenta lo simple: Nuestra aplicación ya es simple, así que ya lo fomentamos.
+
+6.- Diseña para múltiples screens: Nuestra app cuenta con un screen diferente para los usuarios
+de móviles y otra screen para las tabletas. El sistemas Android carga la adecuada desde el primer
+momento en que el usuario abre la aplicación.
+
+
+En nuestra app hemos realizado la mayoría de los puntos a lo largo del desarrollo, excepto el
+caso de ordenar la lista de places, debido a que es más fácil su uso para el usuario, así si
+tiene que buscar un sitio concreto lo encuentra más rápido y de forma cómoda. 
+
+
+
