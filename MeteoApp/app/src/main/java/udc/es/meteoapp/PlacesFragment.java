@@ -117,11 +117,9 @@ public class PlacesFragment extends Fragment {
             super.handleMessage(msg);
             Log.d(TAG, "RetrieveForecastHandler: handleMessage");
 
-            // TODO proccess received Bundle
             Bundle bundle = msg.getData();
             Log.d(TAG, "RetrieveForecastHandler: handleMessage: sky_state_icon "
                     + bundle.getString("sky_state_url"));
-
 
             fillInLocality(bundle);
             fillISeaPlaces(bundle);
@@ -131,8 +129,7 @@ public class PlacesFragment extends Fragment {
 
         public void fillInLocality(Bundle bundle) {
 
-            // TODO fill TextViews with data
-             /* sky_state*/
+            /* sky_state*/
             String sky_state = bundle.getString("sky_state_value");
             String url = bundle.getString("sky_state_url");
             loadSky_state(sky_state, url);

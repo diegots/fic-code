@@ -46,8 +46,8 @@ public class Model {
         b.putString("name", pp.locality_name);
         b.putString("province", pp.locality_province);
         b.putString("municipality", pp.locality_municipality);
-        b.putString("type", pp.locality_municipality);
-        // TODO locality type is missing
+        b.putString("type", pp.locality_type);
+
         return  b;
     }
 
@@ -87,12 +87,21 @@ public class Model {
             boolean found_locality_id = checkLocality(name, municipality, province, mItem);
 
             if (found_locality_id) {
-                Log.d(TAG, "Model: parseLocalityData: FOUND");
+                Log.d(TAG, "Model: parseLocalityData: FOUND " + name);
+
+                // Save data internally
+                PlacesContent.PlaceItem pp = PlacesContent.ITEM_MAP.get(locality_name);
+                pp.locality_municipality = municipality;
+                pp.locality_province = province;
+                pp.locality_type = type;
+                pp.locality_api_id = id;
+
+                b.putString("municipality", municipality);
+                b.putString("province", province);
+                b.putString("type", type);
                 b.putString("id", id);
                 b.putString("name", name);
-                b.putString("province", province);
-                b.putString("municipality", municipality);
-                b.putString("type", type);
+
                 return b;
             }
         }

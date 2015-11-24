@@ -72,6 +72,7 @@ public class PlacesContent {
         public String locality_name;
         public String locality_municipality;
         public String locality_province;
+        public String locality_type;
         public String locality_api_id;
         Details details;
 
@@ -80,6 +81,7 @@ public class PlacesContent {
             this.locality_province = locality_province;
             this.locality_id = locality_id;
             this.locality_name = locality_name;
+            this.locality_api_id = "";
         }
 
         @Override

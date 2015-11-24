@@ -126,29 +126,59 @@ class FindLocality extends Thread {
 
         String queryURL = buildQueryURL(locality_name);
 
-        AndroidHttpClient client = AndroidHttpClient.newInstance("");
-        HttpGet request = new HttpGet(queryURL);
-
         // Store locality_id, which is the internal id used to identify the PlaceItem
         Bundle bundle = new Bundle();
         bundle.putString("locality_id", locality_id);
 
+        ArrayList<Bundle> list = null;
+
+        // The first time app is run or if data is not present
+        if (PlacesContent.ITEM_MAP.get(locality_id) != null &&
+            PlacesContent.ITEM_MAP.get(locality_id).locality_api_id.equals("")) {
+
+            list = doQueryAPI(queryURL);
+        } else {
+
+            list = new ArrayList<>();
+            Bundle localityBundle = new Bundle();
+
+            PlacesContent.PlaceItem pp = PlacesContent.ITEM_MAP.get(locality_id);
+
+            localityBundle.putString("id", pp.locality_api_id);
+            localityBundle.putString("municipality",pp.locality_municipality);
+            localityBundle.putString("name", pp.locality_name);
+            localityBundle.putString("province", pp.locality_province);
+            localityBundle.putString("type", pp.locality_type);
+            list.add(localityBundle);
+
+        }
+
+        // Prepare data to be sent back
+        bundle.putParcelableArrayList("received_data", list);
+        Message message = new Message();
+        message.setData(bundle);
+
+        // Send data to main thread
+        handler.sendMessage(message);
+
+    }
+
+    private ArrayList<Bundle> doQueryAPI(String queryURL) {
+        Log.d(TAG, "FindLocality: doQueryAPI");
+
+        // Do the query in the API
+        AndroidHttpClient client = AndroidHttpClient.newInstance("");
+        HttpGet request = new HttpGet(queryURL);
+
+        ArrayList<Bundle> list = new ArrayList<>();
         try {
             // Connect to API and execute query
             HttpResponse response = client.execute(request);
 
             // Parse received data
             JSONResponseHandler json = new JSONResponseHandler();
-            ArrayList<Bundle> list = json.getLocalities(response);
+            list = json.getLocalities(response);
             //Log.d(TAG, "FindLocality: run: Found: '" + list.get(0).get("id") + "' ID");
-
-            // Prepare data to be sent back
-            bundle.putParcelableArrayList("received_data", list);
-            Message message = new Message();
-            message.setData(bundle);
-
-            // Send data to main thread
-            handler.sendMessage(message);
 
         } catch (ClientProtocolException e) {
             e.printStackTrace();
@@ -160,6 +190,9 @@ class FindLocality extends Thread {
             client.close();
         }
 
+        return list;
     }
 }
+
+
 
