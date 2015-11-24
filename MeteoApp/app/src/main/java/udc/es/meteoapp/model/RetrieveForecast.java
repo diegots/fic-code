@@ -83,6 +83,9 @@ public class RetrieveForecast extends Thread {
 
         String queryURL = buildQueryURL();
 
+        // TODO check if stored forecast is older than one hour, if that is the case, perform
+        // TODO the query, if not, just return stored data
+
         AndroidHttpClient client = AndroidHttpClient.newInstance("");
         HttpGet request = new HttpGet(queryURL);
 
@@ -145,6 +148,10 @@ public class RetrieveForecast extends Thread {
                     JSONArray days = properties.getJSONArray("days");
                     jsonObj = days.getJSONObject(0);
 
+                    JSONObject timePeriod = jsonObj.getJSONObject("timePeriod");
+                    JSONObject begin = timePeriod.getJSONObject("begin");
+                    result.putString("precipitation_amount_value", begin.getString("timeInstant"));
+
                     JSONArray variables = jsonObj.getJSONArray("variables");
                     //Log.d(TAG, "JSONResponseHandler: getForecast: variables: " + variables.length());
                     for (int i = 0; i<variables.length(); i++) {
@@ -172,7 +179,7 @@ public class RetrieveForecast extends Thread {
                             getWind(var, result);
                             Log.d(TAG, "JSONResponseHandler: getForecast: WIND");
 
-                        }else if ("snow_level".equals(name)) {
+                        } else if ("snow_level".equals(name)) {
                             result.putString("snow_level", name);
                             getSnowLevel(var, result);
                             Log.d(TAG,"JSONResponseHandler: getForecast: snow_level");
@@ -182,12 +189,12 @@ public class RetrieveForecast extends Thread {
                             getRelative_humidity(var, result);
                             Log.d(TAG,"JSONResponseHandler: getForecast: relative_humidity");
 
-                        }else if("cloud_area_fraction".equals(name)) {
+                        } else if("cloud_area_fraction".equals(name)) {
                             result.putString("cloud_area_fraction", name);
                             getCloud_area_fraction(var, result);
                             Log.d(TAG,"JSONResponseHandler: getForecast: cloud_area_fraction");
 
-                        }else if("air_pressure_at_sea_level".equals(name)) {
+                        } else if("air_pressure_at_sea_level".equals(name)) {
                             result.putString("air_pressure_at_sea_level", name);
                             getAir_pressure_at_sea_level(var, result);
 

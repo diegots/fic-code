@@ -132,6 +132,9 @@ public class PlacesFragment extends Fragment {
             /* sky_state*/
             String sky_state = bundle.getString("sky_state_value");
             String url = bundle.getString("sky_state_url");
+
+            // TODO if forecast is NOT older than one hour, just load stored data
+            // TODO always save received image
             loadSky_state(sky_state, url);
 
             /* precipitation_amount*/
@@ -149,8 +152,12 @@ public class PlacesFragment extends Fragment {
             ((TextView) rootView.findViewById(R.id.place_wind)).
                     setText(bundle.getString("wind_module_value") +
                             " " + bundle.getString("wind_module_units"));
+
+            // TODO if forecast is NOT older than one hour, just load stored data
+            // TODO always save received image
             /*wind image */
             loadWindImage(bundle.getString("wind_direction_iconURL"));
+
             /*wind direction */
             ((TextView) rootView.findViewById(R.id.place_wind_direction)).
                     setText(bundle.getString("wind_direction_value") +
