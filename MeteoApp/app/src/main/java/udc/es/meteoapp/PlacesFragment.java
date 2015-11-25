@@ -107,7 +107,6 @@ public class PlacesFragment extends Fragment {
 
     class RetrieveForecastHandler extends Handler {
         @Override
-
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             Log.d(TAG, "RetrieveForecastHandler: handleMessage");
@@ -123,24 +122,26 @@ public class PlacesFragment extends Fragment {
 
         public void fillInLocality(Bundle bundle) {
 
-            /* sky_state*/
+            /* sky_state value */
             String sky_state = bundle.getString("sky_state_value");
+
+            /* sky_state value icon */
             String sky_state_string = bundle.getString("sky_state_string");
             Bitmap sky_state_bitmap = Utils.decodeBase64(sky_state_string);
             loadSky_state(sky_state, sky_state_bitmap);
 
-            /* precipitation_amount*/
+            /* precipitation_amount */
             ((TextView) rootView.findViewById(R.id.place_precipitation_amount)).
                     setText(bundle.getString("precipitation_amount_value")
                             + " " + bundle.getString("precipitation_amount_units"));
 
-            /* temperature*/
+            /* temperature */
             ((TextView) rootView.findViewById(R.id.place_temperature)).
                     setText(bundle.getString("temperature_value"));
-            /* Unit temperature*/
+            /* Unit temperature */
             ((TextView) rootView.findViewById(R.id.tempUnit)).
                     setText(bundle.getString("temperature_units"));
-            /* wind*/
+            /* wind */
             ((TextView) rootView.findViewById(R.id.place_wind)).
                     setText(bundle.getString("wind_module_value") +
                             " " + bundle.getString("wind_module_units"));
@@ -195,8 +196,6 @@ public class PlacesFragment extends Fragment {
             Log.d(TAG, "fillISeaPlaces: handleMessage: mean_wave_direction_value "
                     + mean_wave_direction_value);
 
-           // String url = bundle.getString("mean_wave_direction_url");
-
             if (mean_wave_direction_value != null) {
 
                 ImageView image = (ImageView) rootView.findViewById(R.id.sea_mean_wave_direction_icon);
@@ -208,8 +207,9 @@ public class PlacesFragment extends Fragment {
                 text.setVisibility(View.VISIBLE);
                 image.setVisibility(View.VISIBLE);
 
-                // TODO call model OR find image
-                //image.setImageBitmap(bitmap);
+                String wave_direction_string = bundle.getString("wave_direction_string");
+                Bitmap wave_direction_bitmap = Utils.decodeBase64(wave_direction_string);
+                image.setImageBitmap(wave_direction_bitmap);
 
                 text.setText(mean_wave_direction_value + " " +
                         " " + bundle.getString("significative_wave_height_units"));

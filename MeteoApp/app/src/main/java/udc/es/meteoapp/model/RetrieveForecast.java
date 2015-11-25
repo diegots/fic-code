@@ -18,6 +18,7 @@ import org.json.JSONTokener;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -108,7 +109,7 @@ public class RetrieveForecast extends Thread {
                 forecast = new Bundle();
                 forecast.putString("locality_id", locality_id);
             }
-        } else // There is no stored data, do the qurery
+        } else // There is no stored data, do the query
             forecast = retrieveForecast(forecast);
 
         // Prepare data to be sent back
@@ -169,15 +170,16 @@ public class RetrieveForecast extends Thread {
             else
                 throw new IOException("RetrieveForecast: forecast has no data");
 
+            //Log.d(TAG, "RetrieveForecast: retrieveForecast: url: " + forecast.getString("wind_direction_iconURL"));
             URL url_wind = new URL(forecast.getString("wind_direction_iconURL"));
             Bitmap wind_direction_bitmap = BitmapFactory.decodeStream((InputStream) url_wind.getContent());
             String wind_direction_string = Utils.encodeTobase64(wind_direction_bitmap);
             forecast.putString("wind_direction_string", wind_direction_string);
-//
-//            URL url_wave = new URL(forecast.getString("mean_wave_direction_url"));
-//            Bitmap wave_direction_bitmap = BitmapFactory.decodeStream((InputStream) url_wave.getContent());
-//            String wave_direction_string =  Utils.encodeTobase64(wave_direction_bitmap);
-//            forecast.putString("wave_direction_string", wave_direction_string);
+
+            URL url_wave = new URL(forecast.getString("mean_wave_direction_url"));
+            Bitmap wave_direction_bitmap = BitmapFactory.decodeStream((InputStream) url_wave.getContent());
+            String wave_direction_string =  Utils.encodeTobase64(wave_direction_bitmap);
+            forecast.putString("wave_direction_string", wave_direction_string);
 
             URL url_sky = new URL(forecast.getString("sky_state_url"));
             Bitmap sky_state_bitmap = BitmapFactory.decodeStream((InputStream) url_sky.getContent());
@@ -203,12 +205,7 @@ public class RetrieveForecast extends Thread {
         PlacesContent.PlaceItem pp = PlacesContent.ITEM_MAP.get(locality_id);
 
         pp.details.wind_direction_string = received_data.getString("wind_direction_string");
-
-
-
-//        String wave_direction_string = received_data.getString("wave_direction_string");
-//        pp.details.wave_direction_string = wave_direction_string;
-
+        pp.details.wave_direction_string = received_data.getString("wave_direction_string");;
         pp.details.sky_state_string = received_data.getString("sky_state_string");
 
         String timeInstant = received_data.getString("timeInstant");
@@ -320,7 +317,14 @@ public class RetrieveForecast extends Thread {
                     JSONObject properties = jsonObj.getJSONObject("properties");
 
                     JSONArray days = properties.getJSONArray("days");
-                    jsonObj = days.getJSONObject(0);
+
+                    if (days.length() == 2) {
+                        jsonObj = days.getJSONObject(1);
+                        Log.d(TAG, "JSONResponseHandler: getForecast: 1");
+                    } else {
+                        jsonObj = days.getJSONObject(0);
+                        Log.d(TAG, "JSONResponseHandler: getForecast: 0");
+                    }
 
                     JSONObject timePeriod = jsonObj.getJSONObject("timePeriod");
                     JSONObject begin = timePeriod.getJSONObject("begin");
@@ -537,21 +541,15 @@ public class RetrieveForecast extends Thread {
 
     private void getSea_water_temperature(JSONObject jsonObject, Bundle bundle) throws JSONException{
         Log.d(TAG, "JSONResponseHandler: getSea_water_temperature");
+
         bundle.putString("sea_water_temperature_units", jsonObject.getString("units"));
-
-        JSONArray jsonArray = jsonObject.getJSONArray("values");
-        JSONObject j = jsonArray.getJSONObject(0);
-
-        bundle.putString("sea_water_temperature_value", j.getString("value"));
+        bundle.putString("sea_water_temperature_value", jsonObject.getString("values"));
     }
 
     private void getSea_water_salinity(JSONObject jsonObject, Bundle bundle) throws JSONException{
         Log.d(TAG, "JSONResponseHandler: getSea_water_salinity");
+
         bundle.putString("sea_water_salinity_units", jsonObject.getString("units"));
-
-        JSONArray jsonArray = jsonObject.getJSONArray("values");
-        JSONObject j = jsonArray.getJSONObject(0);
-
-        bundle.putString("sea_water_salinity_value", j.getString("value"));
+        bundle.putString("sea_water_salinity_value", jsonObject.getString("values"));
     }
 }
