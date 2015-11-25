@@ -125,7 +125,6 @@ public class PlacesFragment extends Fragment {
 
             /* sky_state*/
             String sky_state = bundle.getString("sky_state_value");
-
             String sky_state_string = bundle.getString("sky_state_string");
             Bitmap sky_state_bitmap = Utils.decodeBase64(sky_state_string);
             loadSky_state(sky_state, sky_state_bitmap);

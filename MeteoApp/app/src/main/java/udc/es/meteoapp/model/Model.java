@@ -182,6 +182,4 @@ public class Model {
 
         return ((m && n) && p);
     }
-
-
 }
