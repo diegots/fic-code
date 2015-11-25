@@ -1,5 +1,7 @@
 package udc.es.meteoapp.model;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.http.AndroidHttpClient;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +17,8 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -165,6 +169,21 @@ public class RetrieveForecast extends Thread {
             else
                 throw new IOException("RetrieveForecast: forecast has no data");
 
+//            URL url = new URL(forecast.getString("wind_direction_iconURL"));
+//            Bitmap wind_direction_bitmap = BitmapFactory.decodeStream((InputStream) url.getContent());
+//            String wind_direction_string = Utils.encodeTobase64(wind_direction_bitmap);
+//            forecast.putString("wind_direction_string", wind_direction_string);
+//
+//            URL url_wave = new URL(forecast.getString("mean_wave_direction_url"));
+//            Bitmap wave_direction_bitmap = BitmapFactory.decodeStream((InputStream) url_wave.getContent());
+//            String wave_direction_string =  Utils.encodeTobase64(wave_direction_bitmap);
+//            forecast.putString("wave_direction_string", wave_direction_string);
+
+            URL url_sky = new URL(forecast.getString("sky_state_url"));
+            Bitmap sky_state_bitmap = BitmapFactory.decodeStream((InputStream) url_sky.getContent());
+            String sky_state_string =  Utils.encodeTobase64(sky_state_bitmap);
+            forecast.putString("sky_state_string", sky_state_string);
+
             saveForecast(forecast);
         } catch (IOException e) {
             e.printStackTrace();
@@ -182,6 +201,15 @@ public class RetrieveForecast extends Thread {
         Log.d(TAG, "RetrieveForecast: saveForecast: locality_id: " + locality_id);
 
         PlacesContent.PlaceItem pp = PlacesContent.ITEM_MAP.get(locality_id);
+
+        String wind_direction_string = received_data.getString("wind_direction_string");
+        pp.details.wind_direction_string = wind_direction_string;
+
+        String wave_direction_string = received_data.getString("wave_direction_string");
+        pp.details.wave_direction_string = wave_direction_string;
+
+        String sky_state_string = received_data.getString("sky_state_string");
+        pp.details.sky_state_string = sky_state_string;
 
         String timeInstant = received_data.getString("timeInstant");
         pp.details.timeInstant = timeInstant;
@@ -258,6 +286,8 @@ public class RetrieveForecast extends Thread {
         String sea_water_salinity_value = received_data.getString("sea_water_salinity_value");
         pp.details.sea_water_salinity_units = sea_water_salinity_units;
         pp.details.sea_water_salinity_value = sea_water_salinity_value;
+
+
     }
 
     private class JSONRetrieveForecasHandler {
@@ -390,10 +420,11 @@ public class RetrieveForecast extends Thread {
 
         JSONArray jsonArray = jsonObject.getJSONArray("values");
         JSONObject j = jsonArray.getJSONObject(0);
+
         bundle.putString("sky_state_url", j.getString("iconURL"));
+
         Log.d(TAG, "JSONResponseHandler: getSkyState sky_state_url " + j.getString("iconURL"));
 
-        bundle.putString("sky_state_value", j.getString("value"));
         bundle.putString("sky_state_value", j.getString("value"));
 
     }

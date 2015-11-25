@@ -2,9 +2,8 @@ package udc.es.meteoapp;
 
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,17 +14,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.ProgressDialog;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 import udc.es.meteoapp.model.Model;
 import udc.es.meteoapp.model.PlacesContent;
+import udc.es.meteoapp.model.Utils;
 
-import static android.graphics.BitmapFactory.*;
-import static udc.es.meteoapp.R.id.image;
 import static udc.es.meteoapp.R.id.img_place_temperature;
 
 public class PlacesFragment extends Fragment {
@@ -132,11 +125,10 @@ public class PlacesFragment extends Fragment {
 
             /* sky_state*/
             String sky_state = bundle.getString("sky_state_value");
-            String url = bundle.getString("sky_state_url");
 
-            // TODO if forecast is NOT older than one hour, just load stored data
-            // TODO always save received image
-            loadSky_state(sky_state, url);
+            String sky_state_string = bundle.getString("sky_state_string");
+            Bitmap sky_state_bitmap = Utils.decodeBase64(sky_state_string);
+            loadSky_state(sky_state, sky_state_bitmap);
 
             /* precipitation_amount*/
             ((TextView) rootView.findViewById(R.id.place_precipitation_amount)).
@@ -154,10 +146,10 @@ public class PlacesFragment extends Fragment {
                     setText(bundle.getString("wind_module_value") +
                             " " + bundle.getString("wind_module_units"));
 
-            // TODO if forecast is NOT older than one hour, just load stored data
-            // TODO always save received image
             /*wind image */
-            loadWindImage(bundle.getString("wind_direction_iconURL"));
+            String wind_direction_string = bundle.getString("wind_direction_string");
+            Bitmap wind_direction_bitmap = Utils.decodeBase64(wind_direction_string);
+            loadWindImage(wind_direction_bitmap);
 
             /*wind direction */
             ((TextView) rootView.findViewById(R.id.place_wind_direction)).
@@ -204,7 +196,7 @@ public class PlacesFragment extends Fragment {
             Log.d(TAG, "fillISeaPlaces: handleMessage: mean_wave_direction_value "
                     + mean_wave_direction_value);
 
-            String url = bundle.getString("mean_wave_direction_url");
+           // String url = bundle.getString("mean_wave_direction_url");
 
             if (mean_wave_direction_value != null) {
 
@@ -216,7 +208,10 @@ public class PlacesFragment extends Fragment {
                 tag.setVisibility(View.VISIBLE);
                 text.setVisibility(View.VISIBLE);
                 image.setVisibility(View.VISIBLE);
-                new LoadImageAsyncTask(image).execute(url);
+
+                // TODO call model OR find image
+                //image.setImageBitmap(bitmap);
+
                 text.setText(mean_wave_direction_value + " " +
                         " " + bundle.getString("significative_wave_height_units"));
             }
@@ -262,52 +257,27 @@ public class PlacesFragment extends Fragment {
 
         }
 
-        public void loadSky_state(String sky_state, String url) {
+        public void loadSky_state(String sky_state, Bitmap sky_state_image_bitmap) {
+
+
             /*State */
             ((TextView) rootView.findViewById(R.id.sky_state)).
                     setText(sky_state);
+
             /*Load image state */
             ImageView image = (ImageView) rootView.findViewById(img_place_temperature);
-            new LoadImageAsyncTask(image).execute(url);
-
+            image.setImageBitmap(sky_state_image_bitmap);
 
         }
 
-        public void loadWindImage(String url) {
+        public void loadWindImage(Bitmap wind_direction_bitmap) {
             /*Load wind image */
             ImageView image = (ImageView) rootView.findViewById(R.id.place_wind_direction_icon);
-            new LoadImageAsyncTask(image).execute(url);
-
+            image.setImageBitmap(wind_direction_bitmap);
 
         }
 
     }
 
-    private class LoadImageAsyncTask extends AsyncTask<String, String, Bitmap> {
-        private final static String TAG = "LoadImage";
-        private ImageView imageView;
-
-        public LoadImageAsyncTask(ImageView imageView) {
-            this.imageView = imageView;
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... params) {
-            Bitmap bitmap = null;
-            try {
-                URL url = new URL(params[0]);
-                bitmap = BitmapFactory.decodeStream((InputStream) url.getContent());
-
-            } catch (IOException e) {
-                Log.e(TAG, e.getMessage());
-            }
-            return bitmap;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            imageView.setImageBitmap(bitmap);
-        }
-    }
 
 }

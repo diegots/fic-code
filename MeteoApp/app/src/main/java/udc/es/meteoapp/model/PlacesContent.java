@@ -1,6 +1,11 @@
 package udc.es.meteoapp.model;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -139,9 +144,18 @@ public class PlacesContent {
 
             sea_water_salinity_units = "";
             sea_water_salinity_value = "";
+
+            wind_direction_string = "";
+            wave_direction_string = "";
+            sky_state_string = "";
+
         }
 
         public String timeInstant;
+
+        public String wind_direction_string;
+        public String wave_direction_string;
+        public String sky_state_string;
 
         public String precipitation_amount_units;
         public String precipitation_amount_value;
