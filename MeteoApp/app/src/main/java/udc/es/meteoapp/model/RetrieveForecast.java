@@ -90,41 +90,68 @@ public class RetrieveForecast extends Thread {
         super.run();
         Log.d(TAG, "RetrieveForecast: run");
 
-        String queryURL = buildQueryURL();
+        Bundle forecast = null;
 
         PlacesContent.PlaceItem pp = PlacesContent.ITEM_MAP.get(locality_id);
         String timeInstant = pp.details.timeInstant;
 
-        // There is stored data
-        if (!"".equals(timeInstant)) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZ");
-            Date date = null;
-            try {
-                date = sdf.parse(timeInstant);
-            } catch (ParseException e) {
-                Log.d(TAG, "RetrieveForecast: run: " + e.getMessage());
+        if (!"".equals(timeInstant)) { // There is stored data
+
+            if (isForecastOld(timeInstant)) // Stored data is old, do the query
+               forecast = retrieveForecast(forecast);
+
+            else { // Stored data is fresh enough, skip query
+                forecast = new Bundle();
+                forecast.putString("locality_id", locality_id);
             }
+        } else // There is no stored data, do the qurery
+            forecast = retrieveForecast(forecast);
 
-            long currentDate = Calendar.getInstance().getTimeInMillis();
-            long forecastTime = date.getTime();
-            Log.d(TAG, "RetrieveForecast: run: forecastTime: " + timeInstant);
-            Log.d(TAG, "RetrieveForecast: run: forecastTime: " + forecastTime);
-            Log.d(TAG, "RetrieveForecast: run: currentDate : " + currentDate);
-            Log.d(TAG, "RetrieveForecast: run: difference  : " + (currentDate - forecastTime));
-            Log.d(TAG, "RetrieveForecast: run: one hour    : " + 1000*60*60);
+        // Prepare data to be sent back
+        Message message = new Message();
+        message.setData(forecast);
 
+        // Send data to main thread
+        handler.sendMessage(message);
+    }
+
+    private boolean isForecastOld(String timeInstant) {
+        Log.d(TAG, "RetrieveForecast: isForecastOld");
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZ");
+        Date date = null;
+        try {
+            date = sdf.parse(timeInstant);
+        } catch (ParseException e) {
+            Log.d(TAG, "RetrieveForecast: isForecastOld: " + e.getMessage());
         }
+
+        // long forecastLimit = 1000*60*60 // one hour forecast
+        long forecastLimit = 1000*60*1; // one minute forecast
+
+        long currentDate = Calendar.getInstance().getTimeInMillis();
+        long forecastTime = date.getTime();
+        Log.d(TAG, "RetrieveForecast: isForecastOld: forecastTime : " + timeInstant);
+        Log.d(TAG, "RetrieveForecast: isForecastOld: forecastTime : " + forecastTime);
+        Log.d(TAG, "RetrieveForecast: isForecastOld: currentDate  : " + currentDate);
+        Log.d(TAG, "RetrieveForecast: isForecastOld: difference   : " + (currentDate - forecastTime));
+        Log.d(TAG, "RetrieveForecast: isForecastOld: forecastLimit: " + forecastLimit);
+
+        return (currentDate - forecastTime) > forecastLimit;
+    }
+
+    private Bundle retrieveForecast(Bundle forecast) {
+        Log.d(TAG, "RetrieveForecast: retrieveForecast");
+        String queryURL = buildQueryURL();
 
         AndroidHttpClient client = AndroidHttpClient.newInstance("");
         HttpGet request = new HttpGet(queryURL);
-
         try {
             // Connect to API and execute query
             HttpResponse response = client.execute(request);
 
             // Parse received data
             JSONRetrieveForecasHandler jsonHandler = new JSONRetrieveForecasHandler();
-            Bundle forecast = null;
 
             try {
                 forecast = jsonHandler.getForecast(response);
@@ -139,26 +166,20 @@ public class RetrieveForecast extends Thread {
                 throw new IOException("RetrieveForecast: forecast has no data");
 
             saveForecast(forecast);
-
-            // Prepare data to be sent back
-            Message message = new Message();
-            message.setData(forecast);
-
-            // Send data to main thread
-            handler.sendMessage(message);
-
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             client.close();
         }
+
+        return forecast;
     }
 
     public void saveForecast(Bundle received_data) {
-        Log.d(TAG, "Model: proccessForecast");
+        Log.d(TAG, "RetrieveForecast: saveForecast");
 
         String locality_id = received_data.getString("locality_id");
-        //Log.d(TAG, "Model: proccessForecast: locality_id: " + locality_id);
+        Log.d(TAG, "RetrieveForecast: saveForecast: locality_id: " + locality_id);
 
         PlacesContent.PlaceItem pp = PlacesContent.ITEM_MAP.get(locality_id);
 

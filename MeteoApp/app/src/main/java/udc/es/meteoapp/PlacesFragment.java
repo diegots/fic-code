@@ -120,6 +120,7 @@ public class PlacesFragment extends Fragment {
             Log.d(TAG, "RetrieveForecastHandler: handleMessage");
 
             String locality_id = (msg.getData()).getString("locality_id");
+            Log.d(TAG, "RetrieveForecastHandler: handleMessage: locality_id: " + locality_id);
             Bundle data = model.getPlaceItem(locality_id);
 
             fillInLocality(data);
