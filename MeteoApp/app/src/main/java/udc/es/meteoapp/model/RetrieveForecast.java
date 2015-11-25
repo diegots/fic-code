@@ -169,10 +169,10 @@ public class RetrieveForecast extends Thread {
             else
                 throw new IOException("RetrieveForecast: forecast has no data");
 
-//            URL url = new URL(forecast.getString("wind_direction_iconURL"));
-//            Bitmap wind_direction_bitmap = BitmapFactory.decodeStream((InputStream) url.getContent());
-//            String wind_direction_string = Utils.encodeTobase64(wind_direction_bitmap);
-//            forecast.putString("wind_direction_string", wind_direction_string);
+            URL url_wind = new URL(forecast.getString("wind_direction_iconURL"));
+            Bitmap wind_direction_bitmap = BitmapFactory.decodeStream((InputStream) url_wind.getContent());
+            String wind_direction_string = Utils.encodeTobase64(wind_direction_bitmap);
+            forecast.putString("wind_direction_string", wind_direction_string);
 //
 //            URL url_wave = new URL(forecast.getString("mean_wave_direction_url"));
 //            Bitmap wave_direction_bitmap = BitmapFactory.decodeStream((InputStream) url_wave.getContent());
@@ -202,14 +202,14 @@ public class RetrieveForecast extends Thread {
 
         PlacesContent.PlaceItem pp = PlacesContent.ITEM_MAP.get(locality_id);
 
-//        String wind_direction_string = received_data.getString("wind_direction_string");
-//        pp.details.wind_direction_string = wind_direction_string;
-//
+        pp.details.wind_direction_string = received_data.getString("wind_direction_string");
+
+
+
 //        String wave_direction_string = received_data.getString("wave_direction_string");
 //        pp.details.wave_direction_string = wave_direction_string;
 
-        String sky_state_string = received_data.getString("sky_state_string");
-        pp.details.sky_state_string = sky_state_string;
+        pp.details.sky_state_string = received_data.getString("sky_state_string");
 
         String timeInstant = received_data.getString("timeInstant");
         pp.details.timeInstant = timeInstant;

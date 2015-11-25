@@ -96,7 +96,7 @@ public class Model {
         b.putString("sea_water_temperature_value", pp.details.sea_water_salinity_value);
 
         b.putString("sky_state_string", pp.details.sky_state_string);
-        b.putString("wave_direction_string", pp.details.wave_direction_string);
+        //b.putString("wave_direction_string", pp.details.wave_direction_string);
         b.putString("wind_direction_string", pp.details.wind_direction_string);
 
         return  b;
