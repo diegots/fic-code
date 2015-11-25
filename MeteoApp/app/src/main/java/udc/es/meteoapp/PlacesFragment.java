@@ -82,10 +82,12 @@ public class PlacesFragment extends Fragment {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Log.d(TAG, "GetLocalityHandlerHMIA: handleMessage");
+            Log.d(TAG, "GetLocalityHandler: handleMessage");
+
+            // Keep internal locality ID
+            String locality_id = msg.getData().getString("locality_id");
 
             Bundle bundle = new Bundle();
-
             try {
                 bundle = model.parseLocalityData(msg.getData());
 
@@ -105,8 +107,8 @@ public class PlacesFragment extends Fragment {
             ((TextView) rootView.findViewById(R.id.place_type)).
                     setText(bundle.getString("type"));
 
-            // Now ID is known, so forecast can be retrieved
-            model.retrieveForecast(bundle.getString("id"));
+            // Now API ID is known, so forecast can be retrieved
+            model.retrieveForecast(bundle.getString("id"), locality_id);
         }
     }
 
@@ -117,15 +119,13 @@ public class PlacesFragment extends Fragment {
             super.handleMessage(msg);
             Log.d(TAG, "RetrieveForecastHandler: handleMessage");
 
-            Bundle bundle = msg.getData();
-            Log.d(TAG, "RetrieveForecastHandler: handleMessage: sky_state_icon "
-                    + bundle.getString("sky_state_url"));
+            String locality_id = (msg.getData()).getString("locality_id");
+            Bundle data = model.getPlaceItem(locality_id);
 
-            fillInLocality(bundle);
-            fillISeaPlaces(bundle);
+            fillInLocality(data);
+            fillISeaPlaces(data);
 
         }
-
 
         public void fillInLocality(Bundle bundle) {
 

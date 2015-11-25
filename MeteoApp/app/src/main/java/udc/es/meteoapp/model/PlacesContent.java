@@ -82,6 +82,7 @@ public class PlacesContent {
             this.locality_id = locality_id;
             this.locality_name = locality_name;
             this.locality_api_id = "";
+            this.details = new Details();
         }
 
         @Override
@@ -92,19 +93,97 @@ public class PlacesContent {
     }
 
     public static class Details {
-        public String sky_state;
-        public String temperature;
-        public String wind;
-        public String precipitation_amount;
-        public String relative_humidity;
-        public String cloud_area_fraction;
-        public String air_pressure_at_sea_level;
-        public String snow_level;
-        public String sea_water_temperature;
-        public String significative_wave_height;
-        public String mean_wave_direction;
-        public String relative_peak_period;
-        public String sea_water_salinity;
+        public Details() {
 
+            timeInstant = "";
+
+            precipitation_amount_units = "";
+            precipitation_amount_value = "";
+
+            sky_state_url = "";
+            sky_state_value = "";
+
+            temperature_units = "";
+            temperature_value = "";
+
+            wind_module_units = "";
+            wind_direction_units = "";
+            wind_direction_value = "";
+            wind_module_value = "";
+            wind_direction_iconURL = "";
+
+            snow_level_units = "";
+            snow_level_value = "";
+
+            relative_humidity_units = "";
+            relative_humidity_value = "";
+
+            cloud_area_fraction_units = "";
+            cloud_area_fraction_value = "";
+
+            air_pressure_at_sea_level_units = "";
+            air_pressure_at_sea_level_value = "";
+
+            significative_wave_height_units = "";
+            significative_wave_height_value = "";
+
+            relative_peak_period_units = "";
+            relative_peak_period_value = "";
+
+            mean_wave_direction_units = "";
+            mean_wave_direction_value = "";
+            mean_wave_direction_url = "";
+
+            sea_water_temperature_units = "";
+            sea_water_temperature_value = "";
+
+            sea_water_salinity_units = "";
+            sea_water_salinity_value = "";
+        }
+
+        public String timeInstant;
+
+        public String precipitation_amount_units;
+        public String precipitation_amount_value;
+
+        public String sky_state_url;
+        public String sky_state_value;
+
+        public String temperature_units;
+        public String temperature_value;
+
+        public String wind_module_units;
+        public String wind_direction_units;
+        public String wind_direction_value;
+        public String wind_module_value;
+        public String wind_direction_iconURL;
+
+        public String snow_level_units;
+        public String snow_level_value;
+
+        public String relative_humidity_units;
+        public String relative_humidity_value;
+
+        public String cloud_area_fraction_units;
+        public String cloud_area_fraction_value;
+
+        public String air_pressure_at_sea_level_units;
+        public String air_pressure_at_sea_level_value;
+
+        public String significative_wave_height_units;
+        public String significative_wave_height_value;
+
+        public String relative_peak_period_units;
+        public String relative_peak_period_value;
+
+        public String mean_wave_direction_units;
+        public String mean_wave_direction_value;
+        public String mean_wave_direction_url;
+
+        public String sea_water_temperature_units;
+        public String sea_water_temperature_value;
+
+        public String sea_water_salinity_units;
+        public String sea_water_salinity_value;
     }
 }

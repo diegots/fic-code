@@ -19,10 +19,14 @@ public class Model {
         this.retrieveForecastHandler = retrieveForecastHandler;
     }
 
-    public void retrieveForecast(String locality_api_id) {
+    public void retrieveForecast(String locality_api_id, String locality_id) {
         Log.d(TAG, "Model: retrieveForecast");
-        RetrieveForecast retrieveForecast = new RetrieveForecast("retrieveForecast",
-            retrieveForecastHandler, locality_api_id, PlacesContent.apiKey);
+        RetrieveForecast retrieveForecast = new RetrieveForecast(
+            "retrieveForecast",
+            retrieveForecastHandler,
+            locality_api_id,
+            PlacesContent.apiKey,
+            locality_id);
         retrieveForecast.start();
     }
 
@@ -47,6 +51,49 @@ public class Model {
         b.putString("province", pp.locality_province);
         b.putString("municipality", pp.locality_municipality);
         b.putString("type", pp.locality_type);
+
+        b.putString("precipitation_amount_units", pp.details.precipitation_amount_units);
+        b.putString("precipitation_amount_value", pp.details.precipitation_amount_value);
+
+        b.putString("sky_state_url", pp.details.sky_state_url);
+        b.putString("sky_state_value", pp.details.sky_state_value);
+
+        b.putString("temperature_units", pp.details.temperature_units);
+        b.putString("temperature_value", pp.details.temperature_value);
+
+        b.putString("wind_module_units", pp.details.wind_module_units);
+        b.putString("wind_direction_units", pp.details.wind_direction_units);
+        b.putString("wind_direction_value", pp.details.wind_direction_value);
+        b.putString("wind_module_value", pp.details.wind_module_value);
+        b.putString("wind_direction_iconURL", pp.details.wind_direction_iconURL);
+
+        b.putString("snow_level_units", pp.details.snow_level_units);
+        b.putString("snow_level_value", pp.details.snow_level_value);
+
+        b.putString("relative_humidity_units", pp.details.relative_humidity_units);
+        b.putString("relative_humidity_value", pp.details.relative_humidity_value);
+
+        b.putString("cloud_area_fraction_units", pp.details.cloud_area_fraction_units);
+        b.putString("cloud_area_fraction_value", pp.details.cloud_area_fraction_value);
+
+        b.putString("air_pressure_at_sea_level_units", pp.details.air_pressure_at_sea_level_units);
+        b.putString("air_pressure_at_sea_level_value", pp.details.air_pressure_at_sea_level_value);
+
+        b.putString("significative_wave_height_units", pp.details.significative_wave_height_units);
+        b.putString("significative_wave_height_value", pp.details.significative_wave_height_value);
+
+        b.putString("relative_peak_period_units", pp.details.relative_peak_period_units);
+        b.putString("relative_peak_period_value", pp.details.relative_peak_period_value);
+
+        b.putString("mean_wave_direction_units", pp.details.mean_wave_direction_units);
+        b.putString("mean_wave_direction_value", pp.details.mean_wave_direction_value);
+        b.putString("mean_wave_direction_url", pp.details.mean_wave_direction_url);
+
+        b.putString("sea_water_temperature_units", pp.details.sea_water_temperature_units);
+        b.putString("sea_water_temperature_value", pp.details.sea_water_temperature_value);
+
+        b.putString("sea_water_temperature_units", pp.details.sea_water_salinity_units);
+        b.putString("sea_water_temperature_value", pp.details.sea_water_salinity_value);
 
         return  b;
     }
