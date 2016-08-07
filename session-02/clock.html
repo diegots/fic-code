@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>	
+        <meta charset="utf-8">
+        <title>Title</title>
+    </head>	
+    <body>
+        <canvas id="myCanvas" width="350" height="350">
+        <!-- <canvas id="myCanvas" width="350" height="320" style="border:1px 
+            solid #000000;"> Do not want any border -->
+            Your browser does not support the HTML5 canvas tag.
+        </canvas>
+
+        <script>
+            function draw_hand(canvas, length, thickness, time, isHour) {
+                var ctx = canvas.getContext("2d");
+                var canvas_width = ctx.canvas.clientWidth;
+                var canvas_height = ctx.canvas.clientHeight;
+
+                var x0 = canvas_width / 2;
+                var y0 = canvas_height / 2;
+
+                var angle;
+                if (isHour) {
+                    angle = 2 * Math.PI / 12 * (time % 12);
+                    ctx.strokeStyle = "red";
+                } else {
+                    angle = 2 * Math.PI / 60 * time;
+                    ctx.strokeStyle = "grey";
+                }
+
+                var x1 = x0 + length * Math.sin(angle);
+                var y1 = y0 - length * Math.cos(angle);
+
+                ctx.lineWidth = thickness;
+                ctx.beginPath();
+                ctx.moveTo(x0,y0);
+                ctx.lineTo(x1,y1);
+                ctx.stroke(); 
+            }
+
+            function draw_frame (canvas) {
+                var ctx = canvas.getContext("2d");
+                var canvas_width = ctx.canvas.clientWidth;
+                var canvas_height = ctx.canvas.clientHeight;
+                var border = 10;
+
+                ctx.clearRect(0, 0, 350, 350);
+                ctx.fillStyle = "rgba(0,0,255,0.3)";
+                ctx.beginPath();
+                ctx.fillRect(0,0,canvas_width,canvas_height);
+                ctx.clearRect(border,border,canvas_width-border*2,canvas_height-border*2);
+            }
+
+            function draw_numbers (canvas) {
+                var ctx = canvas.getContext("2d");
+                var canvas_width = ctx.canvas.clientWidth;
+                var canvas_height = ctx.canvas.clientHeight;
+
+                var i;
+                var length = 140;
+                var x, y;
+                var angle;
+                var x0 = canvas_width / 2;
+                var y0 = canvas_height / 2;
+
+                ctx.fillStyle = "rgba(0,0,255,0.9)";
+                ctx.font = "24px serif";
+                for (i=1; i<=12; i++) {
+                    angle = 2 * Math.PI / 12 * i;
+
+                    x = x0 + length * Math.sin(angle);
+                    y = y0 - length * Math.cos(angle);
+                    ctx.fillText(i, x, y);
+                }
+
+            }
+
+            var canvas = document.getElementById("myCanvas");
+
+            const FPS = 24;
+            setInterval(function() {
+                var _date = new Date();
+                draw_frame(canvas);
+                draw_numbers(canvas);
+                draw_hand(canvas, 130, 0.5, _date.getSeconds()+_date.getMilliseconds()/1000, false);
+                draw_hand(canvas, 90, 3, _date.getMinutes(), false);
+                draw_hand(canvas, 60, 7, _date.getHours()+_date.getMinutes()/60, true);
+                console.log(_date.getSeconds);
+            }, 1000/FPS);
+
+        </script>
+    </body>
+</html>

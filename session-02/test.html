@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>	
+        <meta charset="utf-8">
+        <title>Title</title>
+    </head>	
+    <body>
+        <script>
+            function fu (element, index, ar) {
+                var i;
+                console.log("Element: " + element + ", index: " + index + ", this: " + this);
+                ar[index] += this;
+                console.log("element after: " + ar[index]);
+            }
+
+            function fo (l, input, syms) {
+                if (l>0) {
+                    for (i=0; i<syms.length; i++) {
+                        input.forEach(fu, syms[i]);
+                    }
+                    return f(l-1, input, syms);
+                } else {
+                    return input;
+                }
+            }
+
+            function f (l, syms) {
+                var a = [];
+                var i;
+                for (i=0; i<syms.length; i++) {
+                    a.push(syms[i]);
+                }
+                return fo (l-1, a, syms);
+            }   
+
+            var a = f(2, ["a", "b"]);
+            console.log(a);
+        </script>
+    </body>
+</html>
