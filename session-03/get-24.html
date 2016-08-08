@@ -6,6 +6,10 @@
     </head>	
     <body>
         <script>
+            /* **************************************************************   
+               *************** Generate alphabet ****************************
+             * ************************************************************** */
+
             /* Recursive version
              * recursive_alg and helper constructs the set of values using recursion
              */
@@ -53,18 +57,31 @@
                     return input;
             }
 
-            /* Main function that builds the set */
-            function get_24_sol (l, syms) {
+            /* Main function that builds the alphabet set */
+            function generate_language_set (l, syms) {
                 var a = [];
                 for (var i=0; i<syms.length; i++) {
                     a.push(syms[i]);
                 }
 
-                // Choose either an recursive algorithm or one based on numbering system properties:
-                //return recursive_alg (l-1, a, syms);
-                a = [];
-                //return base_6_alg (l, a, syms);
+                /* Choose either an recursive algorithm or one based on numbering
+                 * system properties: */
+                return recursive_alg (l-1, a, syms);
+                // return base_6_alg (l, (a = []), syms);
             }   
+
+            /* **************************************************************   
+               *************** Evaluate alphabet ****************************
+             * ************************************************************** */
+
+            /* Evaluate alphabet */
+            function evaluate_language_set (alph) {
+
+            }
+
+            /* **************************************************************   
+               *************** Set parameters and solve problem *************
+             * ************************************************************** */
 
             /* Obtain any set of words of any length. Just define the desired 
              * alphabet and the words length below. */
@@ -74,13 +91,13 @@
             /* Not strictly necessary but machine time is retrieved to calculate
              * how it takes to calculate the set of numbers */
             var d0 = Date.now();
-            var a = get_24_sol(words_length, alphabet);
+            var a = generate_language_set (words_length, alphabet);
             var d1 = Date.now();
-            var str = "hello";
 
             /* Outputs time to console */
             console.log("To generate " + a.length + " elements took " + (d1 - d0) + " miliseconds.");
-            console.log("First element is: " + a[0] + " . And the last one: " + a[a.length-1]);
+            console.log("First element is: " + a[0] + ", last one: " + a[a.length-1]);
+            console.log(typeof(1 + "1") + " is: " + (1 * "1"));
             
         </script>
     </body>
