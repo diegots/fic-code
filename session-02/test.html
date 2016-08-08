@@ -7,34 +7,40 @@
     <body>
         <script>
             function fu (element, index, ar) {
-                var i;
-                console.log("Element: " + element + ", index: " + index + ", this: " + this);
-                ar[index] += this;
-                console.log("element after: " + ar[index]);
+                for (var i=0; i<this.length; i++) {
+                    ar.push(element + this[i]);
+                    ar[index] = "";
+                }
             }
 
             function fo (l, input, syms) {
                 if (l>0) {
-                    for (i=0; i<syms.length; i++) {
-                        input.forEach(fu, syms[i]);
-                    }
-                    return f(l-1, input, syms);
-                } else {
-                    return input;
-                }
+                    var _l = input.length;
+                    input.forEach(fu, syms);
+                    input.splice(0, _l);
+
+                    return fo(l-1, input, syms);
+
+                } else { return input; }
             }
 
             function f (l, syms) {
                 var a = [];
-                var i;
-                for (i=0; i<syms.length; i++) {
+                for (var i=0; i<syms.length; i++) {
                     a.push(syms[i]);
                 }
                 return fo (l-1, a, syms);
             }   
 
-            var a = f(2, ["a", "b"]);
-            console.log(a);
+            var alphabet = ["3", "8", "+", "-", "*", "/"];
+            var words_length = 7;
+
+            var d0 = Date.now();
+            var a = f(words_length, alphabet);
+            var d1 = Date.now();
+            console.log("To generate " + a.length + " elements took " + (d1 - d0) + " miliseconds.");
+            console.log("First element is: " + a[0] + " . And the last one: " + a[a.length-1]);
+            
         </script>
     </body>
 </html>
