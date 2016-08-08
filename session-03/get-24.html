@@ -6,6 +6,9 @@
     </head>	
     <body>
         <script>
+            /* Recursive version
+             * recursive_alg and helper constructs the set of values using recursion
+             */
             function helper (element, index, ar) {
                 for (var i=0; i<this.length; i++) {
                     ar.push(element + this[i]);
@@ -23,21 +26,59 @@
 
                 } else { return input; }
             }
+            /* End of the recursive version */
 
+            /* Easier solution using base 6 numbering */
+            function base_6_alg (l, input, syms) {
+                    var n_elemts = Math.pow (syms.length, l); // Number of elements in the language.
+                    var n_syms = syms.length;
+                    input = new Array(n_elemts); 
+                    var j;
+
+                    for (var i=0; i<n_elemts; i++) {
+                         /* Builds string of length l on the array to store language words */
+                        input[i] = i.toString(6);
+                        while(input[i].length < l) {
+                            input[i] = "0" + input[i];
+                        }
+
+                        /* Generate language words from the initialized base syms.length values */
+                        var tmp = new Array (l); 
+                        for (j=0; j<input[i].length; j++) {
+                            tmp[j] = syms[input[i][j]];
+                        }
+                        input[i] = tmp.join("");
+                    }
+                     
+                    return input;
+            }
+
+            /* Main function that builds the set */
             function get_24_sol (l, syms) {
                 var a = [];
                 for (var i=0; i<syms.length; i++) {
                     a.push(syms[i]);
                 }
-                return recursive_alg (l-1, a, syms);
+
+                // Choose either an recursive algorithm or one based on numbering system properties:
+                //return recursive_alg (l-1, a, syms);
+                a = [];
+                //return base_6_alg (l, a, syms);
             }   
 
+            /* Obtain any set of words of any length. Just define the desired 
+             * alphabet and the words length below. */
             var alphabet = ["3", "8", "+", "-", "*", "/"];
             var words_length = 7;
 
+            /* Not strictly necessary but machine time is retrieved to calculate
+             * how it takes to calculate the set of numbers */
             var d0 = Date.now();
             var a = get_24_sol(words_length, alphabet);
             var d1 = Date.now();
+            var str = "hello";
+
+            /* Outputs time to console */
             console.log("To generate " + a.length + " elements took " + (d1 - d0) + " miliseconds.");
             console.log("First element is: " + a[0] + " . And the last one: " + a[a.length-1]);
             
