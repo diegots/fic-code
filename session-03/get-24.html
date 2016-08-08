@@ -2,41 +2,41 @@
 <html lang="en">
     <head>	
         <meta charset="utf-8">
-        <title>Title</title>
+        <title>Get 24 problem</title>
     </head>	
     <body>
         <script>
-            function fu (element, index, ar) {
+            function helper (element, index, ar) {
                 for (var i=0; i<this.length; i++) {
                     ar.push(element + this[i]);
                     ar[index] = "";
                 }
             }
 
-            function fo (l, input, syms) {
+            function recursive_alg (l, input, syms) {
                 if (l>0) {
                     var _l = input.length;
-                    input.forEach(fu, syms);
+                    input.forEach(helper, syms);
                     input.splice(0, _l);
 
-                    return fo(l-1, input, syms);
+                    return recursive_alg(l-1, input, syms);
 
                 } else { return input; }
             }
 
-            function f (l, syms) {
+            function get_24_sol (l, syms) {
                 var a = [];
                 for (var i=0; i<syms.length; i++) {
                     a.push(syms[i]);
                 }
-                return fo (l-1, a, syms);
+                return recursive_alg (l-1, a, syms);
             }   
 
             var alphabet = ["3", "8", "+", "-", "*", "/"];
             var words_length = 7;
 
             var d0 = Date.now();
-            var a = f(words_length, alphabet);
+            var a = get_24_sol(words_length, alphabet);
             var d1 = Date.now();
             console.log("To generate " + a.length + " elements took " + (d1 - d0) + " miliseconds.");
             console.log("First element is: " + a[0] + " . And the last one: " + a[a.length-1]);
