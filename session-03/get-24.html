@@ -78,15 +78,32 @@
             function evaluate_language_set (alphabet) {
                 var counter_3s, counter_8s, counter_ops;
                 var stack = [];
-                var i, j;
-                var tmp = 0;
+                var character = 0;
+                var solution = "";
+                var i=0, j=0;
+                const WORD_LENGTH = alphabet[0].length;
 
-                for (i=0; i<alphabet.length; i++) {
-                    tmp++; 
+                //for (i=0; i<alphabet.length; i++) {
+                for (i=16993; i<16994; i++) {
+                    solution = "";
+                    counter_3s = 0;
+                    counter_8s = 0;
+                    counter_ops = 0;
+
+                    console.log("word: " + alphabet[i]);
+                    for (j=0; j<WORD_LENGTH; j++) {
+                        character = alphabet[i][j] * 1;
+                        if (character !== character) { // Checks if character is NaN, so it's operand
+                            console.log("operate value: " + alphabet[i][j])
+                        } else { // character is a number
+                            stack.push(character);
+                            console.log("pushing char: " + character)
+                        }
+                        console.log("stack: " + stack);
+                    }
                 }
-                console.log (tmp);
 
-                return "";
+                return solution;
             }
 
             /* **************************************************************   
