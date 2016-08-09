@@ -74,6 +74,13 @@
                *************** Evaluate alphabet ****************************
              * ************************************************************** */
 
+            function eval_helper_operate(v0, v1, oper) {
+                if (oper == "+") return v0 + v1;
+                else if (oper == "-") return v0 - v1;
+                else if (oper == "*") return v0 * v1; 
+                else if (oper == "/") return v0 / v1;
+            }
+
             /* Evaluate alphabet */
             function evaluate_language_set (alphabet) {
                 var counter_3s, counter_8s, counter_ops;
@@ -81,25 +88,50 @@
                 var character = 0;
                 var solution = "";
                 var i=0, j=0;
+                var v0=0, v1=0, v=0;
                 const WORD_LENGTH = alphabet[0].length;
 
                 //for (i=0; i<alphabet.length; i++) {
-                for (i=16993; i<16994; i++) {
+                for (i=11093; i<11094; i++) {
                     solution = "";
                     counter_3s = 0;
                     counter_8s = 0;
                     counter_ops = 0;
+                    stack = [];
+                    v0 = 0; 
+                    v1 = 0;
 
                     console.log("word: " + alphabet[i]);
                     for (j=0; j<WORD_LENGTH; j++) {
+                        solution += alphabet[i][j];
                         character = alphabet[i][j] * 1;
-                        if (character !== character) { // Checks if character is NaN, so it's operand
-                            console.log("operate value: " + alphabet[i][j])
+
+                        if (character !== character) { // Checks if character is NaN, so it's an operand
+                            console.log("operate value: " + alphabet[i][j]);
+                            v0 = stack.pop();
+                            v1 = stack.pop();
+
+                            if (v0 != undefined && v1 != undefined) { // stack has at least two elements
+                                v = eval_helper_operate (v0, v1, alphabet[i][j]);
+                                if (v !== v){ // Don't put NaN into stack
+                                    console.log("Nan");
+                                    break;
+                                } else stack.push(v); 
+
+                            } else {
+                                console.log("Some undefined"); 
+                                break; // Not valid word
+                            }
+                            
+
                         } else { // character is a number
                             stack.push(character);
-                            console.log("pushing char: " + character)
+                            console.log("pushing char: " + character);
                         }
+
                         console.log("stack: " + stack);
+
+                        // Rules
                     }
                 }
 
