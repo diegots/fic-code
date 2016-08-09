@@ -83,7 +83,7 @@
 
             /* Evaluate alphabet */
             function evaluate_language_set (alphabet) {
-                var counter_3s, counter_8s, counter_ops;
+                var counter_3s=0, counter_8s=0;
                 var stack = [];
                 var character = 0;
                 var solution = "";
@@ -91,51 +91,57 @@
                 var v0=0, v1=0, v=0;
                 const WORD_LENGTH = alphabet[0].length;
 
-                //for (i=0; i<alphabet.length; i++) {
-                for (i=11093; i<11094; i++) {
-                    solution = "";
+                for (i=0; i<alphabet.length; i++) {
+               // for (i=11093; i<11094; i++) {
+                    // Rules
+                    if ( stack.length == 1 
+                    && Math.round(stack) == 24
+                    && counter_3s == 2
+                    && counter_8s == 2 )
+                        console.log(solution + " : " + stack);
+
+                    solution = ""; // Clean all variables
                     counter_3s = 0;
                     counter_8s = 0;
-                    counter_ops = 0;
                     stack = [];
                     v0 = 0; 
                     v1 = 0;
 
-                    console.log("word: " + alphabet[i]);
+                    //console.log("word: " + alphabet[i]);
                     for (j=0; j<WORD_LENGTH; j++) {
                         solution += alphabet[i][j];
                         character = alphabet[i][j] * 1;
 
                         if (character !== character) { // Checks if character is NaN, so it's an operand
-                            console.log("operate value: " + alphabet[i][j]);
+                            //console.log("operate value: " + alphabet[i][j]);
                             v0 = stack.pop();
                             v1 = stack.pop();
 
                             if (v0 != undefined && v1 != undefined) { // stack has at least two elements
                                 v = eval_helper_operate (v0, v1, alphabet[i][j]);
                                 if (v !== v){ // Don't put NaN into stack
-                                    console.log("Nan");
+                                    //console.log("Nan");
                                     break;
                                 } else stack.push(v); 
 
                             } else {
-                                console.log("Some undefined"); 
+                                //console.log("Some undefined"); 
                                 break; // Not valid word
                             }
                             
 
                         } else { // character is a number
+                            if (character == 3) counter_3s++;
+                            else counter_8s++;
+
                             stack.push(character);
-                            console.log("pushing char: " + character);
+                            //console.log("pushing char: " + character);
                         }
 
-                        console.log("stack: " + stack);
-
-                        // Rules
+                        //console.log("stack: " + stack);
                     }
                 }
-
-                return solution;
+                return "";
             }
 
             /* **************************************************************   
