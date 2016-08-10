@@ -13,6 +13,18 @@
             /* Recursive version
              * recursive_alg and helper constructs the set of values using recursion
              */
+
+            function decimal_to_b6 (decinal_number) {
+                var result = "";
+
+                while (decinal_number >= 1) {
+                    result = decinal_number % 6 + result;
+                    decinal_number = Math.floor(decinal_number / 6); 
+                }
+
+                return result;
+            }
+
             function helper (element, index, ar) {
                 for (var i=0; i<this.length; i++) {
                     ar.push(element + this[i]);
@@ -41,7 +53,12 @@
 
                     for (var i=0; i<n_elemts; i++) {
                          /* Builds string of length l on the array to store language words */
-                        input[i] = i.toString(6);
+
+                        // Two options. Convert to base 6 with toString() method
+                        // or decimal_to_b6() function.
+                        //input[i] = i.toString(6);
+                        input[i] = decimal_to_b6(i);
+
                         while(input[i].length < l) {
                             input[i] = "0" + input[i];
                         }
@@ -66,8 +83,8 @@
 
                 /* Choose either an recursive algorithm or one based on numbering
                  * system properties: */
-                return recursive_alg (l-1, a, syms);
-                // return base_6_alg (l, (a = []), syms);
+                // return recursive_alg (l-1, a, syms);
+                return base_6_alg (l, (a = []), syms);
             }   
 
             /* **************************************************************   
