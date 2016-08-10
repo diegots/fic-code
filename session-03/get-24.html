@@ -99,10 +99,10 @@
                     && counter_8s == 2 ) {
 
                         const delta = 0.00000001;
-                        if ((stack) > 24) {
+                        if ((stack) >= 24) {
                             if ((stack - 24) < delta)
                                 return solution;
-                        } else if ((24 - stack) > delta ) 
+                        } else if ((24 - stack) < delta ) 
                             return solution;
                     }
 
@@ -165,12 +165,15 @@
             var language = generate_language_set (words_length, alphabet);
             var d1 = Date.now();
 
+            var d2 = Date.now();
             var solution = evaluate_language_set(language);
+            var d3 = Date.now();
 
             /* Outputs time to console */
             console.log("To generate " + language.length + " elements took " + (d1 - d0) + " miliseconds.");
             console.log("First element is: " + language[0] + ", last one: " + language[language.length-1]);
-            console.log("Solution found: " + solution);
+            console.log("Solution found in " + (d3-d2) + " miliseconds.");
+            console.log("Solution: " + solution);
             
         </script>
     </body>
