@@ -92,13 +92,19 @@
                 const WORD_LENGTH = alphabet[0].length;
 
                 for (i=0; i<alphabet.length; i++) {
-               // for (i=11093; i<11094; i++) {
                     // Rules
                     if ( stack.length == 1 
                     && Math.round(stack) == 24
                     && counter_3s == 2
-                    && counter_8s == 2 )
-                        console.log(solution + " : " + stack);
+                    && counter_8s == 2 ) {
+
+                        const delta = 0.00000001;
+                        if ((stack) > 24) {
+                            if ((stack - 24) < delta)
+                                return solution;
+                        } else if ((24 - stack) > delta ) 
+                            return solution;
+                    }
 
                     solution = ""; // Clean all variables
                     counter_3s = 0;
