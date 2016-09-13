@@ -1,8 +1,11 @@
 # This file builds and packages all the code for this assignment. Ie.: C and 
 # Java versions.
 
-build:
+unpackage:
 	tar xzf java.tgz
+	rm -f java.tgz
+
+build:
 	ant jar -silent -f java/build.xml
 	
 clean:
