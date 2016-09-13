@@ -1,33 +1,36 @@
 package turingmachine.inputdata;
 
+import turingmachine.exception.BadInputSymsException;
+import turingmachine.exception.BadInputArgsException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import turingmachine.exception.BadInputArgs;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class InputDataInteractive implements InputData {
 
-    private String machineDesc;
-    private String pathOutFile;
-    private String inputSyms;
+    private List machineDesc;
+    private String pathOutFile = "";
+    private String inputSyms = "";
     
     @Override
-    public void processInput(String[] args) {
-        try {
+    public void processInput(String[] args) 
+        throws BadInputArgsException, BadInputSymsException, IOException {
+        
             parseCommandLineArgs(args);
             // System.out.println("machineDesk: " + machineDesc + ", pathOutFile: " + pathOutFile);
             
             requestInputSyms();
             // System.out.println("inputSyms: " + inputSyms);
-        } catch (BadInputArgs bia) {
-            return;
-        }
     }
 
     @Override
-    public String getMachineDesc() {
+    public List getMachineDesc() {
+        
         return machineDesc;
     }
 
@@ -41,31 +44,44 @@ public class InputDataInteractive implements InputData {
         return inputSyms;
     }
     
-    private void parseCommandLineArgs (String[] args) throws BadInputArgs {
+    private void parseCommandLineArgs (String[] args) 
+            throws BadInputArgsException, IOException {
         // TODO add some more checks on input args
         
         if (args.length == 1) { // only machine description
-            machineDesc = args[0];
+            
+            machineDesc = parseDesc(args[0]);
             
         } else if (args.length == 2) { // machine desc and outFile path
-            machineDesc = args[0];
+            machineDesc = parseDesc(args[0]);
             pathOutFile = args[1]; 
             
-        } else throw new BadInputArgs();
+        } else throw new BadInputArgsException();
     }
     
-    private void requestInputSyms () {
+    private List parseDesc (String path) throws IOException {
+        
+        
+        Path filePath = Paths.get(path);
+        Scanner scanner = new Scanner(filePath);
+        List arc = new ArrayList();
+        while (scanner.hasNext()) 
+            arc.add(scanner.nextLine());
+            
+        return arc;
+    }
+    
+    private void requestInputSyms () throws BadInputSymsException {
         
         String syms = "";
         
         System.out.print("Input: ");
         
-        
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         try {
             syms = br.readLine();
         } catch (IOException ex) {
-            Logger.getLogger(InputDataInteractive.class.getName()).log(Level.SEVERE, null, ex);
+            throw new BadInputSymsException();
         }
         
         inputSyms = syms;

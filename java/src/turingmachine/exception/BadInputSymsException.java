@@ -9,6 +9,6 @@ package turingmachine.exception;
  *
  * @author diego
  */
-public class BadInputArgs extends Exception{
+public class BadInputSymsException extends Exception {
     
 }
