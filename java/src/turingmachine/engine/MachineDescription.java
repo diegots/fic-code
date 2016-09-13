@@ -7,10 +7,10 @@ import turingmachine.exception.NextTransitionException;
 
 public class MachineDescription {
 
-    List machineDesc;
+    private List machineDesc;
     
     public MachineDescription(List machineDesc) {
-        // TODO do a deep copy of the list and not a pointer ref
+        // TODO make a deep copy of the list and not a pointer ref
         this.machineDesc = machineDesc;
     }
 
@@ -20,11 +20,11 @@ public class MachineDescription {
         Iterator ite = machineDesc.iterator();
         while (ite.hasNext()) {
             String next = (String) ite.next();
-            Character o = origState.charAt(0);
-            Character s = origState.charAt(2);
+            Character fst = next.charAt(0);
+            Character thrd = next.charAt(2);
             
-            if (o.equals(origState.charAt(0)) 
-                && s.equals(readSym.charAt(0)))
+            if (fst.equals(origState.charAt(0)) 
+                && thrd.equals(readSym.charAt(0)))
             
             return 
                 Character.toString(next.charAt(1))
