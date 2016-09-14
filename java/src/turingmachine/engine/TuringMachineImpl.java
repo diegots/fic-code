@@ -13,8 +13,6 @@ public class TuringMachineImpl implements TuringMachine {
     private final Tape tape;
     private Boolean accepted;
     
-    private String inputSyms;
-    
     public TuringMachineImpl(InputData inputData) {
         
         // Store the Machine description
@@ -23,12 +21,13 @@ public class TuringMachineImpl implements TuringMachine {
         // Store the user given tape symbols
         tape = new Tape(inputData.getInputSyms());
         
-        // Process the tape with the data received
-        //accepted = tape.proccessTape();
+        // Solve the problem!
         process();
     }
     
     private void process() {
+        accepted = true;
+        
         String firstT = ""; 
         try {
             firstT = machineDescription.getFirstTransition(); // Dest, Wr Sym, Mov
@@ -47,17 +46,17 @@ public class TuringMachineImpl implements TuringMachine {
             } catch (BadMovementException ex) {
                 System.err.println("BadMovementException");
             } catch (NextTransitionException ex) {
-                System.err.println("readT" + readT);
+                // System.err.println("readT: " + readT);
                 System.err.println("NextTransitionException");
+                accepted = false;
+                break;
             }
         }
-        System.out.println("Finishing process. Steps: " + getSteps());
     }
     
     @Override
     public int getSteps() {
         return tape.getSteps();
-        
     }
 
     @Override

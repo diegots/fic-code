@@ -43,6 +43,7 @@ class Tape {
     public void writeAndMove (String symbol, String movement) 
         throws BadMovementException {
         
+        
         tape.add(headPosition, symbol);
         tape.remove(headPosition+1);
         
