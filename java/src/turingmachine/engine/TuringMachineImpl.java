@@ -1,39 +1,41 @@
 package turingmachine.engine;
 
+import java.util.List;
 import turingmachine.inputdata.InputData;
 
 public class TuringMachineImpl implements TuringMachine {
 
-    private MachineDescription machineDescription;
-    private String machineDesc;
+    private final MachineDescription machineDescription;
+    private Tape tape;
+    private String currentState;
+    private Boolean accepted;
+    
     private String inputSyms;
     
     public TuringMachineImpl(InputData inputData) {
         
+        // Store the Machine description
         machineDescription = new MachineDescription(inputData.getMachineDesc());
         
-        // inputSyms = inputData.getInputSyms();
+        // Store the user given tape symbols
+        tape = new Tape(inputData.getInputSyms());
         
-        // proccess();
+        // Process the tape with the data received
+        accepted = tape.proccessTape();
     }
     
-    private void proccess () {
-        
+    @Override
+    public int getSteps() {
+        return tape.getSteps();
     }
 
     @Override
-    public String getSteps() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public String isAccepted() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Boolean isAccepted() {
+        return accepted;
     }
 
     @Override
     public String getTape() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
 }

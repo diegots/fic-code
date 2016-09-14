@@ -31,8 +31,13 @@ public class Controller {
             System.err.println("IOException");
         }
         
-        
+        // First get the user input and use it to initiate the Turing Machine.
         tm = new TuringMachineImpl(inputData);
+        
+        // Run the Machine
+        
+        // Get results
+        
         
     }
 
