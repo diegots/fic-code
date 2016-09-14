@@ -5,6 +5,8 @@ import turingmachine.exception.BadInputArgsException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -61,8 +63,10 @@ public class InputDataInteractive implements InputData {
     
     private List parseDesc (String path) throws IOException {
         
+        String dir = "../" + path.split("/")[0];
+        String file = path.split("/")[1];
         
-        Path filePath = Paths.get(path);
+        Path filePath = FileSystems.getDefault().getPath(dir, file).toAbsolutePath();
         Scanner scanner = new Scanner(filePath);
         List arc = new ArrayList();
         while (scanner.hasNext()) 

@@ -2,6 +2,7 @@ package turingmachine.engine;
 
 import java.util.LinkedList;
 import java.util.List;
+import turingmachine.exception.BadMovementException;
 
 class Tape {
 
@@ -26,16 +27,41 @@ class Tape {
             }
         }
         
-        // Start from the first character on the tape without any step
+        // Initial values
         headPosition = 0;
-        steps = 0;
-    }
-
-    Boolean proccessTape () {
-        return null;
+        steps = 1;
     }
     
-    int getSteps() {
+    public String read () {
+        return (String) tape.get(headPosition);
+    }
+    
+    public int getSteps () {
         return steps;
+    }
+    
+    public void writeAndMove (String symbol, String movement) 
+        throws BadMovementException {
+        
+        tape.add(headPosition, symbol);
+        tape.remove(headPosition+1);
+        
+        steps++;
+        
+        if ("L".equals(movement)) {
+            headPosition--;
+            if (headPosition < 0) {
+                headPosition = 0;
+                tape.add(headPosition, "B");
+            }
+        
+        } else if ("R".equals(movement)) {
+            headPosition++;
+            if (headPosition == tape.size()) {
+                tape.add("B");
+            }
+        }
+        
+        else throw new BadMovementException();
     }
 }

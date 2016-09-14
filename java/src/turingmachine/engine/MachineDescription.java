@@ -36,5 +36,13 @@ public class MachineDescription {
          * Turing Machine graph. */
         throw new NextTransitionException();
     }
+    
+    public String getFirstTransition() throws NextTransitionException {
+        
+        // Assuming that the first transition is always the first in the list
+        String o = machineDesc.get(0).toString().charAt(0)+"";
+        String r = machineDesc.get(0).toString().charAt(2)+"";
+        return next (o, r);
+    }
         
 }

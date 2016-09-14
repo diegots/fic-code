@@ -23,21 +23,19 @@ public class Controller {
             inputData.processInput(args);
         } catch (BadInputArgsException ex) {
             System.err.println("BadInputArgsException");
+            return;
             
         } catch (BadInputSymsException ex ) {
             System.err.println("BadInputSymsException");
+            return;
         
         } catch (IOException ex) {
             System.err.println("IOException");
+            return;
         }
         
         // First get the user input and use it to initiate the Turing Machine.
         tm = new TuringMachineImpl(inputData);
-        
-        // Run the Machine
-        
-        // Get results
-        
         
     }
 
