@@ -63,7 +63,7 @@ public class InputDataInteractive implements InputData {
     
     private List parseDesc (String path) throws IOException {
         
-        String dir = "../" + path.split("/")[0];
+        String dir = path.split("/")[0];
         String file = path.split("/")[1];
         
         Path filePath = FileSystems.getDefault().getPath(dir, file).toAbsolutePath();
