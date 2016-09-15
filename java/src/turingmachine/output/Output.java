@@ -78,7 +78,7 @@ public class Output {
 //        System.out.print("tape: ");
 //        for (int i = 0; i < tape.length; i++) 
 //            System.out.print(tape[i]);
-        
+//      
 //        System.out.println("\nheadPosition: " + headPosition);
         
         writeOutTape(tape, headPosition);

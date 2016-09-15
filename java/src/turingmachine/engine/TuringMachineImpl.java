@@ -1,8 +1,5 @@
 package turingmachine.engine;
 
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import turingmachine.exception.BadMovementException;
 import turingmachine.exception.NextTransitionException;
 import turingmachine.inputdata.InputData;
@@ -28,28 +25,37 @@ public class TuringMachineImpl implements TuringMachine {
     private void process() {
         accepted = true;
         
-        String firstT = ""; 
+        // Set the machine in the initial state
+        String readT = ""; 
         try {
-            firstT = machineDescription.getFirstTransition(); // Dest, Wr Sym, Mov
+            readT = machineDescription.getFirstTransition(); // Dest, Wr Sym, Mov
         } catch (NextTransitionException ex) {
             System.err.println("Bad machine transition");
         }
-        String readSym = tape.read();
-        String readT = firstT;
         
-        while (!"H".equals(readT.charAt(0) + "")) { // final state is H
-
+        // Loop until the H state is reached or a NextTransitionException is
+        // raised, which means that the input can't be accepted.
+        do {
             try {
                 tape.writeAndMove(readT.charAt(1) + "", readT.charAt(2) + "");
                 readT = machineDescription.next(readT.charAt(0) + "", tape.read());
             
             } catch (BadMovementException ex) {
                 System.err.println("BadMovementException");
+            
             } catch (NextTransitionException ex) {
-                // System.err.println("readT: " + readT);
-                System.err.println("NextTransitionException");
+                // TODO unde the last transition
                 accepted = false;
                 break;
+            }
+        } while (!"H".equals(readT.charAt(0) + ""));
+        
+        // Perform the transition to H state
+        if (accepted) {
+            try {
+                tape.writeAndMove(readT.charAt(1) + "", readT.charAt(2) + "");
+            } catch (BadMovementException ex) {
+                System.err.println("BadMovementException");
             }
         }
     }

@@ -29,7 +29,7 @@ class Tape {
         
         // Initial values
         headPosition = 0;
-        steps = 1;
+        steps = 0;
     }
     
     public String read () {

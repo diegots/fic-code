@@ -1,8 +1,6 @@
 package turingmachine;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import turingmachine.engine.TuringMachine;
 import turingmachine.engine.TuringMachineImpl;
 import turingmachine.exception.BadInputArgsException;
