@@ -4,5 +4,7 @@ public interface TuringMachine {
     
     public int getSteps();
     public Boolean isAccepted();
-    public String getTape();
+    public String[] getTape();
+    public int getHeadPosition();
+    
 }

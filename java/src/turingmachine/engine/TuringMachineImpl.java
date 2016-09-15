@@ -65,7 +65,12 @@ public class TuringMachineImpl implements TuringMachine {
     }
 
     @Override
-    public String getTape() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String[] getTape() {
+        return tape.getTape();
+    }
+
+    @Override
+    public int getHeadPosition() {
+        return tape.getHeadPosition();
     }
 }

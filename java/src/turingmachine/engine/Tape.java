@@ -40,6 +40,19 @@ class Tape {
         return steps;
     }
     
+    public String[] getTape() {
+        
+        String[] s = new String[tape.size()];
+        for (int i = 0; i < s.length; i++)
+            s[i] = (String) tape.get(i);
+            
+        return s;
+    }
+    
+    public int getHeadPosition () {
+        return headPosition;
+    }
+    
     public void writeAndMove (String symbol, String movement) 
         throws BadMovementException {
         

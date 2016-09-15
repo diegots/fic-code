@@ -40,12 +40,7 @@ public class Controller {
         tm = new TuringMachineImpl(inputData);
         
         outPut = new Output(tm.isAccepted(), tm.getSteps(), inputData.getPathOutFile());
-        outPut.showResults();
-        
-        
+        outPut.showResults(tm.getTape(), tm.getHeadPosition());
         
     }
-
-    
-    
 }
