@@ -32,7 +32,6 @@ public class InputDataInteractive implements InputData {
 
     @Override
     public List getMachineDesc() {
-        
         return machineDesc;
     }
 
