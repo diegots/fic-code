@@ -22,8 +22,12 @@ public class Output {
     public Output(boolean accept, int steps, String outFilePath) {
         this.accept = accept;
         this.steps = steps;
-        this.outFilePath = 
-            FileSystems.getDefault().getPath(outFilePath).toAbsolutePath();
+        
+        if ("".equals(outFilePath))
+            this.outFilePath = null;
+        else 
+            this.outFilePath = 
+                FileSystems.getDefault().getPath(outFilePath).toAbsolutePath();
     }
     
     private void acceptMsg () {
@@ -41,11 +45,8 @@ public class Output {
     
     public void writeOutTape (String[] tape, int headPosition) {
 
-//        try { // Checks out if given path is valid  
-//            Files.write(outFilePath, new byte[1], StandardOpenOption.CREATE_NEW);
-//        } catch (IOException ex) {
-//            return; // Path not valid, not writing out file
-//        }
+        if (outFilePath == null) // Not out file was given
+            return;
         
         List lines = new ArrayList();
 
@@ -78,7 +79,7 @@ public class Output {
 //        for (int i = 0; i < tape.length; i++) 
 //            System.out.print(tape[i]);
         
-        //System.out.println("\nheadPosition: " + headPosition);
+//        System.out.println("\nheadPosition: " + headPosition);
         
         writeOutTape(tape, headPosition);
     }
