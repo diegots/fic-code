@@ -32,7 +32,7 @@ public class Controller {
             return;
         
         } catch (IOException ex) {
-            System.err.println("IOException");
+            System.err.println("Machine description not found.");
             return;
         }
         
