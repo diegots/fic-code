@@ -1,5 +1,5 @@
-# This file builds and packages all the code for this assignment. Ie.: C and 
-# Java versions.
+# This file builds and packages all the code for this assignment. Ie.: C, Java
+# and Ocaml versions.
 
 OMLDIR = ocaml
 OMLBINDIR = $(OMLDIR)/bindir
@@ -7,7 +7,7 @@ OMLBINDIR = $(OMLDIR)/bindir
 all: unpackage build
 
 build:
-	# ant jar -silent -f java/build.xml
+	ant jar -silent -f java/build.xml
 	ocamlc $(OMLDIR)/ocaml.ml -o $(OMLBINDIR)/ocaml
 	
 clean:
