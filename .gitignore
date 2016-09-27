@@ -5,3 +5,5 @@ java/nbproject/private/
 *~
 *.tgz
 java/.ant-targets-build.xml
+ocaml/ocaml.c*
+ocaml/bindir/
