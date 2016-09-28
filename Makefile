@@ -4,6 +4,9 @@
 OMLDIR = ocaml
 OMLBINDIR = $(OMLDIR)/bindir
 
+# This is the report ID in Google Docs.
+REPORTID = 1AdYfQ0SjebgcSl4r19QzOdVM8jkXiqNTn_m1NK6lVOQ
+
 all: unpackage build
 
 build:
@@ -26,6 +29,8 @@ unpackage:
 	mkdir $(OMLBINDIR)
 	
 package: clean
+	@echo "Downloading report in PDF format from Google Docs:"
+	wget https://docs.google.com/document/d/$(REPORTID)/export?format=pdf -O Report.pdf --quiet
 	@echo "Creating compressed tar packages:"
 	tar czf java.tgz java
 	tar czf ocaml.tgz ocaml
