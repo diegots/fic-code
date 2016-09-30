@@ -4,9 +4,9 @@
 (* Put keys and data in the Map *)
 
 let main () = 
-    let mDesc,outPath = Input.get_params Sys.argv in
-    let params = Input.get_input () in
-    (* Build machine description *)
+    let out_path = Input.get_out_path () in
+    let input_syms = Input.get_input () in
+        print_endline (out_path ^ ":" ^ input_syms);
     exit (0)
 ;;
 

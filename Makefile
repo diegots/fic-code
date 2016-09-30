@@ -13,9 +13,9 @@ build:
 	#ant jar -silent -f java/build.xml # Java compilation
 	if [ ! -d $(OMLBINDIR) ] ; then mkdir $(OMLBINDIR) ; fi # Ocaml compilation
 	ocamlc -I $(OMLDIR) -c $(OMLDIR)/input.mli $(OMLDIR)/input.ml
-	##ocamlc -c $(OMLDIR)/ocaml.ml
-	##ocamlc -o $(OMLBINDIR)/ocaml input.cmi ocaml.cmo
-	#mv $(OMLDIR)/*.c* $(OMLBINDIR) # Move out all binary files from source dir
+	ocamlc -I $(OMLDIR) -c $(OMLDIR)/main.ml
+	ocamlc -I $(OMLDIR) -o $(OMLBINDIR)/ocaml input.cmo main.cmo
+	mv $(OMLDIR)/*.c* $(OMLBINDIR) # Move out all binary files from source dir
 	
 clean:
 	@echo "Cleaning projects:"
