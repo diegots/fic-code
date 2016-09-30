@@ -4,19 +4,23 @@
 OMLDIR = ocaml
 OMLBINDIR = $(OMLDIR)/bindir
 
-# This is the report ID in Google Docs.
-REPORTID = 1AdYfQ0SjebgcSl4r19QzOdVM8jkXiqNTn_m1NK6lVOQ
+# Report ID in Google Docs.
+REPORT_ID = 1AdYfQ0SjebgcSl4r19QzOdVM8jkXiqNTn_m1NK6lVOQ
 
 all: unpackage build
 
 build:
-	ant jar -silent -f java/build.xml
-	ocamlc $(OMLDIR)/ocaml.ml -o $(OMLBINDIR)/ocaml
+	#ant jar -silent -f java/build.xml # Java compilation
+	mkdir $(OMLBINDIR) # Ocaml compilation
+	ocamlc -I $(OMLDIR) -c $(OMLDIR)/input.mli $(OMLDIR)/input.ml
+	#ocamlc -c $(OMLDIR)/ocaml.ml
+	#ocamlc -o $(OMLBINDIR)/ocaml input.cmi ocaml.cmo
+	mv $(OMLDIR)/*.c* $(OMLBINDIR) # Move out all binary files from source dir
 	
 clean:
 	@echo "Cleaning projects:"
-	ant clean -silent -f java/build.xml
-	rm -rf $(OMLBINDIR)
+	ant clean -silent -f java/build.xml # Java
+	rm -rf $(OMLBINDIR) # Ocaml
 
 unpackage:
 	@echo "Extracting project directories:"
@@ -26,11 +30,10 @@ unpackage:
 	rm -f java.tgz
 	rm -f ocaml.tgz
 	@echo "Creating ocaml build dir:"
-	mkdir $(OMLBINDIR)
 	
 package: clean
 	@echo "Downloading report in PDF format from Google Docs:"
-	wget https://docs.google.com/document/d/$(REPORTID)/export?format=pdf -O Report.pdf --quiet
+	wget https://docs.google.com/document/d/$(REPORT_ID)/export?format=pdf -O Report.pdf --quiet
 	@echo "Creating compressed tar packages:"
 	tar czf java.tgz java
 	tar czf ocaml.tgz ocaml
