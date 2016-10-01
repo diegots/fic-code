@@ -80,6 +80,7 @@ let rec run_machine lt rt st map steps =
     with Not_found -> false, steps, (lt, rt)
 (* ************************************************************************** *)
 
+
 (* ************************************************************************** *)
 let writeTape l = List.fold_left (fun a b -> a ^ (String.make 1 b)) "" l
 let writeTape lt rt = writeTape (List.rev_append lt rt)

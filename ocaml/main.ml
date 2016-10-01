@@ -1,19 +1,8 @@
-(* Read file line by line until EOF *)
-(* Get first and third characters from each line -> they are the keys *)
-(* Get second, fourth and fifth characters -> the data in the map *)
-(* Put keys and data in the Map *)
-
 (* Debug function used to print machine's description list *)
 let rec print_list l = match l with
     | [] -> ()
     | [hd] -> print_endline hd
     | hd :: tl -> print_endline hd; print_list tl
-
-let print_output accept steps =
-    let accept = if accept = true then "yes" else "no" in
-    let steps  = string_of_int steps in
-        print_endline ("Accept: " ^ accept);
-        print_endline ("Steps: " ^ steps ^ "\n");;
 
 let main () = 
     (* let out_path = Input.get_out_path () in *)
@@ -23,8 +12,8 @@ let main () =
         (* print_list (List.rev m_desc); *) (* debug *)
         (* Engine.print_m_desc m_desc; *) (* debug *)
     let accept,steps,c = Engine.run_machine input_syms (List.rev m_desc) in
-        print_output accept steps;
-        print_endline c;
+        Input.print_output accept steps;
+        print_endline c; (* debug *)
     exit (0);;
 
 main ()

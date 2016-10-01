@@ -27,3 +27,10 @@ try
 with End_of_file -> close_in in_channel; !mDesc
 
 let read_machine_desc () = read_file (fst (get_params Sys.argv))
+
+(* Print accept and stept to the user *)
+let print_output accept steps =
+    let accept = if accept = true then "yes" else "no" in
+    let steps  = string_of_int steps in
+        print_endline ("Accept: " ^ accept);
+        print_endline ("Steps: " ^ steps ^ "\n")
