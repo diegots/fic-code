@@ -9,13 +9,21 @@ let rec print_list l = match l with
     | [hd] -> print_endline hd
     | hd :: tl -> print_endline hd; print_list tl
 
+let print_output accept steps =
+    let accept = if accept = true then "yes" else "no" in
+    let steps  = string_of_int steps in
+        print_endline ("Accept: " ^ accept);
+        print_endline ("Steps: " ^ steps ^ "\n");;
+
 let main () = 
-    let out_path = Input.get_out_path () in
+    (* let out_path = Input.get_out_path () in *)
     let input_syms = Input.get_input () in
     let m_desc = Input.read_machine_desc () in
         (* print_endline (out_path ^ " : " ^ input_syms); *) (* debug *)
-        (* print_list m_desc; *) (* debug *)
+        (* print_list (List.rev m_desc); *) (* debug *)
         (* Engine.print_m_desc m_desc; *) (* debug *)
-        exit (0);;
+    let accept,steps,c = Engine.run_machine input_syms (List.rev m_desc) in
+        print_output accept steps;
+    exit (0);;
 
 main ()

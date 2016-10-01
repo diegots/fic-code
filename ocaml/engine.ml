@@ -41,14 +41,54 @@ let print_m_desc m_desc =
 (* ************************************************************************** *)
 
 
-(* Create a Map structure to store machine description *)
-let map = T_M_Map.empty
+(* ********************** Prepare the tape ********************************** *)
+let rec prepare_tape l s =
+    let sl = String.length s in
+    if sl > 0 then
+        prepare_tape (s.[0] :: l) (String.sub s 1 (sl-1))
+    else List.rev l
+
+let prepare_tape input_syms =
+    if String.length input_syms = 0 then prepare_tape [] "B"
+    else prepare_tape [] input_syms
+(* ************************************************************************** *)
 
 
-(* Get first and third characters from each line -> the keys *)
-(* Get second, fourth and fifth characters -> the data in the map *)
-(* Put keys and data in the Map *)
+(* ********************** Turing Machine algorithm *************************** *)
+let next_tran s map = T_M_Map.find s map
 
-(* Main interface. As an output it should give accept status, steps number
- * and end tape state *)
-(* let run_machine input_syms m_desc = *)
+let move_right lt rt s = match lt,rt with
+    | e,[h]   -> (s::e), ['B']
+    | e,h::t ->  (s::e), t
+    | _,_   -> failwith "Invalid_tape_state"
+
+let move_left lt rt s = match lt,rt with
+    | [],e   -> [],(s::e)
+    | h::t,e -> t ,(s::e)
+
+(* As an output it should give accept status, steps number and end tape state *)
+let rec run_machine lt rt st map steps = 
+    try let st,sym,mov = next_tran (st, (List.hd rt)) map in
+        match mov,st with 
+            | 'R','H' -> true, (steps+1), (move_right lt rt sym)
+            | 'L','H' -> true, (steps+1), (move_left  lt rt sym)
+            | 'R',_ ->  let lt,rt = move_right lt rt sym in
+                            run_machine lt rt st map (steps+1)
+            | 'L',_ ->  let lt,rt = move_left lt rt sym in
+                            run_machine lt rt st map (steps+1)
+            | _,_ -> failwith "Invalid_movement"
+    with Not_found -> false, steps, (List.rev lt, rt)
+(* ************************************************************************** *)
+
+(* ************************************************************************** *)
+(* ************************************************************************** *)
+
+
+(* ********************** Main interface ************************************ *)
+(* Create initial structures and values. Then solve the problem. *)
+let run_machine input_syms m_desc =
+    let map        = m_desc_to_map m_desc (T_M_Map.empty) in (* machine's map *)
+    let left_tape  = [] in (* left tape *)
+    let right_tape = prepare_tape input_syms in (* right tape *)
+    let state      = (List.hd m_desc).[0] in (* current state *)
+        run_machine left_tape right_tape state map 1 (* solve! *)
