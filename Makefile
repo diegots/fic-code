@@ -12,10 +12,10 @@ all: unpackage build
 build:
 	#ant jar -silent -f java/build.xml # Java compilation
 	if [ ! -d $(OMLBINDIR) ] ; then mkdir $(OMLBINDIR) ; fi # Ocaml compilation
-	ocamlc -I $(OMLDIR) -c $(OMLDIR)/input.mli $(OMLDIR)/input.ml
+	ocamlc -I $(OMLDIR) -c $(OMLDIR)/io.mli $(OMLDIR)/io.ml
 	ocamlc -I $(OMLDIR) -c $(OMLDIR)/engine.mli $(OMLDIR)/engine.ml
 	ocamlc -I $(OMLDIR) -c $(OMLDIR)/main.ml
-	ocamlc -I $(OMLDIR) -o $(OMLBINDIR)/ocaml input.cmo engine.cmo main.cmo
+	ocamlc -I $(OMLDIR) -o $(OMLBINDIR)/ocaml io.cmo engine.cmo main.cmo
 	mv $(OMLDIR)/*.c* $(OMLBINDIR) # Move out all binary files from source dir
 	
 clean:
