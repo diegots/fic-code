@@ -25,3 +25,5 @@ try
             mDesc := line :: !mDesc
     done; !mDesc
 with End_of_file -> close_in in_channel; !mDesc
+
+let read_machine_desc () = read_file (fst (get_params Sys.argv))
