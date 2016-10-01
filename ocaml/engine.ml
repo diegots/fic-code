@@ -77,10 +77,12 @@ let rec run_machine lt rt st map steps =
             | 'L',_ ->  let lt,rt = move_left lt rt sym in
                             run_machine lt rt st map (steps+1)
             | _,_ -> failwith "Invalid_movement"
-    with Not_found -> false, steps, (List.rev lt, rt)
+    with Not_found -> false, steps, (lt, rt)
 (* ************************************************************************** *)
 
 (* ************************************************************************** *)
+let writeTape l = List.fold_left (fun a b -> a ^ (String.make 1 b)) "" l
+let writeTape lt rt = writeTape (List.rev_append lt rt)
 (* ************************************************************************** *)
 
 
@@ -91,4 +93,6 @@ let run_machine input_syms m_desc =
     let left_tape  = [] in (* left tape *)
     let right_tape = prepare_tape input_syms in (* right tape *)
     let state      = (List.hd m_desc).[0] in (* current state *)
-        run_machine left_tape right_tape state map 1 (* solve! *)
+
+    let a,s,(lt,rt) = run_machine left_tape right_tape state map 1 in (* solve! *)
+        a, s, (writeTape lt rt)

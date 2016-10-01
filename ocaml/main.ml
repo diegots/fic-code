@@ -24,6 +24,7 @@ let main () =
         (* Engine.print_m_desc m_desc; *) (* debug *)
     let accept,steps,c = Engine.run_machine input_syms (List.rev m_desc) in
         print_output accept steps;
+        print_endline c;
     exit (0);;
 
 main ()
