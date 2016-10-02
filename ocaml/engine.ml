@@ -78,13 +78,11 @@ let rec run_machine lt rt st map steps =
                             run_machine lt rt st map (steps+1)
             | _,_ -> failwith "Invalid_movement"
     with Not_found -> false, steps, (lt, rt)
-(* ************************************************************************** *)
 
+(* Write tape's final version *)
+let write_tape l = List.fold_left (fun a b -> a ^ (String.make 1 b)) "" l
 
-(* ********************** Write tape's final version ************************* *)
-let writeTape l = List.fold_left (fun a b -> a ^ (String.make 1 b)) "" l
-
-let writeTape lt rt = writeTape (List.rev_append lt rt)
+let write_tape lt rt = write_tape (List.rev_append lt rt)
 (* ************************************************************************** *)
 
 
@@ -97,13 +95,13 @@ let run_machine input_syms m_desc =
     let state      = (List.hd m_desc).[0] in (* current state *)
 
     let a,s,(lt,rt) = run_machine left_tape right_tape state map 1 in (* solve! *)
-        a, s, (writeTape lt rt)
+        a, s, (write_tape lt rt)
 (* ************************************************************************** *)
 
 (* ********************** Test write_tape *********************************** *)
-let test_writeTape = 
-    if not ((Pervasives.compare (writeTape ['b'; 'a'] ['c'; 'd']) "abcd") = 0)  
-    then failwith "writeTape";
-    if not ((Pervasives.compare (writeTape [] ['c'; 'd']) "cd") = 0)  
-    then failwith "writeTape"
+let test_write_tape = 
+    if not ((Pervasives.compare (write_tape ['b'; 'a'] ['c'; 'd']) "abcd") = 0)  
+    then failwith "write_tape";
+    if not ((Pervasives.compare (write_tape [] ['c'; 'd']) "cd") = 0)  
+    then failwith "write_tape"
 (* ************************************************************************** *)

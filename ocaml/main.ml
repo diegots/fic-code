@@ -5,7 +5,7 @@ let rec print_list l = match l with
     | hd :: tl -> print_endline hd; print_list tl
 
 let run_engine_test =
-    try Engine.test_writeTape with Failure "writeTape" -> exit(1)
+    try Engine.test_write_tape with Failure "write_tape" -> exit(1)
 
 let main () = 
     (* let out_path = Input.get_out_path () in *)
