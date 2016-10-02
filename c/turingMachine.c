@@ -3,131 +3,131 @@
 #include <string.h>
 #include "turingMachine.h"
 
-machine crear_MT(){
+machine create_MT(){
    machine mt;
    mt = (machine) malloc(sizeof(struct turingMachine));
-   mt -> cabeza = (cabeza) malloc(sizeof(struct celda));
+   mt -> head = (head) malloc(sizeof(struct cell));
    if (mt == NULL) {
       printf("memoria agotada\n");
       exit(EXIT_FAILURE);
    }
    mt->conf = NULL;
-   mt->cabeza->derecha = NULL;
-   mt->cabeza->izquierda = NULL;
-   mt->cabeza->elemento = 'B';
+   mt->head->right = NULL;
+   mt->head->left = NULL;
+   mt->head->element = 'B';
    return mt;
 }
 
 
-void eliminar_MT(machine *mt, int lineas){
-   while ((*mt)->cabeza->derecha != NULL){
-      pcelda tmp = ((*mt)->cabeza)->derecha;
-      (*mt)->cabeza->derecha = ((*mt)->cabeza->derecha)->derecha;
+void delete_MT(machine *mt, int lines){
+   while ((*mt)->head->right != NULL){
+      pcell tmp = ((*mt)->head)->right;
+      (*mt)->head->right = ((*mt)->head->right)->right;
       free(tmp);
    }
-   while ((*mt)->cabeza->izquierda != NULL){
-      pcelda tmp = (*mt)->cabeza->izquierda;
-      (*mt)->cabeza->izquierda = ((*mt)->cabeza->izquierda)->izquierda;
+   while ((*mt)->head->left != NULL){
+      pcell tmp = (*mt)->head->left;
+      (*mt)->head->left = ((*mt)->head->left)->left;
       free(tmp);
    }
    
    int i = 0;
-   for(i=0;i<lineas;i++){
+   for(i=0;i<lines;i++){
       free((*mt)->conf[i]);
    }
    free((*mt)->conf);
-   free((*mt)->cabeza);
+   free((*mt)->head);
    free(*mt); 
 }
 
-void escribir(cabeza *c, char direccion, tElemento e){
+void write_cell(head *c, char direction, tElement e){
 
    // Escribimos el elemento en la celda actual y nos movemos en funcion de la direccion dada
-   (*c) -> elemento = e;
+   (*c) -> element = e;
 
-   // Izquierda
-   if (direccion == 'L'){ 
+   // izquierda
+   if (direction == 'L'){ 
 
-      if ((*c) -> izquierda == NULL){
-         pcelda tmp = (pcelda) malloc(sizeof(struct celda));
+      if ((*c) -> left == NULL){
+         pcell tmp = (pcell) malloc(sizeof(struct cell));
          if (tmp == NULL) {
             printf("memoria agotada\n");
             exit(EXIT_FAILURE);
          }
-         tmp -> derecha = *c;
-         tmp -> izquierda = NULL;
-         tmp -> elemento = 'B';
-         (*c) -> izquierda = tmp;
+         tmp -> right = *c;
+         tmp -> left = NULL;
+         tmp -> element = 'B';
+         (*c) -> left = tmp;
          *c = tmp;
       } else {
-         *c = (*c) -> izquierda;
+         *c = (*c) -> left;
       }
 
-   } else if (direccion == 'R'){ // Derecha
-      if ((*c) -> derecha == NULL){
-         cabeza tmp = (cabeza) malloc(sizeof(struct celda));
+   } else if (direction == 'R'){ // Derecha
+      if ((*c) -> right == NULL){
+         head tmp = (head) malloc(sizeof(struct cell));
          if (tmp == NULL) {
-            printf("memoria agotada\n");
+            printf("Out of memory\n");
             exit(EXIT_FAILURE);
          }
 
-         tmp -> derecha = NULL;
-         tmp -> izquierda = *c;
-         tmp -> elemento = 'B';
-         (*c) -> derecha = tmp;
+         tmp -> right = NULL;
+         tmp -> left = *c;
+         tmp -> element = 'B';
+         (*c) -> right = tmp;
          *c = tmp;
       } else {
-         *c = (*c) -> derecha;
+         *c = (*c) -> right;
 
       }   
 
    }
 }
 
-void mover_cabeza_izquierda(cabeza *c){
+void move_head_to_left(head *c){
    if (*c!=NULL)
-      *c = (*c)->izquierda;
+      *c = (*c)->left;
 }
 
-void inicializar_MT(machine *mt, char **array, char *secuencia){
+void initialize_MT(machine *mt, char **array, char *sequence){
    int i;
    (*mt)->conf = array;
-   for (i=0;i<strlen(secuencia);i++){
-      escribir(&(*mt)->cabeza,'R',secuencia[i]);
+   for (i=0;i<strlen(sequence);i++){
+      write_cell(&(*mt)->head,'R',sequence[i]);
    }
-   while ((*mt)->cabeza->izquierda != NULL){
-      mover_cabeza_izquierda(&(*mt)->cabeza);
+   while ((*mt)->head->left != NULL){
+      move_head_to_left(&(*mt)->head);
    }
 }
 
-void ejecutar(machine *mt, int lineas){
-   char estado;
-   int steps = 0, fin = 0, accept = 0;
+void run_MT(machine *mt, int lines){
+   char state;
+   int steps = 0, exit = 0, accept = 0;
    while(1){
       if ( steps == 0){ // Si es el primer paso obtenemos el estado inicial
-         estado = (*mt)->conf[0][0];       
+         state = (*mt)->conf[0][0];       
       }
       
       steps++;
       /* Leemos cada linea del array y buscamos si el estado de la linea y su alfabeto es igual al estado actual de la MT 
       y al caracter que señala el cabezal*/
-      fin = 0;
+      exit = 0;
       int i;
-      for (i=0;i<lineas;i++){
-         if (((*mt)->conf[i][0] == estado) && ((*mt)->cabeza->elemento == (*mt)->conf[i][2])){
-            fin = 1;
-            estado = (*mt)->conf[i][1];
-            escribir(&(*mt)->cabeza, (*mt)->conf[i][4], (*mt)->conf[i][3]);
+      for (i=0;i<lines;i++){
+         if (((*mt)->conf[i][0] == state) && ((*mt)->head->element == (*mt)->conf[i][2])){
+            exit = 1;
+            state = (*mt)->conf[i][1];
+            write_cell(&(*mt)->head, (*mt)->conf[i][4], (*mt)->conf[i][3]);
             break;
          }
       }
       // Si no se ha encontrado un estado siguiente se finaliza la ejecucion sin exito
-      if (!fin){
+      if (!exit){
         accept = 0;
         break;
       }
       // Si se alcanza el estado final se sale
-      if (estado == 'H'){
+      if (state == 'H'){
          accept = 1;
          break;
       }
@@ -138,35 +138,33 @@ void ejecutar(machine *mt, int lineas){
    } else{
       printf("Accept: No\n");         
    }
-   /*if (fichero){
-      //escribir_MT(c, argv[2]);
-   }*/
+   
    printf("Steps: %i\n", steps);
 }
 
-void escribir_MT(machine mt, char *fichero){
+void mt_to_file(machine mt, char *file){
    // Open file in write mode
-   FILE *pfichero;
-   pfichero = fopen(fichero, "w");
-   pcelda tmp = (mt -> cabeza);
+   FILE *pfile;
+   pfile = fopen(file, "w");
+   pcell tmp = (mt -> head);
    // Nos colocamos al principio de la cinta
-   while (tmp -> izquierda != NULL){
-      tmp  = tmp -> izquierda;
+   while (tmp -> left != NULL){
+      tmp  = tmp -> left;
    }
 
    // Vamos escribiendo los valores a la izquierda hasta llegar a la cabeza
-   while (tmp != (mt -> cabeza)){
-      fputc(tmp->elemento, pfichero);
-      tmp = tmp -> derecha;
+   while (tmp != (mt -> head)){
+      fputc(tmp->element, pfile);
+      tmp = tmp -> right;
    }
 
-   fputc('\n', pfichero);
+   fputc('\n', pfile);
    // Escribimos los valores restantes
    while (tmp != NULL){
-      fputc(tmp->elemento, pfichero);
-      tmp = tmp -> derecha;
+      fputc(tmp->element, pfile);
+      tmp = tmp -> right;
    }
 
    // Close file
-   fclose(pfichero);
+   fclose(pfile);
 }

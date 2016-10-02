@@ -1,28 +1,28 @@
-typedef char tElemento;
+typedef char tElement;
 
-struct celda {
-   tElemento elemento;
-   struct celda *derecha,*izquierda;
+struct cell {
+   tElement element;
+   struct cell *right,*left;
 };
 
-typedef struct celda *pcelda;
-typedef pcelda cabeza;
+typedef struct cell *pcell;
+typedef pcell head;
 
 struct turingMachine {
 	char **conf;
-	cabeza cabeza;
+	head head;
 };
 
 typedef struct turingMachine *pmachine;
 typedef pmachine machine;
 
-machine crear_MT();
+machine create_MT();
 
-void eliminar_MT(machine *mt, int lineas);
+void delete_MT(machine *mt, int lines);
 
-void inicializar_MT(machine *mt, char **array, char *secuencia);
+void initialize_MT(machine *mt, char **array, char *sequence);
 
-void ejecutar(machine *mt, int lineas);
+void run_MT(machine *mt, int lines);
 
-void escribir_MT(machine mt, char *fichero);
+void mt_to_file(machine mt, char *file);
 
