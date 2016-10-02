@@ -81,8 +81,9 @@ let rec run_machine lt rt st map steps =
 (* ************************************************************************** *)
 
 
-(* ************************************************************************** *)
+(* ********************** Write tape's final version ************************* *)
 let writeTape l = List.fold_left (fun a b -> a ^ (String.make 1 b)) "" l
+
 let writeTape lt rt = writeTape (List.rev_append lt rt)
 (* ************************************************************************** *)
 
@@ -97,3 +98,12 @@ let run_machine input_syms m_desc =
 
     let a,s,(lt,rt) = run_machine left_tape right_tape state map 1 in (* solve! *)
         a, s, (writeTape lt rt)
+(* ************************************************************************** *)
+
+(* ********************** Test write_tape *********************************** *)
+let test_writeTape = 
+    if not ((Pervasives.compare (writeTape ['b'; 'a'] ['c'; 'd']) "abcd") = 0)  
+    then failwith "writeTape";
+    if not ((Pervasives.compare (writeTape [] ['c'; 'd']) "cd") = 0)  
+    then failwith "writeTape"
+(* ************************************************************************** *)

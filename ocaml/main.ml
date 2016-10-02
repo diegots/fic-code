@@ -4,6 +4,9 @@ let rec print_list l = match l with
     | [hd] -> print_endline hd
     | hd :: tl -> print_endline hd; print_list tl
 
+let run_engine_test =
+    try Engine.test_writeTape with Failure "writeTape" -> exit(1)
+
 let main () = 
     (* let out_path = Input.get_out_path () in *)
     let input_syms = Io.get_input () in
@@ -14,6 +17,7 @@ let main () =
     let accept,steps,c = Engine.run_machine input_syms (List.rev m_desc) in
         Io.print_output accept steps;
         print_endline c; (* debug *)
+        run_engine_test; (* debug *)
     exit (0);;
 
 main ()

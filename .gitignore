@@ -6,5 +6,6 @@ java/nbproject/private/
 *.tgz
 java/.ant-targets-build.xml
 ocaml/bindir/
+c/bindir/
 Report.pdf
 *.swp
