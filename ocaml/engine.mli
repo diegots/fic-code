@@ -2,8 +2,5 @@
 (* val print_m_desc : string list -> unit *) (* debug *)
 (* ************************************************************************** *)
 
-(* ********************** Test functions ************************************ *)
-val test_write_tape : unit
-(* ************************************************************************** *)
-
+val test_engine : unit
 val run_machine : string -> string list -> bool * int * string

@@ -58,13 +58,15 @@ let prepare_tape input_syms =
 let next_tran s map = T_M_Map.find s map
 
 let move_right lt rt s = match lt,rt with
-    | e,[h]   -> (s::e), ['B']
+    | e,[h]  -> (s::e), ['B']
     | e,h::t ->  (s::e), t
-    | _,_   -> failwith "Invalid_tape_state"
+    | _,_    -> failwith "Invalid_right_move"
 
 let move_left lt rt s = match lt,rt with
-    | [],e   -> [],(s::e)
-    | h::t,e -> t ,(s::e)
+    | [],[p]   -> [], ('B'::s::[])
+    | [h],_::q -> [], (h::s::q)
+    | h::t,_::q -> t, (h::s::q)
+    | _,_    -> failwith "Invalid_left_move"
 
 (* As an output it should give accept status, steps number and end tape state *)
 let rec run_machine lt rt st map steps = 
@@ -104,4 +106,40 @@ let test_write_tape =
     then failwith "write_tape";
     if not ((Pervasives.compare (write_tape [] ['c'; 'd']) "cd") = 0)  
     then failwith "write_tape"
+
+let test_move_right =
+    let lt,rt = [],['B'] in
+        if not ((Pervasives.compare (move_right lt rt 'A') (['A'],['B'])) = 0) 
+        then failwith "move_right";
+    let lt,rt = [],['C';'D'] in
+        if not ((Pervasives.compare (move_right lt rt 'J') (['J'],['D'])) = 0) 
+        then failwith "move_right";
+    let lt,rt = ['Q';'P'],['R'] in
+        if not 
+            ((Pervasives.compare (move_right lt rt 'Z') (['Z';'Q';'P'],['B'])) = 0) 
+        then failwith "move_right";
+    let lt,rt = ['B'],[] in 
+        try let _ = move_right lt rt 'A' in ()
+        with Failure "Invalid_right_move" -> () | _ -> failwith "move_right"
+
+let test_move_left =
+    let lt,rt = [],['B'] in
+        if not ((Pervasives.compare (move_left lt rt 'A') ([],['B';'A'])) = 0) 
+        then failwith "move_left";
+    let lt,rt = ['J'],['P';'Q'] in
+        if not ((Pervasives.compare (move_left lt rt 'A') ([],['J';'A';'Q'])) = 0) 
+        then failwith "move_left";
+    let lt,rt = ['R';'P';'J'],['T'] in
+        if not 
+            ((Pervasives.compare (move_left lt rt 'A') (['P';'J'],['R';'A'])) = 0) 
+        then failwith "move_left"
+
+let test_engine =
+    try test_write_tape;
+        test_move_right;
+        test_move_left
+    with 
+        | Failure "write_tape"
+        | Failure "move_right"
+        | Failure "move_left" -> exit(1)
 (* ************************************************************************** *)
