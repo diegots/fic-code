@@ -12,7 +12,7 @@ REPORT_ID = 1AdYfQ0SjebgcSl4r19QzOdVM8jkXiqNTn_m1NK6lVOQ
 all: unpackage build
 
 build:
-	#ant jar -silent -f java/build.xml # Java compilation
+	ant jar -silent -f java/build.xml # Java compilation
 	if [ ! -d $(OMLBINDIR) ] ; then mkdir $(OMLBINDIR) ; fi # Ocaml compilation
 	ocamlc -I $(OMLDIR) -c $(OMLDIR)/io.mli $(OMLDIR)/io.ml
 	ocamlc -I $(OMLDIR) -c $(OMLDIR)/engine.mli $(OMLDIR)/engine.ml

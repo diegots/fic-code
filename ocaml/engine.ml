@@ -38,6 +38,11 @@ let print_machine key arc = (* key and arc are char actually *)
 let print_m_desc m_desc =
     let map = T_M_Map.empty in
         T_M_Map.iter print_machine (m_desc_to_map m_desc map)
+
+let rec print_list l = match l with
+    | [] -> ()
+    | [hd] -> print_string (String.make 1 hd)
+    | hd :: tl -> print_string (String.make 1 hd); print_list tl
 (* ************************************************************************** *)
 
 
@@ -57,13 +62,26 @@ let prepare_tape input_syms =
 (* ********************** Turing Machine algorithm *************************** *)
 let next_tran s map = T_M_Map.find s map
 
-let move_right lt rt s = match lt,rt with
+let move_right lt rt s = 
+    print_endline "--move right--";
+    print_list lt; 
+    print_string " | ";
+    print_list rt;
+    print_endline ("\n [Sym: " ^ (String.make 1 s) ^ "]");
+    match lt,rt with
     | e,[h]  -> (s::e), ['B']
     | e,h::t ->  (s::e), t
     | _,_    -> failwith "Invalid_right_move"
 
-let move_left lt rt s = match lt,rt with
-    | [],[p]   -> [], ('B'::s::[])
+let move_left lt rt s = 
+    print_endline "--move left--";
+    print_list lt; 
+    print_string " | ";
+    print_list rt;
+    print_endline ("\n [Sym: " ^ (String.make 1 s) ^ "]");
+    match lt,rt with
+    | [],[p] -> [], ('B'::s::[])   
+    | [], p::q -> [], ('B'::s::q)
     | [h],_::q -> [], (h::s::q)
     | h::t,_::q -> t, (h::s::q)
     | _,_    -> failwith "Invalid_left_move"
@@ -72,14 +90,14 @@ let move_left lt rt s = match lt,rt with
 let rec run_machine lt rt st map steps = 
     try let st,sym,mov = next_tran (st, (List.hd rt)) map in
         match mov,st with 
-            | 'R','H' -> true, (steps+1), (move_right lt rt sym)
+            | 'R','H' -> true, (steps+1), (move_right lt rt sym) 
             | 'L','H' -> true, (steps+1), (move_left  lt rt sym)
             | 'R',_ ->  let lt,rt = move_right lt rt sym in
                             run_machine lt rt st map (steps+1)
             | 'L',_ ->  let lt,rt = move_left lt rt sym in
                             run_machine lt rt st map (steps+1)
             | _,_ -> failwith "Invalid_movement"
-    with Not_found -> false, steps, (lt, rt)
+    with Not_found -> false, steps, (lt,rt)
 
 (* Write tape's final version *)
 let write_tape l = List.fold_left (fun a b -> a ^ (String.make 1 b)) "" l
@@ -93,11 +111,11 @@ let write_tape lt rt = write_tape (List.rev_append lt rt)
 let run_machine input_syms m_desc =
     let map        = m_desc_to_map m_desc (T_M_Map.empty) in (* machine's map *)
     let left_tape  = [] in (* left tape *)
-    let right_tape = prepare_tape input_syms in (* right tape *)
-    let state      = (List.hd m_desc).[0] in (* current state *)
-
-    let a,s,(lt,rt) = run_machine left_tape right_tape state map 1 in (* solve! *)
-        a, s, (write_tape lt rt)
+    let right_tape = prepare_tape input_syms in
+    let state      = (List.hd m_desc).[0] in (* first state *)
+        (* print_endline ("First state: " ^ (String.make 1 state)); *) (* debug *)
+    let a,s,(lt,rt) = run_machine left_tape right_tape state map 0 in (* solve! *)
+        a,s,(write_tape lt rt)
 (* ************************************************************************** *)
 
 (* ********************** Test write_tape *********************************** *)
@@ -134,10 +152,19 @@ let test_move_left =
             ((Pervasives.compare (move_left lt rt 'A') (['P';'J'],['R';'A'])) = 0) 
         then failwith "move_left"
 
+let test_prepare_tape =
+    let s = "abcdef" in
+    let t = ['a'; 'b'; 'c'; 'd'; 'e'; 'f'] in
+        if not ((Pervasives.compare (prepare_tape s) t) = 0)
+        then failwith "prepare_tape";
+    if not ((Pervasives.compare (prepare_tape "") ['B']) = 0)
+    then failwith "prepare_tape"
+
 let test_engine =
     try test_write_tape;
         test_move_right;
-        test_move_left
+        test_move_left;
+        test_prepare_tape
     with 
         | Failure "write_tape"
         | Failure "move_right"
