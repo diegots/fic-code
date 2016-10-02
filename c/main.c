@@ -23,8 +23,9 @@ int contar_lineas(char *ruta){
 
 }
 
+
+// Crea el array con el fichero de configuracion
 char** crear_array(char *ruta, int lineas) {
-   // Crea el array con el fichero de configuracion
    int i = 0;
    char **array_fichero;
    FILE *archivo;
@@ -90,14 +91,10 @@ int main (int argc,char **argv){
       escribir_MT(mt, argv[2]);
    }
 
-   eliminar_MT(&mt);
+   eliminar_MT(&mt, lineasFichero);
 
    /*
-   int i = 0;
-   for(i=0;i<lineasFichero;i++){
-      free(array_fichero[lineasFichero]);
-   }
-   free(array_fichero);*/
+   */
    
 
 	return 0;

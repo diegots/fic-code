@@ -19,7 +19,7 @@ machine crear_MT(){
 }
 
 
-void eliminar_MT(machine *mt){
+void eliminar_MT(machine *mt, int lineas){
    while ((*mt)->cabeza->derecha != NULL){
       pcelda tmp = ((*mt)->cabeza)->derecha;
       (*mt)->cabeza->derecha = ((*mt)->cabeza->derecha)->derecha;
@@ -30,7 +30,12 @@ void eliminar_MT(machine *mt){
       (*mt)->cabeza->izquierda = ((*mt)->cabeza->izquierda)->izquierda;
       free(tmp);
    }
-
+   
+   int i = 0;
+   for(i=0;i<lineas;i++){
+      free((*mt)->conf[i]);
+   }
+   free((*mt)->conf);
    free((*mt)->cabeza);
    free(*mt); 
 }

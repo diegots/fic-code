@@ -18,7 +18,7 @@ typedef pmachine machine;
 
 machine crear_MT();
 
-void eliminar_MT(machine *mt);
+void eliminar_MT(machine *mt, int lineas);
 
 void inicializar_MT(machine *mt, char **array, char *secuencia);
 
