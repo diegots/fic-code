@@ -12,8 +12,9 @@ let main () =
         (* print_list m_desc; *) (* debug *) 
         (* Engine.print_m_desc m_desc; *)(* debug *)
         (* Engine.test_engine; *) (* debug *)
-    let accept,steps,c = Engine.run_machine input_syms m_desc in
+    let accept,steps,tape = Engine.run_machine input_syms m_desc in
         Io.print_output accept steps;
+        print_endline tape; (* TODO delete this line *)
     exit (0);;
 
 main ()

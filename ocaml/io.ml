@@ -33,4 +33,4 @@ let print_output accept steps =
     let accept = if accept = true then "yes" else "no" in
     let steps  = string_of_int steps in
         print_endline ("Accept: " ^ accept);
-        print_endline ("Steps: " ^ steps ^ "\n")
+        print_endline ("Steps: " ^ steps)

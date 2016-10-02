@@ -63,22 +63,22 @@ let prepare_tape input_syms =
 let next_tran s map = T_M_Map.find s map
 
 let move_right lt rt s = 
-    print_endline "--move right--";
+ (* print_endline "--move right--";
     print_list lt; 
     print_string " | ";
     print_list rt;
-    print_endline ("\n [Sym: " ^ (String.make 1 s) ^ "]");
+    print_endline ("\n [Sym: " ^ (String.make 1 s) ^ "]"); *)
     match lt,rt with
     | e,[h]  -> (s::e), ['B']
     | e,h::t ->  (s::e), t
     | _,_    -> failwith "Invalid_right_move"
 
 let move_left lt rt s = 
-    print_endline "--move left--";
+ (* print_endline "--move left--";
     print_list lt; 
     print_string " | ";
     print_list rt;
-    print_endline ("\n [Sym: " ^ (String.make 1 s) ^ "]");
+    print_endline ("\n [Sym: " ^ (String.make 1 s) ^ "]"); *)
     match lt,rt with
     | [],[p] -> [], ('B'::s::[])   
     | [], p::q -> [], ('B'::s::q)
@@ -96,13 +96,14 @@ let rec run_machine lt rt st map steps =
                             run_machine lt rt st map (steps+1)
             | 'L',_ ->  let lt,rt = move_left lt rt sym in
                             run_machine lt rt st map (steps+1)
-            | _,_ -> failwith "Invalid_movement"
+            | _,_ -> false, steps, (lt, rt) (* failwith "Invalid_movement" *)
     with Not_found -> false, steps, (lt,rt)
 
 (* Write tape's final version *)
-let write_tape l = List.fold_left (fun a b -> a ^ (String.make 1 b)) "" l
+let write_tape l = 
+    List.fold_left (fun a b -> a ^ (String.make 1 b)) "" l
 
-let write_tape lt rt = write_tape (List.rev_append lt rt)
+let write_tape lt rt = write_tape (List.rev_append ('\n'::lt) rt)
 (* ************************************************************************** *)
 
 
@@ -120,9 +121,9 @@ let run_machine input_syms m_desc =
 
 (* ********************** Test write_tape *********************************** *)
 let test_write_tape = 
-    if not ((Pervasives.compare (write_tape ['b'; 'a'] ['c'; 'd']) "abcd") = 0)  
+    if not ((Pervasives.compare (write_tape ['b'; 'a'] ['c'; 'd']) "ab\ncd") = 0)  
     then failwith "write_tape";
-    if not ((Pervasives.compare (write_tape [] ['c'; 'd']) "cd") = 0)  
+    if not ((Pervasives.compare (write_tape [] ['c'; 'd']) "\ncd") = 0)  
     then failwith "write_tape"
 
 let test_move_right =
