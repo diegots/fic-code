@@ -42,10 +42,10 @@ void delete_MT(machine *mt, int lines){
 
 void write_cell(head *c, char direction, tElement e){
 
-   // Escribimos el elemento en la celda actual y nos movemos en funcion de la direccion dada
+   // The item is written into the current cell and the head moves in the direction given / Escribimos el elemento en la celda actual y nos movemos en funcion de la direccion dada
    (*c) -> element = e;
 
-   // izquierda
+   // Left direction
    if (direction == 'L'){ 
 
       if ((*c) -> left == NULL){
@@ -63,7 +63,7 @@ void write_cell(head *c, char direction, tElement e){
          *c = (*c) -> left;
       }
 
-   } else if (direction == 'R'){ // Derecha
+   } else if (direction == 'R'){ // Right direction
       if ((*c) -> right == NULL){
          head tmp = (head) malloc(sizeof(struct cell));
          if (tmp == NULL) {
@@ -104,7 +104,7 @@ void run_MT(machine *mt, int lines){
    char state;
    int steps = 0, exit = 0, accept = 0;
    while(1){
-      if ( steps == 0){ // Si es el primer paso obtenemos el estado inicial
+      if ( steps == 0){ // If it's the first step get initial state / Si es el primer paso obtenemos el estado inicial
          state = (*mt)->conf[0][0];       
       }
       
@@ -126,7 +126,7 @@ void run_MT(machine *mt, int lines){
         accept = 0;
         break;
       }
-      // Si se alcanza el estado final se sale
+      // If the final state is reached then ends / Si se alcanza el estado final se sale
       if (state == 'H'){
          accept = 1;
          break;
@@ -147,7 +147,7 @@ void mt_to_file(machine mt, char *file){
    FILE *pfile;
    pfile = fopen(file, "w");
    pcell tmp = (mt -> head);
-   // Nos colocamos al principio de la cinta
+   // We stand at the begining of the tape / Nos colocamos al principio de la cinta
    while (tmp -> left != NULL){
       tmp  = tmp -> left;
    }
