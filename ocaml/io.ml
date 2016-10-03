@@ -34,3 +34,9 @@ let print_output accept steps =
     let steps  = string_of_int steps in
         print_endline ("Accept: " ^ accept);
         print_endline ("Steps: " ^ steps)
+
+(* Write result to a file *)
+let string_to_file s file = 
+    let oc = open_out file in
+    Printf.fprintf oc "%s" (s ^ "\n");
+    close_out oc

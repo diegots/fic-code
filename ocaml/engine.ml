@@ -63,7 +63,7 @@ let prepare_tape input_syms =
 let next_tran s map = T_M_Map.find s map
 
 let move_right lt rt s = 
- (* print_endline "--move right--";
+ (* print_endline "--move right--"; (* debug movements *)
     print_list lt; 
     print_string " | ";
     print_list rt;
@@ -74,7 +74,7 @@ let move_right lt rt s =
     | _,_    -> failwith "Invalid_right_move"
 
 let move_left lt rt s = 
- (* print_endline "--move left--";
+ (* print_endline "--move left--"; (* debug movements *)
     print_list lt; 
     print_string " | ";
     print_list rt;
@@ -92,11 +92,11 @@ let rec run_machine lt rt st map steps =
         match mov,st with 
             | 'R','H' -> true, (steps+1), (move_right lt rt sym) 
             | 'L','H' -> true, (steps+1), (move_left  lt rt sym)
-            | 'R',_ ->  let lt,rt = move_right lt rt sym in
+            | 'R',_   -> let lt,rt = move_right lt rt sym in
                             run_machine lt rt st map (steps+1)
-            | 'L',_ ->  let lt,rt = move_left lt rt sym in
+            | 'L',_   -> let lt,rt = move_left lt rt sym in
                             run_machine lt rt st map (steps+1)
-            | _,_ -> false, steps, (lt, rt) (* failwith "Invalid_movement" *)
+            | _,_     -> false, steps, (lt, rt) (* Bad movement *) 
     with Not_found -> false, steps, (lt,rt)
 
 (* Write tape's final version *)
