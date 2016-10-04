@@ -10,7 +10,9 @@ int get_lines(char *path){
    int lines = 0;
    char ch;
    FILE *file;
+   printf("%s\n", path);
    file = fopen(path, "r");
+
    while(!feof(file))
    {
      ch = fgetc(file);
@@ -19,6 +21,7 @@ int get_lines(char *path){
        lines++;
      }
    }
+
    fclose(file);
    return (lines + 1);
 
@@ -51,7 +54,7 @@ char** crear_array(char *path, int lines) {
 int main (int argc,char **argv){
 	char input[SIZE];
    char **file_array;
-   char path[100] = "../";
+   char path[100] = "";
    int file_lines = 0, out_file = 0;
 
    // Check parameters / Comprobacion de parametros
