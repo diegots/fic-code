@@ -10,7 +10,6 @@ int get_lines(char *path){
    int lines = 0;
    char ch;
    FILE *file;
-   printf("%s\n", path);
    file = fopen(path, "r");
 
    while(!feof(file))
