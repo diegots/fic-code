@@ -14,7 +14,8 @@ let main () =
         (* Engine.test_engine; *) (* debug *)
     let accept,steps,tape = Engine.run_machine input_syms m_desc in
         Io.print_output accept steps;
-        Io.string_to_file tape out_path;
+        if not ((Pervasives.compare out_path "") = 0) then
+            Io.string_to_file tape out_path;
     exit (0);;
 
 main ()
