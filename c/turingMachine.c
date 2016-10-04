@@ -164,6 +164,8 @@ void mt_to_file(machine mt, char *file){
       fputc(tmp->element, pfile);
       tmp = tmp -> right;
    }
+   fputc('\n', pfile);
+
 
    // Close file
    fclose(pfile);
