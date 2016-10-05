@@ -79,7 +79,7 @@ int main (int argc,char **argv){
    machine mt;
    mt = create_MT();
    
-   // Create correct path to acces at the configuration file in the turing machine / Crea la path correta para acceder al archivo de configuracion de la MT
+   // Create correct path to access at the configuration file in the turing machine / Crea la path correta para acceder al archivo de configuracion de la MT
    strcat(path,argv[1]);
 
    // Create array with configuration file / Crea el array con el fichero de configuracion

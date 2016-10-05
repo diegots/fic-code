@@ -8,7 +8,7 @@ machine create_MT(){
    mt = (machine) malloc(sizeof(struct turingMachine));
    mt -> head = (head) malloc(sizeof(struct cell));
    if (mt == NULL) {
-      printf("memoria agotada\n");
+      printf("Out of memory\n");
       exit(EXIT_FAILURE);
    }
    mt->conf = NULL;
@@ -51,7 +51,7 @@ void write_cell(head *c, char direction, tElement e){
       if ((*c) -> left == NULL){
          pcell tmp = (pcell) malloc(sizeof(struct cell));
          if (tmp == NULL) {
-            printf("memoria agotada\n");
+            printf("Out of memory\n");
             exit(EXIT_FAILURE);
          }
          tmp -> right = *c;
@@ -65,7 +65,7 @@ void write_cell(head *c, char direction, tElement e){
 
    } else if (direction == 'R'){ // Right direction
       if ((*c) -> right == NULL){
-         head tmp = (head) malloc(sizeof(struct cell));
+         pcell tmp = (pcell) malloc(sizeof(struct cell));
          if (tmp == NULL) {
             printf("Out of memory\n");
             exit(EXIT_FAILURE);
@@ -102,7 +102,7 @@ void initialize_MT(machine *mt, char **array, char *sequence){
 
 void run_MT(machine *mt, int lines){
    char state;
-   int steps = 0, exit = 0, accept = 0;
+   int steps = 0, running = 0, accept = 0;
    while(1){
       if ( steps == 0){ // If it's the first step get initial state / Si es el primer paso obtenemos el estado inicial
          state = (*mt)->conf[0][0];       
@@ -111,18 +111,18 @@ void run_MT(machine *mt, int lines){
       steps++;
       /* Leemos cada linea del array y buscamos si el estado de la linea y su alfabeto es igual al estado actual de la MT 
       y al caracter que señala el cabezal*/
-      exit = 0;
+      running = 0;
       int i;
       for (i=0;i<lines;i++){
          if (((*mt)->conf[i][0] == state) && ((*mt)->head->element == (*mt)->conf[i][2])){
-            exit = 1;
+            running = 1;
             state = (*mt)->conf[i][1];
             write_cell(&(*mt)->head, (*mt)->conf[i][4], (*mt)->conf[i][3]);
             break;
          }
       }
       // Si no se ha encontrado un estado siguiente se finaliza la ejecucion sin exito
-      if (!exit){
+      if (!running){
         accept = 0;
         break;
       }
