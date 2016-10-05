@@ -88,7 +88,7 @@ let move_left lt rt s =
 
 (* As an output it should give accept status, steps number and end tape state *)
 let rec run_machine lt rt st map steps = 
-    (*try*) let st,sym,mov = next_tran (st, (List.hd rt)) map in
+    (* try *) let st,sym,mov = next_tran (st, (List.hd rt)) map in
         match mov,st with 
             | 'R','H' -> true, (steps+1), (move_right lt rt sym) 
             | 'L','H' -> true, (steps+1), (move_left  lt rt sym)
@@ -97,7 +97,7 @@ let rec run_machine lt rt st map steps =
             | 'L',_   -> let lt,rt = move_left lt rt sym in
                             run_machine lt rt st map (steps+1)
             | _,_     -> false, steps, (lt, rt) (* Bad movement *) 
-    (*with Not_found -> false, steps, (lt,rt) *)
+    (* with Not_found -> false, steps, (lt,rt) *)
 
 (* Write tape's final version *)
 let write_tape l = 
@@ -115,8 +115,10 @@ let run_machine input_syms m_desc =
     let right_tape = prepare_tape input_syms in
     let state      = (List.hd m_desc).[0] in (* first state *)
         (* print_endline ("First state: " ^ (String.make 1 state)); *) (* debug *)
-    let a,s,(lt,rt) = run_machine left_tape right_tape state map 0 in (* solve! *)
+    try let a,s,(lt,rt) = run_machine left_tape right_tape state map 0 in (* solve! *)
         a,s,(write_tape lt rt)
+    with Not_found -> false, 0, ""
+
 (* ************************************************************************** *)
 
 (* ********************** Test write_tape *********************************** *)
