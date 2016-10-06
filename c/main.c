@@ -27,7 +27,7 @@ int get_lines(char *path){
 }
 
 
-/* Create array with the configuration file / Crea el array con el fichero de configuracion */
+/* Create array with the configuration file */
 char** crear_array(char *path, int lines) {
    int i = 0;
    char **file_array;
@@ -56,7 +56,7 @@ int main (int argc,char **argv){
    char path[100] = "";
    int file_lines = 0, out_file = 0;
 
-   // Check parameters / Comprobacion de parametros
+   // Checking parameters 
    if (argc == 3) {
       out_file = 1;
 	} else if (argc != 2){
@@ -64,29 +64,29 @@ int main (int argc,char **argv){
 		return 0;
 	}
 
-	// Get input / Se solicita al usuario la secuencia de entrada de la MT
+	// Get input 
 	printf("Input: ");
 	fgets(input, SIZE, stdin);
 
    if (input[0]=='\n'){
-      // Input empty, run MT like input was 'B' / Cadena de entrada en blanco, se ejecuta la MT como si entrase un Blanco
+      // Input empty, run MT like input was 'B' 
       input[0] = 'B';
-   } else{ // Delete character '\n' stored in the string to use fgets() / Se elimina el caracter \n que se almacena en la cadena por usar la funcion fgets()
+   } else{ // Character '\n' is removed 
       input[strlen(input)-1] = '\0';
    }
 	
-   // Create turing machine / Se crea la maquina de turing
+   // Create turing machine 
    machine mt;
    mt = create_MT();
    
-   // Create correct path to access at the configuration file in the turing machine / Crea la path correta para acceder al archivo de configuracion de la MT
+   // Create correct path to access at the configuration file in the turing machine 
    strcat(path,argv[1]);
 
-   // Create array with configuration file / Crea el array con el fichero de configuracion
+   // Create array with configuration file 
    file_lines = get_lines(path);
    file_array = crear_array(path, file_lines);
 
-   // Initialize machine with configuration file and the input. / Se inicializa la maquina con el fichero de configuracion y la entrada introducida por el usuario
+   // Initialize machine with configuration file and the input. 
    initialize_MT(&mt, file_array, input);
    run_MT(&mt, file_lines);
 

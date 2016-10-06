@@ -3,7 +3,7 @@
 #include <string.h>
 #include "turingMachine.h"
 
-/* Crea una maquina de turing */
+/* This function creates a turing machine */
 machine create_MT(){
    machine mt;
    // Memory allocation
@@ -20,21 +20,21 @@ machine create_MT(){
    return mt;
 }
 
-/* Coloca la cabeza en la celda mas a la izquierda de la cinta */
+/* move_head_to_left places the head in the leftmost cell of the tape */
 void move_head_to_left(head *h){
    if (*h!=NULL)
       *h = (*h)->left;
 }
 
-/* Escribe el caracter e en la cabeza y se mueve en la direccion direction */
+/* write_cell writes the character 'e' in the head and moves in the right direction */
 void write_cell(head *h, char direction, tElement e){
 
-   // The item is written into the current cell / Escribimos el elemento en la celda actual
+   // The item is written into the current cell 
    (*h) -> element = e;
 
    // Left direction
    if (direction == 'L'){ 
-      // Si no hay celda izquierda se crea y se mueve el cabezal a la izquierda
+      // If there isn't left cell, the cell is created and the head moves to the left
       if ((*h) -> left == NULL){
          pcell tmp = (pcell) malloc(sizeof(struct cell));
          if (tmp == NULL) {
@@ -46,7 +46,7 @@ void write_cell(head *h, char direction, tElement e){
          tmp -> element = 'B';
          (*h) -> left = tmp;
          *h = tmp;
-      // Si la celda izquierda existe, simplemente se mueve la cabeza a esa posicion
+      // If the left cell exists, simply head moves to that position
       } else {
          *h = (*h) -> left;
       }
@@ -73,38 +73,39 @@ void write_cell(head *h, char direction, tElement e){
    }
 }
 
-/* Inicializa la maquina de turing */
+/* This function initializes the turing machine */
 void initialize_MT(machine *mt, char **array, char *sequence){
    int i;
-   // Almacena el array de configuracion
+   // It stores the array configuration
    (*mt)->conf = array;
-   // Escribe la secuencia introducida por el usuario en la cinta
+   // It writes the input sequence by the user on the tape
    for (i=0;i<strlen(sequence);i++){
       write_cell(&(*mt)->head,'R',sequence[i]);
    }
-   // Coloca la cabeza al principio de la cinta usando la funcion auxiliar move_head_to_left
+   // It places the head at the beginning of the tape using the auxiliary function move_head_to_left
    while ((*mt)->head->left != NULL){
       move_head_to_left(&(*mt)->head);
    }
 }
 
-/* Ejecuta la maquina de turing */
+/* This function runs turing machine */
 void run_MT(machine *mt, int lines){
    char state;
    int steps = 0, running = 0, accept = 0;
    while(1){
-      // If it's the first step get initial state / Si es el primer paso obtenemos el estado inicial
+      // If it's the first step then we get initial state 
       if ( steps == 0){ 
          state = (*mt)->conf[0][0];       
       }
       
       steps++;
-      /* Leemos cada linea del array y buscamos si el estado de la linea y su alfabeto es igual al estado actual de la MT 
-      y al caracter que señala el cabezal*/
+      /* It reads each line of the array and look if the state of the line and 
+	its alphabet is equal to the current state of the MT and the character 
+	that marks the head*/
       running = 0;
       int i;
       for (i=0;i<lines;i++){
-         // Si coincide, actualizamos el estado, escribimos en la cinta y nos movemos con la funcion auxiliar write_cell
+         // If it matches, it updates the state machine, writes on the tape and moves with the auxiliary function write_cell
          if (((*mt)->conf[i][0] == state) && ((*mt)->head->element == (*mt)->conf[i][2])){
             running = 1;
             state = (*mt)->conf[i][1];
@@ -112,12 +113,12 @@ void run_MT(machine *mt, int lines){
             break;
          }
       }
-      // Si no se ha encontrado un estado siguiente se finaliza la ejecucion sin exito
+      // If the machine has not found a state, the machine ends
       if (!running){
         accept = 0;
         break;
       }
-      // If the final state is reached then ends / Si se alcanza el estado final se sale
+      // If the final state is reached then ends 
       if (state == 'H'){
          accept = 1;
          break;
@@ -133,12 +134,11 @@ void run_MT(machine *mt, int lines){
    printf("Steps: %i\n", steps);
 }
 
-/* Elimina la maquina de turing y libera la memoria*/
+/* delete_MT deletes turing machine and frees memory*/
 void delete_MT(machine *mt, int lines){
-   /* Mientras exista una celda a la derecha de la cabeza, se libera su 
-   espacio. El puntero que apunta a la celda de la derecha pasa a apuntar
-   a la siguiente celda de su derecha. Así hasta liberar todas las celdas a la
-   derecha de la caebza.*/
+   /* While there is a cell to the right of the head, the space is freed. The 
+   pointer to the cell to the right passes to point to the next cell to the 
+   right. To release all the cells to the right of the head.*/
    while ((*mt)->head->right != NULL){
       pcell tmp = ((*mt)->head)->right;
       (*mt)->head->right = ((*mt)->head->right)->right;
@@ -150,7 +150,7 @@ void delete_MT(machine *mt, int lines){
       (*mt)->head->left = ((*mt)->head->left)->left;
       free(tmp);
    }
-   // Se libera el espacio ocupado por el fichero de configuracion, la cabeza, y la maquina de turing
+   // It frees the space occupied by the configuration file, head, and turing machine
    int i = 0;
    for(i=0;i<lines;i++){
       free((*mt)->conf[i]);
@@ -160,25 +160,25 @@ void delete_MT(machine *mt, int lines){
    free(*mt); 
 }
 
-/* Escribe los datos de la cinta en un fichero dada una ruta, si el fichero no existe lo crea */
+/* It writes the data tape in a file given a route, if the file does not exist create it */
 void mt_to_file(machine mt, char *file){
    // Open file in write mode
    FILE *pfile;
    pfile = fopen(file, "w");
    pcell tmp = (mt -> head);
-   // We stand at the begining of the tape / Nos colocamos al principio de la cinta
+   // We stand at the begining of the tape 
    while (tmp -> left != NULL){
       tmp  = tmp -> left;
    }
 
-   // Vamos escribiendo los valores a la izquierda hasta llegar a la cabeza
+   // It writes the values to the left until you reach the head
    while (tmp != (mt -> head)){
       fputc(tmp->element, pfile);
       tmp = tmp -> right;
    }
 
    fputc('\n', pfile);
-   // Escribimos los valores restantes
+   // It writes the remaining values
    while (tmp != NULL){
       fputc(tmp->element, pfile);
       tmp = tmp -> right;
