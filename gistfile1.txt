@@ -1,1 +1,22 @@
+3: Lenguajes para el desarrollo de aplicaciones móviles
+5: Lenguajes para programar videojuegos
+6: Lenguajes para enseñar programación en los colegios
+11: Lenguajes de programación esotéricos
+8: Programación lógica
+9: Lenguajes de programación para cálculo simbólico
+7: Lenguajes para programar robots
+4: Lenguajes de consulta de bases de datos
+10: Lenguajes de programación para sistemas en tiempo real
+2: lenguajes para el desarrollo de aplicaciones web
 1: Rankins de lenguajes de programación
+
+Enviar correo a jorge.grana@udc.es
+
+Asunto del correo:
+------------------
+[DLP-Com] Selección de temas para P2
+
+Contenido del correo:
+---------------------
+Diego Trabazo Sardón
+Raul Santoveña Gomez
