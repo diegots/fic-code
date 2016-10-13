@@ -4,4 +4,3 @@ function outputImage = n2onedim (image)
 		outputImage = rgb2gray (image);
 	end
 	outputImage = image;
-
