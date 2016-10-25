@@ -1,4 +1,4 @@
-function outputImage = medianFilter3 (inputImage, filterSize)
+function outputImage = medianFilter (inputImage, filterSize)
 
     function m = subMatrix(p, filterSide, y, x)
 
