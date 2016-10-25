@@ -4,7 +4,7 @@ function outputImage = zoomIn2 (inputImage, mode)
 
 
     %%%%%%%%%%%%% Neighbor interpolation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    function outputImage = neighbor()
+    function outputImage = neighbor(outputImage)
         % Vectorized version
         c1 = 0:new_x-1;
         c2 = 0:new_y-1;
@@ -26,7 +26,20 @@ function outputImage = zoomIn2 (inputImage, mode)
 
 
     %%%%%%%%%%%%% Bilinear interpolation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    function outputImage = bilinear()
+    function outputImage = bilinear(image, x, y, outputImage)
+
+        b = (y-1) / (2*y - 1) * [0:2*y-1]; % cols
+        cu_q = 1 + floor(b); % current
+        ne_q = 1 + ceil(b); % next
+        b = b - fix(b);
+
+        a = (x-1) / (2*x - 1) * [0:2*x-1]; % rows
+        cu_p = 1 + floor(a); % current
+        ne_p = 1 + ceil(a); % next
+        a = [a - fix(a)](:);
+
+        outputImage(1:2*x, 1:2*y) = (1-a) .* ( (1-b) .* image(cu_p, cu_q) + b .* image(cu_p, ne_q) ) + ...
+                                       a  .* ( (1-b) .* image(ne_p, cu_q) + b .* image(ne_p, ne_q) );
 
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -40,18 +53,19 @@ function outputImage = zoomIn2 (inputImage, mode)
     % Read input image, initialize output image
     image = imread (inputImage);
     image = n2onedim (image); % transform RGB intensity levels into one
-    [x y] = size (image); % actual image pixels
+    [x y] = size (image); % number of (rows, cols) on the input image
     
     new_x = 2 * x; % new image pixels
     new_y = 2 * y;
 
-    outputImage = zeros (new_x,new_y); % reserve new image memory
+    outputImage = zeros (new_x, new_y); % reserve new image memory
 
     if strcmp (mode, "bilinear") % Do bilinear interpolation 
         disp("Doing bilinear interpolation.")    
+        outputImage = bilinear(image, x, y, outputImage);
 
     elseif strcmp (mode, "neighbor") % Do neighbor interpolation
         disp("Doing Neighbor interpolation.")    
-        outputImage = neighbor();
+        outputImage = neighbor(outputImage);
     endif
 end
