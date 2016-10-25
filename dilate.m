@@ -25,6 +25,12 @@ function outputImage = dilate (inputImage, strElType, strElSize)
     elseif strcmp (strElType, "cross")
 
     elseif strcmp (strElType, "linev")
+        % Pruning edge elements
+        topRow = [1:r:r*c];
+        vectorOnes = setdiff(vectorOnes, topRow);
+        bottomRow = [r:r:r*c];
+        vectorOnes = setdiff(vectorOnes, bottomRow);
+
         vectorEe = [-strElSizeHalf:1:-1 0 1:strElSizeHalf](:); % rows
         ee = vectorOnes + vectorEe;
 
