@@ -16,29 +16,35 @@ function outputImage = dilate (inputImage, strElType, strElSize)
 
     outputImage = zeros (r, c, "uint8");
 
-    % Relevant points
+    % All relevant points: all 'ones', including those that shouldn't be 
+    % processed because of the used kernel.
     vectorOnes = find (image)'; %cols
 
+    p = reshape ( [1: r*c], r, c);
     strElSizeHalf = (strElSize -1) / 2;
+
     if strcmp (strElType, "square")
 
     elseif strcmp (strElType, "cross")
 
     elseif strcmp (strElType, "linev")
-        % Pruning edge elements
-        topRow = [1:r:r*c];
-        vectorOnes = setdiff(vectorOnes, topRow);
-        bottomRow = [r:r:r*c];
-        vectorOnes = setdiff(vectorOnes, bottomRow);
+        p = p (strElSizeHalf+1 : r-strElSizeHalf, :);
+        p = setdiff (vectorOnes, p);
+        vectorOnes = setdiff (vectorOnes, p);
 
         vectorEe = [-strElSizeHalf:1:-1 0 1:strElSizeHalf](:); % rows
         ee = vectorOnes + vectorEe;
 
     elseif strcmp (strElType, "lineh")
+        p = p (:, strElSizeHalf+1 : c-strElSizeHalf);
+        p = setdiff (vectorOnes, p);
+        vectorOnes = setdiff (vectorOnes, p);
+
+        vectorEe = r * [-strElSizeHalf:1:-1 0 1:strElSizeHalf](:); % rows
+        ee = vectorOnes + vectorEe;
 
     endif
 
-    whos
     outputImage(ee) = 255 * ones(1,1:numel(ee)); % 255 * cols
 
 end
