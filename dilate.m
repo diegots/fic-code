@@ -24,6 +24,16 @@ function outputImage = dilate (inputImage, strElType, strElSize)
     strElSizeHalf = (strElSize -1) / 2;
 
     if strcmp (strElType, "square")
+	p = p (strElSizeHalf+1 : r-strElSizeHalf, strElSizeHalf+1 : c-strElSizeHalf);
+        p = setdiff (vectorOnes, p);
+        vectorOnes = setdiff (vectorOnes, p);
+
+        vectorEe = [-strElSizeHalf:1:-1 0 1:strElSizeHalf](:);
+	vectorEe_1 = ones(strElSize) .* vectorEe;
+        vectorEe_2 = ones(strElSize) .* ( r * [-strElSizeHalf:1:-1 0 1:strElSizeHalf]);
+	vectorEe = [vectorEe_1 + vectorEe_2](:);
+
+        ee = vectorOnes + vectorEe;
 
     elseif strcmp (strElType, "cross")
 
