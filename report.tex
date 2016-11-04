@@ -42,7 +42,7 @@ BCOR5mm, % Binding correction
 \& Raul Santoveña Gómez\textsuperscript{1}}} % The article author(s) - author
 % affiliations need to be specified in the AUTHOR AFFILIATIONS block
 
-\date{} % An optional date to appear under the author(s)
+\date{\today} % An optional date to appear under the author(s)
 
 %----------------------------------------------------------------------------------------
 
@@ -75,7 +75,13 @@ BCOR5mm, % Binding correction
 %----------------------------------------------------------------------------------------
 %	ABSTRACT
 %----------------------------------------------------------------------------------------
-\section*{Resumen} % This section will not appear in the table of contents due to the star (\section*)
+\begin{abstract}
+Desde el comienzo de los tiempos de la informática la búsqueda de sistemas 
+fisicamente más pequeños ha sido incesante. Hoy en día disponemos de 
+dispositivos realmente pequeños que gracias a la energía suministrada por
+baterías ofrecen a sus usuarios horas de autonomía y caben en un bolsillo. 
+Existe además un mercado muy activo de software que explota sus características.
+\end{abstract}
 
 
 %----------------------------------------------------------------------------------------
@@ -98,10 +104,40 @@ BCOR5mm, % Binding correction
 %----------------------------------------------------------------------------------------
 %	HTML
 %----------------------------------------------------------------------------------------
-\section{Html}
+\section{Html: ¿multiplataforma?}
+Una opción a considerar a la hora de desarrollar aplicaciones Web modernas es el conjunto de lenguajes habituales de la Web: Html 5, CSS y JavaScript. Es posible contruir y distribuir aplicaciones usando estos tres lenguajes pero hay una serie de aspectos, que se verán a continuación y que conviene tener en cuenta. Las objetivos que se suelen persegir con este enfoque son tanto económicos como tecnológicos: 
+
+\begin{itemize}
+\item Disponibilidad multiplataforma: Una misma aplicación debería poder funcionar el todas las plataformas en las que la empresa quiera estar presente.
+\item Aprovechamiento de los conocimientos de los desarrolladores existentes en la organización para abarcar un ámbito nuevo y diferente a la Web tradicional.
+\item Aprovechar el esfuerzo ya realizado cuando se creó la web de la organización.
+\end{itemize}
+
+\subsection{Primera aproximación}
+En primer lugar y de manera básica, todas las plataformas disponen de algún \textit{browser engine} del cual el programador puede aprovecharse para mostrar contenido web correctamente adaptado a las carácterísticas de la pantalla del dispositivo, estas son, como mínimo, tamaño y orientación. Esto quiere decir que usando las propias características del lenguaje HTML y haciendo uso de Responsive Web Design, se pueden crear sitios web que cumplan con los objetivos de poner al alcance del usuario final los contenidos o herramientas de la web de la empresa u organización en un formato manejable. No obstante esta aproximación puede no ser suficiente en muchos casos y dista bastante de ser una aplicación móvil como tal. Características como uso de almacenamiento para utilización cuando no hay conexión a Internet, iconos en la \textit{home screen} del dispositivo u posibilidad de compartir contenido entre aplicaciones se ven limitadas o no son posibles. Para desarollar una aplicación de este estilo, basta emplear WebView en Android, UIWebView en iOS y WebBrower en Windows Mobile; y acceder a la web ya adaptada correspondiente.
+
+\subsection{Un poco más allá}
+En este momento conviene recordar que la Web actual con tecnologías modernas dista mucho de ser la Web de hace unos años. Baste como ejemplo repasar algunas de las características que soporta el navegador Safari en su versión 10 [1]:
+\begin{itemize}[noitemsep]
+\item Video a pantalla completa con subtítulos si se desea
+\item Funciones de localización geográfica
+\item Funcionalidad offline
+\item Notificaciones integradas con el sistema
+\item Manipulación de JSON
+\item WebGL para contenido en 3D
+\item y mucho más...
+\end{itemize}
+
+Esta riqueza puede ser explotada y acerca mucho más al objetivo que persiguen muchos desarrolladores: conseguir que una aplicación web sea indistinguible de una nativa. Sin embargo las cosas no son tan sencillas. Como en cualquier otro desarrollo para la Web, hay que contar siempre que hay disparidad en el soporte que los navegadores tienen en los distintos entornos. Como ejemplo, se puede comparar en la página Mobile HTML 5 [2] que la \textit{Vibration API} estaba soportada por Chrome en su versón 40b sobre Android 4.0 pero que es inexistente en iOS y Windows.
+
+\subsection{APIs nativas}
+Si se desea mayor integración con la plataforma o mejorar el rendimiento, se puede hacer uso de las APIs nativas, un desarrollo profesional recurrirá a alguno de los muchos Frameworks existentes. El objetivo primordial de estos entornos es hacer de puente entre el lenguaje JavaScript y las APIs nativas. Además estas librerías facilitan mucho la codificación al dar al programador.
+
+Estos frameworks también se ocupan de la compilación y distribución de la aplicación en el Store correspondiente.
+\subsection{Un ejemplo: PhoneGap}
 
 %----------------------------------------------------------------------------------------
-%	ANDROID
+%	JAVA EN ANDROID
 %----------------------------------------------------------------------------------------
 \section{Android}
 
