@@ -27,6 +27,7 @@ function outputImage = histShrink (inputImage, minValue, maxValue)
 
 	% Vectorized version
 	outputImage = minValue + ((a * (image (1:rows*cols) - min))/b);
+        outputImage = reshape (outputImage, rows, cols);
 
 	% Loop version, slower
 %	for n=1:(rows * cols)
