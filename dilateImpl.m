@@ -30,6 +30,11 @@ function outputImage = dilateImpl (image, strElType, strElSize)
         vectorEe_2 = ones(elSize) .* ( r * [-strElSizeHalf:1:-1 0 1:strElSizeHalf]);
 	vectorEe = [vectorEe_1 + vectorEe_2](:);
 
+		% Maybe the filter is too big, image too small or there aren't white pixels
+        [_r, _c] = size(vectorOnes);
+        if _r==1 && _c==0
+            error("There are no 'ones' candidates");
+
         ee = vectorOnes + vectorEe;
 
     % cross kernel
