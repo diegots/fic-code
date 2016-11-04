@@ -1,5 +1,8 @@
 function outputImage = dilateImpl (image, strElType, strElSize)
 
+    % Parse Estructural Element size
+    elSize = str2double(strElSize);
+
     % Actual size of the input image
     [r c] = size (image);
 
@@ -14,7 +17,7 @@ function outputImage = dilateImpl (image, strElType, strElSize)
     % represent only the indexes that the kernel can or should process.
     p = reshape ( [1: r*c], r, c );
 
-    strElSizeHalf = (strElSize -1) / 2;
+    strElSizeHalf = (elSize -1) / 2;
 
     % square kernel
     if strcmp (strElType, "square")
@@ -23,8 +26,8 @@ function outputImage = dilateImpl (image, strElType, strElSize)
         vectorOnes = setdiff (vectorOnes, p);
 
         vectorEe = [-strElSizeHalf:1:-1 0 1:strElSizeHalf](:);
-	vectorEe_1 = ones(strElSize) .* vectorEe;
-        vectorEe_2 = ones(strElSize) .* ( r * [-strElSizeHalf:1:-1 0 1:strElSizeHalf]);
+	vectorEe_1 = ones(elSize) .* vectorEe;
+        vectorEe_2 = ones(elSize) .* ( r * [-strElSizeHalf:1:-1 0 1:strElSizeHalf]);
 	vectorEe = [vectorEe_1 + vectorEe_2](:);
 
         ee = vectorOnes + vectorEe;
