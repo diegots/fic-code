@@ -14,7 +14,7 @@ function outputImage = histShrink (inputImage, minValue, maxValue)
 	% Assuming a default intensity range of 256 values, from 0 to 
 	% 255.
 	min = 0;
-	max = 255;
+	max = 255 ;
 	a = maxValue - minValue;
 	b = max - min;
 
@@ -23,7 +23,7 @@ function outputImage = histShrink (inputImage, minValue, maxValue)
 
 	image = double (image);
 	[rows cols] = size (image); % get number of cols and rows of image
-	outputImage = (zeros(rows,cols));
+	outputImage = zeros (rows, cols);
 
 	% Vectorized version
 	outputImage = minValue + ((a * (image (1:rows*cols) - min))/b);
