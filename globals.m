@@ -7,6 +7,6 @@ global prewittKerH = [-1 -1 -1 0 0 0 1 1 1]';
 global prewittKerV = [-1 0 1 -1 0 1 -1 0 1]';
 
 % Sobel kernel values
-global sobelKerH = [-1 -2 -1 0 0 0 1 2 1]';
-global sobelKerV = [-1 0 1 -2 0 2 -1 0 1]';
+global sobelKerV = [-1 -2 -1 0 0 0 1 2 1]';
+global sobelKerH = [1 0 -1 2 0 -2 1 0 -1]';
 
