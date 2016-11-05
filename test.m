@@ -141,19 +141,41 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Morphological Operators: tophat %%
-i = "image_samples/lena512.bmp";
-i = "image_samples/test-white-column.bmp";
+%i = "image_samples/lena512.bmp";
+%i = "image_samples/test-white-column.bmp";
+%[orig, orig_map] = imread (i);
+%
+%EeType = "square"; % possibilities: square, cross, linev, lineh
+%mode = "black"; % white, black
+%out = tophatFilter (i, EeType, mode); 
+%whos
+%
+%figure("name", "Morphological Operators: tophat");
+%subplot (1,2,1); imshow(orig);
+%title("Original image", "fontsize",14);
+%
+%subplot (1,2,2); imshow(out, orig_map);
+%title("Tophated image", "fontsize",14);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%% Convolution w/Gauss filter %%%%
+%i = "image_samples/lena512.bmp";
+i = "image_samples/test-1.bmp";
+
 [orig, orig_map] = imread (i);
+orig = n2onedim (orig);
 
-EeType = "square"; % possibilities: square, cross, linev, lineh
-mode = "black"; % white, black
-out = tophatFilter (i, EeType, mode); 
-whos
+% Choose Gauss parameters
+%kernel = fspecial ("gaussian", 7, 2);
+kernel = gaussKernel (7, 2);
 
-figure("name", "Morphological Operators: tophat");
+out = convolution(orig, kernel(:));
+
+figure("name", "Gauss smooth");
 subplot (1,2,1); imshow(orig);
 title("Original image", "fontsize",14);
 
 subplot (1,2,2); imshow(out, orig_map);
-title("Tophated image", "fontsize",14);
+title("Smoothed image", "fontsize",14);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
