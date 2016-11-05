@@ -5,5 +5,5 @@ function kernel = gaussKernel (kerSize, sigma)
     row = col';
 
     kernel = e .^ (-(row.^2 + col.^2) / (2 * sigma^2));
-    kernel = kernel / sum (kernel(:));
+    kernel = (kernel / sum (kernel(:))) (:);
 end

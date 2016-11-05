@@ -161,21 +161,21 @@
 
 %%%%% Convolution w/Gauss filter %%%%
 %i = "image_samples/lena512.bmp";
-i = "image_samples/test-1.bmp";
-
-[orig, orig_map] = imread (i);
-orig = n2onedim (orig);
-
-% Choose Gauss parameters
-%kernel = fspecial ("gaussian", 7, 2);
-kernel = gaussKernel (7, 2);
-
-out = convolution(orig, kernel(:));
-
-figure("name", "Gauss smooth");
-subplot (1,2,1); imshow(orig);
-title("Original image", "fontsize",14);
-
-subplot (1,2,2); imshow(out, orig_map);
-title("Smoothed image", "fontsize",14);
+%i = "image_samples/test-1.bmp";
+%
+%[orig, orig_map] = imread (i);
+%orig = n2onedim (orig);
+%
+%% Choose Gauss parameters
+%%kernel = fspecial ("gaussian", 7, 2);
+%kernel = gaussKernel (7, 2);
+%
+%out = convolution(orig, kernel);
+%
+%figure("name", "Gauss smooth");
+%subplot (1,2,1); imshow(orig);
+%title("Original image", "fontsize",14);
+%
+%subplot (1,2,2); imshow(out, orig_map);
+%title("Smoothed image", "fontsize",14);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
