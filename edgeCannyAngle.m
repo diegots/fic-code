@@ -1,3 +1,5 @@
+% edgeCannyAngle puts an angle into one of four categories using a proximity 
+% criteria. Categories are: 0, 45, 90 and 135 degrees.
 function retval = edgeCannyAngle (alfa)
     incr = 45;
     test = 0;

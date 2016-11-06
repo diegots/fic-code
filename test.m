@@ -1,3 +1,5 @@
+% test.m contains code to try algorithms from this package
+
 %%%%%%%%%%%%%% histShrink %%%%%%%%%%%%%%
 %i = "image_samples/lena512.bmp";
 %[orig, orig_map] = imread (i);
@@ -178,4 +180,19 @@
 %
 %subplot (1,2,2); imshow(out, orig_map);
 %title("Smoothed image", "fontsize",14);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%% edgeCanny %%%%%%%%%%%%%
+%i = "image_samples/lena512.bmp";
+i = "image_samples/test-1.bmp";
+
+out = edgeCanny (i, 1, 0, 0);
+
+%figure("name", "Canny edge detection");
+%subplot (1,2,1); imshow(orig);
+%title("Original image", "fontsize",14);
+
+%subplot (1,2,2); imshow(out, orig_map);
+%title("Image w/borders", "fontsize",14);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
