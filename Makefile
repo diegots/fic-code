@@ -1,12 +1,13 @@
-all: presentation report 
+all: report 
 
 report:
 	pdflatex -output-directory build-report/ report.tex	         
 
-report_b:
+report_bib:
+	pdflatex -output-directory build-report/ report.tex	         
 	bibtex build-report/report.aux
-
-report_bib: report report_b report report
+	pdflatex -output-directory build-report/ report.tex	         
+	pdflatex -output-directory build-report/ report.tex	         
 
 presentation:
 	pdflatex -output-directory build-presentation/ presentation.tex 
