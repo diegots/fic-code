@@ -1,0 +1,31 @@
+# Html
+Una opción a considerar a la hora de desarrollar aplicaciones Web modernas es el conjunto de lenguajes habituales de la Web: Html 5, CSS y JavaScript. Es posible contruir y distribuir aplicaciones usando estos tres lenguajes pero hay una serie de aspectos, que se verán a continuación y que conviene tener en cuenta. Las objetivos que se suelen persir con este enfoque son tanto económicos como tecnológicos: 
+
+* Disponibilidad multiplataforma: una misma aplicación debería poder funcionar el todas las plataformas en las que la empresa quiera estar presente.
+* Aprovechamiento de los conocimientos de los desarrolladores existentes en la organización para abarcar un ámbito nuevo y diferente a la Web tradicional.
+* Aprovechar el esfuerzo ya realizado cuando se creó la web de la organización.
+
+## Primera aproximación
+En primer lugar y de manera básica, todas las plataformas disponen de algún *browser engine* del cual el programador puede aprovecharse para mostrar contenido web correctamente adaptado a las carácterísticas de la pantalla del dispositivo, estas son, como mínimo, tamaño y orientación. Esto quiere decir que usando las propias características del lenguaje HTML y haciendo uso de Responsive Web Design, se pueden crear sitios web que cumplan con los objetivos de poner al alcance del usuario final los contenidos o herramientas de la web de la empresa u organización en un formato manejable. No obstante esta aproximación puede no ser suficiente en muchos casos y dista bastante de ser una aplicación móvil como tal. Características como uso de almacenamiento para utilización cuando no hay conexión a Internet, iconos en la *home screen* del dispositivo u posibilidad de compartir contenido entre aplicaciones se ven limitadas o no son posibles. Para desarollar una aplicación de este estilo, basta emplear WebView en Android, UIWebView en iOS y WebBrower en Windows Mobile; y acceder a la web ya adaptada correspondiente.
+
+## Un poco más allá
+En este momento conviene recordar que la Web actual con tecnologías modernas dista mucho de ser la Web de hace unos años. Baste como ejemplo repasar algunas de las características que soporta el navegador Safari en su versión 10 [1]:
+* Video a pantalla completa con subtítulos si se desea
+* Funciones de localización geográfica
+* Funcionalidad offline
+* Notificaciones integradas con el sistema
+* JSON
+* WebGL
+* y mucho más
+
+Esta riqueza puede ser explotada y acerca mucho más al objetivo que persiguen muchos desarrolladores: conseguir que una aplicación web sea indistinguible de una nativa. Sin embargo las cosas no son tan sencillas. Como en cualquier otro desarrollo para la Web, hay que contar siempre que hay disparidad en el soporte que los navegadores tienen en los distintos entornos. Como ejemplo, se puede comparar en la página Mobile HTML 5 [2] que la *Vibration API* estaba soportada por Chrome en su versón 40b sobre Android 4.0 pero que es inexistente en iOS y Windows.
+
+[1] https://developer.apple.com/safari/features/
+[2] http://mobilehtml5.org/
+
+## APIs nativas
+Si se desea mayor integración con la plataforma o mejorar el rendimiento, se puede hacer uso de las APIs nativas, un desarrollo profesional recurrirá a alguno de los muchos Frameworks existentes. El objetivo primordial de estos entornos es hacer de puente entre el lenguaje JavaScript y las APIs nativas. Además estas librerías facilitan mucho la codificación al dar al programador 
+
+Estos frameworks también se ocupan de la compilación y distribución de la aplicación en el Store correspondiente.
+
+## Un ejemplo: PhoneGap

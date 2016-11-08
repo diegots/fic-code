@@ -1,15 +1,20 @@
-all: presentation report 
+all: report_bib
 
 report:
+	if [ ! -d build-report ] ; then mkdir build-report ; fi
 	pdflatex -output-directory build-report/ report.tex	         
 
-report_b:
+report_bib:
+	if [ ! -d build-report ] ; then mkdir build-report ; fi
+	pdflatex -output-directory build-report/ report.tex	         
 	bibtex build-report/report.aux
-
-report_bib: report report_b report report
+	pdflatex -output-directory build-report/ report.tex	         
+	pdflatex -output-directory build-report/ report.tex	         
 
 presentation:
+	if [ ! -d build-presentation ] ; then mkdir build-presentation ; fi
 	pdflatex -output-directory build-presentation/ presentation.tex 
 
 clean:
-	rm -rf build-report/* build-presentation/*
+	if [ -d build-report ] ; then rm -rf build-report/* ; fi
+	if [ -d build-presentation ] ; then rm -rf build-presentation/* ; fi
