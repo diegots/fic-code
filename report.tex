@@ -68,19 +68,15 @@ BCOR5mm, % Binding correction
 
 \tableofcontents % Print the table of contents
 
-\listoffigures % Print the list of figures
+%\listoffigures % Print the list of figures
 
-\listoftables % Print the list of tables
+%\listoftables % Print the list of tables
 
 %----------------------------------------------------------------------------------------
 %	ABSTRACT
 %----------------------------------------------------------------------------------------
 \begin{abstract}
-Desde el comienzo de los tiempos de la informática la búsqueda de sistemas 
-fisicamente más pequeños ha sido incesante. Hoy en día disponemos de 
-dispositivos realmente pequeños que gracias a la energía suministrada por
-baterías ofrecen a sus usuarios horas de autonomía y caben en un bolsillo. 
-Existe además un mercado muy activo de software que explota sus características.
+Desde el comienzo de los tiempos de la informática la búsqueda de sistemas fisicamente más pequeños ha sido incesante. Hoy en día disponemos de dispositivos que caben en un bolsillo y gracias a la energía suministrada por baterías ofrecen a sus usuarios horas de autonomía y ofrecen multitud de servicios. Existe por supuesto un mercado de software muy activo que explota sus características. Con tantas opciones y fabricantes como hay en la actualidad para los clientes, no menos grande es el abanico para los desarrolladores. Una ámplia variedad de lenguajes y sistema operativos pueden ser tenidos en cuenta. Se tratan en este documento la plataforma Android utilizando Java y Código Nativo. Además también se explica el uso de los lenguajes de la Web, HTML, CSS y JavaScript a la hora de crear una buena experiencia de usuario.
 \end{abstract}
 
 
@@ -88,7 +84,7 @@ Existe además un mercado muy activo de software que explota sus característica
 %	AUTHOR AFFILIATIONS
 %----------------------------------------------------------------------------------------
 
-{\let\thefootnote\relax\footnotetext{* \textit{Department of Biology, University of Examples, London, United Kingdom}}}
+{\let\thefootnote\relax\footnotetext{* \textit{diego.trabazo@udc.es, Facultad de Informática, UDC}}}
 
 {\let\thefootnote\relax\footnotetext{\textsuperscript{1} \textit{Department of Chemistry, University of Examples, London, United Kingdom}}}
 
@@ -100,24 +96,24 @@ Existe además un mercado muy activo de software que explota sus característica
 %	INTRODUCTION
 %----------------------------------------------------------------------------------------
 \section{Introducción}
-El sector de los dispositivos móviles ha crecido de manera muy relevante desde el 2007. No es que antes de esa fecha no hubiese computadoras de pequeño tamaño que incorporasen una batería como fuente de energía principal, una pantalla que sirviese de forma de entrada de información, no sólo para mostrarla como en un ordenador; o interfaces de usuario distintas al teclado y ratón. Pero en el 2007 Apple dió a conocer el primer smartphone de pantalla táctil \cite{rob_price_how_2015} y varias de sus características cambiaron el mercado. Primero la posibilidad de ser utilizado para visualizar imágenes, vídeos, juegos u otro contenido multimedia. La creación de una tienda de aplicaciones que podían ser escritas por terceros desarrolladores, no sólo por Apple. Y por último estos teléfonos se acompañaban de una tarifa de datos. En el 2010, nuevamente Apple, presenta el iPad \cite{john_d._sutter_apple_2010}, que amplía la pantalla hasta convertirse en un dispositivo muy apropiado para el consumo multimedia.
+El sector de los dispositivos móviles ha crecido de manera muy relevante desde el 2007. No es que antes de esa fecha no hubiese computadoras de pequeño tamaño que incorporasen una batería como fuente de energía principal, una pantalla que sirviese de forma de entrada de información, y no sólo para mostrarla como en un ordenador; o interfaces de usuario distintas al teclado y ratón. Pero en el 2007 Apple dió a conocer el primer smartphone de pantalla táctil \cite{rob_price_how_2015} y varias de sus características cambiaron el mercado. Primero la posibilidad de ser utilizado para visualizar imágenes, vídeos, juegos u otro contenido multimedia. La creación de una tienda de aplicaciones que podían ser escritas por terceros desarrolladores, no sólo por Apple. Y por último estos teléfonos se acompañaban de una tarifa de datos, lo cual hizo que Internet estuviese disponible en todo momento. En el 2010, nuevamente Apple, presentó el iPad \cite{john_d._sutter_apple_2010}, que amplió la pantalla hasta convertirse en un dispositivo muy apropiado para el consumo multimedia.
 
-Hoy en día hay muchas alternativas a la hora de adquirir un teléfono o táblet, pero además el modelo se ha extendido a nuevos productos como los relojes o \textit{smartwatches} o los coches con sistemas de \textit{infotainment}. El software utilizado en estos nuevos dispositivos es una adaptación de los sistemas Android o iOS existentes para estos nuevos formatos. Su característica común es que el método de entrada princial son o bien la voz o bien los gestos sobre la pantalla. Además son dependientes de un teléfono con el que suelen tener que estar emparejados.
+Hoy en día hay muchas alternativas a la hora de adquirir un teléfono o táblet, pero además el modelo se ha extendido a nuevos productos como los relojes o \textit{smartwatches} o los coches con sistemas de \textit{infotainment}. El software utilizado en estos nuevos dispositivos es una adaptación de los sistemas Android o iOS existentes para estos nuevos formatos. Entre sus características comunes están que el método de entrada princial son o bien la voz o bien los gestos sobre la pantalla. Además son dependientes de un teléfono con el que suelen tener que estar emparejados.
 
 \begin{figure}[h]
 \centering 
 \includegraphics[width=1.1\columnwidth]{report_table_os_lang} 
-\caption[Sistemas Operativos y Lenguajes]{No pretende ser exacta. Hay más posibilidades} 
+\caption[Lenguajes recomendados por cada plataforma]{Lenguajes de programación recomendados por cada plataforma.} 
 \label{fig:os_lang} 
 \end{figure}
 
-Para hacerse una idea de qué lenguajes se pueden utilizar en cuál plataforma basta mirar la figura \vref{fig:os_lang} que refleja las opciones recomendadas por el desarrollador de cada plataforma. No pretende ser exaustiva, pero si dar una idea de que es lo recomendado.
+Para hacerse una idea de qué lenguajes se pueden utilizar en cuál plataforma basta mirar la figura \vref{fig:os_lang} que refleja las opciones recomendadas por el desarrollador de cada plataforma. No pretende ser exaustiva, pero si dar una idea de que es lo recomendado. Mencionar de forma especial, ya que llama la atención, que en Tizen las aplicaciones nativas se escriban en lenguaje C. No se esperaba a priori que se hiciese uso de lenguajes no Orientados a Objetos para el desarrollo de aplicaciones. Téngase en cuenta que las interfaces de usuario siguen el paradigma de la Orientación a Eventos. El desarrollador define métodos Callback que son llamados por el sistema o por otros métodos de la aplicación de forma automática ante una circunstancia determinada.
 
 %----------------------------------------------------------------------------------------
 %	HTML
 %----------------------------------------------------------------------------------------
 \section{Html: ¿multiplataforma?}
-Una opción a considerar a la hora de desarrollar aplicaciones Web modernas es el conjunto de lenguajes habituales de la Web: Html 5, CSS y JavaScript. Es posible contruir y distribuir aplicaciones usando estos tres lenguajes pero hay una serie de aspectos, que se verán a continuación y que conviene tener en cuenta. Las objetivos que se suelen persegir con este enfoque son tanto económicos como tecnológicos: 
+Una opción a considerar a la hora de desarrollar aplicaciones Web modernas es el conjunto de lenguajes habituales de la Web: Html 5, CSS y JavaScript. Es posible contruir y distribuir aplicaciones usando estos tres lenguajes pero hay una serie de aspectos, que se verán a continuación y que conviene tener en cuenta. Los objetivos que se suelen persegir con este enfoque son tanto económicos como tecnológicos: 
 
 \begin{itemize}
 \item Disponibilidad multiplataforma: Una misma aplicación debería poder funcionar el todas las plataformas en las que la empresa quiera estar presente.
@@ -125,10 +121,12 @@ Una opción a considerar a la hora de desarrollar aplicaciones Web modernas es e
 \item Aprovechar el esfuerzo ya realizado cuando se creó la web de la organización.
 \end{itemize}
 
-\subsection{Primera aproximación}
+Los principio de separación de aspecto y comportamiento siguen siendo perfectamente válidos en la Web de hoy en día con HTML 5 y CSS 3. El primero es un lenguaje de marcado cuya principal misión es crear la estructura donde los elementosde la web tienen que ser colocados. Se dota al contenido de contexto, quedando claro que es cada cosa. Con CSS se trabaja todo lo relativo al aspecto final: colores, fuentes o tipografías, maquetación. Un concepto central a CSS es el \textit{Box Model} que agrupa los elementos de la página dentro de cajas que se pueden colocar de distintas maneras o se comportan de distintas maneras dependiendo del dispositivo de visualización.
+
+\subsection{1ª aproximación: WebView / UIWebView / WebBrowser}
 En primer lugar y de manera básica, todas las plataformas disponen de algún \textit{browser engine} del cual el programador puede aprovecharse para mostrar contenido web correctamente adaptado a las carácterísticas de la pantalla del dispositivo, estas son, como mínimo, tamaño y orientación. Esto quiere decir que usando las propias características del lenguaje HTML y haciendo uso de Responsive Web Design, se pueden crear sitios web que cumplan con los objetivos de poner al alcance del usuario final los contenidos o herramientas de la web de la empresa u organización en un formato manejable. No obstante esta aproximación puede no ser suficiente en muchos casos y dista bastante de ser una aplicación móvil como tal. Características como uso de almacenamiento para utilización cuando no hay conexión a Internet, iconos en la \textit{home screen} del dispositivo u posibilidad de compartir contenido entre aplicaciones se ven limitadas o no son posibles. Para desarollar una aplicación de este estilo, basta emplear WebView en Android, UIWebView en iOS y WebBrowser en Windows Mobile; y acceder a la web ya adaptada correspondiente.
 
-\subsection{El caso de Safari}
+\subsection{Safari, Chrome, y Firefox apps}
 En este momento conviene recordar que la Web actual con tecnologías modernas dista mucho de ser la Web de hace unos años. Baste como ejemplo repasar algunas de las características que soporta el navegador Safari en su versión 10 \cite{apple_inc._features_2016}:
 \begin{itemize}[noitemsep]
 \item Video a pantalla completa con subtítulos si se desea
@@ -145,8 +143,6 @@ Esta riqueza puede ser explotada y acerca mucho más al objetivo que persiguen m
 Si se desea mayor integración con la plataforma o mejorar el rendimiento, se puede hacer uso de las APIs nativas, un desarrollo profesional recurrirá a alguno de los muchos Frameworks existentes. El objetivo primordial de estos entornos es hacer de puente entre el lenguaje JavaScript y las APIs nativas. Además estas librerías facilitan mucho la codificación al dar al programador.
 
 Estos frameworks también se ocupan de la compilación y distribución de la aplicación en el Store correspondiente.
-
-\subsection{Un ejemplo: PhoneGap}
 
 %----------------------------------------------------------------------------------------
 %	JAVA EN ANDROID
@@ -302,8 +298,6 @@ Estos frameworks también se ocupan de la compilación y distribución de la apl
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
-\renewcommand{\refname}{\spacedlowsmallcaps{References}} % For modifying the bibliography heading
-
 \bibliographystyle{unsrt}
 
 \bibliography{report_biblio.bib} % The file containing the bibliography
