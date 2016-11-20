@@ -1,23 +1,20 @@
 #include <stddef.h>
 
-struct node {
-	void *element;
-	struct node *next;
-};
-
-struct list_control {
+typedef struct _list list;
+struct _list {
 	struct node *first;
 	struct node *last;
 };
 
-typedef struct list_control list;
-
 /* Functions */
-list *create_list(list *l);
-struct node *create_node(void *element, size_t s);
-void delete_list(list *l);
-void delete_node(struct node *n);
+list *create_list();
+list *insert_element(list *l, void *element, size_t s);
 void *get_element(list *l);
-struct node *get_node(list *l);
-list *insert_node(list *l, struct node *n);
-list *next_element(list *l);
+void delete_list(list *l);
+
+/* ****** Tests ******  */
+void test_create_list ();
+void test_insert_element_and_delete_list ();
+void test_insert_3_element_and_delete_list ();
+void test_get_element ();
+void test_get_elements ();
