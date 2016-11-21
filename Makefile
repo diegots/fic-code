@@ -20,7 +20,7 @@ OBJS = support.cmo syntax.cmo core.cmo parser.cmo lexer.cmo main.cmo
 # Files that need to be generated from other files
 DEPEND += lexer.ml parser.ml 
 
-DOC = fulluntyped-doc
+DOC = doc-html
 
 # When "make" is invoked with no arguments, we build an executable 
 # typechecker, after building everything that it depends on
@@ -31,9 +31,9 @@ all: $(DEPEND) $(OBJS) f
 windows: $(DEPEND) $(OBJS) f.exe
 
 doc: $(OBJS)
-	@echo Generating documentation $@
+	@echo Generating documentation
 	if [ ! -d $(DOC) ] ; then mkdir $(DOC) ; fi
-	ocamldoc -html -d fulluntyped-doc *.ml *.mli
+	ocamldoc -html -d $(DOC) *.ml *.mli
 
 # Include an automatically generated list of dependencies between source files
 include .depend
