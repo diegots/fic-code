@@ -301,8 +301,9 @@ void inicializar_mapa(){
 
 void mostrar_mapa(){
 	printf("MAPA:\n");
-	for (int i = 0;i<FILAS;i++) {
-		for (int j = 0;j<COLUMNAS;j++) {
+        int i,j;
+	for (i = 0;i<FILAS;i++) {
+		for (j = 0;j<COLUMNAS;j++) {
 			if ((i==pepe.posfilas) && (j==pepe.poscolumnas)){
 				//printf("%c[%d;%d;%dmP",27,1,33,40);
 				printf("P");
@@ -325,30 +326,31 @@ void mostrar_mapa(){
 }
 
 int colision(int pasos, int direccion){
+        int i;
 	switch(direccion) {
 		case 1: // Direccion arriba
-			for(int i=1;i<=pasos;i++) {
+			for(i=1;i<=pasos;i++) {
 				if (mapa[posfilasVirtual-i][poscolumnasVirtual] == 'x') {
 					return 1;
 				}
 			}	 
 			break;
 		case 2:	// Abajo			
-			for(int i=1;i<=pasos;i++) {
+			for(i=1;i<=pasos;i++) {
 				if (mapa[posfilasVirtual+i][poscolumnasVirtual] == 'x') {
 					return 1;
 				}
 			}	
 			break;
 		case 3: // Derecha
-			for(int i=1;i<=pasos;i++) {
+			for(i=1;i<=pasos;i++) {
 				if (mapa[posfilasVirtual][poscolumnasVirtual+i] == 'x') {
 					return 1;
 				}
 			}	
 			break;
 		case 4:	// Izquierda
-			for(int i=1;i<=pasos;i++) {
+			for(i=1;i<=pasos;i++) {
 				if (mapa[posfilasVirtual][poscolumnasVirtual-i] == 'x') {
 					return 1;
 				}
