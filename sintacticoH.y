@@ -8,6 +8,41 @@
 #define TAM_MOCHILA 20
 #define POSICION_INICIAL_FILA 7
 #define POSICION_INICIAL_COLUMNA 3
+// Constantes de direccion
+#define D_ARRIBA 1
+#define D_ABAJO 2
+#define D_DERECHA 3
+#define D_IZQUIERDA 4
+// Constantes de colores para el mapa
+/*
+Foreground colors
+       30    Black
+       31    Red
+       32    Green
+       33    Yellow
+       34    Blue
+       35    Magenta
+       36    Cyan
+       37    White
+ 
+    Background colors
+       40    Black
+       41    Red
+       42    Green
+       43    Yellow
+       44    Blue
+       45    Magenta
+       46    Cyan
+       47    White
+*/
+#define PINTA 27 // Mediante una serie de codigos se le indica al terminal los colores que tiene que usar
+#define B_BLACK 40
+#define F_WHITE 37
+#define B_RED 41
+/*#define
+#define
+#define*/
+
 // Estructuras de datos
 struct jugador {
 	int posfilas;
@@ -112,19 +147,19 @@ accion : 	DIGITO direccion {
 				haycolision = colision($1,$2);
 			if (!haycolision){
 				switch ($2){
-					case 1:		
+					case D_ARRIBA:		
 						arriba += $1;
 						posfilasVirtual -= $1; 
 						break;
-					case 2:					
+					case D_ABAJO:					
 						abajo += $1;
 						posfilasVirtual += $1;
 						break;
-					case 3:
+					case D_DERECHA:
 						derecha += $1;
 						poscolumnasVirtual += $1;
 						break;
-					case 4:	
+					case D_IZQUIERDA:	
 						izquierda += $1;	
 						poscolumnasVirtual -= $1;	
 						break;
@@ -132,10 +167,10 @@ accion : 	DIGITO direccion {
 			}		
 		}
 		;
-direccion : ARRIBA {$$ = 1;}
-	| ABAJO	{$$ = 2;}
-	| DER	{$$ = 3;}
-	| IZQ	{$$ = 4;}
+direccion : ARRIBA {$$ = D_ARRIBA;}
+	| ABAJO	{$$ = D_ABAJO;}
+	| DER	{$$ = D_DERECHA;}
+	| IZQ	{$$ = D_IZQUIERDA;}
 
 %%
 int main(int argc, char *argv[]) {
@@ -181,71 +216,71 @@ void inicializar_mapa(){
 	for (i=0;i<FILAS;i++){
 		for (j=0;j<COLUMNAS;j++){
 			if ((i==0) || (i==(FILAS-1)) || (j==0) || (j==(COLUMNAS-1))) {
-				mapa[i][j] = '.';
+				mapa[i][j] = 'x';
 			} else {
 				mapa[i][j] = ' ';
 			}
 		}
 	}
 	// Paredes Habitaciones
-	mapa[2][2] = '.';
-	mapa[2][3] = '.';
-	mapa[2][4] = '.';
-	mapa[2][5] = '.';
-	mapa[2][6] = '.';
-	mapa[2][7] = '.';
-	mapa[2][14] = '.';
-	mapa[3][2] = '.';
-	mapa[3][7] = '.';
-	mapa[3][14] = '.';
-	mapa[4][2] = '.';
-	mapa[4][14] = '.';
-	mapa[5][2] = '.';
-	mapa[5][7] = '.';
-	mapa[5][14] = '.';
-	mapa[5][17] = '.';
-	mapa[5][18] = '.';
-	mapa[5][19] = '.';
-	mapa[5][20] = '.';
-	mapa[6][2] = '.';
-	mapa[6][3] = '.';
-	mapa[6][4] = '.';
-	mapa[6][5] = '.';
-	mapa[6][6] = '.';
-	mapa[6][7] = '.';
-	mapa[6][10] = '.';
-	mapa[6][11] = '.';
-	mapa[6][12] = '.';
-	mapa[6][13] = '.';
-	mapa[6][14] = '.';
-	mapa[7][2] = '.';
-	mapa[7][6] = '.';
-	mapa[7][14] = '.';
-	mapa[8][6] = '.';
-	mapa[8][8] = '.';
-	mapa[8][9] = '.';
-	mapa[8][10] = '.';
-	mapa[8][14] = '.';
-	mapa[8][15] = '.';
-	mapa[8][16] = '.';
-	mapa[8][17] = '.';
-	mapa[9][2] = '.';
-	mapa[9][6] = '.';
-	mapa[9][8] = '.';
-	mapa[9][14] = '.';
-	mapa[10][2] = '.';
-	mapa[10][3] = '.';
-	mapa[10][4] = '.';
-	mapa[10][5] = '.';
-	mapa[10][6] = '.';
-	mapa[10][8] = '.';
-	mapa[10][9] = '.';
-	mapa[10][10] = '.';
-	mapa[10][11] = '.';
-	mapa[10][12] = '.';
-	mapa[10][13] = '.';
-	mapa[10][14] = '.';
-	mapa[11][14] = '.';
+	mapa[2][2] = 'x';
+	mapa[2][3] = 'x';
+	mapa[2][4] = 'x';
+	mapa[2][5] = 'x';
+	mapa[2][6] = 'x';
+	mapa[2][7] = 'x';
+	mapa[2][14] = 'x';
+	mapa[3][2] = 'x';
+	mapa[3][7] = 'x';
+	mapa[3][14] = 'x';
+	mapa[4][2] = 'x';
+	mapa[4][14] = 'x';
+	mapa[5][2] = 'x';
+	mapa[5][7] = 'x';
+	mapa[5][14] = 'x';
+	mapa[5][17] = 'x';
+	mapa[5][18] = 'x';
+	mapa[5][19] = 'x';
+	mapa[5][20] = 'x';
+	mapa[6][2] = 'x';
+	mapa[6][3] = 'x';
+	mapa[6][4] = 'x';
+	mapa[6][5] = 'x';
+	mapa[6][6] = 'x';
+	mapa[6][7] = 'x';
+	mapa[6][10] = 'x';
+	mapa[6][11] = 'x';
+	mapa[6][12] = 'x';
+	mapa[6][13] = 'x';
+	mapa[6][14] = 'x';
+	mapa[7][2] = 'x';
+	mapa[7][6] = 'x';
+	mapa[7][14] = 'x';
+	mapa[8][6] = 'x';
+	mapa[8][8] = 'x';
+	mapa[8][9] = 'x';
+	mapa[8][10] = 'x';
+	mapa[8][14] = 'x';
+	mapa[8][15] = 'x';
+	mapa[8][16] = 'x';
+	mapa[8][17] = 'x';
+	mapa[9][2] = 'x';
+	mapa[9][6] = 'x';
+	mapa[9][8] = 'x';
+	mapa[9][14] = 'x';
+	mapa[10][2] = 'x';
+	mapa[10][3] = 'x';
+	mapa[10][4] = 'x';
+	mapa[10][5] = 'x';
+	mapa[10][6] = 'x';
+	mapa[10][8] = 'x';
+	mapa[10][9] = 'x';
+	mapa[10][10] = 'x';
+	mapa[10][11] = 'x';
+	mapa[10][12] = 'x';
+	mapa[10][13] = 'x';
+	mapa[10][14] = 'x';
+	mapa[11][14] = 'x';
 	// Puertas verticales
 	mapa[4][7] = '|';
 	mapa[8][2] = '|';
@@ -253,8 +288,8 @@ void inicializar_mapa(){
 	mapa[7][10] = '|';
 	// Puertas horizontales
 	// Baules
-	mapa[2][20] = 'B';
-	mapa[3][20] = 'B';
+	mapa[2][18] = 'B';
+	mapa[3][18] = 'B';
 	mapa[4][3] = 'B';
 	mapa[8][5] = 'B';
 	mapa[9][9] = 'B';
@@ -268,10 +303,21 @@ void mostrar_mapa(){
 	printf("MAPA:\n");
 	for (int i = 0;i<FILAS;i++) {
 		for (int j = 0;j<COLUMNAS;j++) {
-			if ((i==pepe.posfilas) && (j==pepe.poscolumnas))
+			if ((i==pepe.posfilas) && (j==pepe.poscolumnas)){
+				//printf("%c[%d;%d;%dmP",27,1,33,40);
 				printf("P");
-			else
+			} else if (mapa[i][j] == 'x'){
+				printf("%c[%d;%d;%dm",PINTA,1,F_WHITE,B_BLACK);
+				printf(" ");
+				printf("%c[%dm", 0x1B, 0);
+			} else if (mapa[i][j] == 'B'){
+				printf("%c[%d;%d;%dm",PINTA,2,F_WHITE,B_RED);
+				printf(" ");
+				printf("%c[%dm", 0x1B, 0);
+			}			
+			else {
 				printf("%c",mapa[i][j]);
+			}		
 		}
 		printf("\n");
 	}
@@ -282,28 +328,28 @@ int colision(int pasos, int direccion){
 	switch(direccion) {
 		case 1: // Direccion arriba
 			for(int i=1;i<=pasos;i++) {
-				if (mapa[posfilasVirtual-i][poscolumnasVirtual] == '.') {
+				if (mapa[posfilasVirtual-i][poscolumnasVirtual] == 'x') {
 					return 1;
 				}
 			}	 
 			break;
 		case 2:	// Abajo			
 			for(int i=1;i<=pasos;i++) {
-				if (mapa[posfilasVirtual+i][poscolumnasVirtual] == '.') {
+				if (mapa[posfilasVirtual+i][poscolumnasVirtual] == 'x') {
 					return 1;
 				}
 			}	
 			break;
 		case 3: // Derecha
 			for(int i=1;i<=pasos;i++) {
-				if (mapa[posfilasVirtual][poscolumnasVirtual+i] == '.') {
+				if (mapa[posfilasVirtual][poscolumnasVirtual+i] == 'x') {
 					return 1;
 				}
 			}	
 			break;
 		case 4:	// Izquierda
 			for(int i=1;i<=pasos;i++) {
-				if (mapa[posfilasVirtual][poscolumnasVirtual-i] == '.') {
+				if (mapa[posfilasVirtual][poscolumnasVirtual-i] == 'x') {
 					return 1;
 				}
 			}		
