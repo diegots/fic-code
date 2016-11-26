@@ -37,13 +37,6 @@
  *        46    Cyan
  *        47    White */
 
-// Mediante una serie de codigos se le indica al terminal los colores que tiene 
-// que usar
-#define PINTA 27 
-#define B_BLACK 40
-#define F_WHITE 37
-#define B_RED 41
-
 /* Estructuras de datos */
 struct jugador {
 	int posfilas;
@@ -253,7 +246,7 @@ void inicializar_mapa(){
 		for (j=0;j<COLUMNAS;j++){
 			if ((i==0) || (i==(FILAS-1)) 
 			 || (j==0) || (j==(COLUMNAS-1))) {
-				mapa[i][j] = 'x';
+				mapa[i][j] = 'e';
 			} else {
 				mapa[i][j] = ' ';
 			}
@@ -343,10 +336,13 @@ void mostrar_mapa(){
 	for (i = 0;i<FILAS;i++) {
 		for (j = 0;j<COLUMNAS;j++) {
 			if ((i==prsj.posfilas) && (j==prsj.poscolumnas)){
-				printf("\e[1m\e[93mP\e[0m"); // Personaje
+				printf("\e[1m\e[38;5;208mP\e[0m"); // Personaje
+
+			} else if (mapa[i][j] == 'e'){
+				printf ("\e[48;5;235m \e[0m"); // Paredes exter
 
 			} else if (mapa[i][j] == 'x'){
-				printf ("\e[48;5;237m \e[0m"); // Paredes
+				printf ("\e[48;5;239m \e[0m"); // Paredes inter
 
 			} else if (mapa[i][j] == 'B'){
 				printf("\e[1m\e[92mB\e[0m"); // Baules
