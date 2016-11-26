@@ -69,7 +69,7 @@ int arriba, abajo, derecha, izquierda = 0;
 int posfilasVirtual,poscolumnasVirtual = 0; 
 
 int haycolision = 0;
-tjugador pepe; // Personaje
+tjugador prsj; // Personaje
 char mapa[FILAS][COLUMNAS];
 
 /* Cabeceras de funciones */
@@ -100,8 +100,8 @@ S : 	LANZAR '\n' {
 			lanzado = 1;
 
 			// Se actualiza la posicion virtual
-			posfilasVirtual = pepe.posfilas;
-			poscolumnasVirtual = pepe. poscolumnas;
+			posfilasVirtual = prsj.posfilas;
+			poscolumnasVirtual = prsj. poscolumnas;
 
 		} else {
 			yyerror("Ya has lanzado el dado, mueve al personaje.");		
@@ -111,8 +111,8 @@ S : 	LANZAR '\n' {
 	| AVANZAR movimientos {
 		if (haycolision) {
 			printf("Movimiento erroneo\n");
-			posfilasVirtual = pepe.posfilas;
-			poscolumnasVirtual = pepe.poscolumnas;
+			posfilasVirtual = prsj.posfilas;
+			poscolumnasVirtual = prsj.poscolumnas;
 			arriba = abajo = izquierda = derecha = 0;
 		}else if (arriba+abajo+izquierda+derecha>valor_dado){
 			printf("Movimientos demás!\n");
@@ -120,8 +120,8 @@ S : 	LANZAR '\n' {
 			arriba = abajo = izquierda = derecha = 0;			
 		} else{
 			valor_dado -= (arriba + abajo + derecha + izquierda);
-			pepe.posfilas = posfilasVirtual;
-			pepe.poscolumnas = poscolumnasVirtual;
+			prsj.posfilas = posfilasVirtual;
+			prsj.poscolumnas = poscolumnasVirtual;
 			if (valor_dado>0) {
 				printf("Puedes seguir moviendote si lo deseas.\
 				\nTe quedan %i movimientos", valor_dado);
@@ -144,7 +144,7 @@ S : 	LANZAR '\n' {
 		return 1;
 	}
 	| INFO '\n' {
-		mostrar_info_jugador(pepe);
+		mostrar_info_jugador(prsj);
 		mostrar_mapa();
 		return 1;
 	}
@@ -206,9 +206,9 @@ int main(int argc, char *argv[]) {
 	printf("Heroquest\nv 0.01\n"); 
 
 	// Inicializacion de variables
-	pepe.posfilas = POSICION_INICIAL_FILA;
-	pepe.poscolumnas = POSICION_INICIAL_COLUMNA;
-	pepe.vida = 100;
+	prsj.posfilas = POSICION_INICIAL_FILA;
+	prsj.poscolumnas = POSICION_INICIAL_COLUMNA;
+	prsj.vida = 100;
 	
 	inicializar_mapa(); // Inicializacion del mapa
 	mostrar_mapa(); // Mostrar mapa
@@ -342,7 +342,7 @@ void mostrar_mapa(){
         int i,j;
 	for (i = 0;i<FILAS;i++) {
 		for (j = 0;j<COLUMNAS;j++) {
-			if ((i==pepe.posfilas) && (j==pepe.poscolumnas)){
+			if ((i==prsj.posfilas) && (j==prsj.poscolumnas)){
 				//printf("%c[%d;%d;%dmP",27,1,33,40);
 				printf("P");
 			} else if (mapa[i][j] == 'x'){
