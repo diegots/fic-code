@@ -343,19 +343,16 @@ void mostrar_mapa(){
 	for (i = 0;i<FILAS;i++) {
 		for (j = 0;j<COLUMNAS;j++) {
 			if ((i==prsj.posfilas) && (j==prsj.poscolumnas)){
-				//printf("%c[%d;%d;%dmP",27,1,33,40);
-				printf("P");
+				printf("\e[1m\e[93mP\e[0m"); // Personaje
+
 			} else if (mapa[i][j] == 'x'){
-				printf("%c[%d;%d;%dm",PINTA,1,F_WHITE,B_BLACK);
-				printf(" ");
-				printf("%c[%dm", 0x1B, 0);
+				printf ("\e[48;5;237m \e[0m"); // Paredes
+
 			} else if (mapa[i][j] == 'B'){
-				printf("%c[%d;%d;%dm",PINTA,2,F_WHITE,B_RED);
-				printf(" ");
-				printf("%c[%dm", 0x1B, 0);
+				printf("\e[1m\e[92mB\e[0m"); // Baules
 			}			
 			else {
-				printf("%c", mapa[i][j]);
+				printf("%c", mapa[i][j]); // Puertas, etc
 			}		
 		}
 		printf("\n");
