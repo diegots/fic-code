@@ -271,8 +271,8 @@ void inicializar_mapa(){
 	mapa[5][14]  = 'x';
 	mapa[5][17]  = 'x';
 	mapa[5][18]  = 'x';
-	mapa[5][19]  = 'x';
-	mapa[5][20]  = 'x';
+	//mapa[5][19]  = 'x';
+	//mapa[5][20]  = 'x';
 	mapa[6][2]   = 'x';
 	mapa[6][3]   = 'x';
 	mapa[6][4]   = 'x';

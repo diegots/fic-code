@@ -9,7 +9,7 @@ arriba 	arriba|up
 abajo 	abajo|down
 izq	izquierda|izq|left
 der	derecha|der|right
-salir	salir|exit
+salir	salir|exit|q
 ayuda 	ayuda|help
 info	info
 finTurno	fin" "turno|fin" "de" "turno
