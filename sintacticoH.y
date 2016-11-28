@@ -69,15 +69,17 @@ char mapa[FILAS][COLUMNAS];
 void yyerror (char const *);
 int get_random_number();
 void mostrar_ayuda();
+void mostrar_reglas();
 void mostrar_info_jugador(tjugador);
 void inicializar_mapa();
 void mostrar_mapa();
+int colision(int, int);
 
 %}
 %union{
 	int entero;
 }
-%token LANZAR AVANZAR ARRIBA ABAJO DER IZQ EXIT AYUDA INFO FINALTURNO
+%token LANZAR AVANZAR ARRIBA ABAJO DER IZQ EXIT AYUDA INFO REGLAS FINALTURNO
 %token <entero> DIGITO
 %type <entero> movimientos accion direccion
 %start S
@@ -130,6 +132,9 @@ S : 	LANZAR '\n' {
 	| FINALTURNO '\n' {
 		valor_dado = 0;
 		lanzado = 0;
+		printf("El turno ha finalizado\n");
+		mostrar_info_jugador(prsj);
+		mostrar_mapa();
 		return 1;	
 	}
 	| AYUDA '\n'{
@@ -141,9 +146,19 @@ S : 	LANZAR '\n' {
 		mostrar_mapa();
 		return 1;
 	}
+	| REGLAS '\n' {
+		mostrar_reglas();
+		return 1;
+	}
 	| EXIT '\n' {
 		printf("¡Hasta pronto!\n");
 		return 0;
+	}
+	| error {
+		yyerror("Comando desconocido");
+		yyclearin;
+		mostrar_ayuda(); 
+		return 1;
 	}
 	;
 movimientos : 	accion movimientos {	
@@ -197,7 +212,8 @@ direccion : ARRIBA {$$ = D_ARRIBA;}
 int main(int argc, char *argv[]) {
 	
 	printf("Heroquest\nv 0.01\n"); 
-
+	printf("Si eres nuevo escribe \"ayuda\" en el terminal\n"); 
+	
 	// Inicializacion de variables
 	prsj.posfilas = POSICION_INICIAL_FILA;
 	prsj.poscolumnas = POSICION_INICIAL_COLUMNA;
@@ -224,17 +240,45 @@ int get_random_number(){
 }
 
 void mostrar_ayuda(){	
-	char msg[] = "\nComandos:\n\
-	Comenzar movimiento: avanzar | mover | lanzar | lanzar dado\n\
+	char msg[] = "\
+Información del mapa\n\
+	\e[1m\e[38;5;208mP\e[0m: Personaje\n\
+	\e[1m\e[92mB\e[0m: Cofre\n\
+	E: Enemigo\n\
+	T: Trampa (no visible)\n\
+	\e[48;5;235m \e[0m: Paredes exteriores\n\
+	\e[48;5;239m \e[0m: Paredes interiores\n\
+Comandos:\n\
+	Ver reglas: reglas | mostrar reglas | ver reglas\n\
+	Ver informacion de la partida: info\n\
+	Lanzar dados: lanzar | lanzar dado\n\
 	Moverse: avanzar [nº pasos] [direccion]\n\
-	Ayuda: ayuda | help | ayuda [comando]\n\
-	Salir: salir | exit";
+	Ayuda: ayuda | help | ayuda [comando] (aun no disponible)\n\
+	Salir: salir | exit | q";
+
+	printf ("%s", msg);
+}
+
+void mostrar_reglas(){
+	char msg[] = "\
+Reglas\n\
+	- Un dado para moverse con valores del 1 al 9\n\
+	- El jugador comienza con 100 de vida y una mochila con capacidad para\
+ 20 objetos\n\
+	- Hay trampas ocultas en el escenario que no se mostrarán hasta que se\
+ activen\n\
+Secuencia de turno:\n\
+	1º Lanzar dado [Opcional] [Obligatorio si se quiere mover al personaje\n\
+	2º Atacar, abrir cofre, utilizar objeto... [Opcional] [No disponible]\n\
+	3º Moverse [Opcional]\n\
+	4º Atacar, abrir cofre, utilizar objeto... [Opcional] [No disponible]\n\
+	5º Finalizar turno [Obligatorio]\n";
 
 	printf ("%s", msg);
 }
 
 void mostrar_info_jugador(tjugador j) {
-	printf("\tPosicion del jugdaor: (%i,%i)\n\tVida: %i\n", 
+	printf("\tPosicion del jugador: (%i,%i)\n\tVida: %i\n", 
 		j.poscolumnas, j.posfilas, j.vida);
 }
 
@@ -271,8 +315,6 @@ void inicializar_mapa(){
 	mapa[5][14]  = 'x';
 	mapa[5][17]  = 'x';
 	mapa[5][18]  = 'x';
-	//mapa[5][19]  = 'x';
-	//mapa[5][20]  = 'x';
 	mapa[6][2]   = 'x';
 	mapa[6][3]   = 'x';
 	mapa[6][4]   = 'x';
@@ -320,14 +362,14 @@ void inicializar_mapa(){
 	mapa[7][10]  = '|';
 
 	/* Baules */
-	mapa[2][18]  = 'B';
-	mapa[3][18]  = 'B';
-	mapa[4][3]   = 'B';
-	mapa[8][5]   = 'B';
-	mapa[9][9]   = 'B';
-	mapa[9][15]  = 'B';
-	mapa[10][15] = 'B';
-	mapa[11][15] = 'B';
+	mapa[2][18]  = 'C';
+	mapa[3][18]  = 'C';
+	mapa[4][3]   = 'C';
+	mapa[8][5]   = 'C';
+	mapa[9][9]   = 'C';
+	mapa[9][15]  = 'C';
+	mapa[10][15] = 'C';
+	mapa[11][15] = 'C';
 }
 
 void mostrar_mapa(){
@@ -344,7 +386,7 @@ void mostrar_mapa(){
 			} else if (mapa[i][j] == 'x'){
 				printf ("\e[48;5;239m \e[0m"); // Paredes inter
 
-			} else if (mapa[i][j] == 'B'){
+			} else if (mapa[i][j] == 'C'){
 				printf("\e[1m\e[92mB\e[0m"); // Baules
 			}			
 			else {

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "sintacticoH.tab.h"
 %}
-lanzar	lanzar|lanzar" "dado
+lanzar	lanzar|lanzar" "dado?s
 avanzar mover|avanzar
 digito 	[0-9]
 arriba 	arriba|up
@@ -12,6 +12,7 @@ der	derecha|der|right
 salir	salir|exit|q
 ayuda 	ayuda|help
 info	info
+reglas	reglas|mostrar" "reglas\ver" "reglas
 finTurno	fin" "turno|fin" "de" "turno
 
 %%
@@ -25,6 +26,7 @@ finTurno	fin" "turno|fin" "de" "turno
 {salir}		{return EXIT;}
 {ayuda}		{return AYUDA;}
 {info}		{return INFO;}
+{reglas}	{return REGLAS;}
 {finTurno}	{return FINALTURNO;}
 \t 			
 \n		{return '\n';}	
