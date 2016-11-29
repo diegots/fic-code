@@ -4,6 +4,11 @@
 %}
 lanzar	lanzar|lanzar" "dado?s
 avanzar mover|avanzar
+abrirPuerta	abrir" "puerta
+abrirCofre	abrir" "cofre
+usar	usar
+espada	espada
+pocion	pocion
 digito 	[0-9]
 arriba 	arriba|up
 abajo 	abajo|down
@@ -18,6 +23,11 @@ finTurno	fin" "turno|fin" "de" "turno
 %%
 {lanzar}	{return LANZAR;}
 {avanzar}	{return AVANZAR;}
+{abrirPuerta}	{return ABRIRPUERTA;}
+{abrirCofre}	{return ABRIRCOFRE;}
+{usar}		{return USAR;}
+{espada}	{return ESPADA;}
+{pocion}	{return POCION;}
 {digito}	{yylval.entero = atoi(yytext); return DIGITO;}
 {arriba}	{return ARRIBA;}
 {abajo} 	{return ABAJO;}
