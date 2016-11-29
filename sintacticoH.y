@@ -17,12 +17,14 @@
 #define D_IZQUIERDA 4
 
 /* Constantes de objetos */
-#define OBJ_POCION 1
-#define VALOR_POCION 20
-#define OBJ_ESPADA 2
-#define VALOR_ESPADA 10
-#define TOTAL_OBJETOS 2
-#define RATIO_COFRES_VACIOS 1
+#define OBJ_POCION 1 // Constante para identificar el objeto pocion
+#define VALOR_POCION 20 // Valor de la pocion
+#define OBJ_ESPADA 2 // Constante para identificar el objeto espada
+#define VALOR_ESPADA 10 // Daño de la espada
+#define TOTAL_OBJETOS 2 // Objetos disponibles en el juego
+#define RATIO_COFRES_VACIOS 1 /* Numero utilizado para la mayor o menor 
+aparicion de objetos vacios, cuando mayor sea la proporcion de este numero 
+con el de TOTAL_OBJETOS, mas cofre vacios apareceran */
 
 /* Estructuras de datos */
 /*struct objeto {
@@ -51,17 +53,19 @@ int valor_dado = 0;
 // Se utiliza para contralar si el dado ya ha sido lanzado en el turno actual
 int lanzado = 0; 
 
-// Variables utilizadas para saber cuanto se mueve el personaje en cada 
-// direccion
+/* Variables utilizadas para saber cuanto se mueve el personaje en cada 
+direccion */
 int arriba, abajo, derecha, izquierda = 0; 
 
 // Posicion virtual del jugador mientras se mueve, si no hay colision, si no hay
 // colision se actualiza la poscion del personaje con la poscion virtual, en 
 // caso contrario se muestra un error y el personaje no se mueve
 int posfilasVirtual,poscolumnasVirtual = 0; 
-
+// Entero utilizado para marcar si se ha producido una colision
 int haycolision = 0;
-tjugador prsj; // Personaje
+// Personaje
+tjugador prsj;
+// Array de caracteres que representa el mapa
 char mapa[FILAS][COLUMNAS];
 
 /* Cabeceras de funciones */
@@ -184,8 +188,6 @@ acabas cortando y pierdes 5 de vida\n");
 				break;
 			}
 		}
- 
-		printf("Usando espada\n");
 	}
 	| POCION '\n'{
 		for (int i=0;i<num_objetos;i++){
@@ -193,13 +195,19 @@ acabas cortando y pierdes 5 de vida\n");
 				printf("Bebes una pocion y recuperas 20 de \
 vida\n");
 				prsj.mochila[i] = 0;
-				prsj.mochila[i] = prsj.mochila[num_objetos]; // En la posicion que ha quedado vacia colocamos el ultimo objeto de la mochila para que todo quede ordenado, si este es el ultimo objeto de la mochila ya se ha puesta anteriormente a 0 por lo que no pasa nada, simplemente se reducen el numero de objetos
+				/* En la posicion que ha quedado vacia 
+				colocamos el ultimo objeto de la mochila para 
+				que todos los objetos queden en las primera 
+				posiciones. En el caso de que fuese el ultimo 
+				objeto de la mochila, ya se habria puesto 
+				anteriormente a 0 por lo que no pasa nada, 
+				simplemente se reducen el numero de objetos */
+				prsj.mochila[i] = prsj.mochila[num_objetos]; 
 				num_objetos--;
 				prsj.vida += 20;
 				break;
 			}
 		}		
-		printf("Usando pocion\n");
 	}
 	;
 movimientos : 	accion movimientos {	
@@ -264,10 +272,10 @@ int get_random_object(){
 	int objeto = (rand() % (TOTAL_OBJETOS + RATIO_COFRES_VACIOS)) + 1; // Se generan siempre numero entre el 1 y el numero de objetos + un numero que sirve como parametro para que ratio de objetos vacios queremos
 	switch (objeto){
 		case OBJ_POCION:
-			printf("Has encontrado una poción.\n");
+			printf("Has encontrado una poción!\n");
 			break;
 		case OBJ_ESPADA:
-			printf("Has encontrado una espada.\n");
+			printf("Has encontrado una espada!\n");
 			break;
 		default:
 			printf("Está vacio. Más suerte la próxima vez.\n");
@@ -292,6 +300,8 @@ Comandos:\n\
 	Moverse: avanzar [nº pasos] [direccion]\n\
 		direccion puede ser 'arriba', 'abajo', 'izquierda' o 'derecha'\n\
 		Ejemplo: avanzar 3 arriba 1 izquierda 3 abajo\n\
+	Usar objeto: usar [objeto]\n\
+		Ejemplo: usar pocion\n\
 	Ayuda: ayuda | help | ayuda [comando] (aun no disponible)\n\
 	Salir: salir | exit | q";
 
