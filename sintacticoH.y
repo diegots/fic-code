@@ -435,6 +435,8 @@ Comandos:\n\
 		Ejemplo: avanzar 3 arriba 1 izquierda 3 abajo\n\
 	Usar objeto: usar [objeto]\n\
 		Ejemplo: usar pocion\n\
+	Abrir puertas: abrir puerta\n\
+	Abrir cofres: abrir cofre\n\
 	Ayuda: ayuda | help | ayuda [comando] (aun no disponible)\n\
 	Salir: salir | exit | q";
 
