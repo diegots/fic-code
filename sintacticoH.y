@@ -389,12 +389,14 @@ void mostrar_mapa(){
 				printf ("\e[48;5;239m \e[0m"); // Paredes inter
 
 			} else if (mapa[i][j] == 'C'){
-				printf("\e[1m\e[92mB\e[0m"); // Baules
+				printf("\e[1m\e[92mC\e[0m"); // Cofres
 			} else if (mapa[i][j] == '|') {
-				printf("\e[38;5;94m|\e[0m"); // Puertas horizontales
+				printf("\e[38;5;94m|\e[0m"); // Puertas verticales
+			} else if (mapa[i][j] == '-') {
+				printf("\e[38;5;94m-\e[0m"); // Puertas horizontales
 			}			
 			else {
-				printf("%c", mapa[i][j]); // Puertas, etc
+				printf("%c", mapa[i][j]); // Otros
 			}		
 		}
 		printf("\n");
