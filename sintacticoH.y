@@ -109,6 +109,139 @@ S : 	LANZAR '\n' {
 		}		
 		return 1;
 	}
+	| ARRIBA '\n'{
+		if (!haycolision) 
+			haycolision = colision(1, D_ARRIBA);
+
+		if (!haycolision){	
+			arriba += 1;
+			posfilasVirtual -= 1; 
+				
+		}
+		if (haycolision) {
+			printf("Movimiento erroneo\n");
+			posfilasVirtual = prsj.pos_fila;
+			poscolumnasVirtual = prsj.pos_columna;
+			arriba = abajo = izquierda = derecha = 0;
+		}else if (arriba+abajo+izquierda+derecha>valor_dado){
+			printf("Movimientos demás!\n");
+			
+			arriba = abajo = izquierda = derecha = 0;			
+		} else{
+			valor_dado -= (arriba + abajo + derecha + izquierda);
+			prsj.pos_fila = posfilasVirtual;
+			prsj.pos_columna = poscolumnasVirtual;
+			if (valor_dado>0) {
+				printf("Puedes seguir moviendote si lo deseas.\
+				\nTe quedan %i movimientos", valor_dado);
+			}			
+			printf("\n");
+			mostrar_mapa();
+			
+			arriba = abajo = izquierda = derecha = 0;
+		}
+		haycolision = 0; 
+		return 1;		
+	}
+	| ABAJO '\n'{
+		if (!haycolision) 
+			haycolision = colision(1,D_ABAJO);
+
+		if (!haycolision){					
+			abajo += 1;
+			posfilasVirtual += 1;
+		}
+		if (haycolision) {
+			printf("Movimiento erroneo\n");
+			posfilasVirtual = prsj.pos_fila;
+			poscolumnasVirtual = prsj.pos_columna;
+			arriba = abajo = izquierda = derecha = 0;
+		}else if (arriba+abajo+izquierda+derecha>valor_dado){
+			printf("Movimientos demás!\n");
+			
+			arriba = abajo = izquierda = derecha = 0;			
+		} else{
+			valor_dado -= (arriba + abajo + derecha + izquierda);
+			prsj.pos_fila = posfilasVirtual;
+			prsj.pos_columna = poscolumnasVirtual;
+			if (valor_dado>0) {
+				printf("Puedes seguir moviendote si lo deseas.\
+				\nTe quedan %i movimientos", valor_dado);
+			}			
+			printf("\n");
+			mostrar_mapa();
+			
+			arriba = abajo = izquierda = derecha = 0;
+		}
+		haycolision = 0; 
+		return 1;	
+	}
+	| DER '\n'{
+		if (!haycolision) 
+			haycolision = colision(1,D_DERECHA);
+
+		if (!haycolision){					
+			derecha += 1;
+			poscolumnasVirtual += 1;
+		}
+		if (haycolision) {
+			printf("Movimiento erroneo\n");
+			posfilasVirtual = prsj.pos_fila;
+			poscolumnasVirtual = prsj.pos_columna;
+			arriba = abajo = izquierda = derecha = 0;
+		}else if (arriba+abajo+izquierda+derecha>valor_dado){
+			printf("Movimientos demás!\n");
+			
+			arriba = abajo = izquierda = derecha = 0;			
+		} else{
+			valor_dado -= (arriba + abajo + derecha + izquierda);
+			prsj.pos_fila = posfilasVirtual;
+			prsj.pos_columna = poscolumnasVirtual;
+			if (valor_dado>0) {
+				printf("Puedes seguir moviendote si lo deseas.\
+				\nTe quedan %i movimientos", valor_dado);
+			}			
+			printf("\n");
+			mostrar_mapa();
+			
+			arriba = abajo = izquierda = derecha = 0;
+		}
+		haycolision = 0; 
+		return 1;
+	}
+	| IZQ '\n'{
+		if (!haycolision) 
+			haycolision = colision(1,D_IZQUIERDA);
+
+		if (!haycolision){					
+			izquierda += 1;
+			poscolumnasVirtual -= 1;
+		}
+		if (haycolision) {
+			printf("Movimiento erroneo\n");
+			posfilasVirtual = prsj.pos_fila;
+			poscolumnasVirtual = prsj.pos_columna;
+			arriba = abajo = izquierda = derecha = 0;
+		}else if (arriba+abajo+izquierda+derecha>valor_dado){
+			printf("Movimientos demás!\n");
+			
+			arriba = abajo = izquierda = derecha = 0;			
+		} else{
+			valor_dado -= (arriba + abajo + derecha + izquierda);
+			prsj.pos_fila = posfilasVirtual;
+			prsj.pos_columna = poscolumnasVirtual;
+			if (valor_dado>0) {
+				printf("Puedes seguir moviendote si lo deseas.\
+				\nTe quedan %i movimientos", valor_dado);
+			}			
+			printf("\n");
+			mostrar_mapa();
+			
+			arriba = abajo = izquierda = derecha = 0;
+		}
+		haycolision = 0; 
+		return 1;
+	}	
 	| AVANZAR movimientos {
 		if (haycolision) {
 			printf("Movimiento erroneo\n");

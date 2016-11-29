@@ -10,10 +10,10 @@ usar	usar
 espada	espada
 pocion	pocion
 digito 	[0-9]
-arriba 	arriba|up
-abajo 	abajo|down
-izq	izquierda|izq|left
-der	derecha|der|right
+arriba 	arriba|up|"[A"
+abajo 	abajo|down|"[B"
+izq	izquierda|izq|left|"[D"
+der	derecha|der|right|"[C"
 salir	salir|exit|q
 ayuda 	ayuda|help
 info	info
