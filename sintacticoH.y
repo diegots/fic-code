@@ -361,6 +361,8 @@ void inicializar_mapa(){
 	mapa[14][1]  = '|';
 	mapa[7][10]  = '|';
 
+	/* Puertas horizontales */
+
 	/* Baules */
 	mapa[2][18]  = 'C';
 	mapa[3][18]  = 'C';
@@ -388,6 +390,8 @@ void mostrar_mapa(){
 
 			} else if (mapa[i][j] == 'C'){
 				printf("\e[1m\e[92mB\e[0m"); // Baules
+			} else if (mapa[i][j] == '|') {
+				printf("\e[38;5;94m|\e[0m"); // Puertas horizontales
 			}			
 			else {
 				printf("%c", mapa[i][j]); // Puertas, etc
