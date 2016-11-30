@@ -31,6 +31,7 @@ struct objeto {
 	int tipo;
 	char *nombre;
 	int valor;
+	int durabilidad;
 };
 typedef struct objeto tobjeto;
 
@@ -447,12 +448,14 @@ int regla_abrir_cofre() {
 			objeto.tipo = tipo;
 			objeto.nombre = "Pocion";
 			objeto.valor = VALOR_POCION;
+			objeto.durabilidad = 1;
 			printf("Has encontrado una %s!\n", objeto.nombre);
 			break;
 		case OBJ_ESPADA:
 			objeto.tipo = tipo;
 			objeto.nombre = "Espada";
 			objeto.valor = VALOR_ESPADA;
+			objeto.durabilidad = 5;
 			printf("Has encontrado una %s!\n", objeto.nombre);
 			break;
 		default: // Cofre vacio, no se guarda el objeto
@@ -479,19 +482,22 @@ acabas cortando y pierdes %i de vida.\n", prsj.mochila[i].nombre, prsj.mochila[i
 					printf("Bebes la %s y recuperas %i de \
 vida.\n", prsj.mochila[i].nombre, prsj.mochila[i].valor);
 					prsj.vida += prsj.mochila[i].valor;
-					prsj.mochila[i].tipo = 0;
-					prsj.mochila[i].nombre = "";
-					prsj.mochila[i].valor = 0;
-					/* En la posicion que ha quedado vacia 
-					colocamos el ultimo objeto de la mochila para 
-					que todos los objetos queden en las primera 
-					posiciones. En el caso de que fuese el ultimo 
-					objeto de la mochila, ya se habria puesto 
-					anteriormente a 0 por lo que no pasa nada, 
-					simplemente se reducen el numero de objetos */
-					prsj.mochila[i] = prsj.mochila[num_objetos-1]; 
-					num_objetos--;
 					break;
+			}
+			if (!(--prsj.mochila[i].durabilidad)){ //Cada vez que se usa el objeto pierde 1 de durabilidad, si esta llega a 0 el objeto se pierde	
+				printf("%s gastada\n", prsj.mochila[i].nombre);	
+				prsj.mochila[i].tipo = 0;
+				prsj.mochila[i].nombre = "";
+				prsj.mochila[i].valor = 0;
+				/* En la posicion que ha quedado vacia 
+				colocamos el ultimo objeto de la mochila para 
+				que todos los objetos queden en las primera 
+				posiciones. En el caso de que fuese el ultimo 
+				objeto de la mochila, ya se habria puesto 
+				anteriormente a 0 por lo que no pasa nada, 
+				simplemente se reducen el numero de objetos */
+				prsj.mochila[i] = prsj.mochila[num_objetos-1]; 
+				num_objetos--;		
 			}
 			break;
 		}
