@@ -4,7 +4,8 @@
 #include <string.h>
 #include <time.h>
 
-
+/* Constante usada para la animacion de los mensajes por pantalla */
+#define DELAY 100000
 /* Constantes de direccion */
 #define D_ARRIBA 1
 #define D_ABAJO 2
@@ -133,7 +134,10 @@ int puerta_cerrada(int, int);
 int abrir_puerta(int, int);
 int regla_atacar(int);
 void simula_ataque(int, int);
+void simula_defensa();
+int enemigos_cerca();
 void actualiza_enemigo(int, int, int);
+void animacion_por_pantalla(char []);
 
 
 %}
@@ -184,6 +188,9 @@ S : 	LANZAR '\n' {
 		lanzado = 0;
 		ataque = 0;
 		printf("Su turno ha finalizado\n");
+		int enemigos = enemigos_cerca();
+		for (int i = 0; i<enemigos; i++)
+			simula_defensa();
 		mostrar_mapa();
 		mostrar_info_jugador(prsj);
 		return 1;	
@@ -281,10 +288,12 @@ int regla_arriba(){
 		posfilasVirtual = prsj.pos_fila;
 		poscolumnasVirtual = prsj.pos_columna;
 		arriba = abajo = izquierda = derecha = 0;
-	}else if (arriba+abajo+izquierda+derecha>valor_dado){
+	} else if (arriba+abajo+izquierda+derecha>valor_dado){
 		printf("Movimientos demás!\n");
 		
 		arriba = abajo = izquierda = derecha = 0;			
+	} else if (ataque) {
+		printf("Una vez hecho un movimiento de ataque, no puedes moverte hasta el turno siguiente\n");
 	} else{
 		valor_dado -= (arriba + abajo + derecha + izquierda);
 		prsj.pos_fila = posfilasVirtual;
@@ -319,6 +328,8 @@ int regla_abajo(){
 		printf("Movimientos demás!\n");
 		
 		arriba = abajo = izquierda = derecha = 0;			
+	} else if (ataque) {
+		printf("Una vez hecho un movimiento de ataque, no puedes moverte hasta el turno siguiente\n");
 	} else{
 		valor_dado -= (arriba + abajo + derecha + izquierda);
 		prsj.pos_fila = posfilasVirtual;
@@ -349,10 +360,12 @@ int regla_der() {
 		posfilasVirtual = prsj.pos_fila;
 		poscolumnasVirtual = prsj.pos_columna;
 		arriba = abajo = izquierda = derecha = 0;
-	}else if (arriba+abajo+izquierda+derecha>valor_dado){
+	} else if (arriba+abajo+izquierda+derecha>valor_dado){
 		printf("Movimientos demás!\n");
 		
 		arriba = abajo = izquierda = derecha = 0;			
+	} else if (ataque) {
+		printf("Una vez hecho un movimiento de ataque, no puedes moverte hasta el turno siguiente\n");
 	} else{
 		valor_dado -= (arriba + abajo + derecha + izquierda);
 		prsj.pos_fila = posfilasVirtual;
@@ -383,10 +396,12 @@ int regla_izq() {
 		posfilasVirtual = prsj.pos_fila;
 		poscolumnasVirtual = prsj.pos_columna;
 		arriba = abajo = izquierda = derecha = 0;
-	}else if (arriba+abajo+izquierda+derecha>valor_dado){
+	} else if (arriba+abajo+izquierda+derecha>valor_dado){
 		printf("Movimientos demás!\n");
 		
 		arriba = abajo = izquierda = derecha = 0;			
+	} else if (ataque) {
+		printf("Una vez hecho un movimiento de ataque, no puedes moverte hasta el turno siguiente\n");
 	} else{
 		valor_dado -= (arriba + abajo + derecha + izquierda);
 		prsj.pos_fila = posfilasVirtual;
@@ -410,10 +425,12 @@ int regla_avanzar() {
 		posfilasVirtual = prsj.pos_fila;
 		poscolumnasVirtual = prsj.pos_columna;
 		arriba = abajo = izquierda = derecha = 0;
-	}else if (arriba+abajo+izquierda+derecha>valor_dado){
+	} else if (arriba+abajo+izquierda+derecha>valor_dado){
 		printf("Movimientos demás!\n");
 		
 		arriba = abajo = izquierda = derecha = 0;			
+	} else if (ataque) {
+		printf("Una vez hecho un movimiento de ataque, no puedes moverte hasta el turno siguiente\n");
 	} else{
 		valor_dado -= (arriba + abajo + derecha + izquierda);
 		prsj.pos_fila = posfilasVirtual;
@@ -433,7 +450,7 @@ int regla_avanzar() {
 
 int regla_atacar(int direccion) {
 	if (!ataque) {
-		printf("Atacando...\n");
+		animacion_por_pantalla("Atacando...\n");
 		ataque = 1;
 		switch (direccion){
 			case D_ARRIBA:		
@@ -471,37 +488,6 @@ int regla_atacar(int direccion) {
 	}
 }
 
-void simula_ataque(int pos_fila_enemigo, int pos_columna_enemigo) {
-	int ataque = 0, defensa = 0;
-	// Lanzamos el dado del jugador
-	// Generar numero aleatorio entre 1 y 9
-		ataque = get_random_number();
-
-	// Aplicamos bonus de armas
-
-	// Lanzamos el dado del enemigo
-		defensa = get_random_number();
-	// Actualizamos info de jugador y enemigo si es oportuno
-		if (ataque>defensa) {
-			int danho = (ataque - defensa) * 2;
-			printf("Acierto! El enemigo recibe %i de daño.\n", danho);
-			actualiza_enemigo(pos_fila_enemigo, pos_columna_enemigo, danho);
-		} else {
-			printf("Fallo!\n");
-		}
-}
-
-void actualiza_enemigo(int fila, int columna, int danho) {
-	for (int i = 0; i<NUM_ENEMIGOS; i++) {
-		if (tablero.lista_enemigos[i].fila == fila && tablero.lista_enemigos[i].columna == columna) {
-			tablero.lista_enemigos[i].vida -= danho;
-			if (tablero.lista_enemigos[i].vida <= 0) {
-				printf("Enemigo eliminado\n");
-				tablero.mapa[fila][columna] = ' ';
-			}
-		}
-	}
-}
 
 int regla_abrir_puerta() {
 	/* Cuando las puertas puedan estar cerradas con llave y el jugador se 
@@ -717,7 +703,92 @@ void regla_accion(int digito, int direccion){
 	}
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Funciones auxiliares */
+
+void simula_ataque(int pos_fila_enemigo, int pos_columna_enemigo) {
+	int ataque = 0, defensa = 0;
+	// Lanzamos el dado del jugador
+	ataque = get_random_number();
+
+	// Aplicamos bonus de armas de ataque
+
+	// Lanzamos el dado del enemigo
+	defensa = get_random_number();
+
+	// Actualizamos info de jugador y enemigo si es oportuno
+	if (ataque>defensa) {
+		int danho = (ataque - defensa) * 2;
+		printf("Acierto! El enemigo recibe %i de daño.\n", danho);
+		actualiza_enemigo(pos_fila_enemigo, pos_columna_enemigo, danho);
+	} else {
+		printf("Fallo!\n");
+	}
+}
+
+void actualiza_enemigo(int fila, int columna, int danho) {
+	for (int i = 0; i<NUM_ENEMIGOS; i++) {
+		if (tablero.lista_enemigos[i].fila == fila && tablero.lista_enemigos[i].columna == columna) {
+			tablero.lista_enemigos[i].vida -= danho;
+			if (tablero.lista_enemigos[i].vida <= 0) {
+				printf("Enemigo eliminado\n");
+				tablero.mapa[fila][columna] = ' ';
+			}
+		}
+	}
+}
+
+// Devuelve el numero de enemigos que el jugador tiene cerca
+int enemigos_cerca() {
+	int enemigos = 0;
+	for (int i = 0; i<NUM_ENEMIGOS; i++) {
+		if (tablero.lista_enemigos[i].vida>0) { // Si el enemigo esta vivo
+			// Si el enemigo esta a una casilla de distancia se cuenta				
+			if (((tablero.lista_enemigos[i].fila == prsj.pos_fila) && (abs(tablero.lista_enemigos[i].columna - prsj.pos_columna) == 1 )) || 
+			((tablero.lista_enemigos[i].columna == prsj.pos_columna) && (abs(tablero.lista_enemigos[i].fila - prsj.pos_fila) == 1 ))) {
+				enemigos++;
+			}
+		}
+	}
+	return enemigos;
+}
+
+void simula_defensa() {
+	int ataque = 0, defensa = 0;
+
+	animacion_por_pantalla("\n\nUN ENEMIGO TE ESTÁ ATACANDO!\n");
+	// Lanzamos el dado del enemigo
+	ataque = get_random_number();
+
+	// Lanzamos el dado del jugador
+	defensa = get_random_number();
+
+	// Aplicamos bonus de armas de defensa
+
+	// Actualizamos info de jugador y enemigo si es oportuno
+	if (ataque>defensa) {
+		int danho = (ataque - defensa);
+		printf("Recibes %i de daño.\n", danho);
+		prsj.vida -= danho;
+	} else {
+		printf("Has detenido el ataque!\n");
+	}
+	printf("\n");
+}
 
 void yyerror (char const *message) {
 	printf("%s\n", message);
@@ -899,41 +970,42 @@ void inicializar_mapa(){
 	tablero.lista_enemigos[0].vida = 20;
 	tablero.lista_enemigos[0].fuerza = 5;
 	tablero.mapa[3][12] = 'E';	
-	tablero.lista_enemigos[0].fila = 3;
-	tablero.lista_enemigos[0].columna = 12;
-	tablero.lista_enemigos[0].vida = 20;
-	tablero.lista_enemigos[0].fuerza = 5;
+	tablero.lista_enemigos[1].fila = 3;
+	tablero.lista_enemigos[1].columna = 12;
+	tablero.lista_enemigos[1].vida = 20;
+	tablero.lista_enemigos[1].fuerza = 5;
 	tablero.mapa[4][5] = 'E';
-	tablero.lista_enemigos[0].fila = 4;
-	tablero.lista_enemigos[0].columna = 5;
-	tablero.lista_enemigos[0].vida = 20;
-	tablero.lista_enemigos[0].fuerza = 5;
+	tablero.lista_enemigos[2].fila = 4;
+	tablero.lista_enemigos[2].columna = 5;
+	tablero.lista_enemigos[2].vida = 20;
+	tablero.lista_enemigos[2].fuerza = 5;
 	tablero.mapa[5][11] = 'E';
-	tablero.lista_enemigos[0].fila = 5;
-	tablero.lista_enemigos[0].columna = 11;
-	tablero.lista_enemigos[0].vida = 20;
-	tablero.lista_enemigos[0].fuerza = 5;
+	tablero.lista_enemigos[3].fila = 5;
+	tablero.lista_enemigos[3].columna = 11;
+	tablero.lista_enemigos[3].vida = 20;
+	tablero.lista_enemigos[3].fuerza = 5;
 	tablero.mapa[7][18] = 'E';
-	tablero.lista_enemigos[0].fila = 7;
-	tablero.lista_enemigos[0].columna = 18;
-	tablero.lista_enemigos[0].vida = 20;
-	tablero.lista_enemigos[0].fuerza = 5;
+	tablero.lista_enemigos[4].fila = 7;
+	tablero.lista_enemigos[4].columna = 18;
+	tablero.lista_enemigos[4].vida = 20;
+	tablero.lista_enemigos[4].fuerza = 5;
 	tablero.mapa[8][11] = 'E';
-	tablero.lista_enemigos[0].fila = 8;
-	tablero.lista_enemigos[0].columna = 11;
-	tablero.lista_enemigos[0].vida = 20;
-	tablero.lista_enemigos[0].fuerza = 5;
+	tablero.lista_enemigos[5].fila = 8;
+	tablero.lista_enemigos[5].columna = 11;
+	tablero.lista_enemigos[5].vida = 20;
+	tablero.lista_enemigos[5].fuerza = 5;
 	tablero.mapa[8][19] = 'E';
-	tablero.lista_enemigos[0].fila = 8;
-	tablero.lista_enemigos[0].columna = 19;
-	tablero.lista_enemigos[0].vida = 20;
-	tablero.lista_enemigos[0].fuerza = 5;
+	tablero.lista_enemigos[6].fila = 8;
+	tablero.lista_enemigos[6].columna = 19;
+	tablero.lista_enemigos[6].vida = 20;
+	tablero.lista_enemigos[6].fuerza = 5;
 }
 
 void mostrar_mapa(){
-	printf("MAPA:\n");
+	printf("Tu Mapa:\n");
         int i,j;
 	for (i = 0;i<FILAS;i++) {
+		printf("\t");
 		for (j = 0;j<COLUMNAS;j++) {
 			if ((i==prsj.pos_fila) && (j==prsj.pos_columna)){
 				printf("\e[1m\e[38;5;208mP\e[0m"); // Personaje
@@ -1000,22 +1072,41 @@ int inicializar_jugador(tjugador jugador) {
 }
 
 
+void animacion_por_pantalla(char cadena[]) {
+	for (int i=0; i<strlen(cadena); i++) {
+		printf("%c", cadena[i]);
+		fflush(NULL);
+		usleep(DELAY);
+	}
+}
+
+
 int main(int argc, char *argv[]) {
-	
-	printf("PseudoQuest v0.02\n"); 
-	printf("Bienvenido a PseudoQuest! Si eres nuevo escribe \"ayuda\" en el terminal.\n"); 
+	animacion_por_pantalla("\n\nPseudoQuest v. 0.1\n");
+	//printf("PseudoQuest v0.1\n");
+	animacion_por_pantalla("Bienvenido a PseudoQuest! Aquí empiezan tus aventuras, que tengas suerte.\n\n"); 
+	/*printf("Bienvenido a PseudoQuest! ");
+	sleep(1);
+	printf("Aquí empiezan tus aventuras, que tengas suerte.\n");
+	sleep(3);*/
 	
 	// Inicializacion de variables
 	
 	inicializar_jugador(prsj);
 	inicializar_mapa(); // Inicializacion del mapa
 	mostrar_mapa(); // Mostrar mapa
+
+	animacion_por_pantalla("\nSi eres nuevo escribe \"ayuda\" en el terminal.\n");
+	/*sleep(2);	 
+	printf("Si eres nuevo escribe \"ayuda\" en el terminal.\n");*/
+
+
 	srand(time(NULL)); // Inicializar semilla
 	
 	printf("\n-> ");
 	while (yyparse()){
 		if (prsj.vida<=0) {
-			printf("\tHas MUERTO. Fin de la partida\n");
+			animacion_por_pantalla("\tHas MUERTO. Fin de la partida\n");
 			break;		
 		}
 		printf("\n-> ");	
