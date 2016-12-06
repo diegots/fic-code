@@ -3,9 +3,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 /* Constante usada para la animacion de los mensajes por pantalla */
-#define DELAY 100000
+#define DELAY 50000
 /* Constantes de direccion */
 #define D_ARRIBA 1
 #define D_ABAJO 2
@@ -17,12 +18,14 @@
 #define TAM_MOCHILA 5
 #define POSICION_INICIAL_FILA 10
 #define POSICION_INICIAL_COLUMNA 16
+#define MANO_DERECHA 1
+#define MANO_IZQUIERDA 2
 
 /* Constantes de objetos */
 #define OBJ_POCION 1 // Constante para identificar el objeto pocion
 #define VALOR_POCION 20 // Valor de la pocion
 #define OBJ_ESPADA 2 // Constante para identificar el objeto espada
-#define VALOR_ESPADA 10 // Daño de la espada
+#define VALOR_ESPADA 3 // Multiplicador de daño de la espada
 #define OBJ_LLAVE 3
 #define TOTAL_OBJETOS 3 // Objetos disponibles en el juego
 #define RATIO_COFRES_VACIOS 0 /* Numero utilizado para la mayor o menor 
@@ -39,7 +42,7 @@ con el de TOTAL_OBJETOS, mas cofre vacios apareceran */
 struct objeto {
 	int tipo;
 	char *nombre;
-	int valor;
+	int valor; // En los objetos de lucha funciona como multiplicador o divisor, en pociones como la cantidad de vida a recuperar
 	int durabilidad;
 };
 typedef struct objeto tobjeto;
@@ -48,6 +51,8 @@ struct jugador {
 	int pos_fila;
 	int pos_columna;
 	int vida;
+	tobjeto *mano_izquierda;
+	tobjeto *mano_derecha;
 	tobjeto mochila[TAM_MOCHILA];
 };
 typedef struct jugador tjugador;
@@ -80,7 +85,7 @@ typedef struct mapa tmapa;
 tmapa tablero;
 
 // Numero de objetos en la mochila
-int num_objetos = 0;
+int num_objetos_mochila = 0;
 
 // Valor actual del dado
 int valor_dado = 0; 
@@ -115,6 +120,8 @@ int regla_abajo();
 int regla_der();
 int regla_izq();
 int regla_avanzar();
+int regla_atacar(int);
+int regla_equipar(int, int);
 int regla_abrir_puerta();
 int regla_abrir_cofre();
 int regla_usar_objeto(int);
@@ -132,19 +139,18 @@ void mostrar_mapa();
 int colision(int, int);
 int puerta_cerrada(int, int);
 int abrir_puerta(int, int);
-int regla_atacar(int);
 void simula_ataque(int, int);
 void simula_defensa();
 int enemigos_cerca();
 void actualiza_enemigo(int, int, int);
-void animacion_por_pantalla(char []);
+void animacion_por_pantalla(char [], int);
 
 
 %}
 %union{
 	int entero;
 }
-%token LANZAR AVANZAR ATACAR ABRIRPUERTA ABRIRCOFRE USAR ESPADA POCION LLAVE ARRIBA ABAJO 
+%token LANZAR AVANZAR ATACAR EQUIPAR MANOIZQ MANODER ABRIRPUERTA ABRIRCOFRE USAR ESPADA POCION LLAVE ARRIBA ABAJO 
 DER IZQ EXIT AYUDA INFO REGLAS FINALTURNO
 %token <entero> DIGITO
 %type <entero> movimientos accion direccion objeto
@@ -174,13 +180,25 @@ S : 	LANZAR '\n' {
 	| ATACAR direccion '\n'{
 		return regla_atacar($2);
 	}
+	| EQUIPAR objeto MANOIZQ '\n'{
+		return regla_equipar($2, MANO_IZQUIERDA);
+	}
+	| EQUIPAR MANOIZQ objeto '\n' {
+		return regla_equipar($3, MANO_IZQUIERDA);
+	}
+	| EQUIPAR objeto MANODER '\n'{
+		return regla_equipar($2, MANO_DERECHA);
+	}
+	| EQUIPAR MANODER objeto '\n' {
+		return regla_equipar($3, MANO_DERECHA);
+	}
 	| ABRIRPUERTA '\n' {
 		return regla_abrir_puerta();
 	}
 	| ABRIRCOFRE '\n' {
 		return regla_abrir_cofre();
 	}
-	| USAR objeto {
+	| USAR objeto '\n' {
 		return regla_usar_objeto($2);
 	}
 	| FINALTURNO '\n' {
@@ -219,13 +237,13 @@ S : 	LANZAR '\n' {
 		return 1;
 	}
 	;
-objeto:	ESPADA '\n'{ // En este caso es la regla superior la que hace el return
+objeto:	ESPADA { // En este caso es la regla superior la que hace el return
 		$$ = OBJ_ESPADA;
 	}
-	| POCION '\n'{
+	| POCION {
 		$$ = OBJ_POCION;		
 	}
-	| LLAVE '\n' {
+	| LLAVE {
 		$$ = OBJ_LLAVE;
 	}
 	;
@@ -450,12 +468,13 @@ int regla_avanzar() {
 
 int regla_atacar(int direccion) {
 	if (!ataque) {
-		animacion_por_pantalla("Atacando...\n");
-		ataque = 1;
+		animacion_por_pantalla("Atacando...\n", DELAY);
 		switch (direccion){
 			case D_ARRIBA:		
 				if (tablero.mapa[prsj.pos_fila-1][prsj.pos_columna] == 'E'){
 					simula_ataque(prsj.pos_fila-1, prsj.pos_columna);
+					// La variable de ataque se pone a 1 para que no se pueda volver a atacar en el mismo turno, pero solo si realmente se ha atacado, si el usuario ataca y no tiene enemigos cerca esta variable no se activa para que pueda atacar de verdad en este mismo turno
+					ataque = 1;
 				} else {
 					printf("No tienes enemigos cerca\n");
 				} 
@@ -463,6 +482,7 @@ int regla_atacar(int direccion) {
 			case D_ABAJO:					
 				if (tablero.mapa[prsj.pos_fila+1][prsj.pos_columna] == 'E'){
 					simula_ataque(prsj.pos_fila+1, prsj.pos_columna);
+					ataque = 1;
 				} else {
 					printf("No tienes enemigos cerca\n");
 				}
@@ -470,6 +490,7 @@ int regla_atacar(int direccion) {
 			case D_DERECHA:
 				if (tablero.mapa[prsj.pos_fila][prsj.pos_columna+1] == 'E'){
 					simula_ataque(prsj.pos_fila, prsj.pos_columna+1);
+					ataque = 1;
 				} else {
 					printf("No tienes enemigos cerca\n");
 				}
@@ -477,6 +498,7 @@ int regla_atacar(int direccion) {
 			case D_IZQUIERDA:
 				if (tablero.mapa[prsj.pos_fila][prsj.pos_columna-1] == 'E'){
 					simula_ataque(prsj.pos_fila, prsj.pos_columna-1);
+					ataque = 1;
 				} else {
 					printf("No tienes enemigos cerca\n");
 				}
@@ -488,6 +510,81 @@ int regla_atacar(int direccion) {
 	}
 }
 
+int regla_equipar(int tipo_objeto, int mano) {
+	// Si tenemos la mano ocupada mostrarlo y salir
+	if (mano_ocupada(mano)) {
+		printf("Mano ocupada\n");
+		return 1;
+	}
+	// Si no tenemos el objeto igual
+	for (int i = 0; i<num_objetos_mochila; i++) {
+		if (tipo_objeto == prsj.mochila[i].tipo){
+			switch(tipo_objeto) {
+				case OBJ_ESPADA:
+					switch(mano) {
+						case MANO_DERECHA:
+							printf("Equipas tu %s en la mano derecha.\n", prsj.mochila[i].nombre);
+							// Equipas la espada
+							prsj.mano_derecha = (tobjeto*) malloc(sizeof(struct objeto));
+							prsj.mano_derecha -> tipo = prsj.mochila[i].tipo;
+							prsj.mano_derecha -> nombre = prsj.mochila[i].nombre;
+							prsj.mano_derecha -> durabilidad = prsj.mochila[i].durabilidad;
+							prsj.mano_derecha -> valor = prsj.mochila[i].valor;
+							break;
+						case MANO_IZQUIERDA:
+							printf("Equipas tu %s en la mano izquierda.\n", prsj.mochila[i].nombre);
+							// Equipas la espada
+							prsj.mano_izquierda = (tobjeto*) malloc(sizeof(struct objeto));
+							prsj.mano_izquierda -> tipo = prsj.mochila[i].tipo;
+							prsj.mano_izquierda -> nombre = prsj.mochila[i].nombre;
+							prsj.mano_izquierda -> durabilidad = prsj.mochila[i].durabilidad;
+							prsj.mano_izquierda -> valor = prsj.mochila[i].valor;
+							break;
+					}
+
+					// Se borra el objeto de la mochila
+					/* En la posicion que ha quedado vacia 
+					colocamos el ultimo objeto de la mochila para 
+					que todos los objetos queden en las primera 
+					posiciones. En el caso de que fuese el ultimo 
+					objeto de la mochila, ya se habria puesto 
+					anteriormente a 0 por lo que no pasa nada, 
+					simplemente se reducen el numero de objetos */
+					prsj.mochila[i] = prsj.mochila[num_objetos_mochila-1];
+					
+					prsj.mochila[num_objetos_mochila-1].tipo = 0;
+					prsj.mochila[num_objetos_mochila-1].nombre = "";
+					prsj.mochila[num_objetos_mochila-1].valor = 0;
+					prsj.mochila[num_objetos_mochila-1].durabilidad = 0; 
+					num_objetos_mochila--;
+
+
+					break;
+				case OBJ_POCION:
+					printf("No puedes equipar un(a) %s.\n", prsj.mochila[i].nombre);
+					break;
+				case OBJ_LLAVE:
+					printf("No puedes equipar un(a) %s.\n", prsj.mochila[i].nombre);
+					break;
+			}
+		}
+	}
+	return 1;
+}
+
+int mano_ocupada(int mano) {
+	switch (mano) {
+		case MANO_DERECHA:
+			if (prsj.mano_derecha != NULL)
+				return 1;
+			break;
+		case MANO_IZQUIERDA:
+			if (prsj.mano_izquierda != NULL)
+				return 1;
+			break;
+	}
+	return 0;
+}
 
 int regla_abrir_puerta() {
 	/* Cuando las puertas puedan estar cerradas con llave y el jugador se 
@@ -495,46 +592,46 @@ encuentre con una mostrar por pantalla : !NOOOO.. PUEDES.. PASAAAR! (Necesitas
  una llave).*/ 
 	if (tablero.mapa[prsj.pos_fila+1][prsj.pos_columna] == '-') {
 		if (puerta_cerrada(prsj.pos_fila+1, prsj.pos_columna)) {
-			printf("Puerta cerrada.\n");
+			animacion_por_pantalla("Puerta cerrada.\n", DELAY);
 			return 1;
 		} else {
 			tablero.mapa[prsj.pos_fila+1][prsj.pos_columna] = ' ';
-			printf("Puerta abierta.\n");
+			animacion_por_pantalla("Puerta abierta.\n", DELAY);
 			return 1;
 		}
 	}
 	if (tablero.mapa[prsj.pos_fila-1][prsj.pos_columna] == '-') {
 		if (puerta_cerrada(prsj.pos_fila-1, prsj.pos_columna)) {
-			printf("Puerta cerrada.\n");
+			animacion_por_pantalla("Puerta cerrada.\n", DELAY);
 			return 1;
 		} else {
 			tablero.mapa[prsj.pos_fila-1][prsj.pos_columna] = ' ';
-			printf("Puerta abierta.\n");
+			animacion_por_pantalla("Puerta abierta.\n", DELAY);
 			return 1;
 		}
 	}
 	if (tablero.mapa[prsj.pos_fila][prsj.pos_columna+1] == '|') {
 		if (puerta_cerrada(prsj.pos_fila, prsj.pos_columna+1)) {
-			printf("Puerta cerrada.\n");
+			animacion_por_pantalla("Puerta cerrada.\n", DELAY);
 			return 1;
 		} else {
 			tablero.mapa[prsj.pos_fila][prsj.pos_columna+1] = ' ';
-			printf("Puerta abierta.\n");
+			animacion_por_pantalla("Puerta abierta.\n", DELAY);
 			return 1;
 		}
 	}
 	if (tablero.mapa[prsj.pos_fila][prsj.pos_columna-1] == '|') {
 		if (puerta_cerrada(prsj.pos_fila, prsj.pos_columna-1)) {
-			printf("Puerta cerrada.\n");
+			animacion_por_pantalla("Puerta cerrada.\n", DELAY);
 			return 1;
 		} else {
 			tablero.mapa[prsj.pos_fila][prsj.pos_columna-1] = ' ';
-			printf("Puerta abierta.\n");
+			animacion_por_pantalla("Puerta abierta.\n", DELAY);
 			return 1;
 		}
 	}
-	printf("No tiene ninguna puerta cerca, y aún no has\
- desarrollado la telequinesis, hable con Yoda o pruebe a acercarse, lo siento.\n");
+	animacion_por_pantalla("No tiene ninguna puerta cerca, y aún no has\
+ desarrollado la telequinesis, hable con Yoda o pruebe a acercarse, lo siento.\n", DELAY);
 	return 1;
 }
 
@@ -549,8 +646,8 @@ int puerta_cerrada(int fila, int columna) { // Mover esta funcion a la parte de 
 
 int regla_abrir_cofre() {
 	// Se comprueba si existe hueco en la mochila
-	if (num_objetos==TAM_MOCHILA) {
-			printf("Mochila llena. No puede coger más objetos.\n");
+	if (num_objetos_mochila==TAM_MOCHILA) {
+			animacion_por_pantalla("Mochila llena. No puede coger más objetos.\n", DELAY);
 			return 1;
 		}
 	// Se comprueba si el personaje tiene un cofre al lado
@@ -570,7 +667,8 @@ int regla_abrir_cofre() {
 
 	// Tiene un hueco en la mochila, y el cofre cerca, por lo tanto,
 	// se abre el cofre
-	printf("Cofre abierto.\n");
+	animacion_por_pantalla("Abriendo cofre", DELAY);
+	animacion_por_pantalla("...\n...\n", DELAY*8);
 	tobjeto objeto;
 	// Obtienes el tipo del objeto que vas a crear de manera aleatoria
 	int tipo = get_random_object();
@@ -595,19 +693,23 @@ int regla_abrir_cofre() {
 			objeto.durabilidad = 1;
 			break;
 		default: // Cofre vacio, no se guarda el objeto
-			printf("Está vacio. Más suerte la próxima vez.\n");
+			animacion_por_pantalla("Está vacio. Más suerte la próxima vez.\n", DELAY);
 			return 1;
 			break;
 	}
 	
-	printf("Has encontrado una %s!\n", objeto.nombre);
-	prsj.mochila[num_objetos] = objeto;
-	num_objetos++;
+	// Neceario cuando necesitamos formatear texto
+	char objeto_encontrado[100];
+	sprintf(objeto_encontrado, "Has encontrado un(a) %s!\n", objeto.nombre);
+	animacion_por_pantalla(objeto_encontrado, DELAY);
+
+	prsj.mochila[num_objetos_mochila] = objeto;
+	num_objetos_mochila++;
 	return 1;
 }
 
 int regla_usar_objeto(int tipo_objeto) {
-	for (int i = 0; i<num_objetos; i++) {
+	for (int i = 0; i<num_objetos_mochila; i++) {
 		if (tipo_objeto == prsj.mochila[i].tipo){
 			switch(tipo_objeto) {
 				case OBJ_ESPADA:
@@ -636,7 +738,7 @@ vida.\n", prsj.mochila[i].nombre, prsj.mochila[i].valor);
 desarrollado la telequinesis, hable con Yoda o pruebe a acercarse, lo siento.\n");
 						return 1;
 					}
-					printf("Has abierto la puerta\n");
+					animacion_por_pantalla("Has abierto la puerta\n", DELAY);
 			}
 			if (!(--prsj.mochila[i].durabilidad)){ //Cada vez que se usa el objeto pierde 1 de durabilidad, si esta llega a 0 el objeto se pierde	
 				printf("%s gastada\n", prsj.mochila[i].nombre);
@@ -647,12 +749,12 @@ desarrollado la telequinesis, hable con Yoda o pruebe a acercarse, lo siento.\n"
 				objeto de la mochila, ya se habria puesto 
 				anteriormente a 0 por lo que no pasa nada, 
 				simplemente se reducen el numero de objetos */
-				prsj.mochila[i] = prsj.mochila[num_objetos-1];
+				prsj.mochila[i] = prsj.mochila[num_objetos_mochila-1];
 					
-				prsj.mochila[num_objetos-1].tipo = 0;
-				prsj.mochila[num_objetos-1].nombre = "";
-				prsj.mochila[num_objetos-1].valor = 0; 
-				num_objetos--;		
+				prsj.mochila[num_objetos_mochila-1].tipo = 0;
+				prsj.mochila[num_objetos_mochila-1].nombre = "";
+				prsj.mochila[num_objetos_mochila-1].valor = 0; 
+				num_objetos_mochila--;		
 			}
 			break;
 		}
@@ -726,13 +828,18 @@ void simula_ataque(int pos_fila_enemigo, int pos_columna_enemigo) {
 	ataque = get_random_number();
 
 	// Aplicamos bonus de armas de ataque
-
+	
 	// Lanzamos el dado del enemigo
 	defensa = get_random_number();
 
 	// Actualizamos info de jugador y enemigo si es oportuno
 	if (ataque>defensa) {
 		int danho = (ataque - defensa) * 2;
+		if ((prsj.mano_derecha != NULL) && ((prsj.mano_derecha -> tipo) == OBJ_ESPADA))
+			danho *= prsj.mano_derecha -> valor;
+		if ((prsj.mano_izquierda != NULL) && ((prsj.mano_izquierda -> tipo) == OBJ_ESPADA))
+			danho *= prsj.mano_izquierda -> valor;
+		
 		printf("Acierto! El enemigo recibe %i de daño.\n", danho);
 		actualiza_enemigo(pos_fila_enemigo, pos_columna_enemigo, danho);
 	} else {
@@ -770,7 +877,7 @@ int enemigos_cerca() {
 void simula_defensa() {
 	int ataque = 0, defensa = 0;
 
-	animacion_por_pantalla("\n\nUN ENEMIGO TE ESTÁ ATACANDO!\n");
+	animacion_por_pantalla("\n\nUN ENEMIGO TE ESTÁ ATACANDO!\n", DELAY);
 	// Lanzamos el dado del enemigo
 	ataque = get_random_number();
 
@@ -1072,19 +1179,24 @@ int inicializar_jugador(tjugador jugador) {
 }
 
 
-void animacion_por_pantalla(char cadena[]) {
+void animacion_por_pantalla(char cadena[], int delay) {
 	for (int i=0; i<strlen(cadena); i++) {
 		printf("%c", cadena[i]);
 		fflush(NULL);
-		usleep(DELAY);
+		usleep(delay);
 	}
 }
 
+void clearScreen() {
+  const char* CLEAR_SCREE_ANSI = "\e[1;1H\e[2J";
+  write(STDOUT_FILENO,CLEAR_SCREE_ANSI,12);
+}
 
 int main(int argc, char *argv[]) {
-	animacion_por_pantalla("\n\nPseudoQuest v. 0.1\n");
+	clearScreen();
+	animacion_por_pantalla("\n\nPseudoQuest v. 0.1\n", DELAY);
 	//printf("PseudoQuest v0.1\n");
-	animacion_por_pantalla("Bienvenido a PseudoQuest! Aquí empiezan tus aventuras, que tengas suerte.\n\n"); 
+	animacion_por_pantalla("Bienvenido a PseudoQuest! Aquí empiezan tus aventuras, que tengas suerte.\n\n", DELAY); 
 	/*printf("Bienvenido a PseudoQuest! ");
 	sleep(1);
 	printf("Aquí empiezan tus aventuras, que tengas suerte.\n");
@@ -1096,7 +1208,7 @@ int main(int argc, char *argv[]) {
 	inicializar_mapa(); // Inicializacion del mapa
 	mostrar_mapa(); // Mostrar mapa
 
-	animacion_por_pantalla("\nSi eres nuevo escribe \"ayuda\" en el terminal.\n");
+	animacion_por_pantalla("\nSi eres nuevo escribe \"ayuda\" en el terminal.\n", DELAY);
 	/*sleep(2);	 
 	printf("Si eres nuevo escribe \"ayuda\" en el terminal.\n");*/
 
@@ -1104,13 +1216,20 @@ int main(int argc, char *argv[]) {
 	srand(time(NULL)); // Inicializar semilla
 	
 	printf("\n-> ");
-	while (yyparse()){
+	while (yyparse()) {
 		if (prsj.vida<=0) {
-			animacion_por_pantalla("\tHas MUERTO. Fin de la partida\n");
+			animacion_por_pantalla("\tHas MUERTO. Fin de la partida\n", DELAY);
 			break;		
 		}
 		printf("\n-> ");	
 	}
+
+	// Liberacion de memoria
+	if (prsj.mano_derecha != NULL )
+		free(prsj.mano_derecha);
+	if (prsj.mano_izquierda != NULL )
+		free(prsj.mano_izquierda);
+
 	return 0;
 }
 

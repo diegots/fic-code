@@ -4,7 +4,10 @@
 %}
 lanzar	lanzar|lanzar" "dado?s
 avanzar mover|avanzar
-atacar atacar
+atacar	atacar
+equipar	equipar
+mano_izq	mano" "izquierda
+mano_der	mano" "derecha
 abrirPuerta	abrir" "puerta
 abrirCofre	abrir" "cofre
 usar	usar
@@ -26,6 +29,9 @@ finTurno	fin" "turno|fin" "de" "turno
 {lanzar}	{return LANZAR;}
 {avanzar}	{return AVANZAR;}
 {atacar}	{return ATACAR;}
+{equipar}	{return EQUIPAR;}
+{mano_izq}	{return MANOIZQ;}
+{mano_der}	{return MANODER;}
 {abrirPuerta}	{return ABRIRPUERTA;}
 {abrirCofre}	{return ABRIRCOFRE;}
 {usar}		{return USAR;}
