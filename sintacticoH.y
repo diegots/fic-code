@@ -713,10 +713,8 @@ int regla_usar_objeto(int tipo_objeto) {
 		if (tipo_objeto == prsj.mochila[i].tipo){
 			switch(tipo_objeto) {
 				case OBJ_ESPADA:
-					printf("Agarras firmemente tu %s, y la\
-comienzas a blandir en todas direcciones como si fueras Conan El Barbaro. Te \
-acabas cortando y pierdes %i de vida.\n", prsj.mochila[i].nombre, prsj.mochila[i].valor);
-					prsj.vida -= prsj.mochila[i].valor;
+					printf("La %s no tiene ninguna utilidad por si sola.", prsj.mochila[i].nombre);
+					return 1;
 					break;
 				case OBJ_POCION:
 					printf("Bebes la %s y recuperas %i de \
@@ -823,7 +821,7 @@ void regla_accion(int digito, int direccion){
 /* Funciones auxiliares */
 
 void simula_ataque(int pos_fila_enemigo, int pos_columna_enemigo) {
-	int ataque = 0, defensa = 0;
+	int ataque = 0, defensa = 0, derecha_roto = 0, izquierda_roto = 0;
 	// Lanzamos el dado del jugador
 	ataque = get_random_number();
 
@@ -835,15 +833,36 @@ void simula_ataque(int pos_fila_enemigo, int pos_columna_enemigo) {
 	// Actualizamos info de jugador y enemigo si es oportuno
 	if (ataque>defensa) {
 		int danho = (ataque - defensa) * 2;
-		if ((prsj.mano_derecha != NULL) && ((prsj.mano_derecha -> tipo) == OBJ_ESPADA))
+		if ((prsj.mano_derecha != NULL) && ((prsj.mano_derecha -> tipo) == OBJ_ESPADA)) {
 			danho *= prsj.mano_derecha -> valor;
-		if ((prsj.mano_izquierda != NULL) && ((prsj.mano_izquierda -> tipo) == OBJ_ESPADA))
+			prsj.mano_derecha -> durabilidad--;
+			if (prsj.mano_derecha -> durabilidad == 0)
+				derecha_roto = 1;
+			
+			
+		}
+		if ((prsj.mano_izquierda != NULL) && ((prsj.mano_izquierda -> tipo) == OBJ_ESPADA)) {
 			danho *= prsj.mano_izquierda -> valor;
+			prsj.mano_izquierda -> durabilidad--;
+			if (prsj.mano_izquierda -> durabilidad == 0)
+				izquierda_roto = 1;
+		}
 		
 		printf("Acierto! El enemigo recibe %i de daño.\n", danho);
 		actualiza_enemigo(pos_fila_enemigo, pos_columna_enemigo, danho);
 	} else {
 		printf("Fallo!\n");
+	}
+	if (derecha_roto) {
+		printf("La %s se ha roto", prsj.mano_derecha -> nombre);
+		free(prsj.mano_derecha);
+		prsj.mano_derecha = NULL;
+	}
+	
+	if (izquierda_roto) {
+		printf("La %s se ha roto", prsj.mano_izquierda -> nombre);
+		free(prsj.mano_izquierda);
+		prsj.mano_izquierda = NULL;
 	}
 }
 
@@ -957,6 +976,14 @@ Secuencia de turno:\n\
 
 void mostrar_info_jugador(tjugador j) {
 	printf("\tVida: %i\n", j.vida);
+	if (j.mano_derecha != NULL)
+		printf("\tMano derecha: %s\n", j.mano_derecha -> nombre);
+	else
+		printf("\tMano derecha: Vacía\n");
+	if (j.mano_izquierda != NULL)
+		printf("\tMano izquierda: %s\n", j.mano_izquierda -> nombre);
+	else
+		printf("\tMano izquierda: Vacía\n");
 	printf("\tMochila:\n");
 	
 	for(int i=0;i<TAM_MOCHILA;i++){
