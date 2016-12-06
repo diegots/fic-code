@@ -37,6 +37,7 @@ con el de TOTAL_OBJETOS, mas cofre vacios apareceran */
 #define COLUMNAS 22
 #define NUM_PUERTAS 3
 #define NUM_ENEMIGOS 7
+#define NUM_COFRES 8
 
 /* Estructuras de datos */
 struct objeto {
@@ -64,6 +65,13 @@ struct puerta {
 };
 typedef struct puerta tpuerta;
 
+struct cofre {
+	int fila;
+	int columna;
+	int abierto;
+};
+typedef struct cofre tcofre;
+
 struct enemigo {
 	int fila;
 	int columna;
@@ -75,6 +83,7 @@ typedef struct enemigo tenemigo;
 struct mapa {
 	char mapa[FILAS][COLUMNAS];
 	tpuerta lista_puertas[NUM_PUERTAS];
+	tcofre lista_cofres[NUM_COFRES];
 	tenemigo lista_enemigos[NUM_ENEMIGOS];
 };
 typedef struct mapa tmapa;
@@ -144,6 +153,7 @@ void simula_defensa();
 int enemigos_cerca();
 void actualiza_enemigo(int, int, int);
 void animacion_por_pantalla(char [], int);
+int mano_ocupada(int);
 
 
 %}
@@ -644,21 +654,44 @@ int puerta_cerrada(int fila, int columna) { // Mover esta funcion a la parte de 
 	return 0;
 }
 
+/* Devuelve 1 si abre el cofre y 0 si ya estaba abierto */
+int abre_cofre(int fila, int columna) {
+	for (int i = 0; i<NUM_COFRES; i++) {
+		if ((tablero.lista_cofres[i].fila == fila) && (tablero.lista_cofres[i].columna == columna)) {
+			if (tablero.lista_cofres[i].abierto) {
+				printf("Cofre ya abierto\n");
+				return 0;
+			} else {
+				tablero.lista_cofres[i].abierto = 1;
+				return 1;
+			}
+		}
+	}
+}
+
 int regla_abrir_cofre() {
 	// Se comprueba si existe hueco en la mochila
 	if (num_objetos_mochila==TAM_MOCHILA) {
-			animacion_por_pantalla("Mochila llena. No puede coger más objetos.\n", DELAY);
-			return 1;
-		}
+		animacion_por_pantalla("Mochila llena. No puede coger más objetos.\n", DELAY);
+		return 1;
+	}
 	// Se comprueba si el personaje tiene un cofre al lado
 	if (tablero.mapa[prsj.pos_fila+1][prsj.pos_columna] == 'C') {		
-		tablero.mapa[prsj.pos_fila+1][prsj.pos_columna] = ' ';
-	}else if (tablero.mapa[prsj.pos_fila-1][prsj.pos_columna] == 'C') {		
-		tablero.mapa[prsj.pos_fila-1][prsj.pos_columna] = ' ';
-	}else if (tablero.mapa[prsj.pos_fila][prsj.pos_columna+1] == 'C') {		
-		tablero.mapa[prsj.pos_fila][prsj.pos_columna+1] = ' ';
-	}else if (tablero.mapa[prsj.pos_fila][prsj.pos_columna-1] == 'C') {		
-		tablero.mapa[prsj.pos_fila][prsj.pos_columna-1] = ' ';
+		 if (!abre_cofre(prsj.pos_fila+1, prsj.pos_columna))
+			return 1;		
+		//tablero.mapa[prsj.pos_fila+1][prsj.pos_columna] = ' ';
+	} else if (tablero.mapa[prsj.pos_fila-1][prsj.pos_columna] == 'C') {		
+		if (!abre_cofre(prsj.pos_fila-1, prsj.pos_columna))
+			return 1;		
+		//tablero.mapa[prsj.pos_fila-1][prsj.pos_columna] = ' ';
+	} else if (tablero.mapa[prsj.pos_fila][prsj.pos_columna+1] == 'C') {		
+		if (!abre_cofre(prsj.pos_fila, prsj.pos_columna+1))
+			return 1;		
+		//tablero.mapa[prsj.pos_fila][prsj.pos_columna+1] = ' ';
+	} else if (tablero.mapa[prsj.pos_fila][prsj.pos_columna-1] == 'C') {		
+		if (!abre_cofre(prsj.pos_fila, prsj.pos_columna-1))
+			return 1;		
+		//tablero.mapa[prsj.pos_fila][prsj.pos_columna-1] = ' ';
 	} else { // No tiene un cofre cerca
 		printf("No tiene ningun cofre cerca, y aún no ha\
  desarrollado la telequinesis, hable con Yoda o pruebe a acercarse, lo siento.\n");
@@ -1089,13 +1122,37 @@ void inicializar_mapa(){
 
 	/* Cofres */
 	tablero.mapa[2][20]  = 'C';
+	tablero.lista_cofres[0].fila = 2;
+	tablero.lista_cofres[0].columna = 20;
+	tablero.lista_cofres[0].abierto = 0;
 	tablero.mapa[3][20]  = 'C';
+	tablero.lista_cofres[1].fila = 3;
+	tablero.lista_cofres[1].columna = 20;
+	tablero.lista_cofres[1].abierto = 0;
 	tablero.mapa[4][3]   = 'C';
+	tablero.lista_cofres[2].fila = 4;
+	tablero.lista_cofres[2].columna = 3;
+	tablero.lista_cofres[2].abierto = 0;
 	tablero.mapa[8][5]   = 'C';
+	tablero.lista_cofres[3].fila = 8;
+	tablero.lista_cofres[3].columna = 5;
+	tablero.lista_cofres[3].abierto = 0;
 	tablero.mapa[9][9]   = 'C';
+	tablero.lista_cofres[4].fila = 9;
+	tablero.lista_cofres[4].columna = 9;
+	tablero.lista_cofres[4].abierto = 0;
 	tablero.mapa[9][15]  = 'C';
+	tablero.lista_cofres[5].fila = 9;
+	tablero.lista_cofres[5].columna = 15;
+	tablero.lista_cofres[5].abierto = 0;
 	tablero.mapa[10][15] = 'C';
+	tablero.lista_cofres[6].fila = 10;
+	tablero.lista_cofres[6].columna = 15;
+	tablero.lista_cofres[6].abierto = 0;
 	tablero.mapa[11][15] = 'C';
+	tablero.lista_cofres[7].fila = 11;
+	tablero.lista_cofres[7].columna = 15;
+	tablero.lista_cofres[7].abierto = 0;
 
 	/* Enemigos */
 	tablero.mapa[2][10] = 'E';
@@ -1148,13 +1205,21 @@ void mostrar_mapa(){
 			} else if (tablero.mapa[i][j] == 'x'){
 				printf ("\e[48;5;239m \e[0m"); // Paredes inter
 			} else if (tablero.mapa[i][j] == 'C'){
-				printf("\e[1m\e[92mC\e[0m"); // Cofres
+				for (int k = 0; k<NUM_COFRES; k++) {
+					if ((tablero.lista_cofres[k].fila == i) && (tablero.lista_cofres[k].columna == j)) {
+						if (tablero.lista_cofres[k].abierto) {
+							printf("\e[30;48;5;52m0\e[0m"); // Cofre abierto
+						} else {
+							printf("\e[30;48;5;52m_\e[0m"); // Cofres cerrado
+						}
+					}
+				}
 			} else if (tablero.mapa[i][j] == '|') {
 				printf("\e[38;5;94m|\e[0m"); // Puertas verticales
 			} else if (tablero.mapa[i][j] == '-') {
 				printf("\e[38;5;94m-\e[0m"); // Puertas horizontales
 			} else if (tablero.mapa[i][j] == 'E') {
-				printf("\e[38;5;196mE\e[0m"); // Enemigos
+				printf("\e[38;5;214mE\e[0m"); // Enemigos
 			} else {
 				printf("%c", tablero.mapa[i][j]); // Otros
 			}		
