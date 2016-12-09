@@ -31,9 +31,14 @@ all: $(DEPEND) $(OBJS) f
 windows: $(DEPEND) $(OBJS) f.exe
 
 doc: $(OBJS)
-	@echo Generating documentation
+	@echo Generating HTML documentation
 	if [ ! -d $(DOC) ] ; then mkdir $(DOC) ; fi
 	ocamldoc -html -d $(DOC) *.ml *.mli
+
+doc-graph: $(OBJS)
+	@echo Generating dependency graph
+	ocamldoc -dot *.ml *.mli
+
 
 # Include an automatically generated list of dependencies between source files
 include .depend
