@@ -4,14 +4,20 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <math.h>
 
+#define pi 3.141592
 /* Constante usada para la animacion de los mensajes por pantalla */
-#define DELAY 50000
+#define DELAY 5
 /* Constantes de direccion */
 #define D_ARRIBA 1
 #define D_ABAJO 2
 #define D_DERECHA 3
 #define D_IZQUIERDA 4
+#define D_ARRIBA_DERECHA 5
+#define D_ABAJO_IZQUIERDA 6
+#define D_ABAJO_DERECHA 7
+#define D_ARRIBA_IZQUIERDA 8
 
 /* Constantes de jugador */
 #define VIDA_JUDADOR 10
@@ -38,6 +44,7 @@ con el de TOTAL_OBJETOS, mas cofre vacios apareceran */
 #define NUM_PUERTAS 3
 #define NUM_ENEMIGOS 7
 #define NUM_COFRES 8
+#define VISIBILIDAD_ENEMIGO 7
 
 /* Estructuras de datos */
 struct objeto {
@@ -154,6 +161,7 @@ int enemigos_cerca();
 void actualiza_enemigo(int, int, int);
 void animacion_por_pantalla(char [], int);
 int mano_ocupada(int);
+void mover_IA();
 
 
 %}
@@ -216,9 +224,11 @@ S : 	LANZAR '\n' {
 		lanzado = 0;
 		ataque = 0;
 		printf("Su turno ha finalizado\n");
-		int enemigos = enemigos_cerca();
+		printf("Turno de los enemigos\n");
+		mover_IA();
+		/*int enemigos = enemigos_cerca();
 		for (int i = 0; i<enemigos; i++)
-			simula_defensa();
+			simula_defensa();*/
 		mostrar_mapa();
 		mostrar_info_jugador(prsj);
 		return 1;	
@@ -324,8 +334,11 @@ int regla_arriba(){
 		printf("Una vez hecho un movimiento de ataque, no puedes moverte hasta el turno siguiente\n");
 	} else{
 		valor_dado -= (arriba + abajo + derecha + izquierda);
+		// Actualizo mapa
+		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = ' ';
 		prsj.pos_fila = posfilasVirtual;
 		prsj.pos_columna = poscolumnasVirtual;
+		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = 'P';
 		if (valor_dado>0) {
 			printf("Puedes seguir moviendote si lo deseas.\
 			\nTe quedan %i movimientos", valor_dado);
@@ -360,8 +373,11 @@ int regla_abajo(){
 		printf("Una vez hecho un movimiento de ataque, no puedes moverte hasta el turno siguiente\n");
 	} else{
 		valor_dado -= (arriba + abajo + derecha + izquierda);
+		// Actualizo mapa
+		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = ' ';
 		prsj.pos_fila = posfilasVirtual;
 		prsj.pos_columna = poscolumnasVirtual;
+		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = 'P';
 		if (valor_dado>0) {
 			printf("Puedes seguir moviendote si lo deseas.\
 			\nTe quedan %i movimientos", valor_dado);
@@ -396,8 +412,11 @@ int regla_der() {
 		printf("Una vez hecho un movimiento de ataque, no puedes moverte hasta el turno siguiente\n");
 	} else{
 		valor_dado -= (arriba + abajo + derecha + izquierda);
+		// Actualizo mapa
+		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = ' ';
 		prsj.pos_fila = posfilasVirtual;
 		prsj.pos_columna = poscolumnasVirtual;
+		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = 'P';
 		if (valor_dado>0) {
 			printf("Puedes seguir moviendote si lo deseas.\
 			\nTe quedan %i movimientos", valor_dado);
@@ -432,8 +451,11 @@ int regla_izq() {
 		printf("Una vez hecho un movimiento de ataque, no puedes moverte hasta el turno siguiente\n");
 	} else{
 		valor_dado -= (arriba + abajo + derecha + izquierda);
+		// Actualizo mapa
+		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = ' ';
 		prsj.pos_fila = posfilasVirtual;
 		prsj.pos_columna = poscolumnasVirtual;
+		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = 'P';
 		if (valor_dado>0) {
 			printf("Puedes seguir moviendote si lo deseas.\
 			\nTe quedan %i movimientos", valor_dado);
@@ -461,8 +483,11 @@ int regla_avanzar() {
 		printf("Una vez hecho un movimiento de ataque, no puedes moverte hasta el turno siguiente\n");
 	} else{
 		valor_dado -= (arriba + abajo + derecha + izquierda);
+		// Actualizo mapa
+		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = ' ';
 		prsj.pos_fila = posfilasVirtual;
 		prsj.pos_columna = poscolumnasVirtual;
+		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = 'P';
 		if (valor_dado>0) {
 			printf("Puedes seguir moviendote si lo deseas.\
 			\nTe quedan %i movimientos", valor_dado);
@@ -1190,6 +1215,9 @@ void inicializar_mapa(){
 	tablero.lista_enemigos[6].columna = 19;
 	tablero.lista_enemigos[6].vida = 20;
 	tablero.lista_enemigos[6].fuerza = 5;
+
+	/* Personaje */
+	tablero.mapa[prsj.pos_fila][prsj.pos_columna] = 'P';
 }
 
 void mostrar_mapa(){
@@ -1198,7 +1226,8 @@ void mostrar_mapa(){
 	for (i = 0;i<FILAS;i++) {
 		printf("\t");
 		for (j = 0;j<COLUMNAS;j++) {
-			if ((i==prsj.pos_fila) && (j==prsj.pos_columna)){
+			//if ((i==prsj.pos_fila) && (j==prsj.pos_columna)){
+			if (tablero.mapa[i][j] == 'P') {
 				printf("\e[1m\e[38;5;208mP\e[0m"); // Personaje
 			} else if (tablero.mapa[i][j] == 'e'){
 				printf ("\e[48;5;235m \e[0m"); // Paredes exter
@@ -1282,6 +1311,204 @@ void animacion_por_pantalla(char cadena[], int delay) {
 void clearScreen() {
   const char* CLEAR_SCREE_ANSI = "\e[1;1H\e[2J";
   write(STDOUT_FILENO,CLEAR_SCREE_ANSI,12);
+}
+
+int calcula_manhattan(int ax, int ay, int bx, int by) {
+	return (abs(ax-bx) + abs(ay-by));
+}
+
+int calcula_orientacion(int ax, int ay, int bx, int by) {
+	if (ax-bx == 0) {
+		if (ay>by) {
+			printf("Moverse hacia la derecha\n");
+			return D_DERECHA;
+		} else {
+			
+			printf("Moverse hacia la izquierda\n");
+			return D_IZQUIERDA;
+		}
+	} else if (ay-by == 0) {
+		if (ax>bx) {
+			printf("Moverse hacia abajo\n");
+			return D_ABAJO;
+		} else {
+			printf("Moverse hacia arriba\n");
+			return D_ARRIBA;
+		}
+	} else {
+		double alfa = atan2((by-ay),(bx-ax)); // Perperndicualr a la direccion entre los dos puntos
+		alfa = alfa * 180/pi;
+		if (alfa<0)
+			alfa += 360;
+		//printf("Alfa: %f\n", alfa);
+		double orientacion = ((int)alfa + 90) % 360;
+		//printf("Orientacion: %f\n", orientacion);
+		if (orientacion>337.5 || orientacion<22.5) {
+			printf("Moverse hacia la derecha\n"); 
+			return D_DERECHA;
+		} else if (orientacion>22.5 && orientacion<67.5) {
+			printf("Moverse hacia arriba a la derecha\n");
+			return D_ARRIBA_DERECHA;
+		} else if (orientacion>67.5 && orientacion<112.5) {
+			printf("Mover hacia arriba\n");
+			return D_ARRIBA;
+		} else if (orientacion>112.5 && orientacion<157.5){
+			printf("Mover hacia arriba a la izquierda\n");
+			return D_ARRIBA_IZQUIERDA;
+		} else if (orientacion>157.5 && orientacion<202.5) {
+			printf("Moverse hacia la izquierda\n");
+			return D_IZQUIERDA;
+		} else if (orientacion>202.5 && orientacion<247.5) {
+			printf("Moverse hacia abajo a la izquierda\n");
+			return D_ABAJO_IZQUIERDA;
+		} else if (orientacion>247.5 && orientacion<292.5) {
+			printf("Moverse hacia abajo\n");
+			return D_ABAJO;
+		} else if (orientacion>292.5 && orientacion<337.5) {
+			printf("Moverse hacia abajo a la derecha\n");
+			return D_ABAJO_DERECHA;
+		}
+	}
+}
+
+
+// Devuleve un 1 si ha conseguido llegar hasta el protagonista o un 0 en caso contrario
+int mover_enemigo(int id_enemigo) {
+	int fin = 0;
+	
+	// Calcular orientacion
+	int orientacion = calcula_orientacion(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[id_enemigo].fila, tablero.lista_enemigos[id_enemigo].columna);
+
+	while (!fin) {
+		
+		//usleep(1000000);
+		//mostrar_mapa();
+		switch (orientacion) {
+			case D_ARRIBA:
+				if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila-1][tablero.lista_enemigos[id_enemigo].columna] == ' ') {
+					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = ' ';
+					tablero.lista_enemigos[id_enemigo].fila--;
+					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = 'E';
+					orientacion = calcula_orientacion(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[id_enemigo].fila, tablero.lista_enemigos[id_enemigo].columna);
+				} else {
+					if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila-1][tablero.lista_enemigos[id_enemigo].columna] == 'P')
+						return 1;
+					fin = 1;
+				}		
+				break;
+			case D_ABAJO:
+				if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila+1][tablero.lista_enemigos[id_enemigo].columna] == ' ') {
+					// Actualiza mapa
+					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = ' ';
+					tablero.lista_enemigos[id_enemigo].fila++;
+					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = 'E';
+					orientacion = calcula_orientacion(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[id_enemigo].fila, tablero.lista_enemigos[id_enemigo].columna);
+				} else {
+					if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila+1][tablero.lista_enemigos[id_enemigo].columna] == 'P') 
+						return 1;
+					fin = 1;
+				}		
+				break;
+			case D_DERECHA:
+				if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna+1] == ' ') {
+					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = ' ';		
+					tablero.lista_enemigos[id_enemigo].columna++;
+					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = 'E';
+					orientacion = calcula_orientacion(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[id_enemigo].fila, tablero.lista_enemigos[id_enemigo].columna);
+				} else {
+					if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna+1] == 'P')
+						return 1;
+					fin = 1;
+				}
+				break;
+			case D_IZQUIERDA:
+				if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna-1] == ' ') {
+					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = ' ';
+					tablero.lista_enemigos[id_enemigo].columna--;
+					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = 'E';
+					orientacion = calcula_orientacion(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[id_enemigo].fila, tablero.lista_enemigos[id_enemigo].columna);
+				} else {
+					if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna-1] == 'P')
+						return 1;
+					fin = 1;
+				}
+				break;
+			case D_ARRIBA_DERECHA:
+				if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila-1][tablero.lista_enemigos[id_enemigo].columna+1] == ' ') {
+					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = ' ';
+					tablero.lista_enemigos[id_enemigo].fila--;
+					tablero.lista_enemigos[id_enemigo].columna++;
+					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = 'E';
+					orientacion = calcula_orientacion(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[id_enemigo].fila, tablero.lista_enemigos[id_enemigo].columna);
+				} else {
+					if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila-1][tablero.lista_enemigos[id_enemigo].columna+1] == 'P')
+						return 1;
+					fin = 1;
+				}
+				break;
+			case D_ARRIBA_IZQUIERDA:
+				if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila-1][tablero.lista_enemigos[id_enemigo].columna-1] == ' ') {
+					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = ' ';
+					tablero.lista_enemigos[id_enemigo].fila--;
+					tablero.lista_enemigos[id_enemigo].columna--;
+					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = 'E';
+					orientacion = calcula_orientacion(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[id_enemigo].fila, tablero.lista_enemigos[id_enemigo].columna);
+				} else {
+					if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila-1][tablero.lista_enemigos[id_enemigo].columna-1] == 'P')
+						return 1;
+					fin = 1;
+				}
+				break;
+			case D_ABAJO_DERECHA:
+				if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila+1][tablero.lista_enemigos[id_enemigo].columna+1] == ' ') {
+					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = ' ';
+					tablero.lista_enemigos[id_enemigo].fila++;
+					tablero.lista_enemigos[id_enemigo].columna++;
+					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = 'E';
+					orientacion = calcula_orientacion(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[id_enemigo].fila, tablero.lista_enemigos[id_enemigo].columna);
+				} else {
+					if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila+1][tablero.lista_enemigos[id_enemigo].columna+1] == 'P')
+						return 1;
+					fin = 1;
+				}
+				break;
+			case D_ABAJO_IZQUIERDA:
+				if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila+1][tablero.lista_enemigos[id_enemigo].columna-1] == ' ') {
+					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = ' ';
+					tablero.lista_enemigos[id_enemigo].fila++;
+					tablero.lista_enemigos[id_enemigo].columna--;
+					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = 'E';
+					orientacion = calcula_orientacion(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[id_enemigo].fila, tablero.lista_enemigos[id_enemigo].columna);
+				} else {
+					if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila+1][tablero.lista_enemigos[id_enemigo].columna-1] == 'P')
+						return 1;
+					fin = 1;
+				}
+				break;
+		}
+	}
+	return 0;
+}
+
+void mover_IA() {
+	int dist_manhattan = 0, orientacion = 0;
+	// Calcular distancia Manhattan de cada enemigo al protagonista
+	for (int i=0;i<NUM_ENEMIGOS;i++) {
+		if (tablero.lista_enemigos[i].vida > 0) {
+			printf("Enemigo %i: fila %i, columna %i \n", i, tablero.lista_enemigos[i].fila, tablero.lista_enemigos[i].columna);
+			dist_manhattan = calcula_manhattan(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[i].fila, tablero.lista_enemigos[i].columna);
+			// Si es 1 el enemigo ataca
+			if (dist_manhattan == 1) {
+				simula_defensa();
+			} else if (dist_manhattan > VISIBILIDAD_ENEMIGO) { // Si es mayor que visibilidad el enemigo no hace nada
+				printf("Enemigo muy lejos\n");
+				continue;
+			} else {	// En caso contrario
+				if (mover_enemigo(i))
+					simula_defensa();
+			}
+		}
+	}
 }
 
 int main(int argc, char *argv[]) {
