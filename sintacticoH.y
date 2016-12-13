@@ -8,7 +8,7 @@
 
 #define pi 3.141592
 /* Constante usada para la animacion de los mensajes por pantalla */
-#define DELAY 5
+#define DELAY 5000
 /* Constantes de direccion */
 #define D_ARRIBA 1
 #define D_ABAJO 2
@@ -168,7 +168,7 @@ void mover_IA();
 %union{
 	int entero;
 }
-%token LANZAR AVANZAR ATACAR EQUIPAR MANOIZQ MANODER ABRIRPUERTA ABRIRCOFRE USAR ESPADA POCION LLAVE ARRIBA ABAJO 
+%token LANZAR AVANZAR ATACAR EQUIPAR TIRAR MANOIZQ MANODER ABRIRPUERTA ABRIRCOFRE USAR ESPADA POCION LLAVE ARRIBA ABAJO 
 DER IZQ EXIT AYUDA INFO REGLAS FINALTURNO
 %token <entero> DIGITO
 %type <entero> movimientos accion direccion objeto
@@ -209,6 +209,15 @@ S : 	LANZAR '\n' {
 	}
 	| EQUIPAR MANODER objeto '\n' {
 		return regla_equipar($3, MANO_DERECHA);
+	}
+	| TIRAR objeto '\n' {
+		// Implementar
+	}
+	| TIRAR objeto MANOIZQ '\n' {
+		// Implementar
+	}
+	| TIRAR objeto MANODER '\n' {
+		// Implementar
 	}
 	| ABRIRPUERTA '\n' {
 		return regla_abrir_puerta();
@@ -937,7 +946,7 @@ void actualiza_enemigo(int fila, int columna, int danho) {
 }
 
 // Devuelve el numero de enemigos que el jugador tiene cerca
-int enemigos_cerca() {
+/*int enemigos_cerca() {
 	int enemigos = 0;
 	for (int i = 0; i<NUM_ENEMIGOS; i++) {
 		if (tablero.lista_enemigos[i].vida>0) { // Si el enemigo esta vivo
@@ -949,7 +958,7 @@ int enemigos_cerca() {
 		}
 	}
 	return enemigos;
-}
+}*/
 
 void simula_defensa() {
 	int ataque = 0, defensa = 0;

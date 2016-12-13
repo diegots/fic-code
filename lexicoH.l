@@ -2,34 +2,36 @@
 #include <stdlib.h>
 #include "sintacticoH.tab.h"
 %}
-lanzar	lanzar|lanzar" "dado?s
-avanzar mover|avanzar
-atacar	atacar
-equipar	equipar
-mano_izq	mano" "izquierda
-mano_der	mano" "derecha
-abrirPuerta	abrir" "puerta
-abrirCofre	abrir" "cofre
-usar	usar
-espada	espada
-pocion	pocion
-llave	llave
+lanzar	(?i:lanzar?(" "([el|los]" ")?dados?)?)
+avanzar (?i:mover|avanzar)
+atacar	(?i:atacar?)
+equipar	(?i:equipar?)
+tirar	(?i:tirar?)
+mano_izq	(?i:mano" "izquierda)
+mano_der	(?i:mano" "derecha)
+abrirPuerta	(?i:abrir" "puerta)
+abrirCofre	(?i:abrir" "cofre)
+usar	(?i:usar?)
+espada	(?i:espada)
+pocion	(?i:pocion)
+llave	(?i:llave|key)
 digito 	[0-9]
-arriba 	arriba|up|"[A"
-abajo 	abajo|down|"[B"
-izq	izquierda|izq|left|"[D"
-der	derecha|der|right|"[C"
-salir	salir|exit|q
-ayuda 	ayuda|help
-info	info
-reglas	reglas|mostrar" "reglas\ver" "reglas
-finTurno	fin" "turno|fin" "de" "turno
+arriba 	(?i:arriba|up|"[A")
+abajo 	(?i:abajo|down|"[B")
+izq	(?i:izquierda|izq|left|"[D")
+der	(?i:derecha|der|right|"[C")
+salir	(?i:salir|exit|q)
+ayuda 	(?i:ayuda|help)
+info	(?i:(ver" ")?info(rmacion)?)
+reglas	(?i:([mostrar|ver]" ")?reglas)
+finTurno	(?i:fin(alizar)?" "(de" ")?turno)
 
 %%
 {lanzar}	{return LANZAR;}
 {avanzar}	{return AVANZAR;}
 {atacar}	{return ATACAR;}
 {equipar}	{return EQUIPAR;}
+{tirar}		{return TIRAR;}
 {mano_izq}	{return MANOIZQ;}
 {mano_der}	{return MANODER;}
 {abrirPuerta}	{return ABRIRPUERTA;}
