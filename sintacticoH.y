@@ -5,95 +5,8 @@
 #include <time.h>
 #include <unistd.h>
 #include <math.h>
-
-#define pi 3.141592
-/* Constante usada para la animacion de los mensajes por pantalla */
-#define DELAY 5000
-/* Constantes de direccion */
-#define D_ARRIBA 1
-#define D_ABAJO 2
-#define D_DERECHA 3
-#define D_IZQUIERDA 4
-#define D_ARRIBA_DERECHA 5
-#define D_ABAJO_IZQUIERDA 6
-#define D_ABAJO_DERECHA 7
-#define D_ARRIBA_IZQUIERDA 8
-
-/* Constantes de jugador */
-#define VIDA_JUDADOR 10
-#define TAM_MOCHILA 5
-#define POSICION_INICIAL_FILA 10
-#define POSICION_INICIAL_COLUMNA 16
-#define MANO_DERECHA 1
-#define MANO_IZQUIERDA 2
-
-/* Constantes de objetos */
-#define OBJ_POCION 1 // Constante para identificar el objeto pocion
-#define VALOR_POCION 20 // Valor de la pocion
-#define OBJ_ESPADA 2 // Constante para identificar el objeto espada
-#define VALOR_ESPADA 3 // Multiplicador de daño de la espada
-#define OBJ_LLAVE 3
-#define TOTAL_OBJETOS 3 // Objetos disponibles en el juego
-#define RATIO_COFRES_VACIOS 0 /* Numero utilizado para la mayor o menor 
-aparicion de objetos vacios, cuando mayor sea la proporcion de este numero 
-con el de TOTAL_OBJETOS, mas cofre vacios apareceran */
-
-/* Constantes de mapa */
-#define FILAS 13
-#define COLUMNAS 22
-#define NUM_PUERTAS 3
-#define NUM_ENEMIGOS 7
-#define NUM_COFRES 8
-#define VISIBILIDAD_ENEMIGO 7
-
-/* Estructuras de datos */
-struct objeto {
-	int tipo;
-	char *nombre;
-	int valor; // En los objetos de lucha funciona como multiplicador o divisor, en pociones como la cantidad de vida a recuperar
-	int durabilidad;
-};
-typedef struct objeto tobjeto;
-
-struct jugador {
-	int pos_fila;
-	int pos_columna;
-	int vida;
-	tobjeto *mano_izquierda;
-	tobjeto *mano_derecha;
-	tobjeto mochila[TAM_MOCHILA];
-};
-typedef struct jugador tjugador;
-
-struct puerta {
-	int fila;
-	int columna;
-	int cerrada;
-};
-typedef struct puerta tpuerta;
-
-struct cofre {
-	int fila;
-	int columna;
-	int abierto;
-};
-typedef struct cofre tcofre;
-
-struct enemigo {
-	int fila;
-	int columna;
-	int vida;
-	int fuerza;
-};
-typedef struct enemigo tenemigo;
-
-struct mapa {
-	char mapa[FILAS][COLUMNAS];
-	tpuerta lista_puertas[NUM_PUERTAS];
-	tcofre lista_cofres[NUM_COFRES];
-	tenemigo lista_enemigos[NUM_ENEMIGOS];
-};
-typedef struct mapa tmapa;
+#include "ia.h"
+#include "cabeceras.h"
 
 /* Variables globales */
 
@@ -127,41 +40,7 @@ tjugador prsj;
 
 /* Cabeceras de funciones */
 void yyerror (char const *);
-// Funciones principales (llamadas desde el cuerpo de la regla)
-// Suelen devolver 1 a no ser que la partida finalice o que sean 
-// funciones utilizar en 'subreglas' cuyo caso no devuelven nada
-int regla_lanzar();
-int regla_arriba();
-int regla_abajo();
-int regla_der();
-int regla_izq();
-int regla_avanzar();
-int regla_atacar(int);
-int regla_equipar(int, int);
-int regla_abrir_puerta();
-int regla_abrir_cofre();
-int regla_usar_objeto(int);
-void regla_espada();
-void regla_pocion();
-void regla_accion(int, int);
-// Funciones auxiliares ( usadas por las principales)
-int get_random_number();
-int get_random_object();
-void mostrar_ayuda();
-void mostrar_reglas();
-void mostrar_info_jugador(tjugador);
-void inicializar_mapa();
-void mostrar_mapa();
-int colision(int, int);
-int puerta_cerrada(int, int);
-int abrir_puerta(int, int);
-void simula_ataque(int, int);
-void simula_defensa();
-int enemigos_cerca();
-void actualiza_enemigo(int, int, int);
-void animacion_por_pantalla(char [], int);
-int mano_ocupada(int);
-void mover_IA();
+
 
 
 %}
@@ -212,12 +91,44 @@ S : 	LANZAR '\n' {
 	}
 	| TIRAR objeto '\n' {
 		// Implementar
+		for (int i=0;i<num_objetos_mochila;i++) {
+			if (prsj.mochila[i].tipo == $2) {
+				// Eliminar de la mochila
+				printf("%s eliminada\n", prsj.mochila[i].nombre);
+				/* En la posicion que ha quedado vacia 
+				colocamos el ultimo objeto de la mochila para 
+				que todos los objetos queden en las primera 
+				posiciones. En el caso de que fuese el ultimo 
+				objeto de la mochila, ya se habria puesto 
+				anteriormente a 0 por lo que no pasa nada, 
+				simplemente se reducen el numero de objetos */
+				prsj.mochila[i] = prsj.mochila[num_objetos_mochila-1];
+					
+				prsj.mochila[num_objetos_mochila-1].tipo = 0;
+				prsj.mochila[num_objetos_mochila-1].nombre = "";
+				prsj.mochila[num_objetos_mochila-1].valor = 0; 
+				num_objetos_mochila--;
+				break;
+			}
+		}
+		return 1;
 	}
 	| TIRAR objeto MANOIZQ '\n' {
 		// Implementar
+		if (prsj.mano_izquierda -> tipo == $2) {
+			free(prsj.mano_izquierda);
+			prsj.mano_izquierda = NULL;
+		}
+		return 1;
 	}
 	| TIRAR objeto MANODER '\n' {
 		// Implementar
+		// Implementar
+		if (prsj.mano_izquierda -> tipo == $2) {
+			free(prsj.mano_izquierda);
+			prsj.mano_izquierda = NULL;
+		}
+		return 1;
 	}
 	| ABRIRPUERTA '\n' {
 		return regla_abrir_puerta();
@@ -232,8 +143,8 @@ S : 	LANZAR '\n' {
 		valor_dado = 0;
 		lanzado = 0;
 		ataque = 0;
-		printf("Su turno ha finalizado\n");
-		printf("Turno de los enemigos\n");
+		animacion_por_pantalla("Su turno ha finalizado\n", DELAY);
+		//printf("Turno de los enemigos\n");
 		mover_IA();
 		/*int enemigos = enemigos_cerca();
 		for (int i = 0; i<enemigos; i++)
@@ -256,7 +167,7 @@ S : 	LANZAR '\n' {
 		return 1;
 	}
 	| EXIT '\n' {
-		printf("¡Hasta pronto!\n");
+		animacion_por_pantalla("¡Hasta pronto!\n", DELAY);
 		return 0;
 	}
 	| error {
@@ -303,7 +214,8 @@ direccion : ARRIBA {
 /* Funciones principales */
 int regla_lanzar(){
 	if (!lanzado){
-		printf("Se lanza el dado\n");
+		animacion_por_pantalla("Se lanza el dado", DELAY);
+		animacion_por_pantalla("...\n", DELAY*8);
 
 		// Generar numero aleatorio entre 1 y 9
 		valor_dado = get_random_number();
@@ -322,7 +234,9 @@ int regla_lanzar(){
 }
 
 int regla_arriba(){
-	if (!haycolision) 
+	regla_accion(1, D_ARRIBA);
+	regla_avanzar();
+	/*if (!haycolision) 
 		haycolision = colision(1, D_ARRIBA);
 
 	if (!haycolision){	
@@ -358,11 +272,13 @@ int regla_arriba(){
 		arriba = abajo = izquierda = derecha = 0;
 	}
 	haycolision = 0; 
-	return 1;
+	return 1;*/
 }
 
 int regla_abajo(){
-	if (!haycolision) 
+	regla_accion(1, D_ABAJO);
+	regla_avanzar();
+	/*if (!haycolision) 
 		haycolision = colision(1,D_ABAJO);
 
 	if (!haycolision){					
@@ -397,11 +313,14 @@ int regla_abajo(){
 		arriba = abajo = izquierda = derecha = 0;
 	}
 	haycolision = 0; 
-	return 1;
+	return 1;*/
 }
 
 int regla_der() {
-	if (!haycolision) 
+	
+	regla_accion(1, D_DERECHA);
+	regla_avanzar();
+	/*if (!haycolision) 
 		haycolision = colision(1,D_DERECHA);
 
 	if (!haycolision){					
@@ -436,11 +355,14 @@ int regla_der() {
 		arriba = abajo = izquierda = derecha = 0;
 	}
 	haycolision = 0; 
-	return 1;
+	return 1;*/
 }
 
 int regla_izq() {
-	if (!haycolision) 
+	
+	regla_accion(1, D_IZQUIERDA);
+	regla_avanzar();
+	/*if (!haycolision) 
 		haycolision = colision(1,D_IZQUIERDA);
 
 	if (!haycolision){					
@@ -475,21 +397,21 @@ int regla_izq() {
 		arriba = abajo = izquierda = derecha = 0;
 	}
 	haycolision = 0; 
-	return 1;
+	return 1;*/
 }
 
 int regla_avanzar() {
 	if (haycolision) {
-		printf("Movimiento erroneo\n");
+		animacion_por_pantalla("Movimiento erroneo\n", DELAY);
 		posfilasVirtual = prsj.pos_fila;
 		poscolumnasVirtual = prsj.pos_columna;
 		arriba = abajo = izquierda = derecha = 0;
 	} else if (arriba+abajo+izquierda+derecha>valor_dado){
-		printf("Movimientos demás!\n");
+		animacion_por_pantalla("Movimientos demás!\n", DELAY);
 		
 		arriba = abajo = izquierda = derecha = 0;			
 	} else if (ataque) {
-		printf("Una vez hecho un movimiento de ataque, no puedes moverte hasta el turno siguiente\n");
+		animacion_por_pantalla("Una vez hecho un movimiento de ataque, no puedes moverte hasta el turno siguiente\n", DELAY);
 	} else{
 		valor_dado -= (arriba + abajo + derecha + izquierda);
 		// Actualizo mapa
@@ -498,8 +420,10 @@ int regla_avanzar() {
 		prsj.pos_columna = poscolumnasVirtual;
 		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = 'P';
 		if (valor_dado>0) {
-			printf("Puedes seguir moviendote si lo deseas.\
+			char cadena[100];
+			sprintf(cadena, "Puedes seguir moviendote si lo deseas.\
 			\nTe quedan %i movimientos", valor_dado);
+			animacion_por_pantalla(cadena, DELAY);
 		}			
 		printf("\n");
 		mostrar_mapa();
@@ -520,7 +444,7 @@ int regla_atacar(int direccion) {
 					// La variable de ataque se pone a 1 para que no se pueda volver a atacar en el mismo turno, pero solo si realmente se ha atacado, si el usuario ataca y no tiene enemigos cerca esta variable no se activa para que pueda atacar de verdad en este mismo turno
 					ataque = 1;
 				} else {
-					printf("No tienes enemigos cerca\n");
+					animacion_por_pantalla("No tienes enemigos cerca\n", DELAY);
 				} 
 				break;
 			case D_ABAJO:					
@@ -528,7 +452,7 @@ int regla_atacar(int direccion) {
 					simula_ataque(prsj.pos_fila+1, prsj.pos_columna);
 					ataque = 1;
 				} else {
-					printf("No tienes enemigos cerca\n");
+					animacion_por_pantalla("No tienes enemigos cerca\n", DELAY);
 				}
 				break;
 			case D_DERECHA:
@@ -536,7 +460,7 @@ int regla_atacar(int direccion) {
 					simula_ataque(prsj.pos_fila, prsj.pos_columna+1);
 					ataque = 1;
 				} else {
-					printf("No tienes enemigos cerca\n");
+					animacion_por_pantalla("No tienes enemigos cerca\n", DELAY);
 				}
 				break;
 			case D_IZQUIERDA:
@@ -544,20 +468,22 @@ int regla_atacar(int direccion) {
 					simula_ataque(prsj.pos_fila, prsj.pos_columna-1);
 					ataque = 1;
 				} else {
-					printf("No tienes enemigos cerca\n");
+					animacion_por_pantalla("No tienes enemigos cerca\n", DELAY);
 				}
 				break;
 		}
 		return 1;
 	} else {
-		printf("Ya ha atacado este turno.\n");
+		animacion_por_pantalla("Ya ha atacado este turno.\n", DELAY);
 	}
 }
 
 int regla_equipar(int tipo_objeto, int mano) {
+	
+	char cadena[100];
 	// Si tenemos la mano ocupada mostrarlo y salir
 	if (mano_ocupada(mano)) {
-		printf("Mano ocupada\n");
+		animacion_por_pantalla("Mano ocupada\n", DELAY);
 		return 1;
 	}
 	// Si no tenemos el objeto igual
@@ -567,7 +493,8 @@ int regla_equipar(int tipo_objeto, int mano) {
 				case OBJ_ESPADA:
 					switch(mano) {
 						case MANO_DERECHA:
-							printf("Equipas tu %s en la mano derecha.\n", prsj.mochila[i].nombre);
+							sprintf(cadena, "Equipas tu %s en la mano derecha.\n", prsj.mochila[i].nombre);
+							animacion_por_pantalla(cadena, DELAY);
 							// Equipas la espada
 							prsj.mano_derecha = (tobjeto*) malloc(sizeof(struct objeto));
 							prsj.mano_derecha -> tipo = prsj.mochila[i].tipo;
@@ -576,7 +503,8 @@ int regla_equipar(int tipo_objeto, int mano) {
 							prsj.mano_derecha -> valor = prsj.mochila[i].valor;
 							break;
 						case MANO_IZQUIERDA:
-							printf("Equipas tu %s en la mano izquierda.\n", prsj.mochila[i].nombre);
+							sprintf(cadena, "Equipas tu %s en la mano izquierda.\n", prsj.mochila[i].nombre);
+							animacion_por_pantalla(cadena, DELAY);
 							// Equipas la espada
 							prsj.mano_izquierda = (tobjeto*) malloc(sizeof(struct objeto));
 							prsj.mano_izquierda -> tipo = prsj.mochila[i].tipo;
@@ -604,11 +532,13 @@ int regla_equipar(int tipo_objeto, int mano) {
 
 
 					break;
-				case OBJ_POCION:
-					printf("No puedes equipar un(a) %s.\n", prsj.mochila[i].nombre);
+				case OBJ_POCION: // estos dos casos podrian aglutinarse en default
+					sprintf(cadena, "No puedes equipar un(a) %s.\n", prsj.mochila[i].nombre);
+					animacion_por_pantalla(cadena, DELAY);
 					break;
 				case OBJ_LLAVE:
-					printf("No puedes equipar un(a) %s.\n", prsj.mochila[i].nombre);
+					sprintf(cadena, "No puedes equipar un(a) %s.\n", prsj.mochila[i].nombre);
+					animacion_por_pantalla(cadena, DELAY);
 					break;
 			}
 		}
@@ -693,7 +623,7 @@ int abre_cofre(int fila, int columna) {
 	for (int i = 0; i<NUM_COFRES; i++) {
 		if ((tablero.lista_cofres[i].fila == fila) && (tablero.lista_cofres[i].columna == columna)) {
 			if (tablero.lista_cofres[i].abierto) {
-				printf("Cofre ya abierto\n");
+				animacion_por_pantalla("Cofre ya abierto\n", DELAY);
 				return 0;
 			} else {
 				tablero.lista_cofres[i].abierto = 1;
@@ -727,8 +657,8 @@ int regla_abrir_cofre() {
 			return 1;		
 		//tablero.mapa[prsj.pos_fila][prsj.pos_columna-1] = ' ';
 	} else { // No tiene un cofre cerca
-		printf("No tiene ningun cofre cerca, y aún no ha\
- desarrollado la telequinesis, hable con Yoda o pruebe a acercarse, lo siento.\n");
+		animacion_por_pantalla("No tiene ningun cofre cerca, y aún no ha\
+ desarrollado la telequinesis, hable con Yoda o pruebe a acercarse, lo siento.\n", DELAY);
 		return 1;
 	}
 
@@ -765,7 +695,7 @@ int regla_abrir_cofre() {
 			break;
 	}
 	
-	// Neceario cuando necesitamos formatear texto
+	// Necesario cuando necesitamos formatear texto
 	char objeto_encontrado[100];
 	sprintf(objeto_encontrado, "Has encontrado un(a) %s!\n", objeto.nombre);
 	animacion_por_pantalla(objeto_encontrado, DELAY);
@@ -776,16 +706,20 @@ int regla_abrir_cofre() {
 }
 
 int regla_usar_objeto(int tipo_objeto) {
+	
+	char cadena[100];
 	for (int i = 0; i<num_objetos_mochila; i++) {
 		if (tipo_objeto == prsj.mochila[i].tipo){
 			switch(tipo_objeto) {
 				case OBJ_ESPADA:
-					printf("La %s no tiene ninguna utilidad por si sola.", prsj.mochila[i].nombre);
+					sprintf(cadena, "La %s no tiene ninguna utilidad por si sola.", prsj.mochila[i].nombre);
+					animacion_por_pantalla(cadena, DELAY);
 					return 1;
 					break;
 				case OBJ_POCION:
-					printf("Bebes la %s y recuperas %i de \
-vida.\n", prsj.mochila[i].nombre, prsj.mochila[i].valor);
+					sprintf(cadena, "Bebes la %s y recuperas %i de \
+					vida.\n", prsj.mochila[i].nombre, prsj.mochila[i].valor);
+					animacion_por_pantalla(cadena, DELAY);
 					prsj.vida += prsj.mochila[i].valor;
 					break;
 				case OBJ_LLAVE:
@@ -799,14 +733,15 @@ vida.\n", prsj.mochila[i].nombre, prsj.mochila[i].valor);
 					}else if (tablero.mapa[prsj.pos_fila][prsj.pos_columna-1] == '|') {		
 						abrir_puerta(prsj.pos_fila, prsj.pos_columna-1);
 					} else { // No tiene una puerta cerca
-						printf("No tiene ninguna puerta cerca, y aún no ha\
-desarrollado la telequinesis, hable con Yoda o pruebe a acercarse, lo siento.\n");
+						animacion_por_pantalla("No tiene ninguna puerta cerca, y aún no ha\
+desarrollado la telequinesis, hable con Yoda o pruebe a acercarse, lo siento.\n", DELAY);
 						return 1;
 					}
 					animacion_por_pantalla("Has abierto la puerta\n", DELAY);
 			}
-			if (!(--prsj.mochila[i].durabilidad)){ //Cada vez que se usa el objeto pierde 1 de durabilidad, si esta llega a 0 el objeto se pierde	
-				printf("%s gastada\n", prsj.mochila[i].nombre);
+			if (!(--prsj.mochila[i].durabilidad)){ //Cada vez que se usa el objeto pierde 1 de durabilidad, si esta llega a 0 el objeto se pierde
+				sprintf(cadena, "%s gastada\n", prsj.mochila[i].nombre);
+				animacion_por_pantalla(cadena, DELAY);
 				/* En la posicion que ha quedado vacia 
 				colocamos el ultimo objeto de la mochila para 
 				que todos los objetos queden en las primera 
@@ -914,20 +849,25 @@ void simula_ataque(int pos_fila_enemigo, int pos_columna_enemigo) {
 			if (prsj.mano_izquierda -> durabilidad == 0)
 				izquierda_roto = 1;
 		}
-		
-		printf("Acierto! El enemigo recibe %i de daño.\n", danho);
+		char cadena[100];
+		sprintf(cadena, "Acierto! El enemigo recibe %i de daño.\n", danho);
+		animacion_por_pantalla(cadena, DELAY);
 		actualiza_enemigo(pos_fila_enemigo, pos_columna_enemigo, danho);
 	} else {
-		printf("Fallo!\n");
+		animacion_por_pantalla("Fallo!\n", DELAY);
 	}
 	if (derecha_roto) {
-		printf("La %s se ha roto", prsj.mano_derecha -> nombre);
+		char cadena[100];
+		sprintf(cadena, "La %s se ha roto\n", prsj.mano_derecha -> nombre);
+		animacion_por_pantalla(cadena, DELAY);
 		free(prsj.mano_derecha);
 		prsj.mano_derecha = NULL;
 	}
 	
 	if (izquierda_roto) {
-		printf("La %s se ha roto", prsj.mano_izquierda -> nombre);
+		char cadena[100];
+		sprintf(cadena, "La %s se ha roto\n", prsj.mano_izquierda -> nombre);
+		animacion_por_pantalla(cadena, DELAY);
 		free(prsj.mano_izquierda);
 		prsj.mano_izquierda = NULL;
 	}
@@ -938,7 +878,7 @@ void actualiza_enemigo(int fila, int columna, int danho) {
 		if (tablero.lista_enemigos[i].fila == fila && tablero.lista_enemigos[i].columna == columna) {
 			tablero.lista_enemigos[i].vida -= danho;
 			if (tablero.lista_enemigos[i].vida <= 0) {
-				printf("Enemigo eliminado\n");
+				animacion_por_pantalla("Enemigo eliminado\n", DELAY); // FALLO
 				tablero.mapa[fila][columna] = ' ';
 			}
 		}
@@ -975,10 +915,12 @@ void simula_defensa() {
 	// Actualizamos info de jugador y enemigo si es oportuno
 	if (ataque>defensa) {
 		int danho = (ataque - defensa);
-		printf("Recibes %i de daño.\n", danho);
+		char cadena[100];
+		sprintf(cadena, "Recibes %i de daño.\n", danho);
+		animacion_por_pantalla(cadena, DELAY);
 		prsj.vida -= danho;
 	} else {
-		printf("Has detenido el ataque!\n");
+		animacion_por_pantalla("Has detenido el ataque!\n", DELAY);
 	}
 	printf("\n");
 }
@@ -1230,7 +1172,7 @@ void inicializar_mapa(){
 }
 
 void mostrar_mapa(){
-	printf("Tu Mapa:\n");
+	animacion_por_pantalla("Tu Mapa:\n", DELAY);
         int i,j;
 	for (i = 0;i<FILAS;i++) {
 		printf("\t");
@@ -1329,19 +1271,19 @@ int calcula_manhattan(int ax, int ay, int bx, int by) {
 int calcula_orientacion(int ax, int ay, int bx, int by) {
 	if (ax-bx == 0) {
 		if (ay>by) {
-			printf("Moverse hacia la derecha\n");
+			//printf("Moverse hacia la derecha\n");
 			return D_DERECHA;
 		} else {
 			
-			printf("Moverse hacia la izquierda\n");
+			//printf("Moverse hacia la izquierda\n");
 			return D_IZQUIERDA;
 		}
 	} else if (ay-by == 0) {
 		if (ax>bx) {
-			printf("Moverse hacia abajo\n");
+			//printf("Moverse hacia abajo\n");
 			return D_ABAJO;
 		} else {
-			printf("Moverse hacia arriba\n");
+			//printf("Moverse hacia arriba\n");
 			return D_ARRIBA;
 		}
 	} else {
@@ -1353,28 +1295,28 @@ int calcula_orientacion(int ax, int ay, int bx, int by) {
 		double orientacion = ((int)alfa + 90) % 360;
 		//printf("Orientacion: %f\n", orientacion);
 		if (orientacion>337.5 || orientacion<22.5) {
-			printf("Moverse hacia la derecha\n"); 
+			//printf("Moverse hacia la derecha\n"); 
 			return D_DERECHA;
 		} else if (orientacion>22.5 && orientacion<67.5) {
-			printf("Moverse hacia arriba a la derecha\n");
+			//printf("Moverse hacia arriba a la derecha\n");
 			return D_ARRIBA_DERECHA;
 		} else if (orientacion>67.5 && orientacion<112.5) {
-			printf("Mover hacia arriba\n");
+			//printf("Mover hacia arriba\n");
 			return D_ARRIBA;
 		} else if (orientacion>112.5 && orientacion<157.5){
-			printf("Mover hacia arriba a la izquierda\n");
+			//printf("Mover hacia arriba a la izquierda\n");
 			return D_ARRIBA_IZQUIERDA;
 		} else if (orientacion>157.5 && orientacion<202.5) {
-			printf("Moverse hacia la izquierda\n");
+			//printf("Moverse hacia la izquierda\n");
 			return D_IZQUIERDA;
 		} else if (orientacion>202.5 && orientacion<247.5) {
-			printf("Moverse hacia abajo a la izquierda\n");
+			//printf("Moverse hacia abajo a la izquierda\n");
 			return D_ABAJO_IZQUIERDA;
 		} else if (orientacion>247.5 && orientacion<292.5) {
-			printf("Moverse hacia abajo\n");
+			//printf("Moverse hacia abajo\n");
 			return D_ABAJO;
 		} else if (orientacion>292.5 && orientacion<337.5) {
-			printf("Moverse hacia abajo a la derecha\n");
+			//printf("Moverse hacia abajo a la derecha\n");
 			return D_ABAJO_DERECHA;
 		}
 	}
@@ -1504,13 +1446,13 @@ void mover_IA() {
 	// Calcular distancia Manhattan de cada enemigo al protagonista
 	for (int i=0;i<NUM_ENEMIGOS;i++) {
 		if (tablero.lista_enemigos[i].vida > 0) {
-			printf("Enemigo %i: fila %i, columna %i \n", i, tablero.lista_enemigos[i].fila, tablero.lista_enemigos[i].columna);
+			//printf("Enemigo %i: fila %i, columna %i \n", i, tablero.lista_enemigos[i].fila, tablero.lista_enemigos[i].columna);
 			dist_manhattan = calcula_manhattan(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[i].fila, tablero.lista_enemigos[i].columna);
 			// Si es 1 el enemigo ataca
 			if (dist_manhattan == 1) {
 				simula_defensa();
 			} else if (dist_manhattan > VISIBILIDAD_ENEMIGO) { // Si es mayor que visibilidad el enemigo no hace nada
-				printf("Enemigo muy lejos\n");
+				//printf("Enemigo muy lejos\n");
 				continue;
 			} else {	// En caso contrario
 				if (mover_enemigo(i))
