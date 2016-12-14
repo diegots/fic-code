@@ -16,6 +16,7 @@
 # These are the object files needed to rebuild the main executable file
 #
 OBJS = support.cmo syntax.cmo core.cmo parser.cmo lexer.cmo main.cmo
+TLOBJS = support.cmo syntax.cmo core.cmo parser.cmo lexer.cmo toplevel.cmo
 
 # Files that need to be generated from other files
 DEPEND += lexer.ml parser.ml 
@@ -43,10 +44,15 @@ doc-graph: $(OBJS)
 # Include an automatically generated list of dependencies between source files
 include .depend
 
+# Build toplevel typechecker
+tl: $(OBJS) toplevel.cmo
+	@echo Linking $@
+	ocamlc -annot -o $@ $(COMMONOBJS) $(TLOBJS) 
+
 # Build an executable typechecker
 f: $(OBJS) main.cmo 
 	@echo Linking $@
-	ocamlc -o $@ $(COMMONOBJS) $(OBJS) 
+	ocamlc -annot -o $@ $(COMMONOBJS) $(OBJS) 
 
 # Build an executable typechecker for Windows
 f.exe: $(OBJS) main.cmo 
@@ -59,11 +65,11 @@ test: all
 
 # Compile an ML module interface
 %.cmi : %.mli
-	ocamlc -c $<
+	ocamlc -annot -c $<
 
 # Compile an ML module implementation
 %.cmo : %.ml
-	ocamlc -c $<
+	ocamlc -annot -c $<
 
 # Generate ML files from a parser definition file
 parser.ml parser.mli: parser.mly
