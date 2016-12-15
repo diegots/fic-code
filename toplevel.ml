@@ -38,13 +38,6 @@ let welcome_msg =
 "Welcome, this is a lambda-calculus toplevel interpreter based on Benjamin C.\n\
 Pierce implementations available at https://www.cis.upenn.edu/~bcpierce/tapl/\n"
 
-(* Write result to a file *)
-(*
-let string_to_file s file =
-    let oc = open_out_gen [Open_creat; Open_text; Open_append] 0o640 file in
-        Printf.fprintf oc "%s" (s ^ "\n");
-            close_out oc *)
-
 (*let context = ref (emptycontext)*)
 let context = ref emptycontext
 
@@ -57,11 +50,12 @@ let main () =
         print_string prompt;
         let line = read_line () in 
         if String.length line = 0 then print_string "" (* Nothing got read *)
-        (*else begin print_endline ("Done: " ^ line) end*) (* Returns System.context *)
         else begin 
             match line with 
               "exit" -> raise End_of_file
-            | _ -> context := process_line line !context; () (* Returns System.context *)
+            | _ -> 
+                try context := process_line line !context; () with (* process_line eeturns System.context *)
+                Support.Error.Exit _ -> ()
         end 
     done; end
     with End_of_file -> print_endline "Goodbye!";; 
