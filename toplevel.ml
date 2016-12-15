@@ -59,7 +59,9 @@ let main () =
         if String.length line = 0 then print_string "" (* Nothing got read *)
         (*else begin print_endline ("Done: " ^ line) end*) (* Returns System.context *)
         else begin 
-            context := process_line line !context; () (* Returns System.context *)
+            match line with 
+              "exit" -> raise End_of_file
+            | _ -> context := process_line line !context; () (* Returns System.context *)
         end 
     done; end
     with End_of_file -> print_endline "Goodbye!";; 

@@ -45,14 +45,14 @@ doc-graph: $(OBJS)
 include .depend
 
 # Build toplevel typechecker
-tl: $(OBJS) toplevel.cmo
+toplevel: $(OBJS) toplevel.cmo
 	@echo Linking $@
-	ocamlc -annot -o $@ $(COMMONOBJS) $(TLOBJS) 
+	ocamlc -o $@ $(COMMONOBJS) $(TLOBJS) 
 
 # Build an executable typechecker
 f: $(OBJS) main.cmo 
 	@echo Linking $@
-	ocamlc -annot -o $@ $(COMMONOBJS) $(OBJS) 
+	ocamlc -o $@ $(COMMONOBJS) $(OBJS) 
 
 # Build an executable typechecker for Windows
 f.exe: $(OBJS) main.cmo 
@@ -65,11 +65,11 @@ test: all
 
 # Compile an ML module interface
 %.cmi : %.mli
-	ocamlc -annot -c $<
+	ocamlc -c $<
 
 # Compile an ML module implementation
 %.cmo : %.ml
-	ocamlc -annot -c $<
+	ocamlc -c $<
 
 # Generate ML files from a parser definition file
 parser.ml parser.mli: parser.mly
@@ -87,7 +87,7 @@ parser.ml parser.mli: parser.mly
 clean::
 	if [ -d $(DOC) ] ; then rm -rf $(DOC)/* ; fi
 	rm -rf lexer.ml parser.ml parser.mli *.o *.cmo *.cmi parser.output \
-	   f f.exe TAGS *~ *.bak
+	   f f.exe toplevel TAGS *~ *.bak
 
 # Rebuild intermodule dependencies
 depend:: $(DEPEND) 
