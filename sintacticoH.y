@@ -5,13 +5,15 @@
 #include <time.h>
 #include <unistd.h>
 #include <math.h>
-#include "ia.h"
 #include "cabeceras.h"
+
 
 /* Variables globales */
 
 // Mapa
-tmapa tablero;
+tmapa *tablero;
+tpuerta *puerta_salida;
+int FILAS, COLUMNAS, NUM_PUERTAS, NUM_ENEMIGOS, NUM_COFRES;
 
 // Numero de objetos en la mochila
 int num_objetos_mochila = 0;
@@ -36,7 +38,7 @@ int posfilasVirtual,poscolumnasVirtual = 0;
 // Entero utilizado para marcar si se ha producido una colision
 int haycolision = 0;
 // Personaje
-tjugador prsj;
+tjugador *prsj;
 
 /* Cabeceras de funciones */
 void yyerror (char const *);
@@ -92,9 +94,9 @@ S : 	LANZAR '\n' {
 	| TIRAR objeto '\n' {
 		// Implementar
 		for (int i=0;i<num_objetos_mochila;i++) {
-			if (prsj.mochila[i].tipo == $2) {
+			if (prsj->mochila[i].tipo == $2) {
 				// Eliminar de la mochila
-				printf("%s eliminada\n", prsj.mochila[i].nombre);
+				printf("%s eliminada\n", prsj->mochila[i].nombre);
 				/* En la posicion que ha quedado vacia 
 				colocamos el ultimo objeto de la mochila para 
 				que todos los objetos queden en las primera 
@@ -102,11 +104,11 @@ S : 	LANZAR '\n' {
 				objeto de la mochila, ya se habria puesto 
 				anteriormente a 0 por lo que no pasa nada, 
 				simplemente se reducen el numero de objetos */
-				prsj.mochila[i] = prsj.mochila[num_objetos_mochila-1];
+				prsj->mochila[i] = prsj->mochila[num_objetos_mochila-1];
 					
-				prsj.mochila[num_objetos_mochila-1].tipo = 0;
-				prsj.mochila[num_objetos_mochila-1].nombre = "";
-				prsj.mochila[num_objetos_mochila-1].valor = 0; 
+				prsj->mochila[num_objetos_mochila-1].tipo = 0;
+				prsj->mochila[num_objetos_mochila-1].nombre = "";
+				prsj->mochila[num_objetos_mochila-1].valor = 0; 
 				num_objetos_mochila--;
 				break;
 			}
@@ -115,18 +117,17 @@ S : 	LANZAR '\n' {
 	}
 	| TIRAR objeto MANOIZQ '\n' {
 		// Implementar
-		if (prsj.mano_izquierda -> tipo == $2) {
-			free(prsj.mano_izquierda);
-			prsj.mano_izquierda = NULL;
+		if (prsj->mano_izquierda -> tipo == $2) {
+			free(prsj->mano_izquierda);
+			prsj->mano_izquierda = NULL;
 		}
 		return 1;
 	}
 	| TIRAR objeto MANODER '\n' {
 		// Implementar
-		// Implementar
-		if (prsj.mano_izquierda -> tipo == $2) {
-			free(prsj.mano_izquierda);
-			prsj.mano_izquierda = NULL;
+		if (prsj->mano_izquierda -> tipo == $2) {
+			free(prsj->mano_izquierda);
+			prsj->mano_izquierda = NULL;
 		}
 		return 1;
 	}
@@ -140,26 +141,16 @@ S : 	LANZAR '\n' {
 		return regla_usar_objeto($2);
 	}
 	| FINALTURNO '\n' {
-		valor_dado = 0;
-		lanzado = 0;
-		ataque = 0;
-		animacion_por_pantalla("Su turno ha finalizado\n", DELAY);
-		//printf("Turno de los enemigos\n");
-		mover_IA();
-		/*int enemigos = enemigos_cerca();
-		for (int i = 0; i<enemigos; i++)
-			simula_defensa();*/
-		mostrar_mapa();
-		mostrar_info_jugador(prsj);
-		return 1;	
+		return regla_fin_turno();
 	}
 	| AYUDA '\n'{
 		mostrar_ayuda();
 		return 1;
 	}
-	| INFO '\n' {
-		mostrar_info_jugador(prsj);
-		mostrar_mapa();
+	| INFO '\n' {		
+		clearScreen();
+		mostrar_mapa(*tablero);
+		mostrar_info_jugador(*prsj);
 		return 1;
 	}
 	| REGLAS '\n' {
@@ -170,7 +161,13 @@ S : 	LANZAR '\n' {
 		animacion_por_pantalla("¡Hasta pronto!\n", DELAY);
 		return 0;
 	}
-	| error {
+	| error '\n' {
+		yyerror("Comando desconocido");
+		yyclearin;
+		mostrar_ayuda(); 
+		return 1;
+	}
+	| error direccion '\n' {
 		yyerror("Comando desconocido");
 		yyclearin;
 		mostrar_ayuda(); 
@@ -220,15 +217,18 @@ int regla_lanzar(){
 		// Generar numero aleatorio entre 1 y 9
 		valor_dado = get_random_number();
 
-		printf("Has sacado un %i.", valor_dado);
+		
+		char cadena[100];
+		sprintf(cadena, "Has sacado un %i.", valor_dado);
+		animacion_por_pantalla(cadena, DELAY);
 		lanzado = 1;
 
 		// Se actualiza la posicion virtual
-		posfilasVirtual = prsj.pos_fila;
-		poscolumnasVirtual = prsj.pos_columna;
+		posfilasVirtual = prsj->pos_fila;
+		poscolumnasVirtual = prsj->pos_columna;
 
 	} else {
-		yyerror("Ya has lanzado el dado, mueve al personaje.");		
+		animacion_por_pantalla("Ya has lanzado el dado, mueve al personaje.", DELAY);		
 	}		
 	return 1;
 }
@@ -236,176 +236,34 @@ int regla_lanzar(){
 int regla_arriba(){
 	regla_accion(1, D_ARRIBA);
 	regla_avanzar();
-	/*if (!haycolision) 
-		haycolision = colision(1, D_ARRIBA);
-
-	if (!haycolision){	
-		arriba += 1;
-		posfilasVirtual -= 1; 
-			
-	}
-	if (haycolision) {
-		printf("Movimiento erroneo\n");
-		posfilasVirtual = prsj.pos_fila;
-		poscolumnasVirtual = prsj.pos_columna;
-		arriba = abajo = izquierda = derecha = 0;
-	} else if (arriba+abajo+izquierda+derecha>valor_dado){
-		printf("Movimientos demás!\n");
-		
-		arriba = abajo = izquierda = derecha = 0;			
-	} else if (ataque) {
-		printf("Una vez hecho un movimiento de ataque, no puedes moverte hasta el turno siguiente\n");
-	} else{
-		valor_dado -= (arriba + abajo + derecha + izquierda);
-		// Actualizo mapa
-		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = ' ';
-		prsj.pos_fila = posfilasVirtual;
-		prsj.pos_columna = poscolumnasVirtual;
-		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = 'P';
-		if (valor_dado>0) {
-			printf("Puedes seguir moviendote si lo deseas.\
-			\nTe quedan %i movimientos", valor_dado);
-		}			
-		printf("\n");
-		mostrar_mapa();
-		
-		arriba = abajo = izquierda = derecha = 0;
-	}
-	haycolision = 0; 
-	return 1;*/
 }
 
 int regla_abajo(){
 	regla_accion(1, D_ABAJO);
 	regla_avanzar();
-	/*if (!haycolision) 
-		haycolision = colision(1,D_ABAJO);
-
-	if (!haycolision){					
-		abajo += 1;
-		posfilasVirtual += 1;
-	}
-	if (haycolision) {
-		printf("Movimiento erroneo\n");
-		posfilasVirtual = prsj.pos_fila;
-		poscolumnasVirtual = prsj.pos_columna;
-		arriba = abajo = izquierda = derecha = 0;
-	}else if (arriba+abajo+izquierda+derecha>valor_dado){
-		printf("Movimientos demás!\n");
-		
-		arriba = abajo = izquierda = derecha = 0;			
-	} else if (ataque) {
-		printf("Una vez hecho un movimiento de ataque, no puedes moverte hasta el turno siguiente\n");
-	} else{
-		valor_dado -= (arriba + abajo + derecha + izquierda);
-		// Actualizo mapa
-		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = ' ';
-		prsj.pos_fila = posfilasVirtual;
-		prsj.pos_columna = poscolumnasVirtual;
-		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = 'P';
-		if (valor_dado>0) {
-			printf("Puedes seguir moviendote si lo deseas.\
-			\nTe quedan %i movimientos", valor_dado);
-		}			
-		printf("\n");
-		mostrar_mapa();
-		
-		arriba = abajo = izquierda = derecha = 0;
-	}
-	haycolision = 0; 
-	return 1;*/
 }
 
 int regla_der() {
 	
 	regla_accion(1, D_DERECHA);
 	regla_avanzar();
-	/*if (!haycolision) 
-		haycolision = colision(1,D_DERECHA);
-
-	if (!haycolision){					
-		derecha += 1;
-		poscolumnasVirtual += 1;
-	}
-	if (haycolision) {
-		printf("Movimiento erroneo\n");
-		posfilasVirtual = prsj.pos_fila;
-		poscolumnasVirtual = prsj.pos_columna;
-		arriba = abajo = izquierda = derecha = 0;
-	} else if (arriba+abajo+izquierda+derecha>valor_dado){
-		printf("Movimientos demás!\n");
-		
-		arriba = abajo = izquierda = derecha = 0;			
-	} else if (ataque) {
-		printf("Una vez hecho un movimiento de ataque, no puedes moverte hasta el turno siguiente\n");
-	} else{
-		valor_dado -= (arriba + abajo + derecha + izquierda);
-		// Actualizo mapa
-		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = ' ';
-		prsj.pos_fila = posfilasVirtual;
-		prsj.pos_columna = poscolumnasVirtual;
-		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = 'P';
-		if (valor_dado>0) {
-			printf("Puedes seguir moviendote si lo deseas.\
-			\nTe quedan %i movimientos", valor_dado);
-		}			
-		printf("\n");
-		mostrar_mapa();
-		
-		arriba = abajo = izquierda = derecha = 0;
-	}
-	haycolision = 0; 
-	return 1;*/
 }
 
 int regla_izq() {
 	
 	regla_accion(1, D_IZQUIERDA);
 	regla_avanzar();
-	/*if (!haycolision) 
-		haycolision = colision(1,D_IZQUIERDA);
-
-	if (!haycolision){					
-		izquierda += 1;
-		poscolumnasVirtual -= 1;
-	}
-	if (haycolision) {
-		printf("Movimiento erroneo\n");
-		posfilasVirtual = prsj.pos_fila;
-		poscolumnasVirtual = prsj.pos_columna;
-		arriba = abajo = izquierda = derecha = 0;
-	} else if (arriba+abajo+izquierda+derecha>valor_dado){
-		printf("Movimientos demás!\n");
-		
-		arriba = abajo = izquierda = derecha = 0;			
-	} else if (ataque) {
-		printf("Una vez hecho un movimiento de ataque, no puedes moverte hasta el turno siguiente\n");
-	} else{
-		valor_dado -= (arriba + abajo + derecha + izquierda);
-		// Actualizo mapa
-		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = ' ';
-		prsj.pos_fila = posfilasVirtual;
-		prsj.pos_columna = poscolumnasVirtual;
-		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = 'P';
-		if (valor_dado>0) {
-			printf("Puedes seguir moviendote si lo deseas.\
-			\nTe quedan %i movimientos", valor_dado);
-		}			
-		printf("\n");
-		mostrar_mapa();
-		
-		arriba = abajo = izquierda = derecha = 0;
-	}
-	haycolision = 0; 
-	return 1;*/
 }
 
-int regla_avanzar() {
+int regla_avanzar() {		
+	clearScreen();
 	if (haycolision) {
-		animacion_por_pantalla("Movimiento erroneo\n", DELAY);
-		posfilasVirtual = prsj.pos_fila;
-		poscolumnasVirtual = prsj.pos_columna;
+		animacion_por_pantalla("No puedes hacer ese movimiento.\n", DELAY);
+		posfilasVirtual = prsj->pos_fila;
+		poscolumnasVirtual = prsj->pos_columna;
 		arriba = abajo = izquierda = derecha = 0;
+	} else if (!lanzado){
+		animacion_por_pantalla("Aún no has lanzado el dado.\n", DELAY);
 	} else if (arriba+abajo+izquierda+derecha>valor_dado){
 		animacion_por_pantalla("Movimientos demás!\n", DELAY);
 		
@@ -415,32 +273,40 @@ int regla_avanzar() {
 	} else{
 		valor_dado -= (arriba + abajo + derecha + izquierda);
 		// Actualizo mapa
-		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = ' ';
-		prsj.pos_fila = posfilasVirtual;
-		prsj.pos_columna = poscolumnasVirtual;
-		tablero.mapa[prsj.pos_fila][prsj.pos_columna] = 'P';
+		tablero->mapa[prsj->pos_fila][prsj->pos_columna] = ' ';
+		prsj->pos_fila = posfilasVirtual;
+		prsj->pos_columna = poscolumnasVirtual;
+		tablero->mapa[prsj->pos_fila][prsj->pos_columna] = 'P';
 		if (valor_dado>0) {
 			char cadena[100];
-			sprintf(cadena, "Puedes seguir moviendote si lo deseas.\
-			\nTe quedan %i movimientos", valor_dado);
+			if (valor_dado==1) {
+				sprintf(cadena, "Puedes seguir moviendote si lo deseas.\
+				\nTe queda %i movimiento", valor_dado);
+			} else {
+				sprintf(cadena, "Puedes seguir moviendote si lo deseas.\
+				\nTe quedan %i movimientos", valor_dado);
+			}
 			animacion_por_pantalla(cadena, DELAY);
-		}			
-		printf("\n");
-		mostrar_mapa();
+		} else {
+			animacion_por_pantalla("No te quedan más movimientos\n", DELAY);
+		}
 		
 		arriba = abajo = izquierda = derecha = 0;
-	}
+	}			
+	printf("\n");
+	mostrar_mapa(*tablero);
 	haycolision = 0; 
 	return 1;
 }
 
 int regla_atacar(int direccion) {
 	if (!ataque) {
-		animacion_por_pantalla("Atacando...\n", DELAY);
+		animacion_por_pantalla("Atacando", DELAY);
+		animacion_por_pantalla("...\n", DELAY*8);
 		switch (direccion){
 			case D_ARRIBA:		
-				if (tablero.mapa[prsj.pos_fila-1][prsj.pos_columna] == 'E'){
-					simula_ataque(prsj.pos_fila-1, prsj.pos_columna);
+				if (tablero->mapa[prsj->pos_fila-1][prsj->pos_columna] == 'E'){
+					simula_ataque(prsj->pos_fila-1, prsj->pos_columna);
 					// La variable de ataque se pone a 1 para que no se pueda volver a atacar en el mismo turno, pero solo si realmente se ha atacado, si el usuario ataca y no tiene enemigos cerca esta variable no se activa para que pueda atacar de verdad en este mismo turno
 					ataque = 1;
 				} else {
@@ -448,24 +314,24 @@ int regla_atacar(int direccion) {
 				} 
 				break;
 			case D_ABAJO:					
-				if (tablero.mapa[prsj.pos_fila+1][prsj.pos_columna] == 'E'){
-					simula_ataque(prsj.pos_fila+1, prsj.pos_columna);
+				if (tablero->mapa[prsj->pos_fila+1][prsj->pos_columna] == 'E'){
+					simula_ataque(prsj->pos_fila+1, prsj->pos_columna);
 					ataque = 1;
 				} else {
 					animacion_por_pantalla("No tienes enemigos cerca\n", DELAY);
 				}
 				break;
 			case D_DERECHA:
-				if (tablero.mapa[prsj.pos_fila][prsj.pos_columna+1] == 'E'){
-					simula_ataque(prsj.pos_fila, prsj.pos_columna+1);
+				if (tablero->mapa[prsj->pos_fila][prsj->pos_columna+1] == 'E'){
+					simula_ataque(prsj->pos_fila, prsj->pos_columna+1);
 					ataque = 1;
 				} else {
 					animacion_por_pantalla("No tienes enemigos cerca\n", DELAY);
 				}
 				break;
 			case D_IZQUIERDA:
-				if (tablero.mapa[prsj.pos_fila][prsj.pos_columna-1] == 'E'){
-					simula_ataque(prsj.pos_fila, prsj.pos_columna-1);
+				if (tablero->mapa[prsj->pos_fila][prsj->pos_columna-1] == 'E'){
+					simula_ataque(prsj->pos_fila, prsj->pos_columna-1);
 					ataque = 1;
 				} else {
 					animacion_por_pantalla("No tienes enemigos cerca\n", DELAY);
@@ -488,29 +354,29 @@ int regla_equipar(int tipo_objeto, int mano) {
 	}
 	// Si no tenemos el objeto igual
 	for (int i = 0; i<num_objetos_mochila; i++) {
-		if (tipo_objeto == prsj.mochila[i].tipo){
+		if (tipo_objeto == prsj->mochila[i].tipo){
 			switch(tipo_objeto) {
 				case OBJ_ESPADA:
 					switch(mano) {
 						case MANO_DERECHA:
-							sprintf(cadena, "Equipas tu %s en la mano derecha.\n", prsj.mochila[i].nombre);
+							sprintf(cadena, "Equipas tu %s en la mano derecha.\n", prsj->mochila[i].nombre);
 							animacion_por_pantalla(cadena, DELAY);
 							// Equipas la espada
-							prsj.mano_derecha = (tobjeto*) malloc(sizeof(struct objeto));
-							prsj.mano_derecha -> tipo = prsj.mochila[i].tipo;
-							prsj.mano_derecha -> nombre = prsj.mochila[i].nombre;
-							prsj.mano_derecha -> durabilidad = prsj.mochila[i].durabilidad;
-							prsj.mano_derecha -> valor = prsj.mochila[i].valor;
+							prsj->mano_derecha = (tobjeto*) malloc(sizeof(struct objeto));
+							prsj->mano_derecha -> tipo = prsj->mochila[i].tipo;
+							prsj->mano_derecha -> nombre = prsj->mochila[i].nombre;
+							prsj->mano_derecha -> durabilidad = prsj->mochila[i].durabilidad;
+							prsj->mano_derecha -> valor = prsj->mochila[i].valor;
 							break;
 						case MANO_IZQUIERDA:
-							sprintf(cadena, "Equipas tu %s en la mano izquierda.\n", prsj.mochila[i].nombre);
+							sprintf(cadena, "Equipas tu %s en la mano izquierda.\n", prsj->mochila[i].nombre);
 							animacion_por_pantalla(cadena, DELAY);
 							// Equipas la espada
-							prsj.mano_izquierda = (tobjeto*) malloc(sizeof(struct objeto));
-							prsj.mano_izquierda -> tipo = prsj.mochila[i].tipo;
-							prsj.mano_izquierda -> nombre = prsj.mochila[i].nombre;
-							prsj.mano_izquierda -> durabilidad = prsj.mochila[i].durabilidad;
-							prsj.mano_izquierda -> valor = prsj.mochila[i].valor;
+							prsj->mano_izquierda = (tobjeto*) malloc(sizeof(struct objeto));
+							prsj->mano_izquierda -> tipo = prsj->mochila[i].tipo;
+							prsj->mano_izquierda -> nombre = prsj->mochila[i].nombre;
+							prsj->mano_izquierda -> durabilidad = prsj->mochila[i].durabilidad;
+							prsj->mano_izquierda -> valor = prsj->mochila[i].valor;
 							break;
 					}
 
@@ -522,23 +388,25 @@ int regla_equipar(int tipo_objeto, int mano) {
 					objeto de la mochila, ya se habria puesto 
 					anteriormente a 0 por lo que no pasa nada, 
 					simplemente se reducen el numero de objetos */
-					prsj.mochila[i] = prsj.mochila[num_objetos_mochila-1];
+					prsj->mochila[i] = prsj->mochila[num_objetos_mochila-1];
 					
-					prsj.mochila[num_objetos_mochila-1].tipo = 0;
-					prsj.mochila[num_objetos_mochila-1].nombre = "";
-					prsj.mochila[num_objetos_mochila-1].valor = 0;
-					prsj.mochila[num_objetos_mochila-1].durabilidad = 0; 
+					prsj->mochila[num_objetos_mochila-1].tipo = 0;
+					prsj->mochila[num_objetos_mochila-1].nombre = "";
+					prsj->mochila[num_objetos_mochila-1].valor = 0;
+					prsj->mochila[num_objetos_mochila-1].durabilidad = 0; 
 					num_objetos_mochila--;
 
-
+					return 1;
 					break;
 				case OBJ_POCION: // estos dos casos podrian aglutinarse en default
-					sprintf(cadena, "No puedes equipar un(a) %s.\n", prsj.mochila[i].nombre);
+					sprintf(cadena, "No puedes equipar un(a) %s.\n", prsj->mochila[i].nombre);
 					animacion_por_pantalla(cadena, DELAY);
+					return 1;
 					break;
 				case OBJ_LLAVE:
-					sprintf(cadena, "No puedes equipar un(a) %s.\n", prsj.mochila[i].nombre);
+					sprintf(cadena, "No puedes equipar un(a) %s.\n", prsj->mochila[i].nombre);
 					animacion_por_pantalla(cadena, DELAY);
+					return 1;
 					break;
 			}
 		}
@@ -549,11 +417,11 @@ int regla_equipar(int tipo_objeto, int mano) {
 int mano_ocupada(int mano) {
 	switch (mano) {
 		case MANO_DERECHA:
-			if (prsj.mano_derecha != NULL)
+			if (prsj->mano_derecha != NULL)
 				return 1;
 			break;
 		case MANO_IZQUIERDA:
-			if (prsj.mano_izquierda != NULL)
+			if (prsj->mano_izquierda != NULL)
 				return 1;
 			break;
 	}
@@ -564,44 +432,96 @@ int regla_abrir_puerta() {
 	/* Cuando las puertas puedan estar cerradas con llave y el jugador se 
 encuentre con una mostrar por pantalla : !NOOOO.. PUEDES.. PASAAAR! (Necesitas
  una llave).*/ 
-	if (tablero.mapa[prsj.pos_fila+1][prsj.pos_columna] == '-') {
-		if (puerta_cerrada(prsj.pos_fila+1, prsj.pos_columna)) {
-			animacion_por_pantalla("Puerta cerrada.\n", DELAY);
+	if (tablero->mapa[prsj->pos_fila+1][prsj->pos_columna] == '-') {
+		if (tablero->lista_puertas[NUM_PUERTAS-1].fila == prsj->pos_fila+1 && tablero->lista_puertas[NUM_PUERTAS-1].columna == prsj->pos_columna) {		
+			clearScreen();
+			animacion_por_pantalla("La puerta está abierta, decides cruzar y llegas a una nueva sala...\n", DELAY);
+			// Liberar memoria
+			liberar_mapa(&tablero);
+			// Cargar mapa
+			cargar_mapa(&tablero);			
+			crear_entradas(&tablero);
+			// Se muestra el nuevo mapa
+			mostrar_mapa(*tablero);
 			return 1;
 		} else {
-			tablero.mapa[prsj.pos_fila+1][prsj.pos_columna] = ' ';
-			animacion_por_pantalla("Puerta abierta.\n", DELAY);
-			return 1;
+			if (puerta_cerrada(prsj->pos_fila+1, prsj->pos_columna)) {
+				animacion_por_pantalla("Puerta cerrada.\n", DELAY);
+				return 1;
+			} else {
+				tablero->mapa[prsj->pos_fila+1][prsj->pos_columna] = ' ';
+				animacion_por_pantalla("Puerta abierta.\n", DELAY);
+				return 1;
+			}
 		}
 	}
-	if (tablero.mapa[prsj.pos_fila-1][prsj.pos_columna] == '-') {
-		if (puerta_cerrada(prsj.pos_fila-1, prsj.pos_columna)) {
-			animacion_por_pantalla("Puerta cerrada.\n", DELAY);
+	if (tablero->mapa[prsj->pos_fila-1][prsj->pos_columna] == '-') {
+		if (tablero->lista_puertas[NUM_PUERTAS-1].fila == prsj->pos_fila-1 && tablero->lista_puertas[NUM_PUERTAS-1].columna == prsj->pos_columna) {		
+			clearScreen();
+			animacion_por_pantalla("La puerta está abierta, decides cruzar y llegas a una nueva sala...\n", DELAY);
+			// Liberar memoria
+			liberar_mapa(&tablero);
+			// Cargar mapa
+			cargar_mapa(&tablero);			
+			crear_entradas(&tablero);
+			// Se muestra el nuevo mapa
+			mostrar_mapa(*tablero);
 			return 1;
 		} else {
-			tablero.mapa[prsj.pos_fila-1][prsj.pos_columna] = ' ';
-			animacion_por_pantalla("Puerta abierta.\n", DELAY);
-			return 1;
+			if (puerta_cerrada(prsj->pos_fila-1, prsj->pos_columna)) {
+				animacion_por_pantalla("Puerta cerrada.\n", DELAY);
+				return 1;
+			} else {
+				tablero->mapa[prsj->pos_fila-1][prsj->pos_columna] = ' ';
+				animacion_por_pantalla("Puerta abierta.\n", DELAY);
+				return 1;
+			}
 		}
 	}
-	if (tablero.mapa[prsj.pos_fila][prsj.pos_columna+1] == '|') {
-		if (puerta_cerrada(prsj.pos_fila, prsj.pos_columna+1)) {
-			animacion_por_pantalla("Puerta cerrada.\n", DELAY);
+	if (tablero->mapa[prsj->pos_fila][prsj->pos_columna+1] == '|') {
+		if (tablero->lista_puertas[NUM_PUERTAS-1].fila == prsj->pos_fila && tablero->lista_puertas[NUM_PUERTAS-1].columna == prsj->pos_columna+1) {		
+			clearScreen();	
+			animacion_por_pantalla("La puerta está abierta, decides cruzar y llegas a una nueva sala...\n", DELAY);
+			// Liberar memoria
+			liberar_mapa(&tablero);
+			// Cargar mapa
+			cargar_mapa(&tablero);			
+			crear_entradas(&tablero);
+			// Se muestra el nuevo mapa
+			mostrar_mapa(*tablero);
 			return 1;
 		} else {
-			tablero.mapa[prsj.pos_fila][prsj.pos_columna+1] = ' ';
-			animacion_por_pantalla("Puerta abierta.\n", DELAY);
-			return 1;
+			if (puerta_cerrada(prsj->pos_fila, prsj->pos_columna+1)) {
+				animacion_por_pantalla("Puerta cerrada.\n", DELAY);
+				return 1;
+			} else {
+				tablero->mapa[prsj->pos_fila][prsj->pos_columna+1] = ' ';
+				animacion_por_pantalla("Puerta abierta.\n", DELAY);
+				return 1;
+			}
 		}
 	}
-	if (tablero.mapa[prsj.pos_fila][prsj.pos_columna-1] == '|') {
-		if (puerta_cerrada(prsj.pos_fila, prsj.pos_columna-1)) {
-			animacion_por_pantalla("Puerta cerrada.\n", DELAY);
+	if (tablero->mapa[prsj->pos_fila][prsj->pos_columna-1] == '|') {
+		if (tablero->lista_puertas[NUM_PUERTAS-1].fila == prsj->pos_fila && tablero->lista_puertas[NUM_PUERTAS-1].columna == prsj->pos_columna-1) {		
+			clearScreen();
+			animacion_por_pantalla("La puerta está abierta, decides cruzar y llegas a una nueva sala...\n", DELAY);
+			// Liberar memoria
+			liberar_mapa(&tablero);
+			// Cargar mapa
+			cargar_mapa(&tablero);			
+			crear_entradas(&tablero);
+			// Se muestra el nuevo mapa
+			mostrar_mapa(*tablero);
 			return 1;
 		} else {
-			tablero.mapa[prsj.pos_fila][prsj.pos_columna-1] = ' ';
-			animacion_por_pantalla("Puerta abierta.\n", DELAY);
-			return 1;
+			if (puerta_cerrada(prsj->pos_fila, prsj->pos_columna-1)) {
+				animacion_por_pantalla("Puerta cerrada.\n", DELAY);
+				return 1;
+			} else {
+				tablero->mapa[prsj->pos_fila][prsj->pos_columna-1] = ' ';
+				animacion_por_pantalla("Puerta abierta.\n", DELAY);
+				return 1;
+			}
 		}
 	}
 	animacion_por_pantalla("No tiene ninguna puerta cerca, y aún no has\
@@ -611,8 +531,8 @@ encuentre con una mostrar por pantalla : !NOOOO.. PUEDES.. PASAAAR! (Necesitas
 
 int puerta_cerrada(int fila, int columna) { // Mover esta funcion a la parte de funciones auxiliares
 	for (int i=0;i<NUM_PUERTAS;i++) {
-		if (tablero.lista_puertas[i].fila == fila && tablero.lista_puertas[i].columna == columna) {
-			return tablero.lista_puertas[i].cerrada;
+		if (tablero->lista_puertas[i].fila == fila && tablero->lista_puertas[i].columna == columna) {
+			return tablero->lista_puertas[i].cerrada;
 		}
 	}
 	return 0;
@@ -621,12 +541,12 @@ int puerta_cerrada(int fila, int columna) { // Mover esta funcion a la parte de 
 /* Devuelve 1 si abre el cofre y 0 si ya estaba abierto */
 int abre_cofre(int fila, int columna) {
 	for (int i = 0; i<NUM_COFRES; i++) {
-		if ((tablero.lista_cofres[i].fila == fila) && (tablero.lista_cofres[i].columna == columna)) {
-			if (tablero.lista_cofres[i].abierto) {
+		if ((tablero->lista_cofres[i].fila == fila) && (tablero->lista_cofres[i].columna == columna)) {
+			if (tablero->lista_cofres[i].abierto) {
 				animacion_por_pantalla("Cofre ya abierto\n", DELAY);
 				return 0;
 			} else {
-				tablero.lista_cofres[i].abierto = 1;
+				tablero->lista_cofres[i].abierto = 1;
 				return 1;
 			}
 		}
@@ -640,22 +560,22 @@ int regla_abrir_cofre() {
 		return 1;
 	}
 	// Se comprueba si el personaje tiene un cofre al lado
-	if (tablero.mapa[prsj.pos_fila+1][prsj.pos_columna] == 'C') {		
-		 if (!abre_cofre(prsj.pos_fila+1, prsj.pos_columna))
+	if (tablero->mapa[prsj->pos_fila+1][prsj->pos_columna] == 'C') {		
+		 if (!abre_cofre(prsj->pos_fila+1, prsj->pos_columna))
 			return 1;		
-		//tablero.mapa[prsj.pos_fila+1][prsj.pos_columna] = ' ';
-	} else if (tablero.mapa[prsj.pos_fila-1][prsj.pos_columna] == 'C') {		
-		if (!abre_cofre(prsj.pos_fila-1, prsj.pos_columna))
+		//tablero->mapa[prsj->pos_fila+1][prsj->pos_columna] = ' ';
+	} else if (tablero->mapa[prsj->pos_fila-1][prsj->pos_columna] == 'C') {		
+		if (!abre_cofre(prsj->pos_fila-1, prsj->pos_columna))
 			return 1;		
-		//tablero.mapa[prsj.pos_fila-1][prsj.pos_columna] = ' ';
-	} else if (tablero.mapa[prsj.pos_fila][prsj.pos_columna+1] == 'C') {		
-		if (!abre_cofre(prsj.pos_fila, prsj.pos_columna+1))
+		//tablero->mapa[prsj->pos_fila-1][prsj->pos_columna] = ' ';
+	} else if (tablero->mapa[prsj->pos_fila][prsj->pos_columna+1] == 'C') {		
+		if (!abre_cofre(prsj->pos_fila, prsj->pos_columna+1))
 			return 1;		
-		//tablero.mapa[prsj.pos_fila][prsj.pos_columna+1] = ' ';
-	} else if (tablero.mapa[prsj.pos_fila][prsj.pos_columna-1] == 'C') {		
-		if (!abre_cofre(prsj.pos_fila, prsj.pos_columna-1))
+		//tablero->mapa[prsj->pos_fila][prsj->pos_columna+1] = ' ';
+	} else if (tablero->mapa[prsj->pos_fila][prsj->pos_columna-1] == 'C') {		
+		if (!abre_cofre(prsj->pos_fila, prsj->pos_columna-1))
 			return 1;		
-		//tablero.mapa[prsj.pos_fila][prsj.pos_columna-1] = ' ';
+		//tablero->mapa[prsj->pos_fila][prsj->pos_columna-1] = ' ';
 	} else { // No tiene un cofre cerca
 		animacion_por_pantalla("No tiene ningun cofre cerca, y aún no ha\
  desarrollado la telequinesis, hable con Yoda o pruebe a acercarse, lo siento.\n", DELAY);
@@ -665,7 +585,7 @@ int regla_abrir_cofre() {
 	// Tiene un hueco en la mochila, y el cofre cerca, por lo tanto,
 	// se abre el cofre
 	animacion_por_pantalla("Abriendo cofre", DELAY);
-	animacion_por_pantalla("...\n...\n", DELAY*8);
+	animacion_por_pantalla("...\n", DELAY*8);
 	tobjeto objeto;
 	// Obtienes el tipo del objeto que vas a crear de manera aleatoria
 	int tipo = get_random_object();
@@ -700,7 +620,7 @@ int regla_abrir_cofre() {
 	sprintf(objeto_encontrado, "Has encontrado un(a) %s!\n", objeto.nombre);
 	animacion_por_pantalla(objeto_encontrado, DELAY);
 
-	prsj.mochila[num_objetos_mochila] = objeto;
+	prsj->mochila[num_objetos_mochila] = objeto;
 	num_objetos_mochila++;
 	return 1;
 }
@@ -709,38 +629,54 @@ int regla_usar_objeto(int tipo_objeto) {
 	
 	char cadena[100];
 	for (int i = 0; i<num_objetos_mochila; i++) {
-		if (tipo_objeto == prsj.mochila[i].tipo){
+		if (tipo_objeto == prsj->mochila[i].tipo) {
 			switch(tipo_objeto) {
 				case OBJ_ESPADA:
-					sprintf(cadena, "La %s no tiene ninguna utilidad por si sola.", prsj.mochila[i].nombre);
+					sprintf(cadena, "La %s no tiene ninguna utilidad por si sola.", prsj->mochila[i].nombre);
 					animacion_por_pantalla(cadena, DELAY);
 					return 1;
 					break;
 				case OBJ_POCION:
-					sprintf(cadena, "Bebes la %s y recuperas %i de \
-					vida.\n", prsj.mochila[i].nombre, prsj.mochila[i].valor);
+					sprintf(cadena, "Bebes la %s y recuperas %i de vida.\n", prsj->mochila[i].nombre, prsj->mochila[i].valor);
 					animacion_por_pantalla(cadena, DELAY);
-					prsj.vida += prsj.mochila[i].valor;
+					prsj->vida += prsj->mochila[i].valor;
 					break;
 				case OBJ_LLAVE:
 					// Se comprueba si el personaje tiene una puerta al lado
-					if (tablero.mapa[prsj.pos_fila+1][prsj.pos_columna] == '-') {		
-						abrir_puerta(prsj.pos_fila+1, prsj.pos_columna);
-					}else if (tablero.mapa[prsj.pos_fila-1][prsj.pos_columna] == '-') {		
-						abrir_puerta(prsj.pos_fila-1, prsj.pos_columna);
-					}else if (tablero.mapa[prsj.pos_fila][prsj.pos_columna+1] == '|') {		
-						abrir_puerta(prsj.pos_fila, prsj.pos_columna+1);
-					}else if (tablero.mapa[prsj.pos_fila][prsj.pos_columna-1] == '|') {		
-						abrir_puerta(prsj.pos_fila, prsj.pos_columna-1);
+					if (tablero->mapa[prsj->pos_fila+1][prsj->pos_columna] == '-') {		
+						if (!abrir_puerta(prsj->pos_fila+1, prsj->pos_columna)) {
+						// Si intentas abrir la puerta por la que has entrado no te deja y la llave no se gasta
+							animacion_por_pantalla("No consigues abrirla, parece atascada...\n", DELAY);
+							return 1;
+						}
+					}else if (tablero->mapa[prsj->pos_fila-1][prsj->pos_columna] == '-') {
+						// Si intentas abrir la puerta por la que has entrado no te deja y la llave no se gasta		
+						if (!abrir_puerta(prsj->pos_fila-1, prsj->pos_columna)) {
+							animacion_por_pantalla("No consigues abrirla, parece atascada...\n", DELAY);
+							return 1;
+						}
+					}else if (tablero->mapa[prsj->pos_fila][prsj->pos_columna+1] == '|') {
+						// Si intentas abrir la puerta por la que has entrado no te deja y la llave no se gasta		
+						if (!abrir_puerta(prsj->pos_fila, prsj->pos_columna+1)) {
+							animacion_por_pantalla("No consigues abrirla, parece atascada...\n", DELAY);
+							return 1;
+						}
+					}else if (tablero->mapa[prsj->pos_fila][prsj->pos_columna-1] == '|') {
+						// Si intentas abrir la puerta por la que has entrado no te deja y la llave no se gasta		
+						if (!abrir_puerta(prsj->pos_fila, prsj->pos_columna-1)) {
+							animacion_por_pantalla("No consigues abrirla, parece atascada...\n", DELAY);
+							return 1;
+						}
 					} else { // No tiene una puerta cerca
 						animacion_por_pantalla("No tiene ninguna puerta cerca, y aún no ha\
 desarrollado la telequinesis, hable con Yoda o pruebe a acercarse, lo siento.\n", DELAY);
 						return 1;
 					}
-					animacion_por_pantalla("Has abierto la puerta\n", DELAY);
+					sprintf(cadena, "Usas la %s.\n", prsj->mochila[i].nombre);
+					animacion_por_pantalla(cadena, DELAY);
 			}
-			if (!(--prsj.mochila[i].durabilidad)){ //Cada vez que se usa el objeto pierde 1 de durabilidad, si esta llega a 0 el objeto se pierde
-				sprintf(cadena, "%s gastada\n", prsj.mochila[i].nombre);
+			if (!(--prsj->mochila[i].durabilidad)){ //Cada vez que se usa el objeto pierde 1 de durabilidad, si esta llega a 0 el objeto se pierde
+				sprintf(cadena, "%s gastada\n", prsj->mochila[i].nombre);
 				animacion_por_pantalla(cadena, DELAY);
 				/* En la posicion que ha quedado vacia 
 				colocamos el ultimo objeto de la mochila para 
@@ -749,26 +685,47 @@ desarrollado la telequinesis, hable con Yoda o pruebe a acercarse, lo siento.\n"
 				objeto de la mochila, ya se habria puesto 
 				anteriormente a 0 por lo que no pasa nada, 
 				simplemente se reducen el numero de objetos */
-				prsj.mochila[i] = prsj.mochila[num_objetos_mochila-1];
+				prsj->mochila[i] = prsj->mochila[num_objetos_mochila-1];
 					
-				prsj.mochila[num_objetos_mochila-1].tipo = 0;
-				prsj.mochila[num_objetos_mochila-1].nombre = "";
-				prsj.mochila[num_objetos_mochila-1].valor = 0; 
+				prsj->mochila[num_objetos_mochila-1].tipo = 0;
+				prsj->mochila[num_objetos_mochila-1].nombre = "";
+				prsj->mochila[num_objetos_mochila-1].valor = 0; 
 				num_objetos_mochila--;		
 			}
+			return 1;
 			break;
 		}
 	}
+	animacion_por_pantalla("No posees ese objeto.\n", DELAY);
 	return 1;
+}
+
+int regla_fin_turno() {	
+	clearScreen();
+	valor_dado = 0;
+	lanzado = 0;
+	ataque = 0;
+	animacion_por_pantalla("Tu turno ha finalizado\n", DELAY);
+	//printf("Turno de los enemigos\n");
+	mover_IA();
+	/*int enemigos = enemigos_cerca();
+	for (int i = 0; i<enemigos; i++)
+		simula_defensa();*/
+	mostrar_mapa(*tablero);
+	mostrar_info_jugador(*prsj);
+	return 1;	
 }
 
 int abrir_puerta(int fila, int columna) { // Mover esta funcion a la parte de funciones auxiliares
 	for (int i=0;i<NUM_PUERTAS;i++) {
-		if (tablero.lista_puertas[i].fila == fila && tablero.lista_puertas[i].columna == columna) {
-			tablero.lista_puertas[i].cerrada = 0;
+		if (tablero->lista_puertas[i].fila == fila && tablero->lista_puertas[i].columna == columna) {
+			if (i==NUM_PUERTAS-2)
+				return 0;
+			else
+				tablero->lista_puertas[i].cerrada = 0;
 		}
 	}
-	return 0;
+	return 1;
 }
 
 void regla_accion(int digito, int direccion){
@@ -835,75 +792,64 @@ void simula_ataque(int pos_fila_enemigo, int pos_columna_enemigo) {
 	// Actualizamos info de jugador y enemigo si es oportuno
 	if (ataque>defensa) {
 		int danho = (ataque - defensa) * 2;
-		if ((prsj.mano_derecha != NULL) && ((prsj.mano_derecha -> tipo) == OBJ_ESPADA)) {
-			danho *= prsj.mano_derecha -> valor;
-			prsj.mano_derecha -> durabilidad--;
-			if (prsj.mano_derecha -> durabilidad == 0)
+		if ((prsj->mano_derecha != NULL) && ((prsj->mano_derecha -> tipo) == OBJ_ESPADA)) {
+			danho *= prsj->mano_derecha -> valor;
+			prsj->mano_derecha -> durabilidad--;
+			if (prsj->mano_derecha -> durabilidad == 0)
 				derecha_roto = 1;
 			
 			
 		}
-		if ((prsj.mano_izquierda != NULL) && ((prsj.mano_izquierda -> tipo) == OBJ_ESPADA)) {
-			danho *= prsj.mano_izquierda -> valor;
-			prsj.mano_izquierda -> durabilidad--;
-			if (prsj.mano_izquierda -> durabilidad == 0)
+		if ((prsj->mano_izquierda != NULL) && ((prsj->mano_izquierda -> tipo) == OBJ_ESPADA)) {
+			danho *= prsj->mano_izquierda -> valor;
+			prsj->mano_izquierda -> durabilidad--;
+			if (prsj->mano_izquierda -> durabilidad == 0)
 				izquierda_roto = 1;
 		}
 		char cadena[100];
-		sprintf(cadena, "Acierto! El enemigo recibe %i de daño.\n", danho);
+		sprintf(cadena, "Has golpeado al enemigo! Recibe %i de daño.\n", danho);
 		animacion_por_pantalla(cadena, DELAY);
 		actualiza_enemigo(pos_fila_enemigo, pos_columna_enemigo, danho);
 	} else {
-		animacion_por_pantalla("Fallo!\n", DELAY);
+		animacion_por_pantalla("Has fallado!\n", DELAY);
 	}
 	if (derecha_roto) {
 		char cadena[100];
-		sprintf(cadena, "La %s se ha roto\n", prsj.mano_derecha -> nombre);
+		sprintf(cadena, "La %s se ha roto\n", prsj->mano_derecha -> nombre);
 		animacion_por_pantalla(cadena, DELAY);
-		free(prsj.mano_derecha);
-		prsj.mano_derecha = NULL;
+		free(prsj->mano_derecha);
+		prsj->mano_derecha = NULL;
 	}
 	
 	if (izquierda_roto) {
 		char cadena[100];
-		sprintf(cadena, "La %s se ha roto\n", prsj.mano_izquierda -> nombre);
+		sprintf(cadena, "La %s se ha roto\n", prsj->mano_izquierda -> nombre);
 		animacion_por_pantalla(cadena, DELAY);
-		free(prsj.mano_izquierda);
-		prsj.mano_izquierda = NULL;
+		free(prsj->mano_izquierda);
+		prsj->mano_izquierda = NULL;
 	}
 }
 
 void actualiza_enemigo(int fila, int columna, int danho) {
 	for (int i = 0; i<NUM_ENEMIGOS; i++) {
-		if (tablero.lista_enemigos[i].fila == fila && tablero.lista_enemigos[i].columna == columna) {
-			tablero.lista_enemigos[i].vida -= danho;
-			if (tablero.lista_enemigos[i].vida <= 0) {
+		if (tablero->lista_enemigos[i].fila == fila && tablero->lista_enemigos[i].columna == columna) {
+			tablero->lista_enemigos[i].vida -= danho;
+			if (tablero->lista_enemigos[i].vida <= 0) {
 				animacion_por_pantalla("Enemigo eliminado\n", DELAY); // FALLO
-				tablero.mapa[fila][columna] = ' ';
+				// Para que no lo detecta en actualizaciones posteriores, seria mejor borrarlo de la lista
+				tablero->lista_enemigos[i].fila = -1;
+				tablero->lista_enemigos[i].columna = -1;
+				tablero->mapa[fila][columna] = ' ';
 			}
 		}
 	}
 }
 
-// Devuelve el numero de enemigos que el jugador tiene cerca
-/*int enemigos_cerca() {
-	int enemigos = 0;
-	for (int i = 0; i<NUM_ENEMIGOS; i++) {
-		if (tablero.lista_enemigos[i].vida>0) { // Si el enemigo esta vivo
-			// Si el enemigo esta a una casilla de distancia se cuenta				
-			if (((tablero.lista_enemigos[i].fila == prsj.pos_fila) && (abs(tablero.lista_enemigos[i].columna - prsj.pos_columna) == 1 )) || 
-			((tablero.lista_enemigos[i].columna == prsj.pos_columna) && (abs(tablero.lista_enemigos[i].fila - prsj.pos_fila) == 1 ))) {
-				enemigos++;
-			}
-		}
-	}
-	return enemigos;
-}*/
-
 void simula_defensa() {
 	int ataque = 0, defensa = 0;
 
-	animacion_por_pantalla("\n\nUN ENEMIGO TE ESTÁ ATACANDO!\n", DELAY);
+	animacion_por_pantalla("\n\nUN ENEMIGO TE ESTÁ ATACANDO", DELAY);
+	animacion_por_pantalla("...\n", DELAY*8);
 	// Lanzamos el dado del enemigo
 	ataque = get_random_number();
 
@@ -918,7 +864,7 @@ void simula_defensa() {
 		char cadena[100];
 		sprintf(cadena, "Recibes %i de daño.\n", danho);
 		animacion_por_pantalla(cadena, DELAY);
-		prsj.vida -= danho;
+		prsj->vida -= danho;
 	} else {
 		animacion_por_pantalla("Has detenido el ataque!\n", DELAY);
 	}
@@ -937,6 +883,10 @@ int get_random_number(){
 int get_random_object(){
 	int tipo_objeto = (rand() % (TOTAL_OBJETOS + RATIO_COFRES_VACIOS)) + 1; // Se generan siempre numero entre el 1 y el numero de objetos + un numero que sirve como parametro para que ratio de objetos vacios queremos
 	return tipo_objeto;
+}
+
+int get_random_door(){
+	return (rand()%2);	
 }
 
 void mostrar_ayuda(){	
@@ -984,6 +934,7 @@ Secuencia de turno:\n\
 }
 
 void mostrar_info_jugador(tjugador j) {
+	animacion_por_pantalla("Información del jugador:\n", DELAY/2);
 	printf("\tVida: %i\n", j.vida);
 	if (j.mano_derecha != NULL)
 		printf("\tMano derecha: %s\n", j.mano_derecha -> nombre);
@@ -993,11 +944,11 @@ void mostrar_info_jugador(tjugador j) {
 		printf("\tMano izquierda: %s\n", j.mano_izquierda -> nombre);
 	else
 		printf("\tMano izquierda: Vacía\n");
-	printf("\tMochila:\n");
+	printf("\nMochila:\n");
 	
 	for(int i=0;i<TAM_MOCHILA;i++){
 		printf("\t-----------------------------------\n");
-		if (prsj.mochila[i].tipo)
+		if (prsj->mochila[i].tipo)
 			printf("\t|\t\t%s\t\t  |\n", j.mochila[i].nombre);
 		else
 			printf("\t|\t\tVACIO\t\t  |\n");
@@ -1005,181 +956,18 @@ void mostrar_info_jugador(tjugador j) {
 	printf("\t-----------------------------------\n");
 }
 
-void inicializar_mapa(){
-	int i,j = 0;
 
-	/* Paredes exteriores */
-	for (i=0;i<FILAS;i++){
-		for (j=0;j<COLUMNAS;j++){
-			if ((i==0) || (i==(FILAS-1)) 
-			 || (j==0) || (j==(COLUMNAS-1))) {
-				tablero.mapa[i][j] = 'e';
-			} else {
-				tablero.mapa[i][j] = ' ';
-			}
-		}
-	}
-
-	/* Paredes Habitaciones */
-	tablero.mapa[2][2]   = 'x';
-	tablero.mapa[2][3]   = 'x';
-	tablero.mapa[2][4]   = 'x';
-	tablero.mapa[2][5]   = 'x';
-	tablero.mapa[2][6]   = 'x';
-	tablero.mapa[2][7]   = 'x';
-	tablero.mapa[2][14]  = 'x';
-	tablero.mapa[3][2]   = 'x';
-	tablero.mapa[3][7]   = 'x';
-	tablero.mapa[3][14]  = 'x';
-	tablero.mapa[4][2]   = 'x';
-	tablero.mapa[4][14]  = 'x';
-	tablero.mapa[5][2]   = 'x';
-	tablero.mapa[5][7]   = 'x';
-	tablero.mapa[5][14]  = 'x';
-	tablero.mapa[5][17]  = 'x';
-	tablero.mapa[5][18]  = 'x';
-	tablero.mapa[5][19]  = 'x';
-	tablero.mapa[5][20]  = 'x';
-	tablero.mapa[6][2]   = 'x';
-	tablero.mapa[6][3]   = 'x';
-	tablero.mapa[6][4]   = 'x';
-	tablero.mapa[6][5]   = 'x';
-	tablero.mapa[6][6]   = 'x';
-	tablero.mapa[6][7]   = 'x';
-	tablero.mapa[6][10]  = 'x';
-	tablero.mapa[6][11]  = 'x';
-	tablero.mapa[6][12]  = 'x';
-	tablero.mapa[6][13]  = 'x';
-	tablero.mapa[6][14]  = 'x';
-	tablero.mapa[7][2]   = 'x';
-	tablero.mapa[7][6]   = 'x';
-	tablero.mapa[7][14]  = 'x';
-	tablero.mapa[8][6]   = 'x';
-	tablero.mapa[8][8]   = 'x';
-	tablero.mapa[8][9]   = 'x';
-	tablero.mapa[8][10]  = 'x';
-	tablero.mapa[8][14]  = 'x';
-	tablero.mapa[8][15]  = 'x';
-	tablero.mapa[8][16]  = 'x';
-	tablero.mapa[8][17]  = 'x';
-	tablero.mapa[9][2]   = 'x';
-	tablero.mapa[9][6]   = 'x';
-	tablero.mapa[9][8]   = 'x';
-	tablero.mapa[9][14]  = 'x';
-	tablero.mapa[10][2]  = 'x';
-	tablero.mapa[10][3]  = 'x';
-	tablero.mapa[10][4]  = 'x';
-	tablero.mapa[10][5]  = 'x';
-	tablero.mapa[10][6]  = 'x';
-	tablero.mapa[10][8]  = 'x';
-	tablero.mapa[10][9]  = 'x';
-	tablero.mapa[10][10] = 'x';
-	tablero.mapa[10][11] = 'x';
-	tablero.mapa[10][12] = 'x';
-	tablero.mapa[10][13] = 'x';
-	tablero.mapa[10][14] = 'x';
-	tablero.mapa[11][14] = 'x';
-
-	/* Puertas verticales */ // Em vez de guardarlas directamente en el mapa e imprimir, usar la lista_puertas para imprimir en mostrar_mapa
-	tablero.mapa[4][7]   = '|';
-	tablero.lista_puertas[0].fila = 4;
-	tablero.lista_puertas[0].columna = 7;
-	tablero.lista_puertas[0].cerrada = 1; // En un futuro hacerlo aleatoriamente
-	tablero.mapa[8][2]   = '|';
-	tablero.lista_puertas[1].fila = 8;
-	tablero.lista_puertas[1].columna = 2;
-	tablero.lista_puertas[1].cerrada = 0;
-	tablero.mapa[7][10]  = '|';
-	tablero.lista_puertas[2].fila = 7;
-	tablero.lista_puertas[2].columna = 10;
-	tablero.lista_puertas[2].cerrada = 1;
-
-	/* Puertas horizontales */
-
-	/* Cofres */
-	tablero.mapa[2][20]  = 'C';
-	tablero.lista_cofres[0].fila = 2;
-	tablero.lista_cofres[0].columna = 20;
-	tablero.lista_cofres[0].abierto = 0;
-	tablero.mapa[3][20]  = 'C';
-	tablero.lista_cofres[1].fila = 3;
-	tablero.lista_cofres[1].columna = 20;
-	tablero.lista_cofres[1].abierto = 0;
-	tablero.mapa[4][3]   = 'C';
-	tablero.lista_cofres[2].fila = 4;
-	tablero.lista_cofres[2].columna = 3;
-	tablero.lista_cofres[2].abierto = 0;
-	tablero.mapa[8][5]   = 'C';
-	tablero.lista_cofres[3].fila = 8;
-	tablero.lista_cofres[3].columna = 5;
-	tablero.lista_cofres[3].abierto = 0;
-	tablero.mapa[9][9]   = 'C';
-	tablero.lista_cofres[4].fila = 9;
-	tablero.lista_cofres[4].columna = 9;
-	tablero.lista_cofres[4].abierto = 0;
-	tablero.mapa[9][15]  = 'C';
-	tablero.lista_cofres[5].fila = 9;
-	tablero.lista_cofres[5].columna = 15;
-	tablero.lista_cofres[5].abierto = 0;
-	tablero.mapa[10][15] = 'C';
-	tablero.lista_cofres[6].fila = 10;
-	tablero.lista_cofres[6].columna = 15;
-	tablero.lista_cofres[6].abierto = 0;
-	tablero.mapa[11][15] = 'C';
-	tablero.lista_cofres[7].fila = 11;
-	tablero.lista_cofres[7].columna = 15;
-	tablero.lista_cofres[7].abierto = 0;
-
-	/* Enemigos */
-	tablero.mapa[2][10] = 'E';
-	tablero.lista_enemigos[0].fila = 2;
-	tablero.lista_enemigos[0].columna = 10;
-	tablero.lista_enemigos[0].vida = 20;
-	tablero.lista_enemigos[0].fuerza = 5;
-	tablero.mapa[3][12] = 'E';	
-	tablero.lista_enemigos[1].fila = 3;
-	tablero.lista_enemigos[1].columna = 12;
-	tablero.lista_enemigos[1].vida = 20;
-	tablero.lista_enemigos[1].fuerza = 5;
-	tablero.mapa[4][5] = 'E';
-	tablero.lista_enemigos[2].fila = 4;
-	tablero.lista_enemigos[2].columna = 5;
-	tablero.lista_enemigos[2].vida = 20;
-	tablero.lista_enemigos[2].fuerza = 5;
-	tablero.mapa[5][11] = 'E';
-	tablero.lista_enemigos[3].fila = 5;
-	tablero.lista_enemigos[3].columna = 11;
-	tablero.lista_enemigos[3].vida = 20;
-	tablero.lista_enemigos[3].fuerza = 5;
-	tablero.mapa[7][18] = 'E';
-	tablero.lista_enemigos[4].fila = 7;
-	tablero.lista_enemigos[4].columna = 18;
-	tablero.lista_enemigos[4].vida = 20;
-	tablero.lista_enemigos[4].fuerza = 5;
-	tablero.mapa[8][11] = 'E';
-	tablero.lista_enemigos[5].fila = 8;
-	tablero.lista_enemigos[5].columna = 11;
-	tablero.lista_enemigos[5].vida = 20;
-	tablero.lista_enemigos[5].fuerza = 5;
-	tablero.mapa[8][19] = 'E';
-	tablero.lista_enemigos[6].fila = 8;
-	tablero.lista_enemigos[6].columna = 19;
-	tablero.lista_enemigos[6].vida = 20;
-	tablero.lista_enemigos[6].fuerza = 5;
-
-	/* Personaje */
-	tablero.mapa[prsj.pos_fila][prsj.pos_columna] = 'P';
-}
-
-void mostrar_mapa(){
-	animacion_por_pantalla("Tu Mapa:\n", DELAY);
+void mostrar_mapa(tmapa tablero){
+	animacion_por_pantalla("Mapa:\n", DELAY/2);
         int i,j;
 	for (i = 0;i<FILAS;i++) {
 		printf("\t");
 		for (j = 0;j<COLUMNAS;j++) {
-			//if ((i==prsj.pos_fila) && (j==prsj.pos_columna)){
+			//if ((i==prsj->pos_fila) && (j==prsj->pos_columna)){
 			if (tablero.mapa[i][j] == 'P') {
 				printf("\e[1m\e[38;5;208mP\e[0m"); // Personaje
+			} else if (tablero.mapa[i][j] == 'E') {
+				printf("\e[38;5;214mE\e[0m"); // Enemigos
 			} else if (tablero.mapa[i][j] == 'e'){
 				printf ("\e[48;5;235m \e[0m"); // Paredes exter
 			} else if (tablero.mapa[i][j] == 'x'){
@@ -1198,14 +986,13 @@ void mostrar_mapa(){
 				printf("\e[38;5;94m|\e[0m"); // Puertas verticales
 			} else if (tablero.mapa[i][j] == '-') {
 				printf("\e[38;5;94m-\e[0m"); // Puertas horizontales
-			} else if (tablero.mapa[i][j] == 'E') {
-				printf("\e[38;5;214mE\e[0m"); // Enemigos
 			} else {
 				printf("%c", tablero.mapa[i][j]); // Otros
 			}		
 		}
 		printf("\n");
 	}
+	printf("\n");
 }
 
 int colision(int pasos, int direccion){
@@ -1214,25 +1001,25 @@ int colision(int pasos, int direccion){
 	switch(direccion) {
 		case 1: // Direccion arriba
 			for(i=1;i<=pasos;i++) 
-				if (tablero.mapa[posfilasVirtual-i][poscolumnasVirtual] != ' ')
+				if (tablero->mapa[posfilasVirtual-i][poscolumnasVirtual] != ' ')
 					return 1;
 			break;
 
 		case 2:	// Abajo			
 			for(i=1;i<=pasos;i++) 
-				if (tablero.mapa[posfilasVirtual+i][poscolumnasVirtual] != ' ')
+				if (tablero->mapa[posfilasVirtual+i][poscolumnasVirtual] != ' ')
 					return 1;
 			break;
 
 		case 3: // Derecha
 			for(i=1;i<=pasos;i++)
-				if (tablero.mapa[posfilasVirtual][poscolumnasVirtual+i] != ' ')
+				if (tablero->mapa[posfilasVirtual][poscolumnasVirtual+i] != ' ')
 					return 1;
 			break;
 
 		case 4:	// Izquierda
 			for(i=1;i<=pasos;i++)
-				if (tablero.mapa[posfilasVirtual][poscolumnasVirtual-i] != ' ')
+				if (tablero->mapa[posfilasVirtual][poscolumnasVirtual-i] != ' ')
 					return 1;
 			break;
 	}
@@ -1240,13 +1027,13 @@ int colision(int pasos, int direccion){
 	return 0;
 }
 
-int inicializar_jugador(tjugador jugador) {
-	prsj.pos_fila = POSICION_INICIAL_FILA;
-	prsj.pos_columna = POSICION_INICIAL_COLUMNA;
-	prsj.vida = 100;
+void inicializar_jugador(tjugador **jugador) {
+	*jugador = (tjugador *) malloc(sizeof(tjugador));
+	(*jugador) -> vida = 100;
+	(*jugador) -> mochila = (tobjeto *) malloc(TAM_MOCHILA*sizeof(struct objeto));
 	for (int i = 0;i<TAM_MOCHILA;i++){
-		prsj.mochila[i].tipo = 0;
-		prsj.mochila[i].valor = 0;
+		(*jugador) -> mochila[i].tipo = 0;
+		(*jugador) -> mochila[i].valor = 0;
 	}
 }
 
@@ -1323,115 +1110,112 @@ int calcula_orientacion(int ax, int ay, int bx, int by) {
 }
 
 
-// Devuleve un 1 si ha conseguido llegar hasta el protagonista o un 0 en caso contrario
+// Devuelve un 1 si ha conseguido llegar hasta el protagonista o un 0 en caso contrario
 int mover_enemigo(int id_enemigo) {
 	int fin = 0;
 	
 	// Calcular orientacion
-	int orientacion = calcula_orientacion(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[id_enemigo].fila, tablero.lista_enemigos[id_enemigo].columna);
+	int orientacion = calcula_orientacion(prsj->pos_fila, prsj->pos_columna, tablero->lista_enemigos[id_enemigo].fila, tablero->lista_enemigos[id_enemigo].columna);
 
 	while (!fin) {
-		
-		//usleep(1000000);
-		//mostrar_mapa();
 		switch (orientacion) {
 			case D_ARRIBA:
-				if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila-1][tablero.lista_enemigos[id_enemigo].columna] == ' ') {
-					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = ' ';
-					tablero.lista_enemigos[id_enemigo].fila--;
-					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = 'E';
-					orientacion = calcula_orientacion(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[id_enemigo].fila, tablero.lista_enemigos[id_enemigo].columna);
+				if (tablero->mapa[tablero->lista_enemigos[id_enemigo].fila-1][tablero->lista_enemigos[id_enemigo].columna] == ' ') {
+					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = ' ';
+					tablero->lista_enemigos[id_enemigo].fila--;
+					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = 'E';
+					orientacion = calcula_orientacion(prsj->pos_fila, prsj->pos_columna, tablero->lista_enemigos[id_enemigo].fila, tablero->lista_enemigos[id_enemigo].columna);
 				} else {
-					if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila-1][tablero.lista_enemigos[id_enemigo].columna] == 'P')
+					if (tablero->mapa[tablero->lista_enemigos[id_enemigo].fila-1][tablero->lista_enemigos[id_enemigo].columna] == 'P')
 						return 1;
 					fin = 1;
 				}		
 				break;
 			case D_ABAJO:
-				if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila+1][tablero.lista_enemigos[id_enemigo].columna] == ' ') {
+				if (tablero->mapa[tablero->lista_enemigos[id_enemigo].fila+1][tablero->lista_enemigos[id_enemigo].columna] == ' ') {
 					// Actualiza mapa
-					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = ' ';
-					tablero.lista_enemigos[id_enemigo].fila++;
-					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = 'E';
-					orientacion = calcula_orientacion(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[id_enemigo].fila, tablero.lista_enemigos[id_enemigo].columna);
+					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = ' ';
+					tablero->lista_enemigos[id_enemigo].fila++;
+					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = 'E';
+					orientacion = calcula_orientacion(prsj->pos_fila, prsj->pos_columna, tablero->lista_enemigos[id_enemigo].fila, tablero->lista_enemigos[id_enemigo].columna);
 				} else {
-					if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila+1][tablero.lista_enemigos[id_enemigo].columna] == 'P') 
+					if (tablero->mapa[tablero->lista_enemigos[id_enemigo].fila+1][tablero->lista_enemigos[id_enemigo].columna] == 'P') 
 						return 1;
 					fin = 1;
 				}		
 				break;
 			case D_DERECHA:
-				if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna+1] == ' ') {
-					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = ' ';		
-					tablero.lista_enemigos[id_enemigo].columna++;
-					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = 'E';
-					orientacion = calcula_orientacion(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[id_enemigo].fila, tablero.lista_enemigos[id_enemigo].columna);
+				if (tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna+1] == ' ') {
+					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = ' ';		
+					tablero->lista_enemigos[id_enemigo].columna++;
+					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = 'E';
+					orientacion = calcula_orientacion(prsj->pos_fila, prsj->pos_columna, tablero->lista_enemigos[id_enemigo].fila, tablero->lista_enemigos[id_enemigo].columna);
 				} else {
-					if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna+1] == 'P')
+					if (tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna+1] == 'P')
 						return 1;
 					fin = 1;
 				}
 				break;
 			case D_IZQUIERDA:
-				if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna-1] == ' ') {
-					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = ' ';
-					tablero.lista_enemigos[id_enemigo].columna--;
-					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = 'E';
-					orientacion = calcula_orientacion(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[id_enemigo].fila, tablero.lista_enemigos[id_enemigo].columna);
+				if (tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna-1] == ' ') {
+					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = ' ';
+					tablero->lista_enemigos[id_enemigo].columna--;
+					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = 'E';
+					orientacion = calcula_orientacion(prsj->pos_fila, prsj->pos_columna, tablero->lista_enemigos[id_enemigo].fila, tablero->lista_enemigos[id_enemigo].columna);
 				} else {
-					if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna-1] == 'P')
+					if (tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna-1] == 'P')
 						return 1;
 					fin = 1;
 				}
 				break;
 			case D_ARRIBA_DERECHA:
-				if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila-1][tablero.lista_enemigos[id_enemigo].columna+1] == ' ') {
-					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = ' ';
-					tablero.lista_enemigos[id_enemigo].fila--;
-					tablero.lista_enemigos[id_enemigo].columna++;
-					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = 'E';
-					orientacion = calcula_orientacion(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[id_enemigo].fila, tablero.lista_enemigos[id_enemigo].columna);
+				if (tablero->mapa[tablero->lista_enemigos[id_enemigo].fila-1][tablero->lista_enemigos[id_enemigo].columna+1] == ' ') {
+					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = ' ';
+					tablero->lista_enemigos[id_enemigo].fila--;
+					tablero->lista_enemigos[id_enemigo].columna++;
+					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = 'E';
+					orientacion = calcula_orientacion(prsj->pos_fila, prsj->pos_columna, tablero->lista_enemigos[id_enemigo].fila, tablero->lista_enemigos[id_enemigo].columna);
 				} else {
-					if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila-1][tablero.lista_enemigos[id_enemigo].columna+1] == 'P')
+					if (tablero->mapa[tablero->lista_enemigos[id_enemigo].fila-1][tablero->lista_enemigos[id_enemigo].columna+1] == 'P')
 						return 1;
 					fin = 1;
 				}
 				break;
 			case D_ARRIBA_IZQUIERDA:
-				if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila-1][tablero.lista_enemigos[id_enemigo].columna-1] == ' ') {
-					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = ' ';
-					tablero.lista_enemigos[id_enemigo].fila--;
-					tablero.lista_enemigos[id_enemigo].columna--;
-					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = 'E';
-					orientacion = calcula_orientacion(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[id_enemigo].fila, tablero.lista_enemigos[id_enemigo].columna);
+				if (tablero->mapa[tablero->lista_enemigos[id_enemigo].fila-1][tablero->lista_enemigos[id_enemigo].columna-1] == ' ') {
+					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = ' ';
+					tablero->lista_enemigos[id_enemigo].fila--;
+					tablero->lista_enemigos[id_enemigo].columna--;
+					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = 'E';
+					orientacion = calcula_orientacion(prsj->pos_fila, prsj->pos_columna, tablero->lista_enemigos[id_enemigo].fila, tablero->lista_enemigos[id_enemigo].columna);
 				} else {
-					if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila-1][tablero.lista_enemigos[id_enemigo].columna-1] == 'P')
+					if (tablero->mapa[tablero->lista_enemigos[id_enemigo].fila-1][tablero->lista_enemigos[id_enemigo].columna-1] == 'P')
 						return 1;
 					fin = 1;
 				}
 				break;
 			case D_ABAJO_DERECHA:
-				if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila+1][tablero.lista_enemigos[id_enemigo].columna+1] == ' ') {
-					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = ' ';
-					tablero.lista_enemigos[id_enemigo].fila++;
-					tablero.lista_enemigos[id_enemigo].columna++;
-					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = 'E';
-					orientacion = calcula_orientacion(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[id_enemigo].fila, tablero.lista_enemigos[id_enemigo].columna);
+				if (tablero->mapa[tablero->lista_enemigos[id_enemigo].fila+1][tablero->lista_enemigos[id_enemigo].columna+1] == ' ') {
+					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = ' ';
+					tablero->lista_enemigos[id_enemigo].fila++;
+					tablero->lista_enemigos[id_enemigo].columna++;
+					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = 'E';
+					orientacion = calcula_orientacion(prsj->pos_fila, prsj->pos_columna, tablero->lista_enemigos[id_enemigo].fila, tablero->lista_enemigos[id_enemigo].columna);
 				} else {
-					if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila+1][tablero.lista_enemigos[id_enemigo].columna+1] == 'P')
+					if (tablero->mapa[tablero->lista_enemigos[id_enemigo].fila+1][tablero->lista_enemigos[id_enemigo].columna+1] == 'P')
 						return 1;
 					fin = 1;
 				}
 				break;
 			case D_ABAJO_IZQUIERDA:
-				if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila+1][tablero.lista_enemigos[id_enemigo].columna-1] == ' ') {
-					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = ' ';
-					tablero.lista_enemigos[id_enemigo].fila++;
-					tablero.lista_enemigos[id_enemigo].columna--;
-					tablero.mapa[tablero.lista_enemigos[id_enemigo].fila][tablero.lista_enemigos[id_enemigo].columna] = 'E';
-					orientacion = calcula_orientacion(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[id_enemigo].fila, tablero.lista_enemigos[id_enemigo].columna);
+				if (tablero->mapa[tablero->lista_enemigos[id_enemigo].fila+1][tablero->lista_enemigos[id_enemigo].columna-1] == ' ') {
+					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = ' ';
+					tablero->lista_enemigos[id_enemigo].fila++;
+					tablero->lista_enemigos[id_enemigo].columna--;
+					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = 'E';
+					orientacion = calcula_orientacion(prsj->pos_fila, prsj->pos_columna, tablero->lista_enemigos[id_enemigo].fila, tablero->lista_enemigos[id_enemigo].columna);
 				} else {
-					if (tablero.mapa[tablero.lista_enemigos[id_enemigo].fila+1][tablero.lista_enemigos[id_enemigo].columna-1] == 'P')
+					if (tablero->mapa[tablero->lista_enemigos[id_enemigo].fila+1][tablero->lista_enemigos[id_enemigo].columna-1] == 'P')
 						return 1;
 					fin = 1;
 				}
@@ -1445,9 +1229,9 @@ void mover_IA() {
 	int dist_manhattan = 0, orientacion = 0;
 	// Calcular distancia Manhattan de cada enemigo al protagonista
 	for (int i=0;i<NUM_ENEMIGOS;i++) {
-		if (tablero.lista_enemigos[i].vida > 0) {
-			//printf("Enemigo %i: fila %i, columna %i \n", i, tablero.lista_enemigos[i].fila, tablero.lista_enemigos[i].columna);
-			dist_manhattan = calcula_manhattan(prsj.pos_fila, prsj.pos_columna, tablero.lista_enemigos[i].fila, tablero.lista_enemigos[i].columna);
+		if (tablero->lista_enemigos[i].vida > 0) {
+			//printf("Enemigo %i: fila %i, columna %i \n", i, tablero->lista_enemigos[i].fila, tablero->lista_enemigos[i].columna);
+			dist_manhattan = calcula_manhattan(prsj->pos_fila, prsj->pos_columna, tablero->lista_enemigos[i].fila, tablero->lista_enemigos[i].columna);
 			// Si es 1 el enemigo ataca
 			if (dist_manhattan == 1) {
 				simula_defensa();
@@ -1462,43 +1246,298 @@ void mover_IA() {
 	}
 }
 
+void cargar_mapa(tmapa **tab) {
+	int fila = 0, columna = 0, enemigos = 0, cofres = 0, puertas = 0;
+	int num_mapa = 0;
+	*tab = (tmapa *) malloc(sizeof(struct mapa));
+	char char_aux;
+	FILE *file;
+	char path[] = "maps/mapx.txt";
+	num_mapa = rand() % NUM_MAPAS + 1;
+	path[8] = num_mapa + '0';
+	/* Se abre el fichero en un primer momento para hacer un conteo de las
+	 filas, columnas, enemigos, puertas, etc.. */
+	file = fopen(path, "r");
+	if (file == NULL) {
+		printf("El mapa no ha podido ser cargado\n");
+		exit(1);
+	}
+	// Se reinician las variables que llevan el conteo de enemigos, cofres, etc...
+	NUM_ENEMIGOS = 0;
+	NUM_COFRES = 0;
+	NUM_PUERTAS = 0;
+	
+	while (feof(file) == 0) {
+		char_aux = fgetc(file);	
+		
+		switch(char_aux) {
+			case '\n': 
+				columna = 0;
+				fila++;
+				break;
+			case 'C':
+				columna++;
+				NUM_COFRES++;
+				break;
+			case 'E':
+				columna++;
+				NUM_ENEMIGOS++;
+				break;
+			case '-':
+				columna++;
+				NUM_PUERTAS++;
+				break;
+			case '|':
+				columna++;
+				NUM_PUERTAS++;
+				break;
+			case 'f':	
+				FILAS = fila+1;
+				COLUMNAS = columna;
+				break;
+			default:
+				columna++;
+				break;
+		}
+			
+	}
+	/* Nos colocamos al principio del archivo, se crea el tablero con las 
+	reservas de memoria adecuadas y se inicializa */
+	rewind(file);
+	/* Reserva de memoria */
+	(*tab)->mapa = (char **) malloc(FILAS * sizeof(char*));
+	for (int i=0;i<FILAS;i++)
+		(*tab)->mapa[i] = (char *) malloc(COLUMNAS*sizeof(char));
+	(*tab)->lista_enemigos = (tenemigo *) malloc(NUM_ENEMIGOS*sizeof(struct enemigo));
+	NUM_PUERTAS += 2; // Se va a crear una puerta de entrada y otra de salida en el mapa, de ahi ese '+ 2' 
+	(*tab)->lista_puertas = (tpuerta *) malloc((NUM_PUERTAS)*sizeof(struct puerta)); 
+	(*tab)->lista_cofres = (tcofre *) malloc(NUM_COFRES*sizeof(struct cofre));
+	fila = 0;
+	columna = 0;
+	cofres = 0;
+	puertas= 0;
+	enemigos = 0;	
+	while (feof(file) == 0) {
+		char_aux = fgetc(file);	
+		
+		switch(char_aux) {
+			case '\n': 
+				columna = 0;
+				fila++;
+				break;
+			case 'E':	
+				(*tab)->mapa[fila][columna] = char_aux;
+				(*tab)->lista_enemigos[enemigos].fila = fila;
+				(*tab)->lista_enemigos[enemigos].columna = columna;
+				(*tab)->lista_enemigos[enemigos].vida = 20;
+				(*tab)->lista_enemigos[enemigos].fuerza = 5;
+				enemigos++;
+				columna++;
+				break;
+			case 'C':
+				(*tab)->mapa[fila][columna] = char_aux;
+				(*tab)->lista_cofres[cofres].fila = fila;
+				(*tab)->lista_cofres[cofres].columna = columna;
+				(*tab)->lista_cofres[cofres].abierto = 0;
+				cofres++;
+				columna++;		
+				break;
+			case '-':
+				(*tab)->mapa[fila][columna] = char_aux;
+				(*tab)->lista_puertas[puertas].fila = fila;
+				(*tab)->lista_puertas[puertas].columna = columna;
+				(*tab)->lista_puertas[puertas].cerrada = !get_random_door();
+				puertas++;
+				columna++;
+				break;
+			case '|':
+				(*tab)->mapa[fila][columna] = char_aux;
+				(*tab)->lista_puertas[puertas].fila = fila;
+				(*tab)->lista_puertas[puertas].columna = columna;
+				(*tab)->lista_puertas[puertas].cerrada = !get_random_door();
+				puertas++;
+				columna++;
+				break;
+			case 'f':
+				fclose(file);
+				return;
+				break;
+			default:
+				(*tab)->mapa[fila][columna] = char_aux;
+				columna++;
+				break;
+		}
+			
+	}
+
+	printf("Error: Archivo de mapa mal formado\n");
+	fclose(file);	
+	return;
+}
+
+tpuerta* crear_puerta(tmapa **tablero, int coloca_personaje){
+	int foc, cIocF;
+	tpuerta *puerta = (tpuerta *) malloc(sizeof(struct puerta));
+	/* Primero se decide si va a ir en los bordes exteriores superiores o inferiores,
+	o en los bordes exteriores derecho o izquierdp */
+	foc = rand() % 2;
+	if (foc) {	
+		puerta->fila = rand() % FILAS;
+		// Segundo se decide si va en la primera columna o en la ultima
+		cIocF = rand() % 2; 
+		if (cIocF) {
+			puerta->columna = 0;
+		} else{
+			puerta->columna = COLUMNAS-1;
+		}
+		if (cIocF) { // Mirar si a la derecha de la puerta la casilla esta vacia porque la puerta se ha creado en el lado izquierdo
+			if ((*tablero)->mapa[puerta->fila][puerta->columna+1] != ' '){
+				free(puerta);
+				return NULL;
+			} else {
+				(*tablero)->mapa[puerta->fila][puerta->columna] = '|';
+				if (coloca_personaje){
+					prsj->pos_fila = puerta->fila;
+					prsj->pos_columna = puerta->columna+1;
+					posfilasVirtual = prsj->pos_fila;
+					poscolumnasVirtual = prsj->pos_columna; 
+					(*tablero)->mapa[puerta->fila][puerta->columna+1] = 'P';
+				}
+				return puerta;
+			}
+		} else { // Mirar si a la izquierda de la puerta la casilla esta vacia porque la puerta se ha creado en el lado derecha
+			if ((*tablero)->mapa[puerta->fila][puerta->columna-1] != ' '){
+				free(puerta);
+				return NULL;
+			} else {
+				(*tablero)->mapa[puerta->fila][puerta->columna] = '|';
+				if (coloca_personaje){
+					prsj->pos_fila = puerta->fila;
+					prsj->pos_columna = puerta->columna-1;
+					posfilasVirtual = prsj->pos_fila;
+					poscolumnasVirtual = prsj->pos_columna; 
+					(*tablero)->mapa[puerta->fila][puerta->columna-1] = 'P';
+				}
+				return puerta;
+			}
+		}
+		
+	} else {
+		puerta->columna = rand() % COLUMNAS;
+		// Segundo se decide si va en la primera columna o en la ultima
+		cIocF = rand() % 2; 
+		if (cIocF) {
+			puerta->fila = 0;
+		} else{
+			puerta->fila = FILAS-1;
+		}
+		if (cIocF) { // Mirar si debajo de la puerta la casilla esta vacia porque la puerta se ha creado en el lado superior
+			if ((*tablero)->mapa[puerta->fila+1][puerta->columna] != ' '){
+				free(puerta);
+				return NULL;
+			} else {
+				(*tablero)->mapa[puerta->fila][puerta->columna] = '-';
+				if (coloca_personaje){
+					prsj->pos_fila = puerta->fila+1;
+					prsj->pos_columna = puerta->columna;
+					posfilasVirtual = prsj->pos_fila;
+					poscolumnasVirtual = prsj->pos_columna; 
+					(*tablero)->mapa[puerta->fila+1][puerta->columna] = 'P';
+				}
+				return puerta;
+			}
+		} else { // Mirar si encima de la puerta la casilla esta vacia porque la puerta se ha creado en el lado inferior
+			if ((*tablero)->mapa[puerta->fila-1][puerta->columna] != ' '){
+				free(puerta);
+				return NULL;
+			} else {
+				(*tablero)->mapa[puerta->fila][puerta->columna] = '-';
+				if (coloca_personaje){
+					prsj->pos_fila = puerta->fila-1;
+					prsj->pos_columna = puerta->columna;
+					posfilasVirtual = prsj->pos_fila;
+					poscolumnasVirtual = prsj->pos_columna; 
+					(*tablero)->mapa[puerta->fila-1][puerta->columna] = 'P';
+				}
+				return puerta;
+			}
+		}
+	}
+}
+
+void crear_entradas(tmapa **tablero) {
+	tpuerta *puerta_entrada, *puerta_salida;
+	puerta_entrada = crear_puerta(tablero, 1);
+	while (puerta_entrada == NULL){
+		puerta_entrada = crear_puerta(tablero, 1);
+	}
+	(*tablero)->lista_puertas[NUM_PUERTAS-2] = *puerta_entrada;
+	(*tablero)->lista_puertas[NUM_PUERTAS-2].cerrada = 1;
+	free(puerta_entrada);
+	puerta_salida = crear_puerta(tablero, 0);
+	while (puerta_salida == NULL){
+		puerta_salida = crear_puerta(tablero, 0);
+	}
+	(*tablero)->lista_puertas[NUM_PUERTAS-1] = *puerta_salida;
+	(*tablero)->lista_puertas[NUM_PUERTAS-1].cerrada = 0;
+	free(puerta_salida);
+	
+}
+
+void liberar_mapa(tmapa **tablero) {
+	// Liberar mapa
+	for (int i=0;i<FILAS;i++){
+		free((*tablero)->mapa[i]);
+	}
+	free((*tablero)->mapa);
+	// Liberar puertas
+	free((*tablero)->lista_puertas);
+	// Liberar enemigos
+	free((*tablero)->lista_enemigos);
+	// Liberar cofres
+	free((*tablero)->lista_cofres);
+	// Liberar tablero
+	free(*tablero);
+	*tablero = NULL;
+}
+
 int main(int argc, char *argv[]) {
 	clearScreen();
-	animacion_por_pantalla("\n\nPseudoQuest v. 0.1\n", DELAY);
-	//printf("PseudoQuest v0.1\n");
-	animacion_por_pantalla("Bienvenido a PseudoQuest! Aquí empiezan tus aventuras, que tengas suerte.\n\n", DELAY); 
-	/*printf("Bienvenido a PseudoQuest! ");
-	sleep(1);
-	printf("Aquí empiezan tus aventuras, que tengas suerte.\n");
-	sleep(3);*/
+	animacion_por_pantalla("\n\nPseudoQuest v. 0.8\n", DELAY);
+	animacion_por_pantalla("Bienvenido a PseudoQuest! Aquí empiezan tus aventuras, que tengas suerte.\n\n", DELAY);
 	
+	srand(time(NULL)); // Inicializar semilla
 	// Inicializacion de variables
+	inicializar_jugador(&prsj);
+	//inicializar_mapa(); // Inicializacion del mapa
+	cargar_mapa(&tablero);
+	crear_entradas(&tablero);
 	
-	inicializar_jugador(prsj);
-	inicializar_mapa(); // Inicializacion del mapa
-	mostrar_mapa(); // Mostrar mapa
+	mostrar_mapa(*tablero); // Mostrar mapa
 
 	animacion_por_pantalla("\nSi eres nuevo escribe \"ayuda\" en el terminal.\n", DELAY);
-	/*sleep(2);	 
-	printf("Si eres nuevo escribe \"ayuda\" en el terminal.\n");*/
 
 
-	srand(time(NULL)); // Inicializar semilla
+	
 	
 	printf("\n-> ");
 	while (yyparse()) {
-		if (prsj.vida<=0) {
+		if (prsj->vida<=0) {
 			animacion_por_pantalla("\tHas MUERTO. Fin de la partida\n", DELAY);
 			break;		
 		}
 		printf("\n-> ");	
 	}
-
 	// Liberacion de memoria
-	if (prsj.mano_derecha != NULL )
-		free(prsj.mano_derecha);
-	if (prsj.mano_izquierda != NULL )
-		free(prsj.mano_izquierda);
+	// Liberar mochila
+	free(prsj->mochila);
+	// Liberar manos
+	if (prsj->mano_derecha != NULL )
+		free(prsj->mano_derecha);
+	if (prsj->mano_izquierda != NULL )
+		free(prsj->mano_izquierda);
+
+	liberar_mapa(&tablero);
 
 	return 0;
 }

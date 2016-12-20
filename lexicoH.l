@@ -3,7 +3,7 @@
 #include "sintacticoH.tab.h"
 %}
 lanzar	(?i:lanzar?(" "([el|los]" ")?dados?)?)
-avanzar (?i:mover|avanzar)
+avanzar (?i:mover|avanzar?)
 atacar	(?i:atacar?)
 equipar	(?i:equipar?)
 tirar	(?i:tirar?)

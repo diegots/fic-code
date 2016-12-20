@@ -1,6 +1,7 @@
 #define pi 3.141592
 /* Constante usada para la animacion de los mensajes por pantalla */
-#define DELAY 25000
+#define DELAY 50000
+//#define DELAY 1
 /* Constantes de direccion */
 #define D_ARRIBA 1
 #define D_ABAJO 2
@@ -13,7 +14,7 @@
 
 /* Constantes de jugador */
 #define VIDA_JUDADOR 10
-#define TAM_MOCHILA 5
+#define TAM_MOCHILA 6
 #define POSICION_INICIAL_FILA 10
 #define POSICION_INICIAL_COLUMNA 16
 #define MANO_DERECHA 1
@@ -31,12 +32,13 @@ aparicion de objetos vacios, cuando mayor sea la proporcion de este numero
 con el de TOTAL_OBJETOS, mas cofre vacios apareceran */
 
 /* Constantes de mapa */
-#define FILAS 13
-#define COLUMNAS 22
-#define NUM_PUERTAS 3
-#define NUM_ENEMIGOS 7
-#define NUM_COFRES 8
+//#define FILAS 13
+//#define COLUMNAS 22
+//#define NUM_PUERTAS 3
+//#define NUM_ENEMIGOS 7
+//#define NUM_COFRES 8
 #define VISIBILIDAD_ENEMIGO 7
+#define NUM_MAPAS 7
 
 /* Estructuras de datos */
 struct objeto {
@@ -53,7 +55,7 @@ struct jugador {
 	int vida;
 	tobjeto *mano_izquierda;
 	tobjeto *mano_derecha;
-	tobjeto mochila[TAM_MOCHILA];
+	tobjeto *mochila;
 };
 typedef struct jugador tjugador;
 
@@ -80,10 +82,10 @@ struct enemigo {
 typedef struct enemigo tenemigo;
 
 struct mapa {
-	char mapa[FILAS][COLUMNAS];
-	tpuerta lista_puertas[NUM_PUERTAS];
-	tcofre lista_cofres[NUM_COFRES];
-	tenemigo lista_enemigos[NUM_ENEMIGOS];
+	char **mapa;
+	tpuerta *lista_puertas;
+	tcofre *lista_cofres;
+	tenemigo *lista_enemigos;
 };
 typedef struct mapa tmapa;
 
@@ -101,6 +103,7 @@ int regla_equipar(int, int);
 int regla_abrir_puerta();
 int regla_abrir_cofre();
 int regla_usar_objeto(int);
+int regla_fin_turno();
 void regla_espada();
 void regla_pocion();
 void regla_accion(int, int);
@@ -111,7 +114,7 @@ void mostrar_ayuda();
 void mostrar_reglas();
 void mostrar_info_jugador(tjugador);
 void inicializar_mapa();
-void mostrar_mapa();
+void mostrar_mapa(tmapa);
 int colision(int, int);
 int puerta_cerrada(int, int);
 int abrir_puerta(int, int);
@@ -122,3 +125,9 @@ void actualiza_enemigo(int, int, int);
 void animacion_por_pantalla(char [], int);
 int mano_ocupada(int);
 void mover_IA();
+void cargar_mapa(tmapa**);
+int get_random_door();
+void crear_entradas(tmapa **);
+void liberar_mapa(tmapa **);
+void clearScreen();
+int yylex();
