@@ -1,0 +1,175 @@
+Mapa:
+	                    
+	 _      _      _    
+	 _     |           |
+	         E   _      
+	    E           E   
+	     E              
+	  -             -   
+	              _     
+	            E       
+	            P       
+	           -        
+
+Información del jugador:
+	Vida: 83
+	Mano derecha: Vacía
+	Mano izquierda: Vacía
+
+Mochila:
+	-----------------------------------
+	|		VACIO		  |
+	-----------------------------------
+	|		VACIO		  |
+	-----------------------------------
+	|		VACIO		  |
+	-----------------------------------
+	|		VACIO		  |
+	-----------------------------------
+	|		VACIO		  |
+	-----------------------------------
+	|		VACIO		  |
+	-----------------------------------
+
+-> lanzar dado 
+Se lanza el dado...
+Has sacado un 2.
+-> avanzar 2 izq
+
+
+
+
+
+
+
+
+
+
+
+
+Movimientos demás!
+
+Mapa:
+	                    
+	 _      _      _    
+	 _     |           |
+	         E   _      
+	    E           E   
+	     E              
+	  -             -   
+	              _     
+	            E       
+	            P       
+	           -        
+
+
+-> avanzar 1 izq
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Puedes seguir moviendote si lo deseas.				
+Te queda 1 movimiento
+Mapa:
+	                    
+	 _      _      _    
+	 _     |           |
+	         E   _      
+	    E           E   
+	     E              
+	  -             -   
+	              _     
+	            E       
+	         P          
+	           -        
+
+
+-> avanzar 1 izq
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+No te quedan más movimientos
+
+Mapa:
+	                    
+	 _      _      _    
+	 _     |           |
+	         E   _      
+	    E           E   
+	     E              
+	  -             -   
+	              _     
+	            E       
+	        P           
+	           -        
+
+
