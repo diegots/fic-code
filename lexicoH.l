@@ -24,7 +24,7 @@ salir	(?i:salir|exit|q)
 ayuda 	(?i:(ver" ")?ayuda|help)
 info	(?i:(ver" ")?info(rmacion)?)
 reglas	(?i:([mostrar|ver]" ")?reglas)
-finTurno	(?i:fin(alizar)?" "(de" ")?turno)
+finTurno	(?i:fin(alizar)?(" "(de" ")?turno)?)
 
 %%
 {lanzar}	{return LANZAR;}

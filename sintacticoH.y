@@ -228,6 +228,9 @@ int regla_lanzar(){
 		posfilasVirtual = prsj->pos_fila;
 		poscolumnasVirtual = prsj->pos_columna;
 
+	} else if (valor_dado==0){
+		animacion_por_pantalla("Ya has lanzado el dado y no te quedan \
+movimientos. Si quieres moverte tienes que finalizar tu turno.",DELAY);
 	} else {
 		animacion_por_pantalla("Ya has lanzado el dado, mueve al personaje.", DELAY);		
 	}		
@@ -265,10 +268,13 @@ int regla_avanzar() {
 		arriba = abajo = izquierda = derecha = 0;
 	} else if (!lanzado){
 		animacion_por_pantalla("Aún no has lanzado el dado.\n", DELAY);
+		arriba = abajo = izquierda = derecha = 0;
 	} else if (arriba+abajo+izquierda+derecha>valor_dado){
 		animacion_por_pantalla("Movimientos demás!\n", DELAY);
 		
-		arriba = abajo = izquierda = derecha = 0;			
+		arriba = abajo = izquierda = derecha = 0;
+		posfilasVirtual = prsj->pos_fila;
+		poscolumnasVirtual = prsj->pos_columna;			
 	} else if (ataque) {
 		animacion_por_pantalla("Una vez hecho un movimiento de ataque, no puedes moverte hasta el turno siguiente\n", DELAY);
 	} else{
@@ -922,6 +928,7 @@ void mostrar_ayuda(){
 que puede ser 'arriba, 'abajo', 'izquierda' o 'derecha'\n\
 		- Ejemplo: atacar abajo\n\
 	+ Ayuda: ayuda | help | ayuda [comando] (aun no disponible)\n\
+	+ Finalizar turno: finalizar turno | fin turno | fin\n\
 	+ Salir: salir | exit | q";
 
 	printf ("%s", msg);
