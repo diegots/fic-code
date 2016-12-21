@@ -1,10 +1,11 @@
 # fic-dlp-lambda
-Toplevel like tool and documentation for Benjamin C. Pierce's untyped lambda calculus library.
 
 <h1 align="center">
     <img src="https://raw.githubusercontent.com/diegots/fic-dlp-lambda/master/lambda-c-image.png" 
         alt="lambda-calculus symbol">
 </h1>
+
+Toplevel like tool and documentation for Benjamin C. Pierce's untyped lambda calculus library.
 
 Introduction
 ------------
