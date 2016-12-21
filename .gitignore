@@ -3,6 +3,5 @@
 *.tab.h
 sololexico
 heroquest
-*.txt
 *.swo
 *.swp

@@ -93,7 +93,8 @@ S : 	LANZAR '\n' {
 	}
 	| TIRAR objeto '\n' {
 		// Implementar
-		for (int i=0;i<num_objetos_mochila;i++) {
+		int i;
+		for(i=0;i<num_objetos_mochila;i++) {
 			if (prsj->mochila[i].tipo == $2) {
 				// Eliminar de la mochila
 				printf("%s eliminada\n", prsj->mochila[i].nombre);
@@ -353,7 +354,8 @@ int regla_equipar(int tipo_objeto, int mano) {
 		return 1;
 	}
 	// Si no tenemos el objeto igual
-	for (int i = 0; i<num_objetos_mochila; i++) {
+	int i;
+	for(i = 0; i<num_objetos_mochila; i++) {
 		if (tipo_objeto == prsj->mochila[i].tipo){
 			switch(tipo_objeto) {
 				case OBJ_ESPADA:
@@ -530,7 +532,8 @@ encuentre con una mostrar por pantalla : !NOOOO.. PUEDES.. PASAAAR! (Necesitas
 }
 
 int puerta_cerrada(int fila, int columna) { // Mover esta funcion a la parte de funciones auxiliares
-	for (int i=0;i<NUM_PUERTAS;i++) {
+	int i;
+	for(i=0;i<NUM_PUERTAS;i++) {
 		if (tablero->lista_puertas[i].fila == fila && tablero->lista_puertas[i].columna == columna) {
 			return tablero->lista_puertas[i].cerrada;
 		}
@@ -540,7 +543,8 @@ int puerta_cerrada(int fila, int columna) { // Mover esta funcion a la parte de 
 
 /* Devuelve 1 si abre el cofre y 0 si ya estaba abierto */
 int abre_cofre(int fila, int columna) {
-	for (int i = 0; i<NUM_COFRES; i++) {
+	int i;
+	for(i = 0; i<NUM_COFRES; i++) {
 		if ((tablero->lista_cofres[i].fila == fila) && (tablero->lista_cofres[i].columna == columna)) {
 			if (tablero->lista_cofres[i].abierto) {
 				animacion_por_pantalla("Cofre ya abierto\n", DELAY);
@@ -628,7 +632,8 @@ int regla_abrir_cofre() {
 int regla_usar_objeto(int tipo_objeto) {
 	
 	char cadena[100];
-	for (int i = 0; i<num_objetos_mochila; i++) {
+	int i;
+	for(i = 0; i<num_objetos_mochila; i++) {
 		if (tipo_objeto == prsj->mochila[i].tipo) {
 			switch(tipo_objeto) {
 				case OBJ_ESPADA:
@@ -717,7 +722,8 @@ int regla_fin_turno() {
 }
 
 int abrir_puerta(int fila, int columna) { // Mover esta funcion a la parte de funciones auxiliares
-	for (int i=0;i<NUM_PUERTAS;i++) {
+	int i;
+	for(i=0;i<NUM_PUERTAS;i++) {
 		if (tablero->lista_puertas[i].fila == fila && tablero->lista_puertas[i].columna == columna) {
 			if (i==NUM_PUERTAS-2)
 				return 0;
@@ -831,7 +837,8 @@ void simula_ataque(int pos_fila_enemigo, int pos_columna_enemigo) {
 }
 
 void actualiza_enemigo(int fila, int columna, int danho) {
-	for (int i = 0; i<NUM_ENEMIGOS; i++) {
+	int i;
+	for(i = 0; i<NUM_ENEMIGOS; i++) {
 		if (tablero->lista_enemigos[i].fila == fila && tablero->lista_enemigos[i].columna == columna) {
 			tablero->lista_enemigos[i].vida -= danho;
 			if (tablero->lista_enemigos[i].vida <= 0) {
@@ -891,43 +898,48 @@ int get_random_door(){
 
 void mostrar_ayuda(){	
 	char msg[] = "\
-Información del mapa\n\
+\nInformación del mapa\n\
 	\e[1m\e[38;5;208mP\e[0m: Personaje\n\
-	\e[1m\e[92mC\e[0m: Cofre\n\
-	E: Enemigo\n\
-	T: Trampa (no visible)\n\
+	\e[30;48;5;52m_\e[0m: Cofre\n\
+	\e[38;5;214mE\e[0m: Enemigo\n\
 	\e[48;5;235m \e[0m: Paredes exteriores\n\
 	\e[48;5;239m \e[0m: Paredes interiores\n\
-Comandos:\n\
-	Ver reglas: reglas | mostrar reglas | ver reglas\n\
-	Ver informacion de la partida: info\n\
-	Lanzar dados: lanzar | lanzar dado\n\
-	Moverse: avanzar [nº pasos] [direccion]\n\
-		direccion puede ser 'arriba', 'abajo', 'izquierda' o 'derecha'\n\
-		Ejemplo: avanzar 3 arriba 1 izquierda 3 abajo\n\
-	Usar objeto: usar [nombreobjeto]\n\
-		Ejemplo: usar pocion\n\
-	Abrir puertas: abrir puerta\n\
-	Abrir cofres: abrir cofre\n\
-	Ayuda: ayuda | help | ayuda [comando] (aun no disponible)\n\
-	Salir: salir | exit | q";
+\nComandos:\n\
+	+ Ver reglas: reglas | mostrar reglas | ver reglas\n\
+	+ Ver informacion de la partida: informacion | ver informacion | info\n\
+	+ Lanzar dados: lanzar | lanzar dado\n\
+	+ Moverse: avanzar [nº pasos] [direccion]\n\
+		- \"direccion\" puede ser 'arriba', 'abajo', 'izquierda' o 'derecha'\n\
+		- Ejemplo: avanzar 3 arriba 1 izquierda 3 abajo\n\
+	+ Usar objeto: usar [nombre_objeto]\n\
+		- Ejemplo: usar pocion\n\
+	+ Tirar objeto: tirar [nombre_objeto]\n\
+		- Ejemplo: tirar llave\n\
+	+ Abrir puertas: abrir puerta\n\
+	+ Abrir cofres: abrir cofre\n\
+	+ Atacar: atacar [direccion]\n\
+		- Se indica la posicion del enemigo respecto al protagonista, \
+que puede ser 'arriba, 'abajo', 'izquierda' o 'derecha'\n\
+		- Ejemplo: atacar abajo\n\
+	+ Ayuda: ayuda | help | ayuda [comando] (aun no disponible)\n\
+	+ Salir: salir | exit | q";
 
 	printf ("%s", msg);
 }
 
 void mostrar_reglas(){
 	char msg[] = "\
-Reglas\n\
-	- Un dado para moverse con valores del 1 al 9\n\
-	- El jugador comienza con 100 de vida y una mochila con capacidad para\
- 20 objetos\n\
+Reglas:\n\
+	- Juego basado en turnos\n\
+	- El jugador comienza con 100 de vida y una mochila con capacidad \
+limitada.\n\
 	- Hay trampas ocultas en el escenario que no se mostrarán hasta que se\
  activen\n\
 Secuencia de turno:\n\
-	1º Lanzar dado [Opcional] [Obligatorio si se quiere mover al personaje\n\
-	2º Atacar, abrir cofre, utilizar objeto... [Opcional] [No disponible]\n\
+	1º Lanzar dado [Opcional] [Obligatorio si se quiere mover al personaje]\n\
+	2º Atacar, abrir cofre, utilizar objeto... [Opcional]\n\
 	3º Moverse [Opcional]\n\
-	4º Atacar, abrir cofre, utilizar objeto... [Opcional] [No disponible]\n\
+	4º Atacar, abrir cofre, utilizar objeto... [Opcional] \n\
 	5º Finalizar turno [Obligatorio]\n";
 
 	printf ("%s", msg);
@@ -946,7 +958,8 @@ void mostrar_info_jugador(tjugador j) {
 		printf("\tMano izquierda: Vacía\n");
 	printf("\nMochila:\n");
 	
-	for(int i=0;i<TAM_MOCHILA;i++){
+	int i;
+	for(i=0;i<TAM_MOCHILA;i++){
 		printf("\t-----------------------------------\n");
 		if (prsj->mochila[i].tipo)
 			printf("\t|\t\t%s\t\t  |\n", j.mochila[i].nombre);
@@ -973,7 +986,8 @@ void mostrar_mapa(tmapa tablero){
 			} else if (tablero.mapa[i][j] == 'x'){
 				printf ("\e[48;5;239m \e[0m"); // Paredes inter
 			} else if (tablero.mapa[i][j] == 'C'){
-				for (int k = 0; k<NUM_COFRES; k++) {
+				int k;
+				for(k = 0; k<NUM_COFRES; k++) {
 					if ((tablero.lista_cofres[k].fila == i) && (tablero.lista_cofres[k].columna == j)) {
 						if (tablero.lista_cofres[k].abierto) {
 							printf("\e[30;48;5;52m0\e[0m"); // Cofre abierto
@@ -1031,7 +1045,8 @@ void inicializar_jugador(tjugador **jugador) {
 	*jugador = (tjugador *) malloc(sizeof(tjugador));
 	(*jugador) -> vida = 100;
 	(*jugador) -> mochila = (tobjeto *) malloc(TAM_MOCHILA*sizeof(struct objeto));
-	for (int i = 0;i<TAM_MOCHILA;i++){
+	int i;
+	for(i = 0;i<TAM_MOCHILA;i++){
 		(*jugador) -> mochila[i].tipo = 0;
 		(*jugador) -> mochila[i].valor = 0;
 	}
@@ -1039,7 +1054,8 @@ void inicializar_jugador(tjugador **jugador) {
 
 
 void animacion_por_pantalla(char cadena[], int delay) {
-	for (int i=0; i<strlen(cadena); i++) {
+	int i;
+	for(i=0; i<strlen(cadena); i++) {
 		printf("%c", cadena[i]);
 		fflush(NULL);
 		usleep(delay);
@@ -1228,17 +1244,21 @@ int mover_enemigo(int id_enemigo) {
 void mover_IA() {
 	int dist_manhattan = 0, orientacion = 0;
 	// Calcular distancia Manhattan de cada enemigo al protagonista
-	for (int i=0;i<NUM_ENEMIGOS;i++) {
+	int i;
+	for(i=0;i<NUM_ENEMIGOS;i++) {
 		if (tablero->lista_enemigos[i].vida > 0) {
-			//printf("Enemigo %i: fila %i, columna %i \n", i, tablero->lista_enemigos[i].fila, tablero->lista_enemigos[i].columna);
+			/* Se llama a la funcion auxiliar que hace el calculo 
+			de la distancia manhattan */
 			dist_manhattan = calcula_manhattan(prsj->pos_fila, prsj->pos_columna, tablero->lista_enemigos[i].fila, tablero->lista_enemigos[i].columna);
 			// Si es 1 el enemigo ataca
 			if (dist_manhattan == 1) {
 				simula_defensa();
 			} else if (dist_manhattan > VISIBILIDAD_ENEMIGO) { // Si es mayor que visibilidad el enemigo no hace nada
-				//printf("Enemigo muy lejos\n");
 				continue;
-			} else {	// En caso contrario
+			} else { // En caso contrario
+				/* Si mover enemigo devuelve 1 quiere decir que
+				ha llegado hasta el progonista por lo que se 
+				hace la simulacion de defensa */
 				if (mover_enemigo(i))
 					simula_defensa();
 			}
@@ -1246,13 +1266,17 @@ void mover_IA() {
 	}
 }
 
+
+/* Crea un mapa escogiendo un archivo de manera aleatoria de la carpeta '/maps' */
 void cargar_mapa(tmapa **tab) {
 	int fila = 0, columna = 0, enemigos = 0, cofres = 0, puertas = 0;
 	int num_mapa = 0;
-	*tab = (tmapa *) malloc(sizeof(struct mapa));
 	char char_aux;
 	FILE *file;
 	char path[] = "maps/mapx.txt";
+
+	
+	*tab = (tmapa *) malloc(sizeof(struct mapa));
 	num_mapa = rand() % NUM_MAPAS + 1;
 	path[8] = num_mapa + '0';
 	/* Se abre el fichero en un primer momento para hacer un conteo de las
@@ -1301,12 +1325,14 @@ void cargar_mapa(tmapa **tab) {
 		}
 			
 	}
+
 	/* Nos colocamos al principio del archivo, se crea el tablero con las 
 	reservas de memoria adecuadas y se inicializa */
 	rewind(file);
 	/* Reserva de memoria */
 	(*tab)->mapa = (char **) malloc(FILAS * sizeof(char*));
-	for (int i=0;i<FILAS;i++)
+	int i;
+	for(i=0;i<FILAS;i++)
 		(*tab)->mapa[i] = (char *) malloc(COLUMNAS*sizeof(char));
 	(*tab)->lista_enemigos = (tenemigo *) malloc(NUM_ENEMIGOS*sizeof(struct enemigo));
 	NUM_PUERTAS += 2; // Se va a crear una puerta de entrada y otra de salida en el mapa, de ahi ese '+ 2' 
@@ -1375,88 +1401,139 @@ void cargar_mapa(tmapa **tab) {
 	return;
 }
 
+/* Crea una puerta en una pared exterior del mapa. Si la puerta se crea en un 
+sitio incorrecto (por ejemplo, podría crearse en una pared exterior pero al 
+lado de un cofre que imposibilitaria su acceso) devuelve NULL, en caso 
+contrario devuelve la puerta. Si se le indica, también posiciona al personaje
+ al lado de la puerta creada. */
 tpuerta* crear_puerta(tmapa **tablero, int coloca_personaje){
-	int foc, cIocF;
+	/* foc (fila o columna) y pIopF (posicion inicial o posicion final)*/
+	int foc, pIopF; 
 	tpuerta *puerta = (tpuerta *) malloc(sizeof(struct puerta));
 	/* Primero se decide si va a ir en los bordes exteriores superiores o inferiores,
-	o en los bordes exteriores derecho o izquierdp */
+	o en los bordes exteriores derecho o izquierdo */
 	foc = rand() % 2;
-	if (foc) {	
+	
+	if (foc) { // Si va en los bordes izquierdo o derecho
+		// Se decide en que fila	
 		puerta->fila = rand() % FILAS;
-		// Segundo se decide si va en la primera columna o en la ultima
-		cIocF = rand() % 2; 
-		if (cIocF) {
+		// Se decide si en el borde izquierdo o en el borde derecho
+		pIopF = rand() % 2;
+		// Borde izquierdo 
+		if (pIopF) {
 			puerta->columna = 0;
-		} else{
+		} else{ // Borde derecho 
 			puerta->columna = COLUMNAS-1;
 		}
-		if (cIocF) { // Mirar si a la derecha de la puerta la casilla esta vacia porque la puerta se ha creado en el lado izquierdo
+		/* Una vez calculada la posicion de la puerta se comprueba que
+		es una posicion correcta */
+		if (pIopF) { // En este caso se mira a la derecha de la puerta porque la puerta se ha creado en el borde izquierdo
+			/* Si al lado de la puerta no hay una casilla vacia se 
+			devuelve NULL*/
 			if ((*tablero)->mapa[puerta->fila][puerta->columna+1] != ' '){
 				free(puerta);
 				return NULL;
-			} else {
+			} else { // En caso contrario se pinta la puerta en el mapa
 				(*tablero)->mapa[puerta->fila][puerta->columna] = '|';
-				if (coloca_personaje){
+				/* Si ademas hay que colocar el personaje se 
+				coloca en la posicion correspondiente */
+				if (coloca_personaje){ 
 					prsj->pos_fila = puerta->fila;
 					prsj->pos_columna = puerta->columna+1;
+					/* Se reinician las posiciones 
+					virtuales por si el jugador aun tiene 
+					pendiente movimientos para ejecutar en
+					este turno */
 					posfilasVirtual = prsj->pos_fila;
 					poscolumnasVirtual = prsj->pos_columna; 
+
 					(*tablero)->mapa[puerta->fila][puerta->columna+1] = 'P';
 				}
 				return puerta;
 			}
-		} else { // Mirar si a la izquierda de la puerta la casilla esta vacia porque la puerta se ha creado en el lado derecha
+		} else { // Se mira si a la izquierda de la puerta la casilla esta vacia porque la puerta se ha creado en el borde derecho
+			/* Si al lado de la puerta no hay una casilla vacia se 
+			devuelve NULL*/
 			if ((*tablero)->mapa[puerta->fila][puerta->columna-1] != ' '){
 				free(puerta);
 				return NULL;
-			} else {
+			} else { // En caso contrario se pinta la puerta en el mapa
 				(*tablero)->mapa[puerta->fila][puerta->columna] = '|';
+				/* Si ademas hay que colocar el personaje se 
+				coloca en la posicion correspondiente */
 				if (coloca_personaje){
 					prsj->pos_fila = puerta->fila;
 					prsj->pos_columna = puerta->columna-1;
+					/* Se reinician las posiciones 
+					virtuales por si el jugador aun tiene 
+					pendiente movimientos para ejecutar en
+					este turno */
 					posfilasVirtual = prsj->pos_fila;
 					poscolumnasVirtual = prsj->pos_columna; 
+
 					(*tablero)->mapa[puerta->fila][puerta->columna-1] = 'P';
 				}
 				return puerta;
 			}
 		}
 		
-	} else {
+	} else { // Si va en el borde superior o inferior
+		// Se decide en que columna
 		puerta->columna = rand() % COLUMNAS;
-		// Segundo se decide si va en la primera columna o en la ultima
-		cIocF = rand() % 2; 
-		if (cIocF) {
+		// Se decide si va en el borde superior o en el borde inferior
+		pIopF = rand() % 2;
+		// Borde superior 
+		if (pIopF) {
 			puerta->fila = 0;
-		} else{
+		} else{ // Borde inferior
 			puerta->fila = FILAS-1;
 		}
-		if (cIocF) { // Mirar si debajo de la puerta la casilla esta vacia porque la puerta se ha creado en el lado superior
+		/* Una vez calculada la posicion de la puerta se comprueba que
+		es una posicion correcta */
+		if (pIopF) { // Se mira si debajo de la puerta la casilla esta vacia porque la puerta se ha creado en el borde superior
+			/* Si al lado de la puerta no hay una casilla vacia se 
+			devuelve NULL*/
 			if ((*tablero)->mapa[puerta->fila+1][puerta->columna] != ' '){
 				free(puerta);
 				return NULL;
-			} else {
+			} else { // En caso contrario se pinta la puerta en el mapa
 				(*tablero)->mapa[puerta->fila][puerta->columna] = '-';
+				/* Si ademas hay que colocar el personaje se 
+				coloca en la posicion correspondiente */
 				if (coloca_personaje){
 					prsj->pos_fila = puerta->fila+1;
 					prsj->pos_columna = puerta->columna;
+					/* Se reinician las posiciones 
+					virtuales por si el jugador aun tiene 
+					pendiente movimientos para ejecutar en
+					este turno */
 					posfilasVirtual = prsj->pos_fila;
-					poscolumnasVirtual = prsj->pos_columna; 
+					poscolumnasVirtual = prsj->pos_columna;
+ 
 					(*tablero)->mapa[puerta->fila+1][puerta->columna] = 'P';
 				}
 				return puerta;
 			}
-		} else { // Mirar si encima de la puerta la casilla esta vacia porque la puerta se ha creado en el lado inferior
+		} else { // Mirar si encima de la puerta la casilla esta vacia porque la puerta se ha creado en el borde inferior
+			/* Si al lado de la puerta no hay una casilla vacia se 
+			devuelve NULL*/
 			if ((*tablero)->mapa[puerta->fila-1][puerta->columna] != ' '){
 				free(puerta);
 				return NULL;
-			} else {
+			} else { // En caso contrario se pinta la puerta en el mapa
 				(*tablero)->mapa[puerta->fila][puerta->columna] = '-';
+				/* Si ademas hay que colocar el personaje se 
+				coloca en la posicion correspondiente */
 				if (coloca_personaje){
 					prsj->pos_fila = puerta->fila-1;
 					prsj->pos_columna = puerta->columna;
+					/* Se reinician las posiciones 
+					virtuales por si el jugador aun tiene 
+					pendiente movimientos para ejecutar en
+					este turno */
 					posfilasVirtual = prsj->pos_fila;
-					poscolumnasVirtual = prsj->pos_columna; 
+					poscolumnasVirtual = prsj->pos_columna;
+ 
 					(*tablero)->mapa[puerta->fila-1][puerta->columna] = 'P';
 				}
 				return puerta;
@@ -1465,28 +1542,55 @@ tpuerta* crear_puerta(tmapa **tablero, int coloca_personaje){
 	}
 }
 
+/* Crea en las paredes exteriores del mapa de manera aleatoria una puerta de 
+entrada y otra de salida y las añade a la lista de puertas del tablero junto a 
+las ya creadas al cargar el mapa.*/
 void crear_entradas(tmapa **tablero) {
 	tpuerta *puerta_entrada, *puerta_salida;
 	puerta_entrada = crear_puerta(tablero, 1);
+	/* Mientras la funcion crear_puerta no consiga crear correctamente 
+	la puerta no continua */
 	while (puerta_entrada == NULL){
+		/* Como es la puerta de entrada se indica que hay que colocar
+		 al personaje a su lado */
 		puerta_entrada = crear_puerta(tablero, 1);
 	}
+	/* La puerta se almacena en la penultima posicion de la lista (ya 
+	reservada para la puerta de entrada previamente en la funcion 
+	cargar_mapa */
 	(*tablero)->lista_puertas[NUM_PUERTAS-2] = *puerta_entrada;
+	/* La puerta de entrada siempre se inicializa como cerrada y ademas se 
+	evitara que pueda ser abierta en la funcion abrir puerta para evitar 
+	que el protagonista pueda volver hacia atras*/
 	(*tablero)->lista_puertas[NUM_PUERTAS-2].cerrada = 1;
+	/* Se libera la puerta auxiliar creada una vez se ha almacenado en la 
+	lista */
 	free(puerta_entrada);
 	puerta_salida = crear_puerta(tablero, 0);
+	/* Mientras la funcion crear_puerta no consiga crear correctamente 
+	la puerta no continua */
 	while (puerta_salida == NULL){
 		puerta_salida = crear_puerta(tablero, 0);
 	}
+	/* La puerta se almacena en la ultima posicion de la lista (ya 
+	reservada para la puerta de salida previamente en la funcion 
+	cargar_mapa */
 	(*tablero)->lista_puertas[NUM_PUERTAS-1] = *puerta_salida;
+	/* La puerta de salida siempre se inicializa como abierta para permitir
+	 al personaje avanzar al mapa siguiente aunque no tenga una llave */
 	(*tablero)->lista_puertas[NUM_PUERTAS-1].cerrada = 0;
+	/* Se libera la puerta auxiliar creada una vez se ha almacenado en la 
+	lista */
 	free(puerta_salida);
 	
 }
 
+/* Recibe un variable de tipo tmapa y libera la memoria asignada a dicha 
+variable */
 void liberar_mapa(tmapa **tablero) {
 	// Liberar mapa
-	for (int i=0;i<FILAS;i++){
+	int i;
+	for(i=0;i<FILAS;i++){
 		free((*tablero)->mapa[i]);
 	}
 	free((*tablero)->mapa);
@@ -1501,34 +1605,40 @@ void liberar_mapa(tmapa **tablero) {
 	*tablero = NULL;
 }
 
+/* Funcion principal del programa */
 int main(int argc, char *argv[]) {
+	// Se limpia el terminal
 	clearScreen();
+	// Mensajes de bienvenida
 	animacion_por_pantalla("\n\nPseudoQuest v. 0.8\n", DELAY);
-	animacion_por_pantalla("Bienvenido a PseudoQuest! Aquí empiezan tus aventuras, que tengas suerte.\n\n", DELAY);
+	animacion_por_pantalla("Bienvenido a PseudoQuest! Aquí empiezan \
+tus aventuras, que tengas suerte.\n\n", DELAY);
 	
-	srand(time(NULL)); // Inicializar semilla
+	// Inicializar semilla
+	srand(time(NULL)); 
 	// Inicializacion de variables
 	inicializar_jugador(&prsj);
-	//inicializar_mapa(); // Inicializacion del mapa
+	// Se carga un mapa aleatorio
 	cargar_mapa(&tablero);
+	/* Se crean aleatoriamente una puerta de entrada, y otra de salida 
+	que posibilidad cambiar de mapa. */
 	crear_entradas(&tablero);
-	
-	mostrar_mapa(*tablero); // Mostrar mapa
-
+	// Se muestra el mapa
+	mostrar_mapa(*tablero); 
+	// Mensaje de ayuda
 	animacion_por_pantalla("\nSi eres nuevo escribe \"ayuda\" en el terminal.\n", DELAY);
 
-
-	
-	
+	// Comienza el bucle del juego
 	printf("\n-> ");
 	while (yyparse()) {
+		// Si el personaje muere el juego finaliza
 		if (prsj->vida<=0) {
 			animacion_por_pantalla("\tHas MUERTO. Fin de la partida\n", DELAY);
 			break;		
 		}
 		printf("\n-> ");	
 	}
-	// Liberacion de memoria
+	/* Liberacion de memoria */
 	// Liberar mochila
 	free(prsj->mochila);
 	// Liberar manos
@@ -1536,7 +1646,7 @@ int main(int argc, char *argv[]) {
 		free(prsj->mano_derecha);
 	if (prsj->mano_izquierda != NULL )
 		free(prsj->mano_izquierda);
-
+	// Liberar memoria relacionada con el mapa
 	liberar_mapa(&tablero);
 
 	return 0;
