@@ -1,3 +1,8 @@
+(** This is a minimum implementation to run lambda implementation as a REPL environment.
+
+    It uses mail.ml functions with some changes. Final executable is obteined linking 
+    all compiled objects but toplevel.cmo instead of main.cmo. *)
+
 open Support.Pervasive
 open Support.Error
 open Core
@@ -38,7 +43,6 @@ let welcome_msg =
 "Welcome, this is a lambda-calculus toplevel interpreter based on Benjamin C.\n\
 Pierce implementations available at https://www.cis.upenn.edu/~bcpierce/tapl/\n"
 
-(*let context = ref (emptycontext)*)
 let context = ref emptycontext
 
 (* lazo is the top level interface *)

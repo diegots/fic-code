@@ -17,6 +17,7 @@
 #
 OBJS = support.cmo syntax.cmo core.cmo parser.cmo lexer.cmo main.cmo
 TLOBJS = support.cmo syntax.cmo core.cmo parser.cmo lexer.cmo toplevel.cmo
+MLFILES = core.ml main.ml support.ml syntax.ml
 
 # Files that need to be generated from other files
 DEPEND += lexer.ml parser.ml 
@@ -38,7 +39,10 @@ doc: $(OBJS)
 
 doc-graph: $(OBJS)
 	@echo Generating dependency graph
-	ocamldoc -dot *.ml *.mli
+	ocamldoc -o modules-graph.dot -dot *.ml *.mli
+	dot -Grotate=0 -Ecolor="#CC4A14" -Nfillcolor="#54CC14" \
+            -Tsvg -omodules-graph.svg modules-graph.dot
+        
 
 
 # Include an automatically generated list of dependencies between source files
@@ -87,7 +91,7 @@ parser.ml parser.mli: parser.mly
 clean::
 	if [ -d $(DOC) ] ; then rm -rf $(DOC)/* ; fi
 	rm -rf lexer.ml parser.ml parser.mli *.o *.cmo *.cmi parser.output \
-	   f f.exe toplevel TAGS *~ *.bak
+	   f f.exe toplevel TAGS *~ *.bak *.dot *.svg
 
 # Rebuild intermodule dependencies
 depend:: $(DEPEND) 
