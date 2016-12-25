@@ -997,12 +997,14 @@ Reglas:\n\
 	- Juego basado en turnos\n\
 	- El jugador comienza con 100 de vida y una mochila con capacidad \
 limitada.\n\
-Secuencia de turno:\n\
-	1º Lanzar dado [Opcional] [Obligatorio si se quiere mover al personaje]\n\
-	2º Atacar, abrir cofre, utilizar objeto... [Opcional]\n\
-	3º Moverse [Opcional]\n\
-	4º Atacar, abrir cofre, utilizar objeto... [Opcional] \n\
-	5º Finalizar turno [Obligatorio]\n";
+	- Secuencia de turno:\n\
+		1º Lanzar dado [Opcional] [Obligatorio si se quiere mover al personaje]\n\
+		2º Atacar, abrir cofre, utilizar objeto... [Opcional]\n\
+		3º Moverse [Opcional]\n\
+		4º Atacar, abrir cofre, utilizar objeto... [Opcional] \n\
+		5º Finalizar turno [Obligatorio]\n\
+	- Solo se puede atacar una vez por turno.\n\
+	- Una vez realizado un ataque, no se pueden hacer movimientos hasta el siguiente turno.";
 
 	printf ("%s", msg);
 }
