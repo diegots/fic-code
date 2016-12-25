@@ -7,7 +7,7 @@ all: compile run
 compile:
 	flex $(FUENTE1).l
 	bison -o $(FUENTE2).tab.c $(FUENTE2).y -yd
-	gcc -ggdb -g -o $(FUENTE3) lex.yy.c $(FUENTE2).tab.c -lm -lfl -ly
+	gcc -g -o $(FUENTE3) lex.yy.c $(FUENTE2).tab.c -lm -lfl -ly
 
 run:
 	./$(FUENTE3)
