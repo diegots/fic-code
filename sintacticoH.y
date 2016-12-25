@@ -211,6 +211,7 @@ direccion : ARRIBA {
 
 /* Funciones principales */
 int regla_lanzar(){
+	// Se comprueba si se ha lanzado el dado ya
 	if (!lanzado){
 		animacion_por_pantalla("Se lanza el dado", DELAY);
 		animacion_por_pantalla("...\n", DELAY*8);
@@ -228,63 +229,77 @@ int regla_lanzar(){
 		posfilasVirtual = prsj->pos_fila;
 		poscolumnasVirtual = prsj->pos_columna;
 
-	} else if (valor_dado==0){
+	} else if (valor_dado==0){ // Si ya has lanzado y no puedes moverte
 		animacion_por_pantalla("Ya has lanzado el dado y no te quedan \
 movimientos. Si quieres moverte tienes que finalizar tu turno.",DELAY);
-	} else {
+	} else { // Si ya has lanzado y puedes moverte
 		animacion_por_pantalla("Ya has lanzado el dado, mueve al personaje.", DELAY);		
 	}		
 	return 1;
 }
 
 int regla_arriba(){
+	/* Se llama a la regla de avanzar con 1 solo movimiento y la direccion 
+	adecuada */
 	regla_accion(1, D_ARRIBA);
 	regla_avanzar();
 }
 
 int regla_abajo(){
+	/* Se llama a la regla de avanzar con 1 solo movimiento y la direccion 
+	adecuada */
 	regla_accion(1, D_ABAJO);
 	regla_avanzar();
 }
 
 int regla_der() {
-	
+	/* Se llama a la regla de avanzar con 1 solo movimiento y la direccion 
+	adecuada */
 	regla_accion(1, D_DERECHA);
 	regla_avanzar();
 }
 
 int regla_izq() {
-	
+	/* Se llama a la regla de avanzar con 1 solo movimiento y la direccion 
+	adecuada */
 	regla_accion(1, D_IZQUIERDA);
 	regla_avanzar();
 }
 
 int regla_avanzar() {		
 	clearScreen();
+	// Si hay colision..
 	if (haycolision) {
 		animacion_por_pantalla("No puedes hacer ese movimiento.\n", DELAY);
+		// Se reinician las posiciones virtuales
 		posfilasVirtual = prsj->pos_fila;
 		poscolumnasVirtual = prsj->pos_columna;
+		// Se reinician las variables necesarias
 		arriba = abajo = izquierda = derecha = 0;
-	} else if (!lanzado){
-		animacion_por_pantalla("Aún no has lanzado el dado.\n", DELAY);
+	} else if (!lanzado){ // Ya se ha lanzado el dado
+		animacion_por_pantalla("Aún no has lanzado el dado.\n", DELAY);		
+		// Se reinician las variables necesarias
 		arriba = abajo = izquierda = derecha = 0;
-	} else if (arriba+abajo+izquierda+derecha>valor_dado){
+	} else if (arriba+abajo+izquierda+derecha>valor_dado){ // Se han hecho movimientos demás
 		animacion_por_pantalla("Movimientos demás!\n", DELAY);
-		
+		// Se reinician las variables necesarias
 		arriba = abajo = izquierda = derecha = 0;
+		// Se reinician las posiciones virtuales		
 		posfilasVirtual = prsj->pos_fila;
 		poscolumnasVirtual = prsj->pos_columna;			
-	} else if (ataque) {
+	} else if (ataque) { // Si ya se ha atacado no se puede mover
 		animacion_por_pantalla("Una vez hecho un movimiento de ataque, no puedes moverte hasta el turno siguiente\n", DELAY);
-	} else{
+	} else{ // Movimiento correcto
+		/* Se le quita al numero de pasos los movimientos que se van a 
+		hacer */
 		valor_dado -= (arriba + abajo + derecha + izquierda);
-		// Actualizo mapa
+		// Se actualiza el mapa
 		tablero->mapa[prsj->pos_fila][prsj->pos_columna] = ' ';
+		/* Se vuelcan las posiciones virtuales en las del personaje */
 		prsj->pos_fila = posfilasVirtual;
 		prsj->pos_columna = poscolumnasVirtual;
 		tablero->mapa[prsj->pos_fila][prsj->pos_columna] = 'P';
-		if (valor_dado>0) {
+		if (valor_dado>0) { // Aun quedan movimientos
 			char cadena[100];
 			if (valor_dado==1) {
 				sprintf(cadena, "Puedes seguir moviendote si lo deseas.\
@@ -294,7 +309,7 @@ int regla_avanzar() {
 				\nTe quedan %i movimientos", valor_dado);
 			}
 			animacion_por_pantalla(cadena, DELAY);
-		} else {
+		} else { // No quedan movimientos
 			animacion_por_pantalla("No te quedan más movimientos\n", DELAY);
 		}
 		
@@ -307,16 +322,26 @@ int regla_avanzar() {
 }
 
 int regla_atacar(int direccion) {
+	// Se comprueba que no se haya atacado ya este turno
 	if (!ataque) {
 		animacion_por_pantalla("Atacando", DELAY);
 		animacion_por_pantalla("...\n", DELAY*8);
+		/* Se comprueba si en la direccion pasada hay un enemigo */
 		switch (direccion){
 			case D_ARRIBA:		
+				// Si hay un enemigo cerca..
 				if (tablero->mapa[prsj->pos_fila-1][prsj->pos_columna] == 'E'){
+					// Se simula el ataque
 					simula_ataque(prsj->pos_fila-1, prsj->pos_columna);
-					// La variable de ataque se pone a 1 para que no se pueda volver a atacar en el mismo turno, pero solo si realmente se ha atacado, si el usuario ataca y no tiene enemigos cerca esta variable no se activa para que pueda atacar de verdad en este mismo turno
+					/* La variable de ataque se pone a 1 
+					para que no se pueda volver a atacar en 
+					el mismo turno, pero solo si realmente 
+					se ha atacado, si el usuario ataca y no 
+					tiene enemigos cerca esta variable no 
+					se activa para que pueda atacar de 
+					verdad en este mismo turno */
 					ataque = 1;
-				} else {
+				} else { // Sin enemigo cerca
 					animacion_por_pantalla("No tienes enemigos cerca\n", DELAY);
 				} 
 				break;
@@ -359,7 +384,7 @@ int regla_equipar(int tipo_objeto, int mano) {
 		animacion_por_pantalla("Mano ocupada\n", DELAY);
 		return 1;
 	}
-	// Si no tenemos el objeto igual
+	// Se comprueba si se tiene el objeto
 	int i;
 	for(i = 0; i<num_objetos_mochila; i++) {
 		if (tipo_objeto == prsj->mochila[i].tipo){
@@ -406,7 +431,7 @@ int regla_equipar(int tipo_objeto, int mano) {
 
 					return 1;
 					break;
-				case OBJ_POCION: // estos dos casos podrian aglutinarse en default
+				case OBJ_POCION: // estos dos casos podrian aglutinarse en default, son obejtos que no pueden ser equipados
 					sprintf(cadena, "No puedes equipar un(a) %s.\n", prsj->mochila[i].nombre);
 					animacion_por_pantalla(cadena, DELAY);
 					return 1;
@@ -422,41 +447,29 @@ int regla_equipar(int tipo_objeto, int mano) {
 	return 1;
 }
 
-int mano_ocupada(int mano) {
-	switch (mano) {
-		case MANO_DERECHA:
-			if (prsj->mano_derecha != NULL)
-				return 1;
-			break;
-		case MANO_IZQUIERDA:
-			if (prsj->mano_izquierda != NULL)
-				return 1;
-			break;
-	}
-	return 0;
-}
-
 int regla_abrir_puerta() {
-	/* Cuando las puertas puedan estar cerradas con llave y el jugador se 
-encuentre con una mostrar por pantalla : !NOOOO.. PUEDES.. PASAAAR! (Necesitas
- una llave).*/ 
+	/* Se comprueba que hay una puerta cerca */
 	if (tablero->mapa[prsj->pos_fila+1][prsj->pos_columna] == '-') {
+		// Si es la puerta de salida se cambia de mapa
 		if (tablero->lista_puertas[NUM_PUERTAS-1].fila == prsj->pos_fila+1 && tablero->lista_puertas[NUM_PUERTAS-1].columna == prsj->pos_columna) {		
 			clearScreen();
 			animacion_por_pantalla("La puerta está abierta, decides cruzar y llegas a una nueva sala...\n", DELAY);
 			// Liberar memoria
 			liberar_mapa(&tablero);
 			// Cargar mapa
-			cargar_mapa(&tablero);			
+			cargar_mapa(&tablero);
+			// Crear puertas			
 			crear_entradas(&tablero);
 			// Se muestra el nuevo mapa
 			mostrar_mapa(*tablero);
 			return 1;
-		} else {
+		} else { // Si es otra puerta
+			// Se comprueba si la puerta esta abierta o cerrada
 			if (puerta_cerrada(prsj->pos_fila+1, prsj->pos_columna)) {
 				animacion_por_pantalla("Puerta cerrada.\n", DELAY);
 				return 1;
 			} else {
+				// Se abre la puerta
 				tablero->mapa[prsj->pos_fila+1][prsj->pos_columna] = ' ';
 				animacion_por_pantalla("Puerta abierta.\n", DELAY);
 				return 1;
@@ -464,6 +477,7 @@ encuentre con una mostrar por pantalla : !NOOOO.. PUEDES.. PASAAAR! (Necesitas
 		}
 	}
 	if (tablero->mapa[prsj->pos_fila-1][prsj->pos_columna] == '-') {
+		// Si es la puerta de salida se cambia de mapa
 		if (tablero->lista_puertas[NUM_PUERTAS-1].fila == prsj->pos_fila-1 && tablero->lista_puertas[NUM_PUERTAS-1].columna == prsj->pos_columna) {		
 			clearScreen();
 			animacion_por_pantalla("La puerta está abierta, decides cruzar y llegas a una nueva sala...\n", DELAY);
@@ -475,11 +489,13 @@ encuentre con una mostrar por pantalla : !NOOOO.. PUEDES.. PASAAAR! (Necesitas
 			// Se muestra el nuevo mapa
 			mostrar_mapa(*tablero);
 			return 1;
-		} else {
+		} else { // Si es otra puerta
+			// Se comprueba si la puerta esta abierta o cerrada
 			if (puerta_cerrada(prsj->pos_fila-1, prsj->pos_columna)) {
 				animacion_por_pantalla("Puerta cerrada.\n", DELAY);
 				return 1;
 			} else {
+				// Se abre la puerta
 				tablero->mapa[prsj->pos_fila-1][prsj->pos_columna] = ' ';
 				animacion_por_pantalla("Puerta abierta.\n", DELAY);
 				return 1;
@@ -487,6 +503,7 @@ encuentre con una mostrar por pantalla : !NOOOO.. PUEDES.. PASAAAR! (Necesitas
 		}
 	}
 	if (tablero->mapa[prsj->pos_fila][prsj->pos_columna+1] == '|') {
+		// Si es la puerta de salida se cambia de mapa
 		if (tablero->lista_puertas[NUM_PUERTAS-1].fila == prsj->pos_fila && tablero->lista_puertas[NUM_PUERTAS-1].columna == prsj->pos_columna+1) {		
 			clearScreen();	
 			animacion_por_pantalla("La puerta está abierta, decides cruzar y llegas a una nueva sala...\n", DELAY);
@@ -498,11 +515,13 @@ encuentre con una mostrar por pantalla : !NOOOO.. PUEDES.. PASAAAR! (Necesitas
 			// Se muestra el nuevo mapa
 			mostrar_mapa(*tablero);
 			return 1;
-		} else {
+		} else { // Si es otra puerta
+			// Se comprueba si la puerta esta abierta o cerrada
 			if (puerta_cerrada(prsj->pos_fila, prsj->pos_columna+1)) {
 				animacion_por_pantalla("Puerta cerrada.\n", DELAY);
 				return 1;
 			} else {
+				// Se abre la puerta
 				tablero->mapa[prsj->pos_fila][prsj->pos_columna+1] = ' ';
 				animacion_por_pantalla("Puerta abierta.\n", DELAY);
 				return 1;
@@ -510,6 +529,7 @@ encuentre con una mostrar por pantalla : !NOOOO.. PUEDES.. PASAAAR! (Necesitas
 		}
 	}
 	if (tablero->mapa[prsj->pos_fila][prsj->pos_columna-1] == '|') {
+		// Si es la puerta de salida se cambia de mapa
 		if (tablero->lista_puertas[NUM_PUERTAS-1].fila == prsj->pos_fila && tablero->lista_puertas[NUM_PUERTAS-1].columna == prsj->pos_columna-1) {		
 			clearScreen();
 			animacion_por_pantalla("La puerta está abierta, decides cruzar y llegas a una nueva sala...\n", DELAY);
@@ -521,46 +541,23 @@ encuentre con una mostrar por pantalla : !NOOOO.. PUEDES.. PASAAAR! (Necesitas
 			// Se muestra el nuevo mapa
 			mostrar_mapa(*tablero);
 			return 1;
-		} else {
+		} else { // Si es otra puerta
+			// Se comprueba si la puerta esta abierta o cerrada
 			if (puerta_cerrada(prsj->pos_fila, prsj->pos_columna-1)) {
 				animacion_por_pantalla("Puerta cerrada.\n", DELAY);
 				return 1;
 			} else {
+				// Se abre la puerta
 				tablero->mapa[prsj->pos_fila][prsj->pos_columna-1] = ' ';
 				animacion_por_pantalla("Puerta abierta.\n", DELAY);
 				return 1;
 			}
 		}
 	}
-	animacion_por_pantalla("No tiene ninguna puerta cerca, y aún no has\
- desarrollado la telequinesis, hable con Yoda o pruebe a acercarse, lo siento.\n", DELAY);
+	// Si se llega a este punto es que no hay ninguna puerta cerca
+	animacion_por_pantalla("No tiene ninguna puerta cerca, y aún no has \
+desarrollado la telequinesis, hable con Yoda o pruebe a acercarse, lo siento.\n", DELAY);
 	return 1;
-}
-
-int puerta_cerrada(int fila, int columna) { // Mover esta funcion a la parte de funciones auxiliares
-	int i;
-	for(i=0;i<NUM_PUERTAS;i++) {
-		if (tablero->lista_puertas[i].fila == fila && tablero->lista_puertas[i].columna == columna) {
-			return tablero->lista_puertas[i].cerrada;
-		}
-	}
-	return 0;
-}
-
-/* Devuelve 1 si abre el cofre y 0 si ya estaba abierto */
-int abre_cofre(int fila, int columna) {
-	int i;
-	for(i = 0; i<NUM_COFRES; i++) {
-		if ((tablero->lista_cofres[i].fila == fila) && (tablero->lista_cofres[i].columna == columna)) {
-			if (tablero->lista_cofres[i].abierto) {
-				animacion_por_pantalla("Cofre ya abierto\n", DELAY);
-				return 0;
-			} else {
-				tablero->lista_cofres[i].abierto = 1;
-				return 1;
-			}
-		}
-	}
 }
 
 int regla_abrir_cofre() {
@@ -570,30 +567,27 @@ int regla_abrir_cofre() {
 		return 1;
 	}
 	// Se comprueba si el personaje tiene un cofre al lado
-	if (tablero->mapa[prsj->pos_fila+1][prsj->pos_columna] == 'C') {		
-		 if (!abre_cofre(prsj->pos_fila+1, prsj->pos_columna))
+	if (tablero->mapa[prsj->pos_fila+1][prsj->pos_columna] == 'C') {
+		/* Si la puerta ya esta abierta termina */		
+		if (!abre_cofre(prsj->pos_fila+1, prsj->pos_columna))
 			return 1;		
-		//tablero->mapa[prsj->pos_fila+1][prsj->pos_columna] = ' ';
 	} else if (tablero->mapa[prsj->pos_fila-1][prsj->pos_columna] == 'C') {		
 		if (!abre_cofre(prsj->pos_fila-1, prsj->pos_columna))
 			return 1;		
-		//tablero->mapa[prsj->pos_fila-1][prsj->pos_columna] = ' ';
 	} else if (tablero->mapa[prsj->pos_fila][prsj->pos_columna+1] == 'C') {		
 		if (!abre_cofre(prsj->pos_fila, prsj->pos_columna+1))
 			return 1;		
-		//tablero->mapa[prsj->pos_fila][prsj->pos_columna+1] = ' ';
 	} else if (tablero->mapa[prsj->pos_fila][prsj->pos_columna-1] == 'C') {		
 		if (!abre_cofre(prsj->pos_fila, prsj->pos_columna-1))
 			return 1;		
-		//tablero->mapa[prsj->pos_fila][prsj->pos_columna-1] = ' ';
 	} else { // No tiene un cofre cerca
 		animacion_por_pantalla("No tiene ningun cofre cerca, y aún no ha\
  desarrollado la telequinesis, hable con Yoda o pruebe a acercarse, lo siento.\n", DELAY);
 		return 1;
 	}
 
-	// Tiene un hueco en la mochila, y el cofre cerca, por lo tanto,
-	// se abre el cofre
+	/* Tiene un hueco en la mochila, y el cofre cerca, por lo tanto,
+	se abre el cofre */
 	animacion_por_pantalla("Abriendo cofre", DELAY);
 	animacion_por_pantalla("...\n", DELAY*8);
 	tobjeto objeto;
@@ -625,21 +619,25 @@ int regla_abrir_cofre() {
 			break;
 	}
 	
-	// Necesario cuando necesitamos formatear texto
+	
 	char objeto_encontrado[100];
 	sprintf(objeto_encontrado, "Has encontrado un(a) %s!\n", objeto.nombre);
 	animacion_por_pantalla(objeto_encontrado, DELAY);
 
+	// Se almacena el objeto
 	prsj->mochila[num_objetos_mochila] = objeto;
 	num_objetos_mochila++;
 	return 1;
 }
 
-int regla_usar_objeto(int tipo_objeto) {
-	
+int regla_usar_objeto(int tipo_objeto) {		
 	char cadena[100];
 	int i;
+
+	// Se recorre la lista de objetos
 	for(i = 0; i<num_objetos_mochila; i++) {
+		/* Si el tipo de objeto pasado por parametro coincide con uno 
+		de la lista... */
 		if (tipo_objeto == prsj->mochila[i].tipo) {
 			switch(tipo_objeto) {
 				case OBJ_ESPADA:
@@ -686,7 +684,9 @@ desarrollado la telequinesis, hable con Yoda o pruebe a acercarse, lo siento.\n"
 					sprintf(cadena, "Usas la %s.\n", prsj->mochila[i].nombre);
 					animacion_por_pantalla(cadena, DELAY);
 			}
-			if (!(--prsj->mochila[i].durabilidad)){ //Cada vez que se usa el objeto pierde 1 de durabilidad, si esta llega a 0 el objeto se pierde
+			/* Cada vez que se usa el objeto pierde 1 de 
+			durabilidad, si esta llega a 0 el objeto se pierde */
+			if (!(--prsj->mochila[i].durabilidad)){ 
 				sprintf(cadena, "%s gastada\n", prsj->mochila[i].nombre);
 				animacion_por_pantalla(cadena, DELAY);
 				/* En la posicion que ha quedado vacia 
@@ -717,27 +717,12 @@ int regla_fin_turno() {
 	lanzado = 0;
 	ataque = 0;
 	animacion_por_pantalla("Tu turno ha finalizado\n", DELAY);
-	//printf("Turno de los enemigos\n");
+	/* Se mueve a los enemigos*/
 	mover_IA();
-	/*int enemigos = enemigos_cerca();
-	for (int i = 0; i<enemigos; i++)
-		simula_defensa();*/
+	// Se muestran el mapa y la informacion del jugador
 	mostrar_mapa(*tablero);
 	mostrar_info_jugador(*prsj);
 	return 1;	
-}
-
-int abrir_puerta(int fila, int columna) { // Mover esta funcion a la parte de funciones auxiliares
-	int i;
-	for(i=0;i<NUM_PUERTAS;i++) {
-		if (tablero->lista_puertas[i].fila == fila && tablero->lista_puertas[i].columna == columna) {
-			if (i==NUM_PUERTAS-2)
-				return 0;
-			else
-				tablero->lista_puertas[i].cerrada = 0;
-		}
-	}
-	return 1;
 }
 
 void regla_accion(int digito, int direccion){
@@ -752,7 +737,9 @@ void regla_accion(int digito, int direccion){
 	if (!haycolision) 
 		haycolision = colision(digito,direccion);
 
-	if (!haycolision){
+	if (!haycolision) {
+		/* Se actualiza la posicion virtual del personaje y las 
+		variables que controlan los pasos en cada direccion */
 		switch (direccion){
 			case D_ARRIBA:		
 				arriba += digito;
@@ -791,12 +778,70 @@ void regla_accion(int digito, int direccion){
 
 /* Funciones auxiliares */
 
+/* Recibe un int para indica que mano comprobar. Devuelve un 1 si la mano esta 
+ocupada */
+int mano_ocupada(int mano) {
+	switch (mano) {
+		case MANO_DERECHA:
+			if (prsj->mano_derecha != NULL)
+				return 1;
+			break;
+		case MANO_IZQUIERDA:
+			if (prsj->mano_izquierda != NULL)
+				return 1;
+			break;
+	}
+	return 0;
+}
+
+/* Devuelve 1 si la puerta esta cerrada o 0 en casa contrario */
+int puerta_cerrada(int fila, int columna) { 
+	int i;
+	for(i=0;i<NUM_PUERTAS;i++) {
+		if (tablero->lista_puertas[i].fila == fila && tablero->lista_puertas[i].columna == columna) {
+			return tablero->lista_puertas[i].cerrada;
+		}
+	}
+	return 0;
+}
+
+/* Devuelve 1 si abre el cofre y 0 si ya estaba abierto */
+int abre_cofre(int fila, int columna) {
+	int i;
+	// Se recorre la lista de cofres
+	for(i = 0; i<NUM_COFRES; i++) {
+		if ((tablero->lista_cofres[i].fila == fila) && (tablero->lista_cofres[i].columna == columna)) {
+			if (tablero->lista_cofres[i].abierto) {
+				animacion_por_pantalla("Cofre ya abierto\n", DELAY);
+				return 0;
+			} else {
+				tablero->lista_cofres[i].abierto = 1;
+				return 1;
+			}
+		}
+	}
+}
+
+/* Pone la puerta indicada como abierta si existe y devuelve un 1. Si es la 
+puerta de entrada del mapa devuelve un 0 porque no se puede abrir */
+int abrir_puerta(int fila, int columna) { 
+	int i;
+	for(i=0;i<NUM_PUERTAS;i++) {
+		if (tablero->lista_puertas[i].fila == fila && tablero->lista_puertas[i].columna == columna) {
+			if (i==NUM_PUERTAS-2)
+				return 0;
+			else
+				tablero->lista_puertas[i].cerrada = 0;
+		}
+	}
+	return 1;
+}
+
+/* Realiza una simulacion de ataque a un enemigo */
 void simula_ataque(int pos_fila_enemigo, int pos_columna_enemigo) {
 	int ataque = 0, defensa = 0, derecha_roto = 0, izquierda_roto = 0;
 	// Lanzamos el dado del jugador
 	ataque = get_random_number();
-
-	// Aplicamos bonus de armas de ataque
 	
 	// Lanzamos el dado del enemigo
 	defensa = get_random_number();
@@ -804,14 +849,14 @@ void simula_ataque(int pos_fila_enemigo, int pos_columna_enemigo) {
 	// Actualizamos info de jugador y enemigo si es oportuno
 	if (ataque>defensa) {
 		int danho = (ataque - defensa) * 2;
+		// Si hay espadas equipadas el daño se multiplica por 2 por cada espada
 		if ((prsj->mano_derecha != NULL) && ((prsj->mano_derecha -> tipo) == OBJ_ESPADA)) {
 			danho *= prsj->mano_derecha -> valor;
 			prsj->mano_derecha -> durabilidad--;
 			if (prsj->mano_derecha -> durabilidad == 0)
 				derecha_roto = 1;
-			
-			
 		}
+
 		if ((prsj->mano_izquierda != NULL) && ((prsj->mano_izquierda -> tipo) == OBJ_ESPADA)) {
 			danho *= prsj->mano_izquierda -> valor;
 			prsj->mano_izquierda -> durabilidad--;
@@ -825,6 +870,7 @@ void simula_ataque(int pos_fila_enemigo, int pos_columna_enemigo) {
 	} else {
 		animacion_por_pantalla("Has fallado!\n", DELAY);
 	}
+	// Se comprueba que las espadas no se hayan roto
 	if (derecha_roto) {
 		char cadena[100];
 		sprintf(cadena, "La %s se ha roto\n", prsj->mano_derecha -> nombre);
@@ -842,6 +888,7 @@ void simula_ataque(int pos_fila_enemigo, int pos_columna_enemigo) {
 	}
 }
 
+/* Actualiza la vida del enemigo en funcion de los parametros dados */
 void actualiza_enemigo(int fila, int columna, int danho) {
 	int i;
 	for(i = 0; i<NUM_ENEMIGOS; i++) {
@@ -858,6 +905,7 @@ void actualiza_enemigo(int fila, int columna, int danho) {
 	}
 }
 
+/* Realiza una simulacion de ataque de un enemigo actualizando los datos */
 void simula_defensa() {
 	int ataque = 0, defensa = 0;
 
@@ -868,8 +916,6 @@ void simula_defensa() {
 
 	// Lanzamos el dado del jugador
 	defensa = get_random_number();
-
-	// Aplicamos bonus de armas de defensa
 
 	// Actualizamos info de jugador y enemigo si es oportuno
 	if (ataque>defensa) {
@@ -885,23 +931,30 @@ void simula_defensa() {
 }
 
 void yyerror (char const *message) {
-	printf("%s\n", message);
+	if (strcmp(message, "syntax error"))
+		printf("%s\n", message);
 }
 
-/* Returns a pseudo-random integer between 1 and 9 */
+/* Devuelve un numero aleatorio entre 1 y 9 utilizado para simular el 
+comportamiento del dado */
 int get_random_number(){
 	return (rand() % 9) + 1;
 }
 
+/* Genera un numero aleatoria que se usa para crear objetos */
 int get_random_object(){
 	int tipo_objeto = (rand() % (TOTAL_OBJETOS + RATIO_COFRES_VACIOS)) + 1; // Se generan siempre numero entre el 1 y el numero de objetos + un numero que sirve como parametro para que ratio de objetos vacios queremos
 	return tipo_objeto;
 }
 
+/* Genera un numero entre 0 y 1 que se usa para determinar si una puerta 
+estara o no cerrada */
 int get_random_door(){
 	return (rand()%2);	
 }
 
+
+/* Muestra la ayuda por pantalla */
 void mostrar_ayuda(){	
 	char msg[] = "\
 \nInformación del mapa\n\
@@ -921,6 +974,9 @@ void mostrar_ayuda(){
 		- Ejemplo: usar pocion\n\
 	+ Tirar objeto: tirar [nombre_objeto]\n\
 		- Ejemplo: tirar llave\n\
+	+ Equipar objeto: equipar objeto [mano derecha/mano izquierda] \n\
+		- Objetos como pociones o llaves no pueden equiparse \n\
+		- Ejemplo: equipar espada mano derecha \n\
 	+ Abrir puertas: abrir puerta\n\
 	+ Abrir cofres: abrir cofre\n\
 	+ Atacar: atacar [direccion]\n\
@@ -934,6 +990,7 @@ que puede ser 'arriba, 'abajo', 'izquierda' o 'derecha'\n\
 	printf ("%s", msg);
 }
 
+/* Muestra las reglas del juego por pantalla */
 void mostrar_reglas(){
 	char msg[] = "\
 Reglas:\n\
@@ -952,6 +1009,7 @@ Secuencia de turno:\n\
 	printf ("%s", msg);
 }
 
+/* Visualiza la informacion del jugador */
 void mostrar_info_jugador(tjugador j) {
 	animacion_por_pantalla("Información del jugador:\n", DELAY/2);
 	printf("\tVida: %i\n", j.vida);
@@ -974,41 +1032,51 @@ void mostrar_info_jugador(tjugador j) {
 			printf("\t|\t\tVACIO\t\t  |\n");
 	}
 	printf("\t-----------------------------------\n");
+	printf("\nMovimientos restantes: ");
+	if (!lanzado) {
+		printf("Aún no has lanzado el dado\n");
+	} else {
+		if (valor_dado==1) {
+			printf("Te queda %i movimiento", valor_dado);
+		} else {
+			printf("Te quedan %i movimientos", valor_dado);
+		}
+	}
+	printf("\n");
 }
 
-
+/* Imprime el mapa por pantalla */
 void mostrar_mapa(tmapa tablero){
 	animacion_por_pantalla("Mapa:\n", DELAY/2);
         int i,j;
 	for (i = 0;i<FILAS;i++) {
 		printf("\t");
 		for (j = 0;j<COLUMNAS;j++) {
-			//if ((i==prsj->pos_fila) && (j==prsj->pos_columna)){
-			if (tablero.mapa[i][j] == 'P') {
-				printf("\e[1m\e[38;5;208mP\e[0m"); // Personaje
-			} else if (tablero.mapa[i][j] == 'E') {
-				printf("\e[38;5;214mE\e[0m"); // Enemigos
-			} else if (tablero.mapa[i][j] == 'e'){
-				printf ("\e[48;5;235m \e[0m"); // Paredes exter
-			} else if (tablero.mapa[i][j] == 'x'){
-				printf ("\e[48;5;239m \e[0m"); // Paredes inter
-			} else if (tablero.mapa[i][j] == 'C'){
+			if (tablero.mapa[i][j] == 'P') { // Personaje
+				printf("\e[1m\e[38;5;208mP\e[0m"); 
+			} else if (tablero.mapa[i][j] == 'E') { // Enemigos
+				printf("\e[38;5;214mE\e[0m"); 
+			} else if (tablero.mapa[i][j] == 'e'){ // Paredes exteriores
+				printf ("\e[48;5;235m \e[0m"); 
+			} else if (tablero.mapa[i][j] == 'x'){ // Paredes interiores
+				printf ("\e[48;5;239m \e[0m"); 
+			} else if (tablero.mapa[i][j] == 'C'){ // Cofres
 				int k;
 				for(k = 0; k<NUM_COFRES; k++) {
 					if ((tablero.lista_cofres[k].fila == i) && (tablero.lista_cofres[k].columna == j)) {
-						if (tablero.lista_cofres[k].abierto) {
-							printf("\e[30;48;5;52m0\e[0m"); // Cofre abierto
-						} else {
-							printf("\e[30;48;5;52m_\e[0m"); // Cofres cerrado
+						if (tablero.lista_cofres[k].abierto) { // Cofre abierto
+							printf("\e[30;48;5;52m0\e[0m"); 
+						} else { // Cofre cerrado
+							printf("\e[30;48;5;52m_\e[0m"); 
 						}
 					}
 				}
-			} else if (tablero.mapa[i][j] == '|') {
-				printf("\e[38;5;94m|\e[0m"); // Puertas verticales
-			} else if (tablero.mapa[i][j] == '-') {
-				printf("\e[38;5;94m-\e[0m"); // Puertas horizontales
-			} else {
-				printf("%c", tablero.mapa[i][j]); // Otros
+			} else if (tablero.mapa[i][j] == '|') { // Puertas verticales
+				printf("\e[38;5;94m|\e[0m"); 
+			} else if (tablero.mapa[i][j] == '-') { // Puertas horizontales
+				printf("\e[38;5;94m-\e[0m"); 
+			} else { // Resto
+				printf("%c", tablero.mapa[i][j]); 
 			}		
 		}
 		printf("\n");
@@ -1016,31 +1084,37 @@ void mostrar_mapa(tmapa tablero){
 	printf("\n");
 }
 
+/* Recibe el numero de pasos y una direccion y devuelve un 1 si se va a 
+producir una colision o 0 en caso contrario */
 int colision(int pasos, int direccion){
         int i;
 
 	switch(direccion) {
 		case 1: // Direccion arriba
 			for(i=1;i<=pasos;i++) 
-				if (tablero->mapa[posfilasVirtual-i][poscolumnasVirtual] != ' ')
+				if (tablero->mapa[posfilasVirtual-i][poscolumnasVirtual] != ' ' && 
+				tablero->mapa[posfilasVirtual-i][poscolumnasVirtual] != 'P')
 					return 1;
 			break;
 
 		case 2:	// Abajo			
 			for(i=1;i<=pasos;i++) 
-				if (tablero->mapa[posfilasVirtual+i][poscolumnasVirtual] != ' ')
+				if (tablero->mapa[posfilasVirtual+i][poscolumnasVirtual] != ' '&& 
+				tablero->mapa[posfilasVirtual+i][poscolumnasVirtual] != 'P')
 					return 1;
 			break;
 
 		case 3: // Derecha
 			for(i=1;i<=pasos;i++)
-				if (tablero->mapa[posfilasVirtual][poscolumnasVirtual+i] != ' ')
+				if (tablero->mapa[posfilasVirtual][poscolumnasVirtual+i] != ' '&& 
+				tablero->mapa[posfilasVirtual][poscolumnasVirtual+i] != 'P')
 					return 1;
 			break;
 
 		case 4:	// Izquierda
 			for(i=1;i<=pasos;i++)
-				if (tablero->mapa[posfilasVirtual][poscolumnasVirtual-i] != ' ')
+				if (tablero->mapa[posfilasVirtual][poscolumnasVirtual-i] != ' '&& 
+				tablero->mapa[posfilasVirtual][poscolumnasVirtual-i] != 'P')
 					return 1;
 			break;
 	}
@@ -1048,10 +1122,13 @@ int colision(int pasos, int direccion){
 	return 0;
 }
 
+/* Incializa los datos del personaje y hace las reservas de memoria oportunas */
 void inicializar_jugador(tjugador **jugador) {
-	*jugador = (tjugador *) malloc(sizeof(tjugador));
+	if (*jugador == NULL)
+		*jugador = (tjugador *) malloc(sizeof(tjugador));
 	(*jugador) -> vida = 100;
-	(*jugador) -> mochila = (tobjeto *) malloc(TAM_MOCHILA*sizeof(struct objeto));
+	if ((*jugador) -> mochila == NULL)
+		(*jugador) -> mochila = (tobjeto *) malloc(TAM_MOCHILA*sizeof(struct objeto));
 	int i;
 	for(i = 0;i<TAM_MOCHILA;i++){
 		(*jugador) -> mochila[i].tipo = 0;
@@ -1059,104 +1136,122 @@ void inicializar_jugador(tjugador **jugador) {
 	}
 }
 
-
+/* Muestra el texto simulando una animacion. Recibe el texto a mostrar y un 
+entero que define el tiempo entre caracteres */
 void animacion_por_pantalla(char cadena[], int delay) {
 	int i;
+	// Recorre la cadena
 	for(i=0; i<strlen(cadena); i++) {
+		// Imprime la letra correspondiente
 		printf("%c", cadena[i]);
+		// Vuelva el buffer del teclado
 		fflush(NULL);
+		// Hace una pausa con el tiempo pasado por parametro		
 		usleep(delay);
 	}
 }
 
+/* Limpia la pantalla del terminal para que lo que se visualice comience en la 
+parte superior de este */
 void clearScreen() {
   const char* CLEAR_SCREE_ANSI = "\e[1;1H\e[2J";
   write(STDOUT_FILENO,CLEAR_SCREE_ANSI,12);
 }
 
+
+/* Calcula la distancia manhattan entre dos puntos */
 int calcula_manhattan(int ax, int ay, int bx, int by) {
 	return (abs(ax-bx) + abs(ay-by));
 }
 
+
+/* Calcula la orientacion entre un punto A y un punto B. Recibe el parametro x 
+e y de cada punto. Devuelve la direccion correspondiente normaliza a 8 
+direcciones */
 int calcula_orientacion(int ax, int ay, int bx, int by) {
+	// Misma fila
 	if (ax-bx == 0) {
+		// El enemigo esta a la izquierda porque su columna es menor
 		if (ay>by) {
-			//printf("Moverse hacia la derecha\n");
+			// Moverse hacia la derecha
 			return D_DERECHA;
-		} else {
+		} else { // Enemigo a la derecha
 			
-			//printf("Moverse hacia la izquierda\n");
+			// Moverse hacia la izquierda
 			return D_IZQUIERDA;
 		}
-	} else if (ay-by == 0) {
-		if (ax>bx) {
-			//printf("Moverse hacia abajo\n");
+	} else if (ay-by == 0) { // Misma columna
+		// Enemigo por debajo
+		if (ax>bx) { 
+			// Moverse hacia abajo
 			return D_ABAJO;
-		} else {
-			//printf("Moverse hacia arriba\n");
+		} else { // Enemigo por encima
+			// Moverse hacia arriba
 			return D_ARRIBA;
 		}
 	} else {
-		double alfa = atan2((by-ay),(bx-ax)); // Perperndicualr a la direccion entre los dos puntos
+		// Se calcula la perpendicular a la direccion entre los dos puntos
+		double alfa = atan2((by-ay),(bx-ax)); 
+		// Conversion a grados
 		alfa = alfa * 180/pi;
+		// Conversion a valores entre 0 y 360
 		if (alfa<0)
 			alfa += 360;
-		//printf("Alfa: %f\n", alfa);
 		double orientacion = ((int)alfa + 90) % 360;
-		//printf("Orientacion: %f\n", orientacion);
+		
+		// Normalizacion
 		if (orientacion>337.5 || orientacion<22.5) {
-			//printf("Moverse hacia la derecha\n"); 
 			return D_DERECHA;
 		} else if (orientacion>22.5 && orientacion<67.5) {
-			//printf("Moverse hacia arriba a la derecha\n");
 			return D_ARRIBA_DERECHA;
 		} else if (orientacion>67.5 && orientacion<112.5) {
-			//printf("Mover hacia arriba\n");
 			return D_ARRIBA;
 		} else if (orientacion>112.5 && orientacion<157.5){
-			//printf("Mover hacia arriba a la izquierda\n");
 			return D_ARRIBA_IZQUIERDA;
 		} else if (orientacion>157.5 && orientacion<202.5) {
-			//printf("Moverse hacia la izquierda\n");
 			return D_IZQUIERDA;
 		} else if (orientacion>202.5 && orientacion<247.5) {
-			//printf("Moverse hacia abajo a la izquierda\n");
 			return D_ABAJO_IZQUIERDA;
 		} else if (orientacion>247.5 && orientacion<292.5) {
-			//printf("Moverse hacia abajo\n");
 			return D_ABAJO;
 		} else if (orientacion>292.5 && orientacion<337.5) {
-			//printf("Moverse hacia abajo a la derecha\n");
 			return D_ABAJO_DERECHA;
 		}
 	}
 }
 
 
-// Devuelve un 1 si ha conseguido llegar hasta el protagonista o un 0 en caso contrario
+/* Realiza el movimiento de un enemigo en funcion de la orientacion que se 
+calcula. Devuelve un 1 si ha conseguido llegar hasta el protagonista o un 0 
+en caso contrario. Ademas actualiza tanto el mapa como la lista de enemigos
+mientras lo mueve */
 int mover_enemigo(int id_enemigo) {
 	int fin = 0;
 	
-	// Calcular orientacion
+	// Calcula la orientacion del enemigo respecto al protagonista
 	int orientacion = calcula_orientacion(prsj->pos_fila, prsj->pos_columna, tablero->lista_enemigos[id_enemigo].fila, tablero->lista_enemigos[id_enemigo].columna);
 
 	while (!fin) {
 		switch (orientacion) {
 			case D_ARRIBA:
+				/* Si en el sentido en el que el enemigo se tiene que mover no hay nada se mueve */
 				if (tablero->mapa[tablero->lista_enemigos[id_enemigo].fila-1][tablero->lista_enemigos[id_enemigo].columna] == ' ') {
 					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = ' ';
 					tablero->lista_enemigos[id_enemigo].fila--;
 					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = 'E';
+					/* Una vez actualizada la posicion se recalcula la orientacion  */
 					orientacion = calcula_orientacion(prsj->pos_fila, prsj->pos_columna, tablero->lista_enemigos[id_enemigo].fila, tablero->lista_enemigos[id_enemigo].columna);
-				} else {
+				} else { // Si no se puede mover..
+					// Si el enemigo es el que esta al lado devuelve 1 la funcion
 					if (tablero->mapa[tablero->lista_enemigos[id_enemigo].fila-1][tablero->lista_enemigos[id_enemigo].columna] == 'P')
 						return 1;
+					// Si no se indica que hay que finalizar
 					fin = 1;
 				}		
 				break;
+			/* Se hace lo mismo en el reto de casos siempre acorde a la direccion que tiene que seguir el enemigo */
 			case D_ABAJO:
 				if (tablero->mapa[tablero->lista_enemigos[id_enemigo].fila+1][tablero->lista_enemigos[id_enemigo].columna] == ' ') {
-					// Actualiza mapa
 					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = ' ';
 					tablero->lista_enemigos[id_enemigo].fila++;
 					tablero->mapa[tablero->lista_enemigos[id_enemigo].fila][tablero->lista_enemigos[id_enemigo].columna] = 'E';
@@ -1245,14 +1340,17 @@ int mover_enemigo(int id_enemigo) {
 				break;
 		}
 	}
+	/* Si ha llegado hasta aqui quiere decir que no ha llegado hasta el 
+	protagonista por lo que se devuleve un 0 */
 	return 0;
 }
 
+/* Se encarga de los movimientos de los enemigos */
 void mover_IA() {
 	int dist_manhattan = 0, orientacion = 0;
-	// Calcular distancia Manhattan de cada enemigo al protagonista
 	int i;
 	for(i=0;i<NUM_ENEMIGOS;i++) {
+		// Siempre y cuando el enemigo este vivo...
 		if (tablero->lista_enemigos[i].vida > 0) {
 			/* Se llama a la funcion auxiliar que hace el calculo 
 			de la distancia manhattan */
@@ -1262,7 +1360,7 @@ void mover_IA() {
 				simula_defensa();
 			} else if (dist_manhattan > VISIBILIDAD_ENEMIGO) { // Si es mayor que visibilidad el enemigo no hace nada
 				continue;
-			} else { // En caso contrario
+			} else { // Si esta en el rango de movimiento
 				/* Si mover enemigo devuelve 1 quiere decir que
 				ha llegado hasta el progonista por lo que se 
 				hace la simulacion de defensa */
@@ -1274,16 +1372,19 @@ void mover_IA() {
 }
 
 
-/* Crea un mapa escogiendo un archivo de manera aleatoria de la carpeta '/maps' */
+/* Carga un archivo de manera aleatoria de la carpeta '/maps' en una variable de tipo tmapa */
 void cargar_mapa(tmapa **tab) {
+	// Varibles locales
 	int fila = 0, columna = 0, enemigos = 0, cofres = 0, puertas = 0;
 	int num_mapa = 0;
 	char char_aux;
 	FILE *file;
 	char path[] = "maps/mapx.txt";
 
-	
-	*tab = (tmapa *) malloc(sizeof(struct mapa));
+	//  Se reserva memoria para la variable si es necesario
+	if (*tab == NULL)
+		*tab = (tmapa *) malloc(sizeof(struct mapa));
+	// Se calcula un numero de mapa de manera aletoria
 	num_mapa = rand() % NUM_MAPAS + 1;
 	path[8] = num_mapa + '0';
 	/* Se abre el fichero en un primer momento para hacer un conteo de las
@@ -1298,6 +1399,7 @@ void cargar_mapa(tmapa **tab) {
 	NUM_COFRES = 0;
 	NUM_PUERTAS = 0;
 	
+	// Conteo de filas, columnas, enemigos, etc...
 	while (feof(file) == 0) {
 		char_aux = fgetc(file);	
 		
@@ -1333,23 +1435,27 @@ void cargar_mapa(tmapa **tab) {
 			
 	}
 
-	/* Nos colocamos al principio del archivo, se crea el tablero con las 
-	reservas de memoria adecuadas y se inicializa */
+	/* Se vuelve al principio del archivo */
 	rewind(file);
-	/* Reserva de memoria */
+	/* Reservas de memoria*/
 	(*tab)->mapa = (char **) malloc(FILAS * sizeof(char*));
 	int i;
 	for(i=0;i<FILAS;i++)
 		(*tab)->mapa[i] = (char *) malloc(COLUMNAS*sizeof(char));
 	(*tab)->lista_enemigos = (tenemigo *) malloc(NUM_ENEMIGOS*sizeof(struct enemigo));
-	NUM_PUERTAS += 2; // Se va a crear una puerta de entrada y otra de salida en el mapa, de ahi ese '+ 2' 
+	/* Como se van a crear una puerta de entrada y una de salida, hay que sumarle al numero de puertas contadas un 2 */
+	NUM_PUERTAS += 2; 
 	(*tab)->lista_puertas = (tpuerta *) malloc((NUM_PUERTAS)*sizeof(struct puerta)); 
 	(*tab)->lista_cofres = (tcofre *) malloc(NUM_COFRES*sizeof(struct cofre));
+
+	// Reinicio de las variables locales
 	fila = 0;
 	columna = 0;
 	cofres = 0;
 	puertas= 0;
 	enemigos = 0;	
+
+	// Se inicializa el mapa con los dados leidos en el fichero
 	while (feof(file) == 0) {
 		char_aux = fgetc(file);	
 		
@@ -1391,7 +1497,7 @@ void cargar_mapa(tmapa **tab) {
 				puertas++;
 				columna++;
 				break;
-			case 'f':
+			case 'f': // Variable utilizada como final de fichero
 				fclose(file);
 				return;
 				break;
@@ -1402,7 +1508,7 @@ void cargar_mapa(tmapa **tab) {
 		}
 			
 	}
-
+	/* Si se llega a este punto es que falta el fichero esta mal formado, seguramente falte 'f' */
 	printf("Error: Archivo de mapa mal formado\n");
 	fclose(file);	
 	return;

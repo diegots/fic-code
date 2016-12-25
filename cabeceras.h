@@ -1,7 +1,7 @@
 #define pi 3.141592
 /* Constante usada para la animacion de los mensajes por pantalla */
-#define DELAY 50000
-//#define DELAY 1
+//#define DELAY 50000
+#define DELAY 1
 /* Constantes de direccion */
 #define D_ARRIBA 1
 #define D_ABAJO 2
@@ -27,7 +27,7 @@
 #define VALOR_ESPADA 2 // Multiplicador de daño de la espada
 #define OBJ_LLAVE 3
 #define TOTAL_OBJETOS 3 // Objetos disponibles en el juego
-#define RATIO_COFRES_VACIOS 0 /* Numero utilizado para la mayor o menor 
+#define RATIO_COFRES_VACIOS 1 /* Numero utilizado para la mayor o menor 
 aparicion de objetos vacios, cuando mayor sea la proporcion de este numero 
 con el de TOTAL_OBJETOS, mas cofre vacios apareceran */
 
@@ -130,4 +130,5 @@ int get_random_door();
 void crear_entradas(tmapa **);
 void liberar_mapa(tmapa **);
 void clearScreen();
+int abre_cofre(int, int);
 int yylex();
