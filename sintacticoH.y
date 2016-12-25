@@ -983,7 +983,7 @@ void mostrar_ayuda(){
 		- Se indica la posicion del enemigo respecto al protagonista, \
 que puede ser 'arriba, 'abajo', 'izquierda' o 'derecha'\n\
 		- Ejemplo: atacar abajo\n\
-	+ Ayuda: ayuda | help | ayuda [comando] (aun no disponible)\n\
+	+ Ayuda: ayuda | help\n\
 	+ Finalizar turno: finalizar turno | fin turno | fin\n\
 	+ Salir: salir | exit | q";
 
@@ -997,8 +997,6 @@ Reglas:\n\
 	- Juego basado en turnos\n\
 	- El jugador comienza con 100 de vida y una mochila con capacidad \
 limitada.\n\
-	- Hay trampas ocultas en el escenario que no se mostrarán hasta que se\
- activen\n\
 Secuencia de turno:\n\
 	1º Lanzar dado [Opcional] [Obligatorio si se quiere mover al personaje]\n\
 	2º Atacar, abrir cofre, utilizar objeto... [Opcional]\n\
