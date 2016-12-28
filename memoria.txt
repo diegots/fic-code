@@ -5,7 +5,7 @@
 
 	Funcionamiento:
 
-		- El funcionamiento base del juego es sencillo, en la función main existe un bucle while que en su condición llama a yyparse(), que espera a que el usuario introduzca un comando por teclado. Cuando esto sucede, el analizar procesa el comando y en función de lo que tenga que hacer, se devolverá un 1 que hará que se entre en el bucle o un 0 para salir y que el juego finalice (por ejemplo si el usuario ha escrito el comando correspondiente para finalizar). Dentro del bucle se hace siempre una comprobación para ver si el personaje ha muerto, si esto sucede, el juego finaliza.
+		- El funcionamiento base del juego es sencillo, en la función main existe un bucle while que en su condición llama a yyparse(), que espera a que el usuario introduzca un comando por teclado. Cuando esto sucede, el analizador procesa el comando y en función de lo que tenga que hacer, se devolverá un 1 que hará que se entre en el bucle o un 0 para salir y que el juego finalice (por ejemplo si el usuario ha escrito el comando correspondiente para finalizar). Dentro del bucle se hace siempre una comprobación para ver si el personaje ha muerto, si esto sucede, el juego finaliza.
 
 		- Para cada regla se llama a la función correspondiente, que ejecuta la funcionalidad deseada.
 

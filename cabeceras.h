@@ -1,7 +1,7 @@
 #define pi 3.141592
 /* Constante usada para la animacion de los mensajes por pantalla */
-//#define DELAY 50000
-#define DELAY 1
+#define DELAY 50000
+//#define DELAY 1
 /* Constantes de direccion */
 #define D_ARRIBA 1
 #define D_ABAJO 2
