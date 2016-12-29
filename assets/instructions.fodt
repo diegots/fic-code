@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0" xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0" xmlns:number="urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0" xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0" xmlns:chart="urn:oasis:names:tc:opendocument:xmlns:chart:1.0" xmlns:dr3d="urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0" xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns:form="urn:oasis:names:tc:opendocument:xmlns:form:1.0" xmlns:script="urn:oasis:names:tc:opendocument:xmlns:script:1.0" xmlns:config="urn:oasis:names:tc:opendocument:xmlns:config:1.0" xmlns:ooo="http://openoffice.org/2004/office" xmlns:ooow="http://openoffice.org/2004/writer" xmlns:oooc="http://openoffice.org/2004/calc" xmlns:dom="http://www.w3.org/2001/xml-events" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rpt="http://openoffice.org/2005/report" xmlns:of="urn:oasis:names:tc:opendocument:xmlns:of:1.2" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:grddl="http://www.w3.org/2003/g/data-view#" xmlns:officeooo="http://openoffice.org/2009/office" xmlns:tableooo="http://openoffice.org/2009/table" xmlns:drawooo="http://openoffice.org/2010/draw" xmlns:calcext="urn:org:documentfoundation:names:experimental:calc:xmlns:calcext:1.0" xmlns:loext="urn:org:documentfoundation:names:experimental:office:xmlns:loext:1.0" xmlns:field="urn:openoffice:names:experimental:ooo-ms-interop:xmlns:field:1.0" xmlns:formx="urn:openoffice:names:experimental:ooxml-odf-interop:xmlns:form:1.0" xmlns:css3t="http://www.w3.org/TR/css3-text/" office:version="1.2" office:mimetype="application/vnd.oasis.opendocument.text">
- <office:meta><meta:creation-date>2016-12-24T13:51:06.722538977</meta:creation-date><dc:date>2016-12-28T22:12:31.094034157</dc:date><meta:editing-duration>PT1H23M36S</meta:editing-duration><meta:editing-cycles>14</meta:editing-cycles><meta:generator>LibreOffice/4.2.8.2$Linux_X86_64 LibreOffice_project/420m0$Build-2</meta:generator><meta:document-statistic meta:table-count="9" meta:image-count="2" meta:object-count="0" meta:page-count="4" meta:paragraph-count="45" meta:word-count="352" meta:character-count="2304" meta:non-whitespace-character-count="1971"/></office:meta>
+ <office:meta><meta:creation-date>2016-12-24T13:51:06.722538977</meta:creation-date><dc:date>2016-12-29T18:17:43.208657540</dc:date><meta:editing-duration>PT1H39M44S</meta:editing-duration><meta:editing-cycles>19</meta:editing-cycles><meta:generator>LibreOffice/4.2.8.2$Linux_X86_64 LibreOffice_project/420m0$Build-2</meta:generator><meta:document-statistic meta:table-count="14" meta:image-count="2" meta:object-count="0" meta:page-count="5" meta:paragraph-count="81" meta:word-count="551" meta:character-count="3407" meta:non-whitespace-character-count="2890"/></office:meta>
  <office:settings>
   <config:config-item-set config:name="ooo:view-settings">
-   <config:config-item config:name="ViewAreaTop" config:type="long">12855</config:config-item>
+   <config:config-item config:name="ViewAreaTop" config:type="long">122297</config:config-item>
    <config:config-item config:name="ViewAreaLeft" config:type="long">0</config:config-item>
    <config:config-item config:name="ViewAreaWidth" config:type="long">37435</config:config-item>
-   <config:config-item config:name="ViewAreaHeight" config:type="long">19265</config:config-item>
+   <config:config-item config:name="ViewAreaHeight" config:type="long">20306</config:config-item>
    <config:config-item config:name="ShowRedlineChanges" config:type="boolean">true</config:config-item>
    <config:config-item config:name="InBrowseMode" config:type="boolean">false</config:config-item>
    <config:config-item-map-indexed config:name="Views">
     <config:config-item-map-entry>
      <config:config-item config:name="ViewId" config:type="string">view2</config:config-item>
-     <config:config-item config:name="ViewLeft" config:type="long">11086</config:config-item>
-     <config:config-item config:name="ViewTop" config:type="long">31821</config:config-item>
+     <config:config-item config:name="ViewLeft" config:type="long">9922</config:config-item>
+     <config:config-item config:name="ViewTop" config:type="long">88177</config:config-item>
      <config:config-item config:name="VisibleLeft" config:type="long">0</config:config-item>
-     <config:config-item config:name="VisibleTop" config:type="long">12855</config:config-item>
+     <config:config-item config:name="VisibleTop" config:type="long">122297</config:config-item>
      <config:config-item config:name="VisibleRight" config:type="long">37433</config:config-item>
-     <config:config-item config:name="VisibleBottom" config:type="long">32119</config:config-item>
+     <config:config-item config:name="VisibleBottom" config:type="long">142602</config:config-item>
      <config:config-item config:name="ZoomType" config:type="short">0</config:config-item>
      <config:config-item config:name="ViewLayoutColumns" config:type="short">0</config:config-item>
      <config:config-item config:name="ViewLayoutBookMode" config:type="boolean">false</config:config-item>
@@ -81,7 +81,7 @@
    <config:config-item config:name="ConsiderTextWrapOnObjPos" config:type="boolean">false</config:config-item>
    <config:config-item config:name="CurrentDatabaseCommandType" config:type="int">0</config:config-item>
    <config:config-item config:name="RedlineProtectionKey" config:type="base64Binary"/>
-   <config:config-item config:name="Rsid" config:type="int">1263899</config:config-item>
+   <config:config-item config:name="Rsid" config:type="int">1351381</config:config-item>
    <config:config-item config:name="PrintProspectRTL" config:type="boolean">false</config:config-item>
    <config:config-item config:name="PrinterSetup" config:type="base64Binary"/>
    <config:config-item config:name="AlignTabStopPosition" config:type="boolean">true</config:config-item>
@@ -284,6 +284,50 @@
     <style:background-image/>
    </style:table-cell-properties>
   </style:style>
+  <style:style style:name="Table6" style:family="table">
+   <style:table-properties style:width="6.925in" table:align="margins"/>
+  </style:style>
+  <style:style style:name="Table6.A" style:family="table-column">
+   <style:table-column-properties style:column-width="6.925in" style:rel-column-width="65535*"/>
+  </style:style>
+  <style:style style:name="Table6.A1" style:family="table-cell">
+   <style:table-cell-properties fo:background-color="#dddddd">
+    <style:background-image/>
+   </style:table-cell-properties>
+  </style:style>
+  <style:style style:name="Table9" style:family="table">
+   <style:table-properties style:width="6.925in" table:align="margins" style:may-break-between-rows="false"/>
+  </style:style>
+  <style:style style:name="Table9.A" style:family="table-column">
+   <style:table-column-properties style:column-width="6.925in" style:rel-column-width="65535*"/>
+  </style:style>
+  <style:style style:name="Table9.A1" style:family="table-cell">
+   <style:table-cell-properties fo:background-color="#dddddd">
+    <style:background-image/>
+   </style:table-cell-properties>
+  </style:style>
+  <style:style style:name="Table8" style:family="table">
+   <style:table-properties style:width="6.925in" table:align="margins" style:may-break-between-rows="false"/>
+  </style:style>
+  <style:style style:name="Table8.A" style:family="table-column">
+   <style:table-column-properties style:column-width="6.925in" style:rel-column-width="65535*"/>
+  </style:style>
+  <style:style style:name="Table8.A1" style:family="table-cell">
+   <style:table-cell-properties fo:background-color="#dddddd">
+    <style:background-image/>
+   </style:table-cell-properties>
+  </style:style>
+  <style:style style:name="Table7" style:family="table">
+   <style:table-properties style:width="6.925in" table:align="margins" style:may-break-between-rows="false"/>
+  </style:style>
+  <style:style style:name="Table7.A" style:family="table-column">
+   <style:table-column-properties style:column-width="6.925in" style:rel-column-width="65535*"/>
+  </style:style>
+  <style:style style:name="Table7.A1" style:family="table-cell">
+   <style:table-cell-properties fo:background-color="#dddddd">
+    <style:background-image/>
+   </style:table-cell-properties>
+  </style:style>
   <style:style style:name="Table3" style:family="table">
    <style:table-properties style:width="0.809in" table:align="left"/>
   </style:style>
@@ -317,49 +361,40 @@
     <style:background-image/>
    </style:table-cell-properties>
   </style:style>
-  <style:style style:name="Table6" style:family="table">
+  <style:style style:name="Table10" style:family="table">
    <style:table-properties style:width="6.925in" table:align="margins"/>
   </style:style>
-  <style:style style:name="Table6.A" style:family="table-column">
+  <style:style style:name="Table10.A" style:family="table-column">
    <style:table-column-properties style:column-width="6.925in" style:rel-column-width="65535*"/>
   </style:style>
-  <style:style style:name="Table6.A1" style:family="table-cell">
-   <style:table-cell-properties fo:background-color="#dddddd">
-    <style:background-image/>
-   </style:table-cell-properties>
+  <style:style style:name="Table11" style:family="table">
+   <style:table-properties style:width="6.925in" table:align="margins"/>
   </style:style>
-  <style:style style:name="Table7" style:family="table">
-   <style:table-properties style:width="6.925in" table:align="margins" style:may-break-between-rows="false"/>
-  </style:style>
-  <style:style style:name="Table7.A" style:family="table-column">
-   <style:table-column-properties style:column-width="6.925in" style:rel-column-width="9972*"/>
-  </style:style>
-  <style:style style:name="Table7.A1" style:family="table-cell">
-   <style:table-cell-properties fo:background-color="#dddddd">
-    <style:background-image/>
-   </style:table-cell-properties>
-  </style:style>
-  <style:style style:name="Table8" style:family="table">
-   <style:table-properties style:width="6.925in" table:align="margins" style:may-break-between-rows="false"/>
-  </style:style>
-  <style:style style:name="Table8.A" style:family="table-column">
+  <style:style style:name="Table11.A" style:family="table-column">
    <style:table-column-properties style:column-width="6.925in" style:rel-column-width="65535*"/>
   </style:style>
-  <style:style style:name="Table8.A1" style:family="table-cell">
-   <style:table-cell-properties fo:background-color="#dddddd">
-    <style:background-image/>
-   </style:table-cell-properties>
-  </style:style>
-  <style:style style:name="Table9" style:family="table">
+  <style:style style:name="Table12" style:family="table">
    <style:table-properties style:width="6.925in" table:align="margins" style:may-break-between-rows="false"/>
   </style:style>
-  <style:style style:name="Table9.A" style:family="table-column">
+  <style:style style:name="Table12.A" style:family="table-column">
    <style:table-column-properties style:column-width="6.925in" style:rel-column-width="65535*"/>
   </style:style>
-  <style:style style:name="Table9.A1" style:family="table-cell">
-   <style:table-cell-properties fo:background-color="#dddddd">
+  <style:style style:name="Table12.A1" style:family="table-cell">
+   <style:table-cell-properties fo:background-color="transparent">
     <style:background-image/>
    </style:table-cell-properties>
+  </style:style>
+  <style:style style:name="Table13" style:family="table">
+   <style:table-properties style:width="6.925in" table:align="margins" style:may-break-between-rows="false"/>
+  </style:style>
+  <style:style style:name="Table13.A" style:family="table-column">
+   <style:table-column-properties style:column-width="6.925in" style:rel-column-width="65535*"/>
+  </style:style>
+  <style:style style:name="Table14" style:family="table">
+   <style:table-properties style:width="6.925in" table:align="margins" style:may-break-between-rows="false"/>
+  </style:style>
+  <style:style style:name="Table14.A" style:family="table-column">
+   <style:table-column-properties style:column-width="6.925in" style:rel-column-width="65535*"/>
   </style:style>
   <style:style style:name="P1" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties officeooo:rsid="0008b0dc" officeooo:paragraph-rsid="0008b0dc"/>
@@ -390,64 +425,87 @@
    <style:text-properties officeooo:rsid="00118314" officeooo:paragraph-rsid="00118314"/>
   </style:style>
   <style:style style:name="P10" style:family="paragraph" style:parent-style-name="Text_20_body">
+   <style:text-properties officeooo:rsid="0012075d" officeooo:paragraph-rsid="0012075d"/>
+  </style:style>
+  <style:style style:name="P11" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:paragraph-properties fo:background-color="#dddddd">
     <style:background-image/>
    </style:paragraph-properties>
    <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" officeooo:rsid="000cda4d" officeooo:paragraph-rsid="000cda4d" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
   </style:style>
-  <style:style style:name="P11" style:family="paragraph" style:parent-style-name="Table_20_Contents">
+  <style:style style:name="P12" style:family="paragraph" style:parent-style-name="Table_20_Contents">
    <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" officeooo:rsid="000d249f" officeooo:paragraph-rsid="000d249f" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
   </style:style>
-  <style:style style:name="P12" style:family="paragraph" style:parent-style-name="Table_20_Contents">
+  <style:style style:name="P13" style:family="paragraph" style:parent-style-name="Table_20_Contents">
    <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" officeooo:rsid="000e4887" officeooo:paragraph-rsid="000e4887" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
   </style:style>
-  <style:style style:name="P13" style:family="paragraph" style:parent-style-name="Table_20_Contents">
+  <style:style style:name="P14" style:family="paragraph" style:parent-style-name="Table_20_Contents">
    <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" officeooo:rsid="000f7e92" officeooo:paragraph-rsid="000f7e92" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
   </style:style>
-  <style:style style:name="P14" style:family="paragraph" style:parent-style-name="Table_20_Contents">
+  <style:style style:name="P15" style:family="paragraph" style:parent-style-name="Table_20_Contents">
+   <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" officeooo:rsid="0012075d" officeooo:paragraph-rsid="0012075d" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
+  </style:style>
+  <style:style style:name="P16" style:family="paragraph" style:parent-style-name="Table_20_Contents">
    <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" officeooo:rsid="00118314" officeooo:paragraph-rsid="00118314" style:font-size-asian="9.60000038146973pt" style:font-size-complex="11pt"/>
   </style:style>
-  <style:style style:name="P15" style:family="paragraph" style:parent-style-name="Heading_20_2">
+  <style:style style:name="P17" style:family="paragraph" style:parent-style-name="Table_20_Contents">
+   <style:text-properties officeooo:rsid="0012075d" officeooo:paragraph-rsid="0012075d"/>
+  </style:style>
+  <style:style style:name="P18" style:family="paragraph" style:parent-style-name="Heading_20_2">
    <style:text-properties officeooo:rsid="0008b0dc" officeooo:paragraph-rsid="0008b0dc"/>
   </style:style>
-  <style:style style:name="P16" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P19" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:paragraph-properties fo:background-color="transparent">
     <style:background-image/>
    </style:paragraph-properties>
    <style:text-properties officeooo:paragraph-rsid="000e4887"/>
   </style:style>
-  <style:style style:name="P17" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P20" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:paragraph-properties fo:break-before="page"/>
    <style:text-properties officeooo:rsid="00118314" officeooo:paragraph-rsid="00118314"/>
   </style:style>
-  <style:style style:name="P18" style:family="paragraph" style:parent-style-name="Footnote">
+  <style:style style:name="P21" style:family="paragraph" style:parent-style-name="Footnote">
    <style:paragraph-properties fo:margin-left="0in" fo:margin-right="0in" fo:text-indent="0in" style:auto-text-indent="false"/>
    <style:text-properties officeooo:rsid="00118314" officeooo:paragraph-rsid="00118314"/>
   </style:style>
-  <style:style style:name="P19" style:family="paragraph" style:parent-style-name="Footnote">
+  <style:style style:name="P22" style:family="paragraph" style:parent-style-name="Footnote">
    <style:paragraph-properties fo:margin-left="0in" fo:margin-right="0in" fo:text-indent="0in" style:auto-text-indent="false"/>
    <style:text-properties officeooo:paragraph-rsid="00118314"/>
   </style:style>
-  <style:style style:name="P20" style:family="paragraph" style:parent-style-name="Illustration">
+  <style:style style:name="P23" style:family="paragraph" style:parent-style-name="Illustration">
    <style:paragraph-properties fo:text-align="center" style:justify-single-word="false"/>
   </style:style>
-  <style:style style:name="P21" style:family="paragraph" style:parent-style-name="Text_20_body">
-   <style:text-properties officeooo:rsid="0008b0dc" officeooo:paragraph-rsid="0008b0dc"/>
-  </style:style>
-  <style:style style:name="P22" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P24" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties officeooo:rsid="0012075d" officeooo:paragraph-rsid="0012075d"/>
   </style:style>
-  <style:style style:name="P23" style:family="paragraph" style:parent-style-name="Text_20_body">
-   <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" officeooo:rsid="000cda4d" officeooo:paragraph-rsid="000cda4d" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
+  <style:style style:name="P25" style:family="paragraph" style:parent-style-name="Text_20_body">
+   <style:text-properties officeooo:rsid="00149ed5" officeooo:paragraph-rsid="00149ed5"/>
   </style:style>
-  <style:style style:name="P24" style:family="paragraph" style:parent-style-name="Heading_20_2">
+  <style:style style:name="P26" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties officeooo:rsid="0008b0dc" officeooo:paragraph-rsid="0008b0dc"/>
   </style:style>
-  <style:style style:name="P25" style:family="paragraph" style:parent-style-name="Table_20_Contents">
-   <style:text-properties officeooo:rsid="0012075d" officeooo:paragraph-rsid="0012075d"/>
+  <style:style style:name="P27" style:family="paragraph" style:parent-style-name="Text_20_body">
+   <style:paragraph-properties fo:break-before="page"/>
+   <style:text-properties officeooo:rsid="00149ed5" officeooo:paragraph-rsid="00149ed5"/>
   </style:style>
-  <style:style style:name="P26" style:family="paragraph" style:parent-style-name="Table_20_Contents">
-   <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" officeooo:rsid="0012075d" officeooo:paragraph-rsid="0012075d" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
+  <style:style style:name="P28" style:family="paragraph" style:parent-style-name="Heading_20_2">
+   <style:text-properties officeooo:rsid="0008b0dc" officeooo:paragraph-rsid="0008b0dc"/>
+  </style:style>
+  <style:style style:name="P29" style:family="paragraph" style:parent-style-name="Heading_20_2" style:list-style-name=""/>
+  <style:style style:name="P30" style:family="paragraph" style:parent-style-name="Heading_20_2">
+   <style:paragraph-properties fo:break-before="page"/>
+  </style:style>
+  <style:style style:name="P31" style:family="paragraph" style:parent-style-name="Table_20_Contents">
+   <style:paragraph-properties fo:background-color="#dddddd">
+    <style:background-image/>
+   </style:paragraph-properties>
+   <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" officeooo:rsid="00149ed5" officeooo:paragraph-rsid="00149ed5" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
+  </style:style>
+  <style:style style:name="P32" style:family="paragraph" style:parent-style-name="Table_20_Contents">
+   <style:paragraph-properties fo:background-color="#dddddd">
+    <style:background-image/>
+   </style:paragraph-properties>
+   <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" officeooo:rsid="00149ed5" officeooo:paragraph-rsid="00149ed5" style:font-size-asian="9.60000038146973pt" style:font-size-complex="11pt"/>
   </style:style>
   <style:style style:name="T1" style:family="text">
    <style:text-properties officeooo:rsid="0008b0dc"/>
@@ -462,52 +520,64 @@
    <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" officeooo:rsid="0008b0dc" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
   </style:style>
   <style:style style:name="T5" style:family="text">
-   <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" officeooo:rsid="0008b0dc" fo:background-color="#dddddd" loext:char-shading-value="0" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
-  </style:style>
-  <style:style style:name="T6" style:family="text">
-   <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" fo:background-color="transparent" loext:char-shading-value="0" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
-  </style:style>
-  <style:style style:name="T7" style:family="text">
-   <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" officeooo:rsid="0008b0dc" fo:background-color="transparent" loext:char-shading-value="0" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
-  </style:style>
-  <style:style style:name="T8" style:family="text">
-   <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" fo:background-color="transparent" loext:char-shading-value="0" style:font-size-asian="11pt" style:font-size-complex="11pt" style:shadow="none"/>
-  </style:style>
-  <style:style style:name="T9" style:family="text">
-   <style:text-properties style:font-name="Liberation Mono" officeooo:rsid="0008b0dc"/>
-  </style:style>
-  <style:style style:name="T10" style:family="text">
-   <style:text-properties officeooo:rsid="000a8aa4"/>
-  </style:style>
-  <style:style style:name="T11" style:family="text">
-   <style:text-properties fo:background-color="#dddddd" loext:char-shading-value="0"/>
-  </style:style>
-  <style:style style:name="T12" style:family="text">
-   <style:text-properties fo:background-color="#dddddd" loext:char-shading-value="0" style:font-size-asian="10.5pt" style:shadow="none"/>
-  </style:style>
-  <style:style style:name="T13" style:family="text">
-   <style:text-properties officeooo:rsid="000b27a3"/>
-  </style:style>
-  <style:style style:name="T14" style:family="text">
-   <style:text-properties officeooo:rsid="000cda4d"/>
-  </style:style>
-  <style:style style:name="T15" style:family="text">
-   <style:text-properties officeooo:rsid="000e4887"/>
-  </style:style>
-  <style:style style:name="T16" style:family="text">
-   <style:text-properties officeooo:rsid="00118314"/>
-  </style:style>
-  <style:style style:name="T17" style:family="text">
-   <style:text-properties officeooo:rsid="0012075d"/>
-  </style:style>
-  <style:style style:name="T18" style:family="text">
-   <style:text-properties style:font-name="Liberation Mono"/>
-  </style:style>
-  <style:style style:name="T19" style:family="text">
    <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" fo:background-color="#dddddd" loext:char-shading-value="0" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
   </style:style>
-  <style:style style:name="T20" style:family="text">
+  <style:style style:name="T6" style:family="text">
+   <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" officeooo:rsid="0008b0dc" fo:background-color="#dddddd" loext:char-shading-value="0" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
+  </style:style>
+  <style:style style:name="T7" style:family="text">
    <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" officeooo:rsid="0012075d" fo:background-color="#dddddd" loext:char-shading-value="0" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
+  </style:style>
+  <style:style style:name="T8" style:family="text">
+   <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" fo:background-color="transparent" loext:char-shading-value="0" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
+  </style:style>
+  <style:style style:name="T9" style:family="text">
+   <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" officeooo:rsid="0008b0dc" fo:background-color="transparent" loext:char-shading-value="0" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
+  </style:style>
+  <style:style style:name="T10" style:family="text">
+   <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" fo:background-color="transparent" loext:char-shading-value="0" style:font-size-asian="11pt" style:font-size-complex="11pt" style:shadow="none"/>
+  </style:style>
+  <style:style style:name="T11" style:family="text">
+   <style:text-properties style:font-name="Liberation Mono" officeooo:rsid="0008b0dc"/>
+  </style:style>
+  <style:style style:name="T12" style:family="text">
+   <style:text-properties officeooo:rsid="000a8aa4"/>
+  </style:style>
+  <style:style style:name="T13" style:family="text">
+   <style:text-properties fo:background-color="#dddddd" loext:char-shading-value="0"/>
+  </style:style>
+  <style:style style:name="T14" style:family="text">
+   <style:text-properties fo:background-color="#dddddd" loext:char-shading-value="0" style:font-size-asian="10.5pt" style:shadow="none"/>
+  </style:style>
+  <style:style style:name="T15" style:family="text">
+   <style:text-properties officeooo:rsid="000b27a3"/>
+  </style:style>
+  <style:style style:name="T16" style:family="text">
+   <style:text-properties officeooo:rsid="000cda4d"/>
+  </style:style>
+  <style:style style:name="T17" style:family="text">
+   <style:text-properties officeooo:rsid="000e4887"/>
+  </style:style>
+  <style:style style:name="T18" style:family="text">
+   <style:text-properties officeooo:rsid="00118314"/>
+  </style:style>
+  <style:style style:name="T19" style:family="text">
+   <style:text-properties officeooo:rsid="0012075d"/>
+  </style:style>
+  <style:style style:name="T20" style:family="text">
+   <style:text-properties officeooo:rsid="00149ed5"/>
+  </style:style>
+  <style:style style:name="T21" style:family="text">
+   <style:text-properties fo:font-size="11pt" fo:background-color="#dddddd" loext:char-shading-value="0" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
+  </style:style>
+  <style:style style:name="T22" style:family="text">
+   <style:text-properties style:font-name="Liberation Mono"/>
+  </style:style>
+  <style:style style:name="T23" style:family="text">
+   <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" fo:background-color="#dddddd" loext:char-shading-value="0" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
+  </style:style>
+  <style:style style:name="T24" style:family="text">
+   <style:text-properties style:font-name="Liberation Mono" fo:font-size="11pt" style:font-size-asian="11pt" style:font-size-complex="11pt"/>
   </style:style>
   <style:style style:name="fr1" style:family="graphic" style:parent-style-name="Frame">
    <style:graphic-properties fo:margin-left="0in" fo:margin-right="0in" fo:margin-top="0in" fo:margin-bottom="0in" style:wrap="dynamic" style:number-wrapped-paragraphs="no-limit" style:vertical-pos="top" style:vertical-rel="paragraph" style:horizontal-pos="center" style:horizontal-rel="paragraph" fo:background-color="transparent" style:background-transparency="100%" draw:fill="solid" fo:padding="0in" fo:border="none" style:shadow="none" draw:shadow-opacity="100%">
@@ -541,94 +611,170 @@
    </text:sequence-decls>
    <text:p text:style-name="Title">Toplevel like tool and documentation for Benjamin C. Pierce&apos;s untyped lambda calculus library</text:p>
    <text:h text:style-name="Heading_20_2" text:outline-level="2">Introduction</text:h>
-   <text:p text:style-name="P2">The task in hand was to develop a small toplevel tool, a REPL environment, where a lambda-calculus expresion can be tested. <text:span text:style-name="T17">The tool is make use of </text:span>the untyped lambda implementation available at Benjamin C. Pierce&apos;s site<text:note text:id="ftn1" text:note-class="footnote"><text:note-citation>1</text:note-citation><text:note-body>
-      <text:p text:style-name="P19"><text:s/><text:span text:style-name="T16">https://www.cis.upenn.edu/~bcpierce/tapl/checkers/fulluntyped.tar.gz</text:span></text:p></text:note-body></text:note>. <text:span text:style-name="T15">S</text:span>ome comments were added to the original source code using Ocamldoc.</text:p>
-   <text:h text:style-name="P15" text:outline-level="2">Obtaining and building</text:h>
-   <text:p text:style-name="P1">This work is available as a Github project, can be cloned on any Linux <text:span text:style-name="T17">or Unix</text:span> environment with:</text:p>
+   <text:p text:style-name="P2">The task in hand was to develop a small toplevel tool, a REPL environment, where a lambda-calculus expresion can be tested. <text:span text:style-name="T19">The tool is make use of </text:span>the untyped lambda implementation available at Benjamin C. Pierce&apos;s site<text:note text:id="ftn1" text:note-class="footnote"><text:note-citation>1</text:note-citation><text:note-body>
+      <text:p text:style-name="P22"><text:s/><text:span text:style-name="T18">https://www.cis.upenn.edu/~bcpierce/tapl/checkers/fulluntyped.tar.gz</text:span></text:p></text:note-body></text:note>. <text:span text:style-name="T17">S</text:span>ome comments were added to the original source code using Ocamldoc.</text:p>
+   <text:h text:style-name="P18" text:outline-level="2">Obtaining and building</text:h>
+   <text:p text:style-name="P1">This work is available as a Github project, can be cloned on any Linux <text:span text:style-name="T19">or Unix</text:span> environment with:</text:p>
    <table:table table:name="Table2" table:style-name="Table2">
     <table:table-column table:style-name="Table2.A"/>
     <table:table-row>
      <table:table-cell table:style-name="Table2.A1" office:value-type="string">
-      <text:p text:style-name="P12">git clone https://github.com/diegots/fic-dlp-lambda.git lambda-toplevel</text:p>
+      <text:p text:style-name="P13">git clone https://github.com/diegots/fic-dlp-lambda.git lambda-toplevel</text:p>
      </table:table-cell>
     </table:table-row>
    </table:table>
    <text:p text:style-name="P5"/>
-   <text:p text:style-name="P16"><text:span text:style-name="T1">A directory called </text:span><text:span text:style-name="T4">lambda-toplevel</text:span><text:span text:style-name="T1"> will be created with all necessary source files. The orignal </text:span><text:span text:style-name="T7">Makefile</text:span> <text:span text:style-name="T10">was modified to include new targets. To use it just go </text:span>inside <text:span text:style-name="T3">lambda-toplevel</text:span> and use make tool as usual:</text:p>
+   <text:p text:style-name="P19"><text:span text:style-name="T1">A directory called </text:span><text:span text:style-name="T4">lambda-toplevel</text:span><text:span text:style-name="T1"> will be created with all necessary source files. The orignal </text:span><text:span text:style-name="T9">Makefile</text:span> <text:span text:style-name="T12">was modified to include new targets. To use it just go </text:span>inside <text:span text:style-name="T3">lambda-toplevel</text:span> and use make tool as usual:</text:p>
    <table:table table:name="Table1" table:style-name="Table1">
     <table:table-column table:style-name="Table1.A"/>
     <table:table-row>
      <table:table-cell table:style-name="Table1.A1" office:value-type="string">
-      <text:p text:style-name="P11">cd lambda-toplevel </text:p>
-      <text:p text:style-name="P11">make toplevel</text:p>
+      <text:p text:style-name="P12">cd lambda-toplevel </text:p>
+      <text:p text:style-name="P12">make toplevel</text:p>
      </table:table-cell>
     </table:table-row>
    </table:table>
-   <text:h text:style-name="Heading_20_2" text:outline-level="2"><text:span text:style-name="T17">Basic u</text:span>se</text:h>
-   <text:p text:style-name="P1"><text:span text:style-name="T17">Once compiled, using the the </text:span>tool is straightforward, <text:span text:style-name="T17">just calling the toplevel binary like any other binary will work:</text:span></text:p>
+   <text:h text:style-name="Heading_20_2" text:outline-level="2"><text:span text:style-name="T19">Basic u</text:span>s<text:span text:style-name="T20">age</text:span></text:h>
+   <text:p text:style-name="P1"><text:span text:style-name="T19">Once compiled, using the the </text:span>tool is straightforward, <text:span text:style-name="T19">just calling the toplevel binary like any other binary will work:</text:span></text:p>
    <table:table table:name="Table6" table:style-name="Table6">
     <table:table-column table:style-name="Table6.A"/>
     <table:table-row>
      <table:table-cell table:style-name="Table6.A1" office:value-type="string">
-      <text:p text:style-name="P26">diego@CompaqCQ57:fic-dlp-lambda$ ./toplevel &#x0d;</text:p>
-      <text:p text:style-name="P26">Welcome, this is a lambda-calculus toplevel interpreter based on Benjamin C.&#x0d; Pierce implementations available at </text:p>
-      <text:p text:style-name="P26">https://www.cis.upenn.edu/~bcpierce/tapl/</text:p>
-      <text:p text:style-name="P26"/>
-      <text:p text:style-name="P26">&gt;&gt;</text:p>
+      <text:p text:style-name="P15">diego@CompaqCQ57:fic-dlp-lambda$ ./toplevel </text:p>
+      <text:p text:style-name="P15">Welcome, this is a lambda-calculus toplevel interpreter based on Benjamin C. Pierce implementations available at </text:p>
+      <text:p text:style-name="P15">https://www.cis.upenn.edu/~bcpierce/tapl/</text:p>
+      <text:p text:style-name="P15"/>
+      <text:p text:style-name="P15">&gt;&gt;</text:p>
      </table:table-cell>
     </table:table-row>
    </table:table>
    <text:p text:style-name="P1"/>
-   <text:p text:style-name="P22">Finish the session can be done with <text:span text:style-name="T19">exit</text:span> command or issuing a <text:span text:style-name="T19">Crtl-D</text:span>. Ofcourse this toplevel remembers previous declarations so a variable can be named anytime after bounding.</text:p>
+   <text:p text:style-name="P25">Developed application is compatible with readline utilities like <text:span text:style-name="T5">rlwrap</text:span>. It&apos;s an esay way to have line editing and persistent history.</text:p>
+   <text:p text:style-name="P10">Finish the session can be done with <text:span text:style-name="T5">exit</text:span> command or issuing a <text:span text:style-name="T5">Crtl-D</text:span>. Ofcourse this toplevel remembers previous declarations so a variable can be named anytime after bounding.</text:p>
+   <text:p text:style-name="P25"><text:soft-page-break/>Now some examples are presented. Ofcourse, all examples from <text:span text:style-name="T5">test.f</text:span> included in the original distribution can be tried out. First, to bind a symbol and use it later, the slash operator can be used: </text:p>
    <table:table table:name="Table9" table:style-name="Table9">
     <table:table-column table:style-name="Table9.A"/>
-    <text:soft-page-break/>
     <table:table-row>
      <table:table-cell table:style-name="Table9.A1" office:value-type="string">
-      <text:p text:style-name="P26">&gt;&gt; x/;&#x0d;</text:p>
-      <text:p text:style-name="P26">x &#x0d;</text:p>
-      <text:p text:style-name="P26">&gt;&gt; x;&#x0d;</text:p>
-      <text:p text:style-name="P26">x&#x0d;</text:p>
-      <text:p text:style-name="P26">&gt;&gt;</text:p>
+      <text:p text:style-name="P15">&gt;&gt; x/; </text:p>
+      <text:p text:style-name="P15">x </text:p>
+      <text:p text:style-name="P15">&gt;&gt; x; </text:p>
+      <text:p text:style-name="P15">x </text:p>
+      <text:p text:style-name="P15">&gt;&gt;</text:p>
      </table:table-cell>
     </table:table-row>
    </table:table>
-   <text:p text:style-name="P22"/>
+   <text:p text:style-name="P10"/>
+   <text:p text:style-name="P25">Declaring an integer value and testing if it zero:</text:p>
    <table:table table:name="Table8" table:style-name="Table8">
     <table:table-column table:style-name="Table8.A"/>
     <table:table-row>
      <table:table-cell table:style-name="Table8.A1" office:value-type="string">
-      <text:p text:style-name="P25">&gt;&gt; nz = 2;&#x0d;</text:p>
-      <text:p text:style-name="P25">nz = 2&#x0d;</text:p>
-      <text:p text:style-name="P25">&gt;&gt; iszero nz;&#x0d;</text:p>
-      <text:p text:style-name="P25">false&#x0d;</text:p>
-      <text:p text:style-name="P25">&gt;&gt; succ nz;&#x0d;</text:p>
-      <text:p text:style-name="P25">3&#x0d;</text:p>
-      <text:p text:style-name="P25">&gt;&gt; &#x0d;</text:p>
+      <text:p text:style-name="P17">&gt;&gt; nz = 2; </text:p>
+      <text:p text:style-name="P17">nz = 2 </text:p>
+      <text:p text:style-name="P17">&gt;&gt; iszero nz; </text:p>
+      <text:p text:style-name="P17">false </text:p>
+      <text:p text:style-name="P17">&gt;&gt; succ nz; </text:p>
+      <text:p text:style-name="P17">3 </text:p>
+      <text:p text:style-name="P17">&gt;&gt; </text:p>
      </table:table-cell>
     </table:table-row>
    </table:table>
-   <text:p text:style-name="P22"/>
+   <text:p text:style-name="P10"/>
+   <text:p text:style-name="P25">Getting the predecessor of a value:</text:p>
    <table:table table:name="Table7" table:style-name="Table7">
     <table:table-column table:style-name="Table7.A"/>
     <table:table-row>
      <table:table-cell table:style-name="Table7.A1" office:value-type="string">
-      <text:p text:style-name="P26">&gt;&gt; y = lambda j.(pred j);&#x0d;</text:p>
-      <text:p text:style-name="P26">y = lambda j. pred j&#x0d;</text:p>
-      <text:p text:style-name="P26">&gt;&gt; y 5;&#x0d;</text:p>
-      <text:p text:style-name="P26">4&#x0d;</text:p>
-      <text:p text:style-name="P26">&gt;&gt; &#x0d;</text:p>
+      <text:p text:style-name="P15">&gt;&gt; y = lambda j.(pred j); </text:p>
+      <text:p text:style-name="P15">y = lambda j. pred j </text:p>
+      <text:p text:style-name="P15">&gt;&gt; y 5; </text:p>
+      <text:p text:style-name="P15">4 </text:p>
+      <text:p text:style-name="P15">&gt;&gt; </text:p>
      </table:table-cell>
     </table:table-row>
    </table:table>
-   <text:p text:style-name="P22"/>
-   <text:h text:style-name="Heading_20_2" text:outline-level="2">Generating documentation</text:h>
-   <text:p text:style-name="P7">Source code was documented and can be read directly <text:span text:style-name="T16">with any editor</text:span> but <text:span text:style-name="T6">O</text:span><text:span text:style-name="T8">camldoc</text:span> <text:span text:style-name="T14">was used and a nice HTML reference can be generated with the following instruction:</text:span></text:p>
+   <text:p text:style-name="P10"/>
+   <text:p text:style-name="P25">Declaring a record with mixed values:</text:p>
+   <table:table table:name="Table10" table:style-name="Table10">
+    <table:table-column table:style-name="Table10.A"/>
+    <table:table-row>
+     <table:table-cell office:value-type="string">
+      <text:p text:style-name="P31">&gt;&gt; {b=1, 3, &quot;hello&quot;, onedotthree=1.3};&#x0d;</text:p>
+      <text:p text:style-name="P31">{b=1, 3, &quot;hello&quot;, onedotthree=1.3}</text:p>
+      <text:p text:style-name="P31">&gt;&gt;</text:p>
+     </table:table-cell>
+    </table:table-row>
+   </table:table>
+   <text:p text:style-name="P25"/>
+   <text:p text:style-name="P25">Infinite loop:</text:p>
+   <table:table table:name="Table11" table:style-name="Table11">
+    <table:table-column table:style-name="Table11.A"/>
+    <table:table-row>
+     <table:table-cell office:value-type="string">
+      <text:p text:style-name="P31">Infinite loop example&#x0d;</text:p>
+      <text:p text:style-name="P31">p = lambda x&apos;. x&apos; x&apos;&#x0d;</text:p>
+      <text:p text:style-name="P31">&gt;&gt; p;&#x0d;</text:p>
+      <text:p text:style-name="P31">(lambda x&apos;. x&apos; x&apos;)&#x0d;</text:p>
+      <text:p text:style-name="P31">&gt;&gt; p p;&#x0d;</text:p>
+      <text:p text:style-name="P31">Fatal error: exception Stack_overflow&#x0d;</text:p>
+      <text:p text:style-name="P31">diego@CompaqCQ57:fic-dlp-lambda$&#x0d;</text:p>
+     </table:table-cell>
+    </table:table-row>
+   </table:table>
+   <text:p text:style-name="P25"/>
+   <text:p text:style-name="P25">Accessing the thirth element from record:</text:p>
+   <table:table table:name="Table14" table:style-name="Table14">
+    <table:table-column table:style-name="Table14.A"/>
+    <table:table-row>
+     <table:table-cell office:value-type="string">
+      <text:p text:style-name="P32">&gt;&gt; {a=3, b=&quot;hello&quot;, c=2.3}.c;&#x0d;</text:p>
+      <text:p text:style-name="P32">2.3</text:p>
+     </table:table-cell>
+    </table:table-row>
+   </table:table>
+   <text:p text:style-name="P25"/>
+   <text:p text:style-name="P27">Functions to get first or second element from a pair:</text:p>
+   <table:table table:name="Table12" table:style-name="Table12">
+    <table:table-column table:style-name="Table12.A"/>
+    <table:table-row>
+     <table:table-cell table:style-name="Table12.A1" office:value-type="string">
+      <text:p text:style-name="P31">&gt;&gt; fst = lambda a. lambda b. a;&#x0d;</text:p>
+      <text:p text:style-name="P31">fst = lambda a. lambda b. a&#x0d;</text:p>
+      <text:p text:style-name="P31">&gt;&gt; snd = lambda a. lambda b. b;&#x0d;</text:p>
+      <text:p text:style-name="P31">snd = lambda a. lambda b. b&#x0d;</text:p>
+      <text:p text:style-name="P31">&gt;&gt;&#x0d;</text:p>
+      <text:p text:style-name="P31">&gt;&gt; fst 2 3;&#x0d;</text:p>
+      <text:p text:style-name="P31">2&#x0d;</text:p>
+      <text:p text:style-name="P31">&gt;&gt; snd 2 3;&#x0d;</text:p>
+      <text:p text:style-name="P31">3&#x0d;</text:p>
+      <text:p text:style-name="P31">&gt;&gt;&#x0d;</text:p>
+     </table:table-cell>
+    </table:table-row>
+   </table:table>
+   <text:p text:style-name="P25"/>
+   <text:p text:style-name="P25">Square function for float point numbers:&#x0d;</text:p>
+   <table:table table:name="Table13" table:style-name="Table13">
+    <table:table-column table:style-name="Table13.A"/>
+    <table:table-row>
+     <table:table-cell office:value-type="string">
+      <text:p text:style-name="P31">&gt;&gt; square = lambda x. timesfloat x x;&#x0d;</text:p>
+      <text:p text:style-name="P31">square = lambda x. timesfloat x x&#x0d;</text:p>
+      <text:p text:style-name="P31">&gt;&gt; square 9.0;&#x0d;</text:p>
+      <text:p text:style-name="P31">81.&#x0d;</text:p>
+      <text:p text:style-name="P31">&gt;&gt;&#x0d;</text:p>
+     </table:table-cell>
+    </table:table-row>
+   </table:table>
+   <text:p text:style-name="P25"/>
+   <text:h text:style-name="P29" text:outline-level="2"/>
+   <text:h text:style-name="P30" text:outline-level="2">Generating documentation</text:h>
+   <text:p text:style-name="P7">Source code was documented and can be read directly <text:span text:style-name="T18">with any editor</text:span> but <text:span text:style-name="T8">O</text:span><text:span text:style-name="T10">camldoc</text:span> <text:span text:style-name="T16">was used and a nice HTML reference can be generated with the following instruction:</text:span></text:p>
    <table:table table:name="Table3" table:style-name="Table3">
     <table:table-column table:style-name="Table3.A"/>
     <table:table-row>
      <table:table-cell table:style-name="Table3.A1" office:value-type="string">
-      <text:p text:style-name="P13">make doc</text:p>
+      <text:p text:style-name="P14">make doc</text:p>
      </table:table-cell>
     </table:table-row>
    </table:table>
@@ -638,15 +784,15 @@
     <table:table-column table:style-name="Table4.A"/>
     <table:table-row>
      <table:table-cell table:style-name="Table4.A1" office:value-type="string">
-      <text:p text:style-name="P13">firefox doc-html/index.html &amp;</text:p>
+      <text:p text:style-name="P14">firefox doc-html/index.html &amp;</text:p>
      </table:table-cell>
     </table:table-row>
    </table:table>
    <text:p text:style-name="P4"/>
-   <text:p text:style-name="P22">This will open the main reference page shown on <text:sequence-ref text:reference-format="category-and-value" text:ref-name="refIllustration0">Illustration 1</text:sequence-ref>. From this page any module can be accessed, like the Main module shown on the <text:sequence-ref text:reference-format="category-and-value" text:ref-name="refIllustration1">Illustration 2</text:sequence-ref>.</text:p>
+   <text:p text:style-name="P10">This will open the main reference page shown on <text:sequence-ref text:reference-format="category-and-value" text:ref-name="refIllustration0">Illustration 1</text:sequence-ref>. From this page any module can be accessed, like the Main module shown on the <text:sequence-ref text:reference-format="category-and-value" text:ref-name="refIllustration1">Illustration 2</text:sequence-ref>.</text:p>
    <text:p text:style-name="P9"><draw:frame draw:style-name="fr1" draw:name="Frame1" text:anchor-type="paragraph" svg:width="6.9252in" draw:z-index="0">
      <draw:text-box fo:min-height="3.1228in">
-      <text:p text:style-name="P20"><draw:frame draw:style-name="fr3" draw:name="Image1" text:anchor-type="paragraph" svg:width="6.9252in" style:rel-width="100%" svg:height="3.1228in" style:rel-height="scale" draw:z-index="1"><draw:image>
+      <text:p text:style-name="P23"><draw:frame draw:style-name="fr3" draw:name="Image1" text:anchor-type="paragraph" svg:width="6.9252in" style:rel-width="100%" svg:height="3.1228in" style:rel-height="scale" draw:z-index="1"><draw:image>
          <office:binary-data>iVBORw0KGgoAAAANSUhEUgAAA08AAAF+CAYAAABahyE7AAAABmJLR0QA/wD/AP+gvaeTAAAA
           CXBIWXMAAAsSAAALEgHS3X78AAAAB3RJTUUH4AwcFAUD+v4aVwAAABl0RVh0Q29tbWVudABD
           cmVhdGVkIHdpdGggR0lNUFeBDhcAACAASURBVHja7N15nI11/8fx11lm38cMYxl7iaKk0qKU
@@ -1447,13 +1593,13 @@
          </office:binary-data>
         </draw:image>
         <svg:title>Documentation reference main view</svg:title>
-       </draw:frame>Illustration <text:sequence text:ref-name="refIllustration0" text:name="Illustration" text:formula="ooow:Illustration+1" style:num-format="1">1</text:sequence>: <text:span text:style-name="T16">Ocamldoc </text:span>reference main view</text:p>
+       </draw:frame>Illustration <text:sequence text:ref-name="refIllustration0" text:name="Illustration" text:formula="ooow:Illustration+1" style:num-format="1">1</text:sequence>: <text:span text:style-name="T18">Ocamldoc </text:span>reference main view</text:p>
      </draw:text-box>
-    </draw:frame><text:soft-page-break/></text:p>
+    </draw:frame></text:p>
    <text:p text:style-name="P9"/>
-   <text:p text:style-name="P17"><draw:frame draw:style-name="fr2" draw:name="Frame2" text:anchor-type="paragraph" svg:width="6.9252in" draw:z-index="2">
+   <text:p text:style-name="P20"><draw:frame draw:style-name="fr2" draw:name="Frame2" text:anchor-type="paragraph" svg:width="6.9252in" draw:z-index="2">
      <draw:text-box fo:min-height="4.5535in">
-      <text:p text:style-name="P20"><draw:frame draw:style-name="fr3" draw:name="Image2" text:anchor-type="paragraph" svg:width="6.9252in" style:rel-width="100%" svg:height="4.5535in" style:rel-height="scale" draw:z-index="3"><draw:image>
+      <text:p text:style-name="P23"><draw:frame draw:style-name="fr3" draw:name="Image2" text:anchor-type="paragraph" svg:width="6.9252in" style:rel-width="100%" svg:height="4.5535in" style:rel-height="scale" draw:z-index="3"><draw:image>
          <office:binary-data>iVBORw0KGgoAAAANSUhEUgAAA08AAAItCAIAAABuF9aoAAAABGdBTUEAALGPC/xhBQAAAAFz
           UkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAA
           AAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEgAACxIB0t1+/AAAgABJREFUeNrs3Xd8E/X/
@@ -2431,16 +2577,16 @@
           l1dXVRFCJGZmFpaWtnb2zE29/w9DaxSvuzXzDwAAAABJRU5ErkJggg==
          </office:binary-data>
         </draw:image>
-       </draw:frame>Illustration <text:sequence text:ref-name="refIllustration1" text:name="Illustration" text:formula="ooow:Illustration+1" style:num-format="1">2</text:sequence>: <text:span text:style-name="T16">Ocamldoc m</text:span>ain <text:span text:style-name="T16">module </text:span>detail</text:p>
+       </draw:frame>Illustration <text:sequence text:ref-name="refIllustration1" text:name="Illustration" text:formula="ooow:Illustration+1" style:num-format="1">2</text:sequence>: <text:span text:style-name="T18">Ocamldoc m</text:span>ain <text:span text:style-name="T18">module </text:span>detail</text:p>
      </draw:text-box>
     </draw:frame></text:p>
    <text:p text:style-name="P9">A high-level graph of module dependencies can be also generated thanks to Ocamldoc. It&apos;s a Dot<text:note text:id="ftn2" text:note-class="footnote"><text:note-citation>2</text:note-citation><text:note-body>
-      <text:p text:style-name="P18"><text:s/>http://www.graphviz.org/Documentation.php</text:p></text:note-body></text:note> graph but Makefile exports it as a svg file of name <text:span text:style-name="T3">modules-graph.svg</text:span>. Write the following instruction to obtain it:</text:p>
+      <text:p text:style-name="P21"><text:s/>http://www.graphviz.org/Documentation.php</text:p></text:note-body></text:note> graph but Makefile exports it as a svg file of name <text:span text:style-name="T3">modules-graph.svg</text:span>. Write the following instruction to obtain it:</text:p>
    <table:table table:name="Table5" table:style-name="Table5">
     <table:table-column table:style-name="Table5.A"/>
     <table:table-row>
      <table:table-cell table:style-name="Table5.A1" office:value-type="string">
-      <text:p text:style-name="P14">make doc-graph</text:p>
+      <text:p text:style-name="P16">make doc-graph</text:p>
      </table:table-cell>
     </table:table-row>
    </table:table>
