@@ -123,9 +123,9 @@ Command :
 
 /* Right-hand sides of top-level bindings */
 Binder :
-    SLASH
+    SLASH /* Slash rule to bind names */
       { fun ctx -> NameBind }
-  | EQ Term
+  | EQ Term /* Bounding names using equals symbol */
       { fun ctx -> TmAbbBind($2 ctx) }
 
 Term :
@@ -137,13 +137,13 @@ Term :
       { fun ctx ->
           let ctx1 = addname ctx $2.v in
           TmAbs($1, $2.v, $4 ctx1) }
-  | LAMBDA USCORE DOT Term 
+  | LAMBDA USCORE DOT Term  /* lambda _. Term is allowed */
       { fun ctx ->
           let ctx1 = addname ctx "_" in
           TmAbs($1, "_", $4 ctx1) }
-  | LET LCID EQ Term IN Term
+  | LET LCID EQ Term IN Term /* Classic let in definition: let p = 4 in succ p */
       { fun ctx -> TmLet($1, $2.v, $4 ctx, $6 (addname ctx $2.v)) }
-  | LET USCORE EQ Term IN Term
+  | LET USCORE EQ Term IN Term /* let _ = Term in Term is allowed */
       { fun ctx -> TmLet($1, "_", $4 ctx, $6 (addname ctx "_")) }
 
 AppTerm :
@@ -154,13 +154,13 @@ AppTerm :
           let e1 = $1 ctx in
           let e2 = $2 ctx in
           TmApp(tmInfo e1,e1,e2) }
-  | TIMESFLOAT PathTerm PathTerm
+  | TIMESFLOAT PathTerm PathTerm /* multiplication operation */
       { fun ctx -> TmTimesfloat($1, $2 ctx, $3 ctx) }
-  | SUCC PathTerm
+  | SUCC PathTerm /* successor function */
       { fun ctx -> TmSucc($1, $2 ctx) }
-  | PRED PathTerm
+  | PRED PathTerm /* predecesor function */
       { fun ctx -> TmPred($1, $2 ctx) }
-  | ISZERO PathTerm
+  | ISZERO PathTerm /* iszero function */
       { fun ctx -> TmIsZero($1, $2 ctx) }
 
 PathTerm :
@@ -175,23 +175,23 @@ PathTerm :
 
 /* Atomic terms are ones that never require extra parentheses */
 ATerm :
-    LPAREN Term RPAREN  
+    LPAREN Term RPAREN  /* Rule for (Term) */
       { $2 } 
-  | TRUE
+  | TRUE /* Rule for true value */
       { fun ctx -> TmTrue($1) }
-  | FALSE
+  | FALSE /* Rule for false value */
       { fun ctx -> TmFalse($1) }
   | LCID 
       { fun ctx ->
           TmVar($1.i, name2index $1.i ctx $1.v, ctxlength ctx) }
-  | LCURLY Fields RCURLY
+  | LCURLY Fields RCURLY /* Rule for {Fields} or records */
       { fun ctx ->
           TmRecord($1, $2 ctx 1) }
-  | FLOATV
+  | FLOATV /* Rule for float value */
       { fun ctx -> TmFloat($1.i, $1.v) }
-  | STRINGV
+  | STRINGV /* Rule for string value */
       { fun ctx -> TmString($1.i, $1.v) }
-  | INTV
+  | INTV /* Rule for int value */
       { fun ctx ->
           let rec f n = match n with
               0 -> TmZero($1.i)

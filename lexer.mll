@@ -69,7 +69,9 @@ let (symbolTable : (string,buildfun) Hashtbl.t) = Hashtbl.create 1024
 let _ =
   List.iter (fun (str,f) -> Hashtbl.add symbolTable str f) reservedWords
 
-let createID i str =
+(** Creates an identifier. As lexical tokens allowed identifiers can be 
+    both uppercase or lowercase but the parser has rules only to lowercase ones *)
+let createID i str = 
   try (Hashtbl.find symbolTable str) i
   with _ ->
     if (String.get str 0) >= 'A' && (String.get str 0) <= 'Z' then
@@ -126,7 +128,7 @@ let extractLineno yytext offset =
 }
 
 
-(* The main body of the lexical analyzer *)
+(** The main body of the lexical analyzer *)
 rule main = parse
   [' ' '\009' '\012']+     { main lexbuf }
 
