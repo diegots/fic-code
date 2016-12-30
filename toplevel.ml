@@ -45,7 +45,6 @@ Pierce implementations available at https://www.cis.upenn.edu/~bcpierce/tapl/\n"
 
 let context = ref emptycontext
 
-(* lazo is the top level interface *)
 let main () =
     print_endline welcome_msg;
     try 

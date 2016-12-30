@@ -66,7 +66,7 @@ in
 
 let alreadyImported = ref ([] : string list)
 
-(** *)
+(** Evaluate or bind given term *)
 let rec process_command ctx cmd = match cmd with
   | Eval(fi,t) -> 
       let t' = eval ctx t in (* eval defined in core.mli *)
@@ -79,7 +79,7 @@ let rec process_command ctx cmd = match cmd with
       pr x; pr " "; prbinding ctx bind'; force_newline();
       addbinding ctx x bind' (* Adds x,bind to ctx list *)
   
-(** *)
+(** Get lexical tokens from input file *)
 let process_file f ctx = (* f is an inFile, ctx is a context *)
   alreadyImported := f :: !alreadyImported; 
   let cmds,_ = parseFile f ctx in
@@ -91,13 +91,13 @@ let process_file f ctx = (* f is an inFile, ctx is a context *)
   in
     List.fold_left g ctx cmds
 
-(** Main function. Starts the program. *)
+(** Main function. Starts the program *)
 let main () = 
   let inFile = parseArgs() in
   let _ = process_file inFile emptycontext in
   ()
 
-(* sets the maximum number of boxes simultaneously opened for the pretty 
+(** Sets the maximum number of boxes simultaneously opened for the pretty 
    printer *)
 let () = set_max_boxes 1000 
 (* sets the right margin to d characters for the pretty printer *)
