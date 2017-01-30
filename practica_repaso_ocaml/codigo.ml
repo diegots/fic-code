@@ -14,10 +14,11 @@ mapdoble (function x -> x) (function x -> -x) [1;1;1;1;1];;
 (* mapdoble (function x -> x*2) (function x -> "x") [1;2;3;4;5];; *)
 (* Error de tipos, la segunda función trata strings y la primera ints, nótese
  * que las funcíones van ambas de 'a -> 'b, esto es, deben tratar los mismos
- * tipos *)
+ * tipos. *)
 
 let y = function x -> 5 in mapdoble y;;
 (* - : ('_a -> int) -> '_a list -> int list = <fun> *)
+(* El tipo devuelto es una función parcial. *)
 
 (***************)
 (* Ejercicio 2 *)
@@ -30,6 +31,8 @@ let rec primero_que_cumple f = function
 
 primero_que_cumple (function x -> x>0) [-1; -5; 0; 10];;
 (* - : int = 10 *)
+primero_que_cumple (function x -> x>0) [-1; -5; 0; -1];;
+(* Exception: Failure "No_such_element". *)
 
 let existe f l =
   try let _ = primero_que_cumple f l in true
@@ -92,6 +95,7 @@ let rec pre_orden = function
 (* val pre_orden : 'a arbol_binario -> 'a list = <fun> *)
 
 pre_orden t;;
+(* - : int list = [3; 2; 5; 4; 1] *)
 
 let rec post_orden = function
   | Vacio -> []
@@ -100,6 +104,7 @@ let rec post_orden = function
 (* val post_orden : 'a arbol_binario -> 'a list = <fun> *)
 
 post_orden t;;
+(* - : int list = [2; 4; 1; 5; 3] *)
 
 let anchura tree =
   let rec aux tree_ queue = match tree_,queue with
@@ -111,11 +116,15 @@ in aux tree []
 ;;
 (* val anchura : 'a arbol_binario -> 'a list = <fun> *)
 
+anchura t;;
+(* - : int list = [3; 2; 5; 4; 1] *)
+
 (***************)
 (* Ejercicio 4 *)
 (***************)
 
 type 'a conjunto = Conjunto of 'a list;;
+(* type 'a conjunto = Conjunto of 'a list *)
 
 let conjunto_vacio = Conjunto [];;
 (* val conjunto_vacio : 'a conjunto = Conjunto [] *)
@@ -127,6 +136,7 @@ let set3 = Conjunto [1; 2];;
 let set6 = Conjunto [1; 2; 3; 4; 5; 6];;
 let set7 = Conjunto [-1; 0; 1; 2];;
 
+(* Función pertenece *)
 let rec pertenece element = function
   | Conjunto e ->
     match e with
@@ -136,10 +146,11 @@ let rec pertenece element = function
 (* val pertenece : 'a -> 'a conjunto -> bool = <fun> *)
 
 pertenece 1 set0;;
-(* pertenece 1 set1;; *)
+(* pertenece 1 set1;; *) (* Type error *)
 pertenece "uno" set2;;
 pertenece "cinco" set2;;
 
+(* Función agregar *)
 let agregar element set =
   if pertenece element set then set
   else match set with
@@ -155,6 +166,7 @@ agregar 1 set3;;
 agregar 1 set0;;
 agregar 3 set3;;
 
+(* Función conjunto_of_list *)
 let conjunto_of_list list =
   let rec aux set = function
     | [] -> set
@@ -167,6 +179,7 @@ let set4 = conjunto_of_list [1;2;3;4;5;6];;
 let set5 = conjunto_of_list [1;1;1;1];;
 (* set5 = conjunto_of_list ['a'];; *) (* Error de tipos*)
 
+(* Función suprimir *)
 let suprimir element set =
   let rec aux nuevo_set old_set = match nuevo_set,old_set with
     | Conjunto [], Conjunto [] -> conjunto_vacio
@@ -178,12 +191,22 @@ let suprimir element set =
 ;;
 (* val suprimir : 'a -> 'a conjunto -> 'a conjunto = <fun> *)
 
+suprimir 1 set5;;
+(* - : int conjunto = Conjunto [] *)
+
+(* Función cardinal *)
 let rec cardinal = function
   | Conjunto [] -> 0
   | Conjunto (h::t) -> 1 + cardinal (Conjunto t)
 ;;
 (* val cardinal : 'a conjunto -> int = <fun> *)
 
+cardinal set0;;
+(* - : int = 0 *)
+cardinal set1;;
+(* - : int = 2 *)
+
+(* Función union *)
 let union set1 set2 =
   let rec aux nuevo_set set1 set2 = match set1,set2 with
     | Conjunto [], Conjunto []             -> nuevo_set
@@ -201,6 +224,7 @@ let union set1 set2 =
 union set3 set6;;
 (* - : int conjunto = Conjunto [6; 5; 4; 3; 2; 1] *)
 
+(* Función interseccion *)
 let interseccion set1 set2 =
   let rec aux nuevo_set set1_ set2_ = match set1_,set2_ with
     | Conjunto [], Conjunto []             -> nuevo_set
@@ -225,6 +249,8 @@ interseccion set3 set6;;
 interseccion set6 set6;;
 (* - : int conjunto = Conjunto [6; 5; 4; 3; 2; 1] *)
 
+(* Función diferencia *)
+(* Elementos del primer conjunto que no están en el segundo. *)
 let diferencia set1 set2 =
   let inters = interseccion set1 set2 in
   let rec aux nuevo_set = function
@@ -237,12 +263,19 @@ let diferencia set1 set2 =
 diferencia set6 set7;;
 (* )- : int conjunto = Conjunto [3; 4; 5; 6] *)
 
+(* Función incluido *)
 let rec incluido set1 set2 = match set1 with
   | Conjunto [] -> true
   | Conjunto (h::t) -> pertenece h set2 && incluido (Conjunto t) set2
 ;;
 (* val incluido : 'a conjunto -> 'a conjunto -> bool = <fun> *)
 
+incluido set0 set1;;
+(* - : bool = true *)
+incluido set1 set0;;
+(* - : bool = false *)
+
+(* Función igual *)
 let igual set1 set2 =
   if cardinal set1 = cardinal set2 then
     let rec aux = function
@@ -253,6 +286,12 @@ let igual set1 set2 =
 ;;
 (* val igual : 'a conjunto -> 'a conjunto -> bool = <fun> *)
 
+igual set3 set0;;
+(* - : bool = false *)
+igual set3 set3;;
+(* - : bool = true *)
+
+(* Función producto_cartesiano *)
 let rec producto_cartesiano elem set new_set =
 match set with
   | Conjunto [] -> new_set
@@ -275,6 +314,7 @@ producto_cartesiano set1 set2;;
    [('b', "tres"); ('b', "dos"); ('b', "uno"); ('a', "tres"); ('a', "dos");
     ('a', "uno")] *)
 
+(* Función list_of_conjunto *)
 let rec list_of_conjunto = function
   | Conjunto [] -> []
   | Conjunto (h::t) -> h::(list_of_conjunto (Conjunto t))
