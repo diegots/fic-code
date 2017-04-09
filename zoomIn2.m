@@ -79,8 +79,12 @@ function outputImage = zoomIn2 ( inputImage , mode, escale)
 
         % add modulus part if modulus is not 0
         if modulus >= 1
-            odd_extra = 1 : 2 : modulus+1;
-            even_extra = 2 : 2 : modulus-1;
+            
+            p = 1 : (new_vector / modulus) : vector;
+            p = floor(p);
+            
+            odd_extra = p (mod(p,2)!=0);
+            even_extra = p (mod(p,2)==0);
             
             [r c] = size (odd_extra);
             if r >= 1 && c >= 1
