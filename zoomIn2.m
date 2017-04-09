@@ -41,9 +41,10 @@ function outputImage = zoomIn2 ( inputImage , mode, escale)
         
         col_repetitions = calc_grow_vectors(cols); % get cols
         positions = 1 : length ( image'(:) );
-        repetitions = repmat (col_repetitions(:), 1, cols)(:)';
+        repetitions = repmat (col_repetitions(:), 1, rows)(:)';
+        whos
         s = repelems (image', [positions; repetitions]);
-        s = reshape (s, sum(col_repetitions), cols);
+        s = reshape (s, sum(col_repetitions), rows);
         
         row_repetitions = calc_grow_vectors (rows); % get rows
         [rows, cols] = size (s);
@@ -66,7 +67,7 @@ function outputImage = zoomIn2 ( inputImage , mode, escale)
     % Helper function: calculates grow vectors
     function v = calc_grow_vectors (vector)
         new_vector = floor ( escale * vector );
-        vec_grow = zeros (1, cols);
+        vec_grow = zeros (1, vector);
         
         div = floor (new_vector / vector);
         modulus = mod(new_vector, vector);
