@@ -25,7 +25,7 @@ function outputImage = zoomIn2 ( inputImage , mode, escale)
         image = rgb2gray (image);
     endif
     
-    [rows cols] = size (image)
+    [rows cols] = size (image);
     
     %
     % Bilinear Interpolation
@@ -39,22 +39,23 @@ function outputImage = zoomIn2 ( inputImage , mode, escale)
     elseif strcmp (mode, 'neighbor')
         printf('Interpolating image by neighbor method\n');
         
-        cols_grow_vector = calc_grow_vectors(cols); % get cols
-        %rows_grow_vector = calc_grow_vectors(rows); % get rows
+        col_repetitions = calc_grow_vectors(cols); % get cols
+        positions = 1 : length ( image'(:) );
+        repetitions = repmat (col_repetitions(:), 1, cols)(:)';
+        s = repelems (image', [positions; repetitions]);
+        s = reshape (s, sum(col_repetitions), cols);
         
+        row_repetitions = calc_grow_vectors (rows); % get rows
+        [rows, cols] = size (s);
+        positions = 1 : length ( s(:) );
+        repetitions = repmat (row_repetitions(:), 1, rows)(:)';
+        s = repelems (s', [positions; repetitions]);
+        s = reshape (s, sum(row_repetitions), sum(col_repetitions));
+        [rows, cols] = size (s);
         
-        %i = [1;2;3];
-        %cols_grow_vector(i)
-        %ones(1, cols_grow_vector(i)) 
-
-        
-        %i = image (1,[1:cols]); % select rows or cols
-        %o = uint8 (ones(1, cols_grow_vector(1)));
-        %(i .* o')(:)';
-        
-        %i = image ([1:rows], 1); % select rows or cols
-        %o = uint8 (ones(rows_grow_vector(1), 1));
-        %r =(i' .* o)(:);
+        printf("New image size: %dx%d px\n", rows, cols);
+        imshow (s)
+        imwrite (s, "new-image.png")
         
     else
         printf('Bad mode requested. Try again with "bilinear" or "neighbor"\n\n');
