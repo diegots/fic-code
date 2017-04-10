@@ -27,6 +27,7 @@ function outputImage = zoomIn2 ( inputImage , mode, escale)
     
     [rows cols] = size (image);
     
+    outputImageStr = "new-image.png";
     %
     % Bilinear Interpolation
     %
@@ -42,7 +43,6 @@ function outputImage = zoomIn2 ( inputImage , mode, escale)
         col_repetitions = calc_grow_vectors(cols); % get cols
         positions = 1 : length ( image'(:) );
         repetitions = repmat (col_repetitions(:), 1, rows)(:)';
-        whos
         s = repelems (image', [positions; repetitions]);
         s = reshape (s, sum(col_repetitions), rows);
         
@@ -52,11 +52,14 @@ function outputImage = zoomIn2 ( inputImage , mode, escale)
         repetitions = repmat (row_repetitions(:), 1, rows)(:)';
         s = repelems (s', [positions; repetitions]);
         s = reshape (s, sum(row_repetitions), sum(col_repetitions));
-        [rows, cols] = size (s);
         
+        [rows, cols] = size (s);
         printf("New image size: %dx%d px\n", rows, cols);
         imshow (s)
-        imwrite (s, "new-image.png")
+        imwrite (s, outputImageStr)
+        printf("Written output image to '%s'\n", outputImageStr);
+        
+        output = s;
         
     else
         printf('Bad mode requested. Try again with "bilinear" or "neighbor"\n\n');
@@ -66,7 +69,7 @@ function outputImage = zoomIn2 ( inputImage , mode, escale)
     
     % Helper function: calculates grow vectors
     function v = calc_grow_vectors (vector)
-        new_vector = floor ( escale * vector )
+        new_vector = floor ( escale * vector );
         vec_grow = zeros (1, vector);
         
         div = floor (new_vector / vector);
@@ -103,7 +106,7 @@ function outputImage = zoomIn2 ( inputImage , mode, escale)
             endif
         endif
         
-        v = vec_grow
+        v = vec_grow;
                
     endfunction % end calc_grow_vectors
     
