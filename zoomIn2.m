@@ -66,7 +66,7 @@ function outputImage = zoomIn2 ( inputImage , mode, escale)
     
     % Helper function: calculates grow vectors
     function v = calc_grow_vectors (vector)
-        new_vector = floor ( escale * vector );
+        new_vector = floor ( escale * vector )
         vec_grow = zeros (1, vector);
         
         div = floor (new_vector / vector);
@@ -81,8 +81,13 @@ function outputImage = zoomIn2 ( inputImage , mode, escale)
         % add modulus part if modulus is not 0
         if modulus >= 1
             
-            p = 1 : (new_vector / modulus) : vector;
-            p = floor(p);
+            if escale >= 1 % Increasing image
+                p = 1 : (new_vector / modulus) : vector;
+                p = floor(p);
+            else % Reducing image
+                p = 1 : (1 / escale) : vector;
+                p = floor(p);
+            endif
             
             odd_extra = p (mod(p,2)!=0);
             even_extra = p (mod(p,2)==0);
@@ -98,7 +103,7 @@ function outputImage = zoomIn2 ( inputImage , mode, escale)
             endif
         endif
         
-        v = vec_grow;
+        v = vec_grow
                
     endfunction % end calc_grow_vectors
     
