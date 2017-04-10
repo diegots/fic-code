@@ -18,7 +18,7 @@ function outputImage = zoomIn2 ( inputImage , mode, escale)
         return
     endif
     
-    image = imread (inputImage);
+    image = imread (inputImage)
     
     dims = ndims (image);
     if dims == 3
@@ -33,7 +33,26 @@ function outputImage = zoomIn2 ( inputImage , mode, escale)
     %
     if strcmp (mode, 'bilinear')
         printf('Interpolating image by bilinear method\n');
-    
+        
+        new_rows = escale*rows;
+        new_cols = escale*cols;
+        p_rows = ( (1 : floor(new_rows/rows) : new_rows)+(floor(new_rows/rows/2)) ) (1:rows);
+        p_cols = ( (1 : floor(new_cols/cols) : new_cols)+(floor(new_cols/cols/2)) ) (1:cols);
+        outputImage = zeros (new_rows, new_cols);
+        outputImage(p_rows, p_cols) = image (1:rows, 1:cols)
+        outputImage (2:new_rows-1, 2:new_cols-1) ...
+        = uint8 (floor(
+          outputImage (1:new_rows-2, 1:new_cols-2)   ...
+        + outputImage (1:new_rows-2,   3:new_cols)   ...
+        + outputImage (3:new_rows,     1:new_cols-2) ...
+        + outputImage (3:new_rows,     3:new_cols  )  )/4 )
+        outputImage = uint8 (outputImage)
+        whos
+        printf("New image size: %dx%d px\n", new_rows, new_cols);
+        imshow (outputImage)
+        imwrite (outputImage, outputImageStr)
+        printf("Written output image to '%s'\n", outputImageStr);
+        
     %
     % Neighbor Interpolation
     %
