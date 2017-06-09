@@ -3,22 +3,22 @@
 % inputImage: greyescale image
 % mode: either "neighbor" or bilinear
 % escale: factor applied to inputImage
-function outputImage = zoomIn2 ( inputImage , mode, escale)
+function outputImage = zoomIn2 ( inputImage , mode, escale )
     
     if (exist(inputImage) != 2)
-        printf('You must provide "inputImage"\n\n');
+        printf('A path to a image is needed!\n\n');
         return
     endif
     if (exist('mode') != 1)
-        printf('"mode" parameter is missing\n\n');
+        printf("What 'mode' should be used? Both neighbor and bilinear are supported\n\n");
         return
     endif
     if (exist('escale') != 1)
-        printf('"escale" parameter is missing\n\n');
+        printf('Please, provide desired scale factor\n\n');
         return
     endif
     
-    image = imread (inputImage)
+    image = imread (inputImage);
     
     dims = ndims (image);
     if dims == 3
@@ -27,7 +27,6 @@ function outputImage = zoomIn2 ( inputImage , mode, escale)
     
     [rows cols] = size (image);
     
-    outputImageStr = "new-image.png";
     %
     % Bilinear Interpolation
     %
@@ -36,23 +35,22 @@ function outputImage = zoomIn2 ( inputImage , mode, escale)
         
         new_rows = escale*rows;
         new_cols = escale*cols;
-        p_rows = ( (1 : floor(new_rows/rows) : new_rows)+(floor(new_rows/rows/2)) ) (1:rows);
-        p_cols = ( (1 : floor(new_cols/cols) : new_cols)+(floor(new_cols/cols/2)) ) (1:cols);
+        p_rows = ( (1 : floor(new_rows/rows) : new_rows) ...
+            + (floor(new_rows/rows/2)) ) (1:rows);
+        p_cols = ( (1 : floor(new_cols/cols) : new_cols) ...
+            + (floor(new_cols/cols/2)) ) (1:cols);
         outputImage = zeros (new_rows, new_cols);
-        outputImage(p_rows, p_cols) = image (1:rows, 1:cols)
+        outputImage(p_rows, p_cols) = image (1:rows, 1:cols);
         outputImage (2:new_rows-1, 2:new_cols-1) ...
-        = uint8 (floor(
-          outputImage (1:new_rows-2, 1:new_cols-2)   ...
-        + outputImage (1:new_rows-2,   3:new_cols)   ...
-        + outputImage (3:new_rows,     1:new_cols-2) ...
-        + outputImage (3:new_rows,     3:new_cols  )  )/4 )
-        outputImage = uint8 (outputImage)
-        whos
-        printf("New image size: %dx%d px\n", new_rows, new_cols);
-        imshow (outputImage)
-        imwrite (outputImage, outputImageStr)
-        printf("Written output image to '%s'\n", outputImageStr);
-        
+            = uint8 (floor(
+                  outputImage (1:new_rows-2, 1:new_cols-2)   ...
+                + outputImage (1:new_rows-2,   3:new_cols)   ...
+                + outputImage (3:new_rows,     1:new_cols-2) ...
+                + outputImage (3:new_rows,     3:new_cols  )  )/4 );
+
+        show_results (outputImage) 
+        outputImage = uint8 (outputImage);
+
     %
     % Neighbor Interpolation
     %
@@ -72,19 +70,27 @@ function outputImage = zoomIn2 ( inputImage , mode, escale)
         s = repelems (s', [positions; repetitions]);
         s = reshape (s, sum(row_repetitions), sum(col_repetitions));
         
-        [rows, cols] = size (s);
-        printf("New image size: %dx%d px\n", rows, cols);
-        imshow (s)
-        imwrite (s, outputImageStr)
-        printf("Written output image to '%s'\n", outputImageStr);
-        
-        output = s;
+        show_results (s) 
+        outputImage = s;
         
     else
         printf('Bad mode requested. Try again with "bilinear" or "neighbor"\n\n');
         return
     endif
     
+    % Show results
+    function res = show_results (res_image)
+        outputImageStr = "new-image.png";
+
+        [rows, cols] = size (res_image);
+        printf("New image size: %dx%d px\n", rows, cols);
+        imshow (res_image)
+        msg = strcat ("New size: ", int2str(rows), " x ", int2str(cols), " px");
+        text (30, cols+30, msg, "fontsize", 12)
+        imwrite (res_image, outputImageStr)
+        printf("Written output image to '%s'\n", outputImageStr);
+        
+    endfunction % end show_results
     
     % Helper function: calculates grow vectors
     function v = calc_grow_vectors (vector)
