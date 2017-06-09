@@ -40,9 +40,12 @@ function outputImage = histShrink (inputImage , minValue , maxValue )
     subplot (1,2,1)
     imhist (image); % imhist (image, 256) % para imágenes de 8 bits     
     axis ([0, 255]) % valores mínimo y máximo para el eje X
+    xlabel ("Histograma original")
+
     subplot (1,2,2)
     imhist (nuevaImagen); 
     axis ([0, 255])
+    xlabel ("Histograma nuevo")
 
     figure (2)
     imshow (image);
