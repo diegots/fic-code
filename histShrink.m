@@ -16,13 +16,8 @@ function outputImage = histShrink (inputImage , minValue , maxValue )
         return
     endif
 
+    image = uReadImage (inputImage);
 
-    image = imread (inputImage);
-    ndims(image)
-    if (ndims (image) == 3)
-        image = rgb2gray (image);
-    end
-    image = double (image);
     maxOrig = max (image(:)); 
     minOrig = min (image(:));
     antigMaxMin = maxOrig - minOrig;
@@ -54,5 +49,6 @@ function outputImage = histShrink (inputImage , minValue , maxValue )
     figure (3)
     imshow (nuevaImagen);
     text (1, -14, "Imagen nueva", "fontsize", 20)
+
 
 end

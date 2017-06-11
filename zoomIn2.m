@@ -20,12 +20,7 @@ function outputImage = zoomIn2 ( inputImage , mode, scale )
         return
     endif
     
-    image = imread (inputImage);
-    
-    dims = ndims (image);
-    if dims == 3
-        image = rgb2gray (image);
-    endif
+    image = uReadImage (inputImage);
     
     printf('Original image size: %s x %s px\n', int2str(cols), int2str(rows));
     
@@ -86,14 +81,17 @@ function outputImage = zoomIn2 ( inputImage , mode, scale )
     
     % Show results
     function res = show_results (res_image)
-        outputImageStr = "new-image.png";
 
         [cols, rows] = size (res_image);
         printf("New image size: %dx%d px\n", cols, rows);
         imshow (res_image)
         msg = strcat ("New size: ", int2str(cols), " x ", int2str(rows), " px");
         text (30, cols+30, msg, "fontsize", 12)
+
+        % Write image to file
+        outputImageStr = "new-image.png";
         imwrite (res_image, outputImageStr)
+
         printf("Written output image to '%s'\n", outputImageStr);
         
     endfunction % end show_results
