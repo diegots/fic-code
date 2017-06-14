@@ -14,6 +14,5 @@ function outputImage = erode ( inputImage , strElType, strElSize )
     figure (2)
     imshow (outputImage)
     text (1, -14, "Imagen nueva", "fontsize", 20)
-    whos
 
 endfunction
