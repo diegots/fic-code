@@ -1,4 +1,4 @@
-function outputImage = erode ( inputImage , strElType, strElSize )
+function outputImage = dilate ( inputImage , strElType, strElSize )
 
     THRESHOLD = 125;
 
