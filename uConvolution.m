@@ -23,13 +23,20 @@ function res = uConvolution (mat, kernel, operation)
         printf('Cross kernel detected\n')
 
         points1 = p(1+colKer:colMat-colKer, 1+rowKer:rowMat-rowKer)(:); % central
-        a1 = repmat(points1, 1,r) + [-colKer:1:colKer];
+        a1 = repmat(points1, 1,r) + [-colKer:1:colKer]; % extension
         points2 = p(1+colKer:colMat-colKer, 1+rowKer:rowMat-rowKer)(:); % central
-        a2 = repmat(points2, 1,c) + [-colMat*colKer:colMat:colMat*colKer];
-        points = cat (2,a1,a2)';
+        a2 = repmat(points2, 1,c) + [-colMat*colKer:colMat:colMat*colKer]; % extension
+        points = cat (2,a1,a2)'; % all points por central
         
-        setTo = all (mat(points));
-        mat(points1) = setTo;
+        if (strcmp (operation, 'erode'))
+            setTo = all (mat(points)); % if all points are 1
+            mat(points1) = setTo;
+        elseif (strcmp (operation, 'dilate'))
+            points_ = cat (points1,points2)';
+            centerOnes = find ((mat(points_)));
+            allOnes = points(:,centerOnes);
+            mat (allOnes) = 1;
+        endif
     endif
 
     res = mat;
