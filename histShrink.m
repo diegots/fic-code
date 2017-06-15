@@ -28,27 +28,19 @@ function outputImage = histShrink (inputImage , minValue , maxValue )
     nuevaImagen = zeros (fil, col);
     nuevaImagen(1:numElems) = minValue + ( ( nuevoMaxMin * 
         ( double(image(1:numElems)) - minOrig ) ) / antigMaxMin );
-    nuevaImagen = uint8 ( reshape (nuevaImagen, fil, col) );
+    outputImage = uint8 ( reshape (nuevaImagen, fil, col) );
     
+    % show histogram
     image = uint8 (image);
-    figure (1)
+    figure (9)
     subplot (1,2,1)
     imhist (image); % imhist (image, 256) % para imágenes de 8 bits     
     axis ([0, 255]) % valores mínimo y máximo para el eje X
     xlabel ("Histograma original")
 
     subplot (1,2,2)
-    imhist (nuevaImagen); 
+    imhist (outputImage); 
     axis ([0, 255])
     xlabel ("Histograma nuevo")
-
-    figure (2)
-    imshow (image);
-    text (1, -14, "Imagen original", "fontsize", 20)
-
-    figure (3)
-    imshow (nuevaImagen);
-    text (1, -14, "Imagen nueva", "fontsize", 20)
-
 
 end
