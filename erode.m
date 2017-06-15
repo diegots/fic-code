@@ -1,18 +1,11 @@
 function outputImage = erode ( inputImage , strElType, strElSize )
 
     THRESHOLD = 125;
+    WHITE = 255;
 
-    image = uReadImage (inputImage);
-    image = uThresholding (image, THRESHOLD);
+    image = uThresholding (inputImage, THRESHOLD);
     kernel = uCreateKernel (strElType, strElSize);
     outputImage = uConvolution (image, kernel, 'erode');
-
-    figure (1)
-    imshow (image)
-    text (1, -14, "Imagen original", "fontsize", 20)
-
-    figure (2)
-    imshow (outputImage)
-    text (1, -14, "Imagen nueva", "fontsize", 20)
+    outputImage (find (outputImage)) = WHITE; % draw ones as WHITE -> 255
 
 endfunction

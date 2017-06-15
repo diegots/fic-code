@@ -8,12 +8,4 @@ function outputImage = closing ( inputImage , strElType, strElSize )
     outputImage = uConvolution (image, kernel, 'dilate');
     outputImage = uConvolution (outputImage, kernel, 'erode');
 
-    figure (1)
-    imshow (image)
-    text (1, -14, "Imagen original", "fontsize", 20)
-
-    figure (2)
-    imshow (outputImage)
-    text (1, -14, "Imagen nueva", "fontsize", 20)
-
 endfunction
