@@ -3,20 +3,8 @@
 % maxValue : valor máximo del histograma para la imagen
 function outputImage = histShrink (inputImage , minValue , maxValue )
 
-    if (exist(inputImage) != 2)
-        printf('You must provide "inputImage"\n\n');
-        return
-    endif
-    if (exist('minValue') != 1)
-        printf('"minValue" parameter is missing\n\n');
-        return
-    endif
-    if (exist('maxValue') != 1)
-        printf('"maxValue" parameter is missing\n\m');
-        return
-    endif
-
     image = uReadImage (inputImage);
+    image = double (image);
 
     maxOrig = max (image(:)); 
     minOrig = min (image(:));
