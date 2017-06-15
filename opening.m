@@ -7,4 +7,7 @@ function outputImage = opening ( inputImage , strElType, strElSize )
     outputImage = uConvolution (image, kernel, 'erode');
     outputImage = uConvolution (outputImage, kernel, 'dilate');
 
+    %image = uReadImage (inputImage);
+    %outputImage = imopen (image, kernel);
+
 endfunction
