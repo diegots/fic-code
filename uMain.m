@@ -30,16 +30,19 @@ landscape = 'images/landscape.jpg';
 %landscape = uThresholding (landscape, THRESHOLD);
 
 % dilate
-new = dilate (landscape, 'square', 5);
-landscape = uThresholding (landscape, THRESHOLD);
+%new = dilate (landscape, 'square', 5);
+%landscape = uThresholding (landscape, THRESHOLD);
 
 % opening
-%new = opening (building, 'cross', 5);
+new = opening (building, 'cross', 5);
 %building = uThresholding (building, THRESHOLD);
 
 % closing
 %new = opening (building, 'cross', 5);
 %building = uThresholding (building, THRESHOLD);
 
+% tophat
+%new = tophatFilter (building, 'cross', 'white');
+
 % show or write
-uShowWriteOut (landscape, new, ''); % by default show
+uShowWriteOut (building, new, ''); % by default show
