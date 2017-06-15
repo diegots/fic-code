@@ -22,6 +22,7 @@ function outputImage = zoomIn2 ( inputImage , mode, scale )
     
     image = uReadImage (inputImage);
     
+    [rows cols] = size (image);
     printf('Original image size: %s x %s px\n', int2str(cols), int2str(rows));
     
     %
@@ -71,7 +72,6 @@ function outputImage = zoomIn2 ( inputImage , mode, scale )
         s = repelems (s', [positions; repetitions]);
         s = reshape (s, sum(row_repetitions), sum(col_repetitions));
         
-        show_results (s) 
         outputImage = s;
         
     else
@@ -79,23 +79,9 @@ function outputImage = zoomIn2 ( inputImage , mode, scale )
         return
     endif
     
-    % Show results
-    function res = show_results (res_image)
-
-        [cols, rows] = size (res_image);
-        printf("New image size: %dx%d px\n", cols, rows);
-        imshow (res_image)
-        msg = strcat ("New size: ", int2str(cols), " x ", int2str(rows), " px");
-        text (30, cols+30, msg, "fontsize", 12)
-
-        % Write image to file
-        outputImageStr = "new-image.png";
-        imwrite (res_image, outputImageStr)
-
-        printf("Written output image to '%s'\n", outputImageStr);
-        
-    endfunction % end show_results
-    
+    [rows cols] = size (outputImage);
+    printf('New image size: %s x %s px\n', int2str(cols), int2str(rows));
+   
     % Helper function: calculates how many points should be put between two 
     % points in the original matrix. Example: with 10 px in the original
     % image and a scale of 1.5 in between each point must be,
