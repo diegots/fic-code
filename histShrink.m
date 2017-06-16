@@ -3,8 +3,8 @@
 % maxValue : valor máximo del histograma para la imagen
 function outputImage = histShrink (inputImage , minValue , maxValue )
 
-    image = uReadImage (inputImage);
-    image = double (image);
+    % double conversion needed to perform division below
+    image = double (inputImage);
 
     maxOrig = max (image(:)); 
     minOrig = min (image(:));
