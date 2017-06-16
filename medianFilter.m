@@ -1,7 +1,13 @@
 function outputImage = medianFilter ( inputImage , filterSize )
 
+    %% Test with octave's implementation
+    %outputImage = imsmooth(inputImage, 'Median', filterSize);
+    %return
+    %% 
+
     % Read image
-    mat = uReadImage (inputImage);
+    %mat = uReadImage (inputImage);
+    mat = inputImage; 
 
     % Create kernel and do the transformation
     kernel = createKernel (filterSize);
