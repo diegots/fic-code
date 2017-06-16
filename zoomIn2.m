@@ -3,24 +3,9 @@
 % inputImage: greyscale image
 % mode: either "neighbor" or bilinear
 % scale: factor applied to inputImage
-function outputImage = zoomIn2 ( inputImage , mode, scale )
+function outputImage = zoomIn2 (inputImage , mode, scale)
     
-    if (exist(inputImage) != 2)
-        printf('A path to a image is needed!\n\n');
-        return
-    endif
-    if (exist('mode') != 1)
-        msg = strcat ("What 'mode' should be used? Both neighbor and bilinear",
-            "are supported\n\n")
-        printf(msg);
-        return
-    endif
-    if (exist('scale') != 1)
-        printf('Please, provide desired scale factor\n\n');
-        return
-    endif
-    
-    image = uReadImage (inputImage);
+    image = inputImage;
     
     [rows cols] = size (image);
     printf('Original image size: %s x %s px\n', int2str(cols), int2str(rows));
