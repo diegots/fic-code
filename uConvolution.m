@@ -1,4 +1,4 @@
-%
+%  
 % Performs convolution over a matrix 'mat' with desired kernel
 %
 function res = uConvolution (mat, kernel, operation)
@@ -21,7 +21,6 @@ function res = uConvolution (mat, kernel, operation)
 
     if (kernel == cross) 
         printf('Doing convolution with cross kernel\n')
-
         points1 = p(1+colKer:colMat-colKer, 1+rowKer:rowMat-rowKer)(:); % central
         a1 = repmat(points1, 1,r) + [-colKer:1:colKer]; % extension
         points2 = p(1+colKer:colMat-colKer, 1+rowKer:rowMat-rowKer)(:); % central
@@ -34,7 +33,7 @@ function res = uConvolution (mat, kernel, operation)
         printf('Doing convolution with lineh kernel\n')
 
         points1 = p(1+colKer:colMat-colKer, 1+rowKer:rowMat-rowKer)(:);% central
-        a2 = repmat(points1, 1,c) + [-colMat*colKer:colMat:colMat*colKer] % ext
+        a2 = repmat(points1, 1,c) + [-colMat*colKer:colMat:colMat*colKer]; % ext
         points = a2';
 
         applyOperation ()
@@ -42,7 +41,7 @@ function res = uConvolution (mat, kernel, operation)
     elseif (kernel == linev) 
         printf('Doing convolution with linev kernel\n')
 
-        points1 = p(1+colKer:colMat-colKer, 1+rowKer:rowMat-rowKer)(:)  % central
+        points1 = p(1+colKer:colMat-colKer, 1+rowKer:rowMat-rowKer)(:); % central
         a1 = repmat(points1, 1,r) + [-colKer:1:colKer]; % extension
         points = a1';
 

@@ -1,9 +1,9 @@
-function res = uThresholding (image, threshold)
+function outputImage = uThresholding (image, threshold)
 
-    image = uReadImage (image);
+    WHITE = 255;
 
-    image(image<threshold)=0;
-    image(image>=threshold)=255;
-    res = image;
+    image(image < threshold) = 0;
+    image(image >= threshold) = WHITE;
+    outputImage = image;
 
 endfunction % end script

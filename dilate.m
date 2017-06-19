@@ -1,9 +1,14 @@
 function outputImage = dilate ( inputImage , strElType, strElSize )
 
-    THRESHOLD = 125;
+    % THIS IS A BLACK & WHITE EROSION!
+    % BEHAVIOUR UNDEFINED WITH MORE THAN BLACK & WHITE SOURCES!
 
-    image = uThresholding (inputImage, THRESHOLD);
+    WHITE = 255;
+
+    image = inputImage;
+
     kernel = uCreateKernel (strElType, strElSize);
     outputImage = uConvolution (image, kernel, 'dilate');
+    outputImage (find (outputImage)) = WHITE; % draw ones as WHITE
 
 endfunction

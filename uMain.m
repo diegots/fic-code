@@ -14,35 +14,51 @@ lenna     = 'images/lenna512.bmp';
 building  = 'images/building.jpg';
 landscape = 'images/landscape.jpg';
 
+%originalImg = uReadImage (lenna);
+%originalImg = uReadImage (building);
+originalImg = uReadImage (landscape);
+
 % histShrink
-%new = histShrink(lenna, 50, 170);
+%new = histShrink(originalImg, 60, 230);
 
 % zoomIn2
-%new = zoomIn2 (building, 'neighbor' , 2.3);
-%new = zoomIn2 (building, 'bilinear' , 2.3);
+%new = zoomIn2 (originalImg, 'neighbor' , 0.5);
+%new = zoomIn2 (originalImg, 'neighbor' , 2.3);
+%new = zoomIn2 (originalImg, 'bilinear' , 2.3);
 
 % medianFilter
-%new = medianFilter (landscape, 7);
+%new = medianFilter (originalImg, 7);
 
 % erode
-%new = erode (landscape, 'square', 3);
-%new = erode (building, 'linev', 5);
-%landscape = uThresholding (landscape, THRESHOLD);
+%image = uThresholding (originalImg, THRESHOLD);
+%new = erode (image, 'square', 3);
+%new = erode (image, 'linev', 3);
+%new = erode (image, 'lineh', 7);
+%new = erode (image, 'cross', 5);
 
 % dilate
-%new = dilate (landscape, 'square', 5);
-%landscape = uThresholding (landscape, THRESHOLD);
+%image = uThresholding (originalImg, THRESHOLD);
+%new = dilate (image, 'square', 7);
+%new = dilate (image, 'linev', 5);
+%new = dilate (image, 'lineh', 9);
+%new = dilate (image, 'cross', 3);
 
 % opening
-new = opening (building, 'cross', 5);
-%building = uThresholding (building, THRESHOLD);
+%image = uThresholding (originalImg, THRESHOLD);
+%new = opening (image, 'cross', 5);
 
 % closing
-%new = opening (building, 'cross', 5);
-%building = uThresholding (building, THRESHOLD);
+%image = uThresholding (originalImg, THRESHOLD);
+%new = closing (image, 'cross', 5);
 
-% tophat
-%new = tophatFilter (building, 'cross', 'white');
+% tophat - white tophat 
+image = uThresholding (originalImg, THRESHOLD);
+new = tophatFilter (image, 'linev', 'white');
+
+% bothat or black tophat
+%image = uThresholding (originalImg, THRESHOLD);
+%new = tophatFilter (image, 'square', 'black');
 
 % show or write
-uShowWriteOut (building, new, ''); % by default show
+uShowWriteOut (originalImg, new, ''); % by default show
+%uShowWriteOut (originalImg, new, 'write'); % by default, '', display result

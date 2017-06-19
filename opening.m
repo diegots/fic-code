@@ -1,13 +1,11 @@
 function outputImage = opening ( inputImage , strElType, strElSize )
 
-    THRESHOLD = 125;
+    outputImage = erode (inputImage, strElType, strElSize);
+    outputImage = dilate (outputImage, strElType, strElSize);
 
-    image = uThresholding (inputImage, THRESHOLD);
-    kernel = uCreateKernel (strElType, strElSize);
-    outputImage = uConvolution (image, kernel, 'erode');
-    outputImage = uConvolution (outputImage, kernel, 'dilate');
-
-    %image = uReadImage (inputImage);
-    %outputImage = imopen (image, kernel);
+    %% Test octave's implementation
+    %kernel = uCreateKernel (strElType, strElSize);
+    %outputImage = imopen (inputImage, kernel);
+    %%
 
 endfunction
