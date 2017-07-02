@@ -6,17 +6,19 @@
 %ker = uCreateKernel ('linev', 3);
 %uConvolution (mat, ker, 'erode');
 
+
 THRESHOLD = 125;
 WHITE = 255;
 
 % images
 lenna     = 'images/lenna512.bmp';
+%lenna     = 'images/lenna128.bmp';
 building  = 'images/building.jpg';
 landscape = 'images/landscape.jpg';
 
-%originalImg = uReadImage (lenna);
+originalImg = uReadImage (lenna);
 %originalImg = uReadImage (building);
-originalImg = uReadImage (landscape);
+%originalImg = uReadImage (landscape);
 
 % histShrink
 %new = histShrink(originalImg, 60, 230);
@@ -52,13 +54,31 @@ originalImg = uReadImage (landscape);
 %new = closing (image, 'cross', 5);
 
 % tophat - white tophat 
-image = uThresholding (originalImg, THRESHOLD);
-new = tophatFilter (image, 'linev', 'white');
+%image = uThresholding (originalImg, THRESHOLD);
+%new = tophatFilter (image, 'linev', 'white');
 
 % bothat or black tophat
 %image = uThresholding (originalImg, THRESHOLD);
 %new = tophatFilter (image, 'square', 'black');
 
+% uConvolutionGeneral
+%ker = fspecial ('sobel', 3);
+%ker = fspecial ('gaussian',3,40); %
+%ker = repmat (1/9, 3, 3);
+%originalImg = ones (12,12) * 150;
+%new = conv2(originalImg, ker, 'same');
+%new = uConvolutionGeneral (originalImg, ker);
+
+% derivatives
+%gx = [-1 0; 0 1];
+%gy = [0 -1; 1 0];
+%new = conv2(originalImg, gx, 'same')
+%new = uConvolutionGeneral (originalImg, gy)
+
+% Harris corner detector
+new = cornerHarris (originalImg, 3, 1.0e+10);
+%new = cornerHarris (originalImg, 3, 0.8);
+
 % show or write
-uShowWriteOut (originalImg, new, ''); % by default show
+%uShowWriteOut (originalImg, new, ''); % by default show images
 %uShowWriteOut (originalImg, new, 'write'); % by default, '', display result
