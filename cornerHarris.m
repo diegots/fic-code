@@ -50,10 +50,9 @@ function outputImage = cornerHarris (inputImage, N, t)
     endfor
     M(v) = dets(v) - k * traces(v);
 
-    i = sqrt (numel(M));
-    M = reshape(M, i, i);
+    M = reshape(M, r-(floor(kr/2)*2), c-floor(kc/2)*2);
     coners_ = find (M>t);
-    corners = centers (coners_) % corners detected. Absolute indexes
+    corners = centers (coners_); % corners detected. Absolute indexes
 
     % Non-max suppression
     a = atan (iy./ix);
@@ -102,7 +101,8 @@ function outputImage = cornerHarris (inputImage, N, t)
     figure (9);
     imshow(inputImage)
     hold on
-    plot(v0,v1,"color","r","-");
+    %plot(v0,v1,"color","r","-");
+    plot(x,y,"color","r","*");
     hold off
     print (gcf(), "outputImage.png", '-dpng')
 
