@@ -52,24 +52,61 @@ function outputImage = cornerHarris (inputImage, N, t)
 
     i = sqrt (numel(M));
     M = reshape(M, i, i);
-    (M>t);
     coners_ = find (M>t);
-    centers;
-    corners = centers (coners_);
+    corners = centers (coners_) % corners detected. Absolute indexes
 
-    p = zeros (r,c);
-    p(corners) = 1;
-    [y,x] = find(p);
+    % Non-max suppression
+    a = atan (iy./ix);
+    nan_pos = isnan(a); % atan calculus produces some NaN values on the matrix borders
+    a(nan_pos) = 0; % removes those NaN values
+    Eo = mod((180 * a / pi) + 360, 180); % orientation matrix
+    Em = sqrt (ix.^2 .+ iy.^2); % magnitude matrix
 
-    printf('Detected points %s\n', num2str(numel(x)));
+    d1 = (Eo>0 & Eo<45);    % 0º to 45º 
+    d2 = (Eo>=45 & Eo<90);  % 45º to 90º 
+    d3 = (Eo>=90 & Eo<135); % 90º to 135º 
+    d4 = (Eo>=135);         % 135º to 180º
 
-    outputImage = inputImage;
+    cd1 = intersect (corners, find(d1));
+    cd1( Em(cd1)<Em(cd1+1) ) = []; 
+    cd1( Em(cd1)<Em(cd1-1) ) = []; 
+
+    cd2 = intersect (corners, find(d2));
+    cd2( Em(cd2)<Em(cd2-r-1) ) = [];
+    cd2( Em(cd2)<Em(cd2+r+1) ) = [];
+
+    cd3 = intersect (corners, find(d3));
+    cd3( Em(cd3)<Em(cd3-r) ) = [];
+    cd3( Em(cd3)<Em(cd3+r) ) = [];
+
+    cd4 = intersect (corners, find(d4));
+    cd4( Em(cd4)<Em(cd4-r+1) ) = [];
+    cd4( Em(cd4)<Em(cd4+r-1) ) = [];
+
+    corners = union (cd1, cd2);
+    corners = union (corners, cd3);
+    corners = union (corners, cd4);
+
+    function [y,x] = get_relative_indexes (rows,cols,points)
+        % Get corners coordinates (x,y)
+        p = zeros (rows,cols);
+        p(points) = 1;
+        [y,x] = find(p);
+    endfunction
+
+    % Show results
+    [y,x] = get_relative_indexes (r,c,corners);
+    printf('Detected points: %s\n', num2str(numel(corners)));
     [v0,v1] = drawCircle (x,y,3);
-    figure (1)
+    %figure (9,'visible','off')
+    figure (9);
     imshow(inputImage)
     hold on
-    plot(v0,v1,"color","r","-")
+    plot(v0,v1,"color","r","-");
     hold off
+    print (gcf(), "outputImage.png", '-dpng')
+
+    outputImage = inputImage;
 
     function [v0,v1] = drawCircle (x, y, r)
 
