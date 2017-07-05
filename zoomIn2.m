@@ -5,37 +5,53 @@
 % scale: factor applied to inputImage
 function outputImage = zoomIn2 (inputImage , mode, scale)
     
-    image = inputImage;
+    img = inputImage;
     
-    [rows cols] = size (image);
+    [rows cols] = size (img);
     printf('Original image size: %s x %s px\n', int2str(cols), int2str(rows));
     
     %
     % Bilinear Interpolation
     %
+    % https://stackoverflow.com/questions/26142288/resize-an-image-with-bilinear-interpolation-without-imresize
+    % https://www.youtube.com/watch?v=z4S5kBl6P84
+    % https://archive.org/download/Lectures_on_Image_Processing/EECE_4353_15_Resampling.pdf
     if strcmp (mode, 'bilinear')
         printf('Interpolating image by bilinear method\n');
+
+        new_row = round (rows * scale); % new rows 
+        new_col = round (cols * scale); % new cols 
         
-        new_cols = floor( scale*cols );
-        new_rows = floor( scale*rows );
+        Sr = rows / new_row;
+        Sc = cols / new_col;
 
-        col_repetition = calc_grow_vectors (cols);
+        [cf, rf] = meshgrid(1:new_row, 1:new_col);
 
-%        p_rows = ( (1 : floor(new_rows/rows) : new_rows) ...
-%            + (floor(new_rows/rows/2)) ) (1:rows);
-%        p_cols = ( (1 : floor(new_cols/cols) : new_cols) ...
-%            + (floor(new_cols/cols/2)) ) (1:cols);
-%        outputImage = zeros (new_rows, new_cols);
-%        outputImage(p_rows, p_cols) = image (1:rows, 1:cols);
-%        outputImage (2:new_rows-1, 2:new_cols-1) ...
-%            = uint8 (floor(
-%                  outputImage (1:new_rows-2, 1:new_cols-2)   ...
-%                + outputImage (1:new_rows-2,   3:new_cols)   ...
-%                + outputImage (3:new_rows,     1:new_cols-2) ...
-%                + outputImage (3:new_rows,     3:new_cols  )  )/4 );
-%
-%        show_results (outputImage) 
-%        outputImage = uint8 (outputImage);
+        rf = rf * Sr;
+        cf = cf * Sc;
+
+        r = floor(rf); % r0
+        c = floor(cf); % c0
+        
+        r(r < 1) = 1;
+        c(c < 1) = 1;
+        r(r > rows - 1) = rows - 1;
+        c(c > cols - 1) = cols - 1;
+
+        delta_r = rf - r;
+        delta_c = cf - c;
+
+        c1 = sub2ind([rows, cols], r, c);
+        c2 = sub2ind([rows, cols], r+1 ,c);
+        c3 = sub2ind([rows, cols], r, c+1);
+        c4 = sub2ind([rows, cols], r+1, c+1);
+
+        outputImage = zeros(rows, cols);
+
+        outputImage = img(c1) .* (1 - delta_r) .* (1 - delta_c) + ...
+            img (c2) .* delta_r .* (1 - delta_c) + ...
+            img (c3) .* (1 - delta_r) .* delta_c + ...
+            img (c4) .* delta_r .* delta_c;
 
     %
     % Neighbor Interpolation
@@ -43,11 +59,11 @@ function outputImage = zoomIn2 (inputImage , mode, scale)
     elseif strcmp (mode, 'neighbor')
         printf('Interpolating image by neighbor method\n');
         
-        [rows cols] = size (image);
+        [rows cols] = size (img);
         col_repetitions = calc_grow_vectors(cols); % get cols
-        positions = 1 : length ( image'(:) );
+        positions = 1 : length ( img'(:) );
         repetitions = repmat (col_repetitions(:), 1, rows)(:)';
-        s = repelems (image', [positions; repetitions]);
+        s = repelems (img', [positions; repetitions]);
         s = reshape (s, sum(col_repetitions), rows);
         
         row_repetitions = calc_grow_vectors (rows); % get rows
@@ -115,3 +131,4 @@ function outputImage = zoomIn2 (inputImage , mode, scale)
     endfunction % end calc_grow_vectors
     
 endfunction % end script
+
