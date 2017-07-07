@@ -89,5 +89,5 @@ originalImg = uReadImage (lenna);
 %new = cornerHarris (originalImg, 3, 1.0e+12); % umbral for building
 
 % Edge Canny
-new = edgeCanny (originalImg, 0.5, 1, 4); % img, sigma, tLow, tHigh
+new = edgeCanny (originalImg, 0.5, 0.4, 0.7); % img, sigma, tLow, tHigh
 
