@@ -27,25 +27,27 @@ function outputImage = edgeCanny (inputImage, sgm, tlow, thigh)
     ix = uConvolutionGeneral (filteredImg, gx);
     iy = uConvolutionGeneral (filteredImg, gy);
 
-%    figure(1)
-%    imshow(iy)
-%    figure(2)
-%    imshow(ix)
+    % normalize tlow & thigh    
+    max_iy = max (iy(:));
+    min_iy = min (iy(:));
+    r2 = max_iy - min_iy; % 
+    tlow = (tlow * r2) + min_iy; % a * r2 + min
+    thigh = (thigh * r2) + min_iy; % a * r2 + min
+    %
 
+    % get valid convolution points
     [rows, cols] = size (inputImage);
     indexes = reshape(1:rows*cols,rows,cols);
     bds = border_detector_size / 2; 
     centers = indexes (ceil(bds/2):rows-(floor(bds/2)), ceil(bds/2):cols-(floor(bds/2)));
-
-%    coners_ = find (ix);
-%    ix_borders = centers (coners_); % all X borders
+    %
 
     % Non-max supression
     a = atan (iy./ix);
     nan_pos = isnan(a); % atan calculus produces some NaN values on the matrix borders
     a(nan_pos) = 0; % removes those NaN values
     Eo = mod((180 * a / pi) + 360, 180); % orientation matrix
-    Em = sqrt (ix.^2 .+ iy.^2); % magnitude matrix
+    Em = sqrt (ix.^2 + iy.^2); % magnitude matrix
 
     d1 = (Eo>0 & Eo<45);    % 0º to 45º 
     d2 = (Eo>=45 & Eo<90);  % 45º to 90º 
@@ -73,45 +75,58 @@ function outputImage = edgeCanny (inputImage, sgm, tlow, thigh)
     supressedIdx = union (supressedIdx, cd4);
 
     t = setdiff (indexes, supressedIdx);
+
     iy(t) = 0;
     ix(t) = 0;
 
-%    figure(3)
-%    imshow (iy);
-%
-%    figure(4)
-%    imshow (ix);
+%    figure(1)
+%    imshow(ix)
+%    figure(2)
+%    imshow (inputImage)
 
-    % normalize tlow & thigh    
-    max_iy = max (iy(:));
-    min_iy = min (iy(:));
-    r2 = max_iy - min_iy; % 
-    tlow = (tlow * r2) + min_iy; % a * r2 + min
-    thigh = (thigh * r2) + min_iy; % a * r2 + min
+    follow = find(iy>thigh)
+    %numel(follow)
+    sol_image = zeros (rows, cols);
+    outputImage = border_path (iy, follow, [], sol_image, tlow, 0);
+    imshow(outputImage)
 
-    points_d1 = find(d1)
-    while(numel(points_d1) > 0)
-        if (ismember (points_d1(1) + rows))
-            tmp = tmp (points_d1(1) + rows))
-        endif
-    endwhile
-
-%    % Show results
-%    [y,x] = get_relative_indexes (rows,cols,ix_borders);
-%    printf('Detected points x gradient: %s\n', num2str(numel(ix_borders)));
-%    %figure (9,'visible','off')
-%    figure (8);
-%    imshow(filteredImg)
-%    hold on
-%    %imshow(255*ones(rows,cols))
-%    plot(x,y,"color","r",".");
-%    hold off
-%    %print (gcf(), "outputImage.png", '-dpng')
-%
-%    outputImage = inputImage;
-
-endfunction
+end
 % END edgeCanny
+
+%
+%
+%
+function sol = border_path (gradient, follow, visited, sol_image, tlow, step)
+    [r,c] = size(sol_image);
+    step
+    % end condition
+    if (~numel(follow))
+        sol = sol_image;
+    else
+        e = follow(1); % get next element to visit
+        follow(1) = []; % remove e from follow set
+        visited(end+1) = e; % add e to visited elements
+        tmp = [e-1 e+1 e-r e-r-1 e-r+1 e+r e+r-1 e+r+1]; % 8-connected neiborgh
+        tmp = tmp(:);
+        tmp = tmp (tmp > tlow); % discard elements below tlow thredshold
+        tmp = tmp (tmp > 0);
+        tmp = tmp (tmp < r*c);
+        tmp = setdiff(tmp,visited); % remove already visited px
+        sol_image(e) = 255; % draw this point
+        if (numel(tmp) > 0) % there are px on tmp to visit
+            follow = setdiff (follow, tmp);
+            follow = vertcat(tmp,follow);
+            visited;
+            sol = border_path (gradient, follow, visited, sol_image, tlow,step+1);
+        elseif (numel(follow > 0)) % no valid neigborhs
+            follow;
+            visited;
+            sol = border_path (gradient, follow, visited, sol_image, tlow,step+1);
+        else % last call, all visited
+            sol = border_path (gradient, [], visited, sol_image, tlow,step+1);
+        end
+    end
+end
 
 
 %
@@ -129,8 +144,7 @@ function [v0,v1] = drawCircle (x, y, r)
 
     v0 = cos_x_rep + x';
     v1 = sin_y_rep + y';
-    
-endfunction
+end
 
 
 %
@@ -141,4 +155,4 @@ function [y,x] = get_relative_indexes (rows,cols,points)
     p = zeros (rows,cols);
     p(points) = 1;
     [y,x] = find(p);
-endfunction
+end
