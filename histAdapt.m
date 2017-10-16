@@ -7,7 +7,7 @@ function outputImage = histAdapt (inputImage, minValue, maxValue)
 
   % Cambia la entrada del rango 0-1 al nuevo
   function out = expand (x, min, max)
-    out = ((max-min) * x(1:end)) + ((min / (max - min)) * (max-min));
+    out = ((max-min) * x(1:end)) + min;
   end
 
   image = double(uReadImage(inputImage));
@@ -20,10 +20,6 @@ function outputImage = histAdapt (inputImage, minValue, maxValue)
   disp(sprintf('Transformando el histograma de %u-%u a %u-%u', ...
     oldMinValue, oldMaxValue, minValue, maxValue))
 
-  %p = 245
-  %p_norm = (p/(oldMaxValue-oldMinValue)) - (oldMinValue/(oldMaxValue-oldMinValue))
-  %p_final = ((maxValue-minValue) * p_norm) + (minValue / (maxValue-minValue))*(maxValue-minValue)
-
   % Inicializa la variable de salida
   [a,b] = size (image);
   outputImage = double (zeros (a,b));
@@ -31,8 +27,6 @@ function outputImage = histAdapt (inputImage, minValue, maxValue)
   % Normaliza los valores de la imagen de entrada entre 0-1
   image_norm = normalize(image, oldMinValue, oldMaxValue);
   outputImage = expand(image_norm, minValue, maxValue);
-
-  %round(linspace (10,110,256))
 
   image = uint8 (image);
   outputImage = reshape( uint8 (outputImage), a, b);
