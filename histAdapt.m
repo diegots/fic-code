@@ -12,10 +12,8 @@ function outputImage = histAdapt (inputImage, minValue, maxValue)
 
   image = double(uReadImage(inputImage));
 
-  t = min (image);
-  oldMinValue = min (t) % mínima intensidad en la imagen
-  t = max (image);
-  oldMaxValue = max (t) % maxima intensidad en la imagen
+  oldMinValue = min (min (image)) % mínima intensidad en la imagen
+  oldMaxValue = max (max (image)) % maxima intensidad en la imagen
 
   disp(sprintf('Transformando el histograma de %u-%u a %u-%u', ...
     oldMinValue, oldMaxValue, minValue, maxValue))
