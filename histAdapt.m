@@ -1,36 +1,45 @@
 function outputImage = histAdapt (inputImage, minValue, maxValue)
+% histAdapt adapta el histograma de la imagen pasada en el parámetro inputImage
+% al nuevo rango comprendido entre minValue y maxValue
 
-  % Normalize entre el rango 0-1
-  function out =  normalize (x, min, max)
-    out = (x(1:end)/(max-min)) - (min/(max-min));
-  end
+  MAX_INTENSITY = 255; %  se consideran imágenes de 8 bits/pixel
 
   % Cambia la entrada del rango 0-1 al nuevo
   function out = expand (x, min, max)
+  % expand mueve el rango de valores normalizados de la matriz de entrada a un
+  % nuevo rango dado por min y max
+    [a,b] = size (x);
     out = ((max-min) * x(1:end)) + min;
+    out = reshape (out,a,b);
   end
 
-  image = double(uReadImage(inputImage));
+  % Obtiene máximo y mínimo valor de intensidad de la imagen
+  oldMinValue = min (min (inputImage));
+  oldMaxValue = max (max (inputImage));
 
-  oldMinValue = min (min (image)) % mínima intensidad en la imagen
-  oldMaxValue = max (max (image)) % maxima intensidad en la imagen
+  % Si la imagen no está normalizada, se normaliza
+  if (oldMaxValue > 1)
+    disp('Normalizando la imagen entre 0-1.')
+    inputImage = uNormalize(image, oldMinValue, oldMaxValue);
 
-  disp(sprintf('Transformando el histograma de %u-%u a %u-%u', ...
-    oldMinValue, oldMaxValue, minValue, maxValue))
+    oldMinValue = oldMinValue / MAX_INTENSITY;
+    oldMaxValue = oldMaxValue / MAX_INTENSITY;
+    minValue = minValue / MAX_INTENSITY;
+    maxValue = maxValue / MAX_INTENSITY;
+  end
+
+  if (maxValue > 1)
+    minValue = minValue / MAX_INTENSITY;
+    maxValue = maxValue / MAX_INTENSITY;
+  end
+
+  disp(sprintf('Transformando el histograma de %4.2f-%4.2f a %4.2f-%4.2f', ...
+  oldMinValue, oldMaxValue, minValue, maxValue))
 
   % Inicializa la variable de salida
-  [a,b] = size (image);
+  [a,b] = size (inputImage);
   outputImage = double (zeros (a,b));
 
-  % Normaliza los valores de la imagen de entrada entre 0-1
-  image_norm = normalize(image, oldMinValue, oldMaxValue);
-  outputImage = expand(image_norm, minValue, maxValue);
+  outputImage = expand(inputImage, minValue, maxValue);
 
-  image = uint8 (image);
-  outputImage = reshape( uint8 (outputImage), a, b);
-
-  figure(1)
-  imhist(image);
-  figure(2)
-  imhist(outputImage);
 end
