@@ -78,18 +78,19 @@ function outputImage = uConvolve (inputImage, kernel, operation)
 		disp('[uConvolve] Valores de la primera ventana ordenados:')
 		disp(reshape(matConvolutions(:,1),kr,kc))
 		
+		kernelNumElements = numel(kernel);
 		if (mod(kr,2) == 0) % kernel de lado par
-			disp(sprintf('[uConvolve] Kernel de lado par. Se toma el valor inferior del par central para la mediana'))
+			disp(sprintf('[uConvolve] Kernel de lado par. Se toma el valor inferior del par central (%dº) para la mediana: %6.4f', ...
+				kernelNumElements/2, matConvolutions(kernelNumElements/2, 1)))
+			matConvolutions = matConvolutions(kernelNumElements/2,: );
+
 		else % kernel de lado impar
-			kernelNumElements = numel(kernel);
 			disp(sprintf('[uConvolve] Kernel de lado impar. Se toma el valor central (%dº) para la mediana: %6.4f', ...
 				ceil(kernelNumElements/2), matConvolutions(ceil(kernelNumElements/2), 1)))
 			matConvolutions = matConvolutions( ceil(kernelNumElements/2),: );
 		end
 	end
-	
 
-    
 	% Crea una imagen vacía para guardar los resultados
 	outputImage = uInitializeImage (inputImage);
     
