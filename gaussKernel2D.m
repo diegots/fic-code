@@ -24,7 +24,7 @@ function kernel = gaussKernel2D (sigma)
 	% kernel que cuyos elementos suman 1
 	kernel = kernel / sum(sum(kernel));
 	
-	disp('[gaussKernel2D] kernel Gaussiano calculado:')
+	disp('[gaussKernel2D] kernel Gaussiano 2D calculado:')
 	disp(kernel)
 	
 
