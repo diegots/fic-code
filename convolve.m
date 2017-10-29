@@ -3,6 +3,7 @@ function outputImage = convolve (inputImage , kernel)
     % Nº de filas y columnas de la imagen original y el kernel
     [r, c] = size (inputImage);
     [kr, kc] = size (kernel);
+	disp(sprintf('[convolve] Tamaño del a imagen original: %dx%d', r, c))
 
     % Se le da la vuelta al kernel, para aplicarlo rotado, tal y como se 
     % considera en los apuntes
@@ -10,12 +11,19 @@ function outputImage = convolve (inputImage , kernel)
 	disp ( sprintf('[convolve] Kernel aplicado en la convolución: '))
 	disp(kernel)
 
-	% Matriz de indices de la imagen, desde 1 hasta r*c
+	% Matriz de indices para toda la imagen original, desde 1 hasta r*c
     indexes = reshape([1:r*c],r,c);
 	
 	% Coordenadas de los puntos de la primera convolución
     firstMatConv = indexes ([1:kr],[1:kc]);
+	% Para que la implementación funcione, firstMatConv siempre deben tener 
+	% formato columna
 	firstMatConv = firstMatConv (1:end)';
+	[r_,c_] = size(firstMatConv);
+	if (r_ == 1) % Si hay sólo una columna, se traspone la matriz
+		disp('[convolve] Cambiando firstMatConv a formato columna')
+		firstMatConv = firstMatConv';
+	end
 	disp (sprintf('[convolve] Coordenadas de los puntos de la convolución inicial: '))
 	disp (firstMatConv)
     
@@ -40,15 +48,21 @@ function outputImage = convolve (inputImage , kernel)
 	% Se repite la submatriz de convolución original tantas veces como número 
 	% de centros o píxeles que hay que calcular.
     matConvolutions = repmat (firstMatConv, 1, numberOfCerters);
-	
+
 	% A las submatrices base se le suman cada incremento
 	%AA = bsxfun(@minus,A,b) where b is the vector and A is your big matrix
 	matConvolutions = bsxfun(@plus, matConvolutions,increments);
 	
 	% Se necesita tantos kernels como submatrices en matConvolutions
 	kernel_ = kernel (1:end)';
+	%Se espera que el kernel esté el columna
+	[r_,c_] = size(kernel_);
+	if (r_ == 1) % Si hay sólo una columna, se traspone la matriz
+		disp('[convolve] Cambiando kernel_ a formato columna')
+		kernel_ = kernel_';
+	end
 	allKernels = repmat (kernel_,1,numberOfCerters);
-    
+
 	% Cálculo del producto y las sumas de la convolución
     matConvolutions = inputImage (matConvolutions) .* allKernels;
     matConvolutions = sum (matConvolutions, 1);
