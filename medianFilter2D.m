@@ -8,4 +8,7 @@ function outputImage = medianFilter2D (inputImage, filterSize)
 	
 	outputImage = uConvolve (inputImage, kernel, 'median');
 	
+	% Implementación de MATLAB
+	%outputImage = medfilt2(inputImage, [filterSize filterSize]) ;
+	
 end
