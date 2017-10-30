@@ -5,7 +5,6 @@ function outputImage = highBoost (inputImage, A, method, parameter)
 	
 	disp(sprintf('[highBoost] Calculando High Boost con parámetro A=%d', A))
 
-	% Opciónn 1 aplicando la fórmula
 	imagen_suavizada = zeros(r,c);	
 	if (strcmp (method, 'gaussian'))
 		disp(sprintf('[highBoost] Calculando la imagen suavizada con un filtro Gaussiano de sigma=%d', parameter))
@@ -18,6 +17,7 @@ function outputImage = highBoost (inputImage, A, method, parameter)
 	end
 	
 	o = (A .* inputImage) - imagen_suavizada;
-	outputImage = imadjust(o, stretchlim(o),[0 1]);
+	outputImage = histAdapt(o, 0,1);
+	%outputImage = imadjust(o, stretchlim(o),[0 1]);
 	 
 end
