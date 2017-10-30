@@ -17,21 +17,7 @@ function outputImage = highBoost (inputImage, A, method, parameter)
 		disp(sprintf('[highBoost] parámetro "method" no válido: %s', method))
 	end
 	
-	outputImage = (A .* inputImage) - imagen_suavizada;
-	
-%	% Opción 2 mediante máscaras de convoluciónn. El valor de A controla la 
-%	% salida de tal forma que si 
-%	% A = 0 --> Laplaciano
-%	% A < 0 --> Bordes
-%	% A > 0 --> Realce
-%	kernel = [-1  -1 -1;
-%	          -1 A+8 -1;
-%	          -1  -1 -1];
-%			  
-%	kernel = [ 0  -1  0;
-%	          -1 A+4 -1;
-%	           0  -1  0];			  
-%	outputImage = convolve (inputImage, kernel);
-%	%outputImage = conv2(inputImage, kernel, 'same');
+	o = (A .* inputImage) - imagen_suavizada;
+	outputImage = imadjust(o, stretchlim(o),[0 1]);
 	 
 end
