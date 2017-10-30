@@ -1,3 +1,11 @@
+% uConvolve recibe como parámetros:
+% inputImage: la imagen sobre la cual hacer la convolución
+% kernel: a utilizar en la convolución en formato MxN
+% shape: al igual que conv2 se puede calcular la convolución 'full' que 
+% 	convoluciona la imagen y crea una imagen más grande para poder incluir los 
+% 	bordes o bien 'same' que devuelve el mismo tamaño de imagen.
+% operation: puede ser '2dconvo' para realizar la convolución normal o 'median'
+%	para aplicar un filtro de medianas
 function outputImage = uConvolve (inputImage, kernel, shape, operation)
 
     % Nº de filas y columnas de la imagen original y el kernel
@@ -16,20 +24,8 @@ function outputImage = uConvolve (inputImage, kernel, shape, operation)
 	% imagen de origen con un borde de valor 0 y luego situar la imagen en el 
 	% centro
 	if (strcmp (shape, 'full'))
-		disp(sprintf('[uConvolve] tamaño del marco horizontal: %2.0f', kc/2))
-		disp(sprintf('[uConvolve] tamaño del marco vertical: %2.0f', kr/2))
-		t_marco_h = round(kc/(2*2));
-		t_marco_v = round(kr/(2*2));
-		
-		marco_h = zeros(t_marco_h, c);
-		inputImage_marco_h = [marco_h; inputImage; marco_h];
-		[r_,c_] = size(inputImage_marco_h)
-		
-		marco_v = zeros(r_, t_marco_v);
-		inputImage = [marco_v inputImage_marco_h marco_v];
+		inputImage = uExtendShrink(inputImage, kernel, 'extend')
 		[r,c] = size(inputImage);
-		figure(8)
-		imshow(inputImage)
 	end
 	
 	% Matriz de indices para toda la imagen original, desde 1 hasta r*c
