@@ -51,9 +51,9 @@ function outputImage = uConvolve (inputImage, kernel, operation)
 
 	% A las submatrices base se le suman cada incremento
 	%AA = bsxfun(@minus,A,b) where b is the vector and A is your big matrix
-	matConvolutions = bsxfun(@plus, matConvolutions,increments);
+	matConvolutionsIncr = bsxfun(@plus, matConvolutions,increments);
 	
-	% Se necesita tantos kernels como submatrices en matConvolutions
+	% Se necesita tantos kernels como submatrices en bsxfunOutput
 	kernel_ = kernel (1:end)';
 	%Se espera que el kernel esté el columna
 	[r_,c_] = size(kernel_);
@@ -67,27 +67,27 @@ function outputImage = uConvolve (inputImage, kernel, operation)
 		allKernels = repmat (kernel_,1,numberOfCerters);
 		
 		% Cálculo del producto y las sumas de la convolución
-		matConvolutions = inputImage (matConvolutions) .* allKernels;
-		matConvolutions = sum (matConvolutions, 1);	
+		matConvolutionsPrd = inputImage (matConvolutionsIncr) .* allKernels;
+		matConvolutionsOut = sum (matConvolutionsPrd, 1);	
 
 	% Operación de filtrado de mediana sobre los vecinos de los puntos centros
 	elseif (strcmp (operation, 'median'))
 		
-		matConvolutions = inputImage (matConvolutions);
-		matConvolutions = sort(matConvolutions); % ordena cada columna
+		matConvolutionsPnt = inputImage (matConvolutionsIncr);
+		matConvolutionsSrt = sort(matConvolutionsPnt); % ordena cada columna
 		disp('[uConvolve] Valores de la primera ventana ordenados:')
-		disp(reshape(matConvolutions(:,1),kr,kc))
+		disp(reshape(matConvolutionsSrt(:,1),kr,kc))
 		
 		kernelNumElements = numel(kernel);
 		if (mod(kr,2) == 0) % kernel de lado par
 			disp(sprintf('[uConvolve] Kernel de lado par. Se toma el valor inferior del par central (%dº) para la mediana: %6.4f', ...
-				kernelNumElements/2, matConvolutions(kernelNumElements/2, 1)))
-			matConvolutions = matConvolutions(kernelNumElements/2,: );
+				kernelNumElements/2, matConvolutionsSrt(kernelNumElements/2, 1)))
+			matConvolutionsOut = matConvolutionsSrt(kernelNumElements/2,: );
 
 		else % kernel de lado impar
 			disp(sprintf('[uConvolve] Kernel de lado impar. Se toma el valor central (%dº) para la mediana: %6.4f', ...
-				ceil(kernelNumElements/2), matConvolutions(ceil(kernelNumElements/2), 1)))
-			matConvolutions = matConvolutions( ceil(kernelNumElements/2),: );
+				ceil(kernelNumElements/2), matConvolutionsSrt(ceil(kernelNumElements/2), 1)))
+			matConvolutionsOut = matConvolutionsSrt( ceil(kernelNumElements/2),: );
 		end
 	end
 
@@ -95,6 +95,6 @@ function outputImage = uConvolve (inputImage, kernel, operation)
 	outputImage = uInitializeImage (inputImage);
     
 	% Asigna a los píxeles de la convolución su nuevo valor
-	outputImage(centers) = matConvolutions;
+	outputImage(centers) = matConvolutionsOut;
 	
 end
