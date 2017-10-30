@@ -1,4 +1,4 @@
-function outputImage = uConvolve (inputImage, kernel, operation)
+function outputImage = uConvolve (inputImage, kernel, shape, operation)
 
     % Nº de filas y columnas de la imagen original y el kernel
     [r, c] = size (inputImage);
@@ -11,6 +11,27 @@ function outputImage = uConvolve (inputImage, kernel, operation)
 	disp ( sprintf('[uConvolve] Kernel aplicado en la convolución: '))
 	disp(kernel)
 
+	
+	% En caso de querer hacer la convolución de tipo 'full' hay que agrandar la 
+	% imagen de origen con un borde de valor 0 y luego situar la imagen en el 
+	% centro
+	if (strcmp (shape, 'full'))
+		disp(sprintf('[uConvolve] tamaño del marco horizontal: %2.0f', kc/2))
+		disp(sprintf('[uConvolve] tamaño del marco vertical: %2.0f', kr/2))
+		t_marco_h = round(kc/(2*2));
+		t_marco_v = round(kr/(2*2));
+		
+		marco_h = zeros(t_marco_h, c);
+		inputImage_marco_h = [marco_h; inputImage; marco_h];
+		[r_,c_] = size(inputImage_marco_h)
+		
+		marco_v = zeros(r_, t_marco_v);
+		inputImage = [marco_v inputImage_marco_h marco_v];
+		[r,c] = size(inputImage);
+		figure(8)
+		imshow(inputImage)
+	end
+	
 	% Matriz de indices para toda la imagen original, desde 1 hasta r*c
     indexes = reshape([1:r*c],r,c);
 	

@@ -6,7 +6,7 @@ function outputImage = medianFilter2D (inputImage, filterSize)
 	% Se genera una matriz de unos del tama˜no filterSize
 	kernel = ones (filterSize);
 	
-	outputImage = uConvolve (inputImage, kernel, 'median');
+	outputImage = uConvolve (inputImage, kernel, 'full', 'median');
 	
 	% Implementación de MATLAB
 	%outputImage = medfilt2(inputImage, [filterSize filterSize]) ;

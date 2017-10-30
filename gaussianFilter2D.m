@@ -5,6 +5,6 @@
 function outputImage = gaussianFilter2D (inputImage, sigma)
 
 	kernel = gaussKernel2D(sigma);
-	outputImage = convolve (inputImage, kernel);
+	outputImage = convolve (inputImage, kernel, 'full');
 
 end

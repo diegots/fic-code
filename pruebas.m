@@ -29,11 +29,11 @@ winSize = 0.2;
 %
 %%max = 127; % estos valores son convertidos en histAdapt al rango 0-1
 %%min = 30;
-%min = 0.17;
-%max = 0.84;
+min = 0.17;
+max = 0.84;
 
 % Función equivalente en MATLAB:
-%%o = imadjust(read_image,stretchlim(read_image),[min max]);
+%o = imadjust(read_image,stretchlim(read_image),[min max]);
 %o = histAdapt(read_image, min, max);
 %%o = histAdapt(o, 10, 233); % Probamos a expandir el resultado anterior
 
@@ -46,14 +46,17 @@ winSize = 0.2;
 %kernel = [1 1 1; 1 2 1; 1 1 1] / 10;
 %kernel = [1 2 1; 2 4 2; 1 2 1] * (1/16);
 %kernel = (repmat(1,5))/25; % tamaño 5x5
-%kernel = (repmat(1,7))/49; % tamaño 7x7
+kernel = (repmat(1,7))/49; % tamaño 7x7
 %kernel = (repmat(1,9))/81; % tamaño 9x9
 %kernel = fspecial('gaussian', 15,1.5); % Filtro Gaussiano 15x15
 %kernel = reshape(repmat(1/15,1,15),3,5); % kernel 3x5 también funciona
 %kernel = reshape(repmat(1/28,28,1),7,4); % kernel 7x4
 
-%o = convolve (read_image, kernel);
-%o = conv2(read_image, kernel, 'same');
+%shape = 'same';
+%shape = 'full';
+%o = convolve (read_image, kernel, shape);
+%o = conv2(read_image, kernel, shape);
+
 
 %
 % gaussKernel1D
@@ -88,14 +91,13 @@ winSize = 0.2;
 %
 % highBoost
 %
-
 %method = 'gaussian' ;
-%parameter = 0.5;
-%
-method = 'median';
-parameter = 7;
-A = 1;
-o = highBoost (read_image, A, method, parameter);
+%parameter = 7;
+%%%
+%method = 'median';
+%parameter = 15;
+%A = 1.3;
+%o = highBoost (read_image, A, method, parameter);
 
 %figure(1)
 %imhist(read_image) % histograma original
