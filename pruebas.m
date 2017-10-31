@@ -18,8 +18,8 @@ read_image = uReadImage (imagen);
 %winSize = 0.6;
 %cenValue = 0.3; % se aclara la imagen
 %winSize = 0.6;
-cenValue = 0.5; % se oscurece la imagen
-winSize = 0.2;
+%cenValue = 0.5; % se oscurece la imagen
+%winSize = 0.2;
 %o = imadjust(read_image, ...
 %  [cenValue-(winSize/2), cenValue+(winSize/2)], [0 1]);
 %o = histEnhance(read_image, cenValue, winSize);
@@ -29,10 +29,10 @@ winSize = 0.2;
 %
 %%max = 127; % estos valores son convertidos en histAdapt al rango 0-1
 %%min = 30;
-min = 0.17;
-max = 0.84;
+%min = 0.17;
+%max = 0.84;
 
-% Función equivalente en MATLAB:
+% Funci�n equivalente en MATLAB:
 %o = imadjust(read_image,stretchlim(read_image),[min max]);
 %o = histAdapt(read_image, min, max);
 %%o = histAdapt(o, 10, 233); % Probamos a expandir el resultado anterior
@@ -45,11 +45,11 @@ max = 0.84;
 %kernel = (repmat(1,3))/9 % filtro de media 3x3
 %kernel = [1 1 1; 1 2 1; 1 1 1] / 10;
 %kernel = [1 2 1; 2 4 2; 1 2 1] * (1/16);
-%kernel = (repmat(1,5))/25; % tamaño 5x5
-kernel = (repmat(1,7))/49; % tamaño 7x7
-%kernel = (repmat(1,9))/81; % tamaño 9x9
+%kernel = (repmat(1,5))/25; % tama�o 5x5
+%kernel = (repmat(1,7))/49; % tama�o 7x7
+%kernel = (repmat(1,9))/81; % tama�o 9x9
 %kernel = fspecial('gaussian', 15,1.5); % Filtro Gaussiano 15x15
-%kernel = reshape(repmat(1/15,1,15),3,5); % kernel 3x5 también funciona
+%kernel = reshape(repmat(1/15,1,15),3,5); % kernel 3x5 tambi�n funciona
 %kernel = reshape(repmat(1/28,28,1),7,4); % kernel 7x4
 
 %shape = 'same';
@@ -57,6 +57,7 @@ kernel = (repmat(1,7))/49; % tamaño 7x7
 %o = convolve (read_image, kernel, shape);
 %o = conv2(read_image, kernel, shape);
 
+%o = uExtendShrink (o, kernel, 'shrink'); % shrink o extend
 
 %
 % gaussKernel1D
@@ -66,17 +67,15 @@ kernel = (repmat(1,7))/49; % tamaño 7x7
 %kernel = gaussKernel1D(1.5);
 %kernel = gaussKernel1D(2);
 
-% Para la segunda pasada de la convolución hay que rotar la imagen y volver a 
-% rotar la imagen a la salida para recuperar la posición original.
-% Otra opción sería rotar el filtro y mantener la imagen
+% Para la segunda pasada de la convoluci�n hay que rotar la imagen y volver a 
+% rotar la imagen a la salida para recuperar la posici�n original.
+% Otra opci�n ser�a rotar el filtro y mantener la imagen
 %
 %o = convolve (read_image, kernel); % rotando la imagen
 %o = convolve (o', kernel)';
 %
 %o = convolve (read_image, kernel); % rotando el kernel
 %o = convolve (o, kernel');
-% ¿Qué debería hacer, una sola convolución o dos? ¿Debería detectar la situación
-% en en convolve y aplicar allí las dos pasadas?
 
 %
 % gaussianFilter2D
@@ -92,12 +91,12 @@ kernel = (repmat(1,7))/49; % tamaño 7x7
 % highBoost
 %
 %method = 'gaussian' ;
-%parameter = 7;
-%%%
-%method = 'median';
-%parameter = 15;
-%A = 1.3;
-%o = highBoost (read_image, A, method, parameter);
+%parameter = 5;
+%
+method = 'median';
+parameter = 15;
+A = 1.2;
+o = highBoost (read_image, A, method, parameter);
 
 %figure(1)
 %imhist(read_image) % histograma original

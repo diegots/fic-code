@@ -1,34 +1,48 @@
-% operation: 'extend' genera un marco del tama帽o adecuado para realizar la 
-% 	convoluci贸n con un kernel pasado por par谩metro. Con 'shrink' se elimina
+% operation: 'extend' genera un marco del tama駉 adecuado para realizar la 
+% 	convoluci髇 con un kernel pasado por par醡etro. Con 'shrink' se elimina
 %	dicho marco.
 function outputImage = uExtendShrink (inputImage, kernel, operation)
+	
+	% OjO
+	% OjO, se considera un kernel de lado IMPAR
+	% OjO
 	
 	[r, c] = size (inputImage);
 	[kr kc] = size (kernel);
 
-	disp(sprintf('[uExtendShrink] tama帽o del marco horizontal: %2.0f', kc/2))
-	disp(sprintf('[uExtendShrink] tama帽o del marco vertical: %2.0f', kr/2))
-
-	% Operaci贸n de extensi贸n
+	% Operaci髇 de extensi髇
 	if (strcmp (operation, 'extend'))
 		disp(sprintf('[uExtendShrink] Realizando extend'))
 	
-		t_marco_h = round(kc/(2*2));
-		t_marco_v = round(kr/(2*2));
+		t_marco_h = (kc-1)/2;
+		t_marco_v = (kr-1)/2;
 		
 		marco_h = zeros(t_marco_h, c);
+		
+		[a,b] = size(marco_h);
+		disp(sprintf('[uExtendShrink] Tama駉 del marco horizontal: %dx%d', a, b))
+		
 		inputImage_marco_h = [marco_h; inputImage; marco_h];
-		[r_,c_] = size(inputImage_marco_h)
+		[r_,c_] = size(inputImage_marco_h);
 		
 		marco_v = zeros(r_, t_marco_v);
+		[a,b] = size(marco_v);
+		disp(sprintf('[uExtendShrink] Tama駉 del marco vertical: %dx%d', a, b))
+		
 		outputImage = [marco_v inputImage_marco_h marco_v];
-	
-	% Operaci贸n de recorte
-	else
+		
+	% Operaci髇 de recorte
+	elseif (strcmp (operation, 'shrink'))
 		disp(sprintf('[uExtendShrink] Realizando shrink'))
+		indexes = reshape([1:r*c],r,c);
+		centers = indexes (ceil(kr/2):r-(floor(kr/2)), ceil(kc/2):c-(floor(kc/2)));
+		outputImage = inputImage(centers);
+	
+	else 
+		disp(sprintf('[uExtendShrink] Operaci髇 no v醠ida'))
 	end
 
-
-
-
+	[r, c] = size (outputImage);
+	disp(sprintf('[uExtendShrink] Nuevo tama駉: %dx%d', r, c))
+	
 end

@@ -1,8 +1,9 @@
+
 function outputImage = convolve (inputImage , kernel, shape)
 	disp('[convolve] Llamando a uConvolve')
 	outputImage = uConvolve (inputImage, kernel, shape, '2dconvo');
 		
-	% ImplementaciÃ³n de convoluciÃ³n de MATLAB
+	% Implementación de convolución de MATLAB
 	%outputImage = conv2(inputImage, kernel, shape);
 	
 end

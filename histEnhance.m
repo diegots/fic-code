@@ -10,7 +10,7 @@ function outputImage = histEnhance (inputImage, cenValue, winSize)
   maxVal = cenValue+winSize/2;
   minVal = cenValue-winSize/2;
 
-  disp(sprintf('Valores mínimo, máximo y central: %4.2f %4.2f %4.2f', ...
+  disp(sprintf('[histEnhance] Valores mínimo, máximo y central: %4.2f %4.2f %4.2f', ...
     minVal, maxVal, cenValue)); 
 
   % Coordenadas de las intensidades dentro de las ventana

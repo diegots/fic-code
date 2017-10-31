@@ -15,7 +15,7 @@ function outputImage = histAdapt (inputImage, minValue, maxValue)
   oldMinValue = min (min (inputImage));
   oldMaxValue = max (max (inputImage));
   
-  disp(sprintf('Transformando el histograma de %4.2f-%4.2f a %4.2f-%4.2f', ...
+  disp(sprintf('[histAdapt] Transformando el histograma de %4.2f-%4.2f a %4.2f-%4.2f', ...
   oldMinValue, oldMaxValue, minValue, maxValue))
 
   % Inicializa la variable de salida

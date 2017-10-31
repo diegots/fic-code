@@ -24,7 +24,7 @@ function outputImage = uConvolve (inputImage, kernel, shape, operation)
 	% imagen de origen con un borde de valor 0 y luego situar la imagen en el 
 	% centro
 	if (strcmp (shape, 'full'))
-		inputImage = uExtendShrink(inputImage, kernel, 'extend')
+		inputImage = uExtendShrink(inputImage, kernel, 'extend');
 		[r,c] = size(inputImage);
 	end
 	

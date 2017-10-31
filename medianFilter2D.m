@@ -1,14 +1,15 @@
-% Implementar el filtro de orden de medianas. La funciÃ³n permitirÃ¡ establecer el
-% tamaËœno del filtro.
+% Implementar el filtro de orden de medianas. La función permitirá establecer el
+% tamaño del filtro.
 function outputImage = medianFilter2D (inputImage, filterSize)
-	disp(sprintf('[medianFilter2D] Llamando a uConvolve con tamaÃ±o %d de filtro', filterSize))
+	disp(sprintf('[medianFilter2D] Llamando a uConvolve con tamaÃ±o %d de filtro', ...
+		filterSize))
 	
-	% Se genera una matriz de unos del tamaËœno filterSize
+	% Se genera una matriz de unos del tamaño filterSize
 	kernel = ones (filterSize);
 	
 	outputImage = uConvolve (inputImage, kernel, 'full', 'median');
 	
-	% ImplementaciÃ³n de MATLAB
+	% Implementación de MATLAB
 	%outputImage = medfilt2(inputImage, [filterSize filterSize]) ;
 	
 end
