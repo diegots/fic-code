@@ -7,6 +7,9 @@ clear
 %imagen = 'images\landscape.jpg';
 imagen = 'images\building.jpg';
 %imagen = 'images\guitar-1.jpg';
+%imagen = 'images\5-square.bmp';
+%%imagen = 'images\5-dot.png';
+%imagen = 'images/5-white-line.png';
 read_image = uReadImage (imagen);
 
 %
@@ -93,10 +96,27 @@ read_image = uReadImage (imagen);
 %method = 'gaussian' ;
 %parameter = 5;
 %
-method = 'median';
-parameter = 15;
-A = 1.2;
-o = highBoost (read_image, A, method, parameter);
+%method = 'median';
+%parameter = 15;
+%A = 1.2;
+%o = highBoost (read_image, A, method, parameter);
+
+%
+% Kernels para operaciones morfológicas
+%
+%type = 'cross';
+%type = 'square';
+type = 'lineh';
+%type = 'linev';
+%kernel = uKernelMorfologicos (type, 5)
+
+
+%
+% Erosión
+%
+read_image = uThresholding (read_image, 0.5);
+o = erode (read_image, type, 15); % inputImage, strElType, strElSize
+
 
 %figure(1)
 %imhist(read_image) % histograma original
