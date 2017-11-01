@@ -1,4 +1,4 @@
-function outputImage = dilate (inputImage, strElType, strElSize, type)
+function outputImage = dilate (inputImage, strElType, strElSize)
 
     % THIS IS A BLACK & WHITE DILATE!
     % BEHAVIOUR UNDEFINED WITH MORE THAN BLACK & WHITE SOURCES!
