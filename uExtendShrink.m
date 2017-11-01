@@ -17,11 +17,7 @@ function outputImage = uExtendShrink (inputImage, kernel, operation, fillValue)
 		t_marco_h = (kc-1)/2;
 		t_marco_v = (kr-1)/2;
 		
-		if (fillValue)
-			marco_h = ones(t_marco_h, c);
-		else
-			marco_h = zeros(t_marco_h, c);
-		end
+		marco_h = fillValue * ones(t_marco_h, c)
 		
 		[a,b] = size(marco_h);
 		disp(sprintf('[uExtendShrink] Tamaño del marco horizontal: %dx%d', a, b))
@@ -29,11 +25,7 @@ function outputImage = uExtendShrink (inputImage, kernel, operation, fillValue)
 		inputImage_marco_h = [marco_h; inputImage; marco_h];
 		[r_,c_] = size(inputImage_marco_h);
 		
-		if (fillValue)
-			marco_v = ones(r_, t_marco_v);
-		else
-			marco_v = zeros(r_, t_marco_v);
-		end
+		marco_v = fillValue * ones(r_, t_marco_v);
 		
 		[a,b] = size(marco_v);
 		disp(sprintf('[uExtendShrink] Tamaño del marco vertical: %dx%d', a, b))

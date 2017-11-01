@@ -28,8 +28,12 @@ function outputImage = uConvolve (inputImage, kernel, shape, operation)
 	if (strcmp (shape, 'full'))
 		inputImage = uExtendShrink(inputImage, kernel, 'extend', FILLVALUE);
 		[r,c] = size(inputImage);
+		outputImage = inputImage;
+	else
+		% Crea una imagen vacía para guardar los resultados
+		outputImage = uInitializeImage (inputImage);
 	end
-	
+
 	% Matriz de indices para toda la imagen original, desde 1 hasta r*c
     indexes = reshape([1:r*c],r,c);
 	
@@ -110,9 +114,6 @@ function outputImage = uConvolve (inputImage, kernel, shape, operation)
 		end
 	end
 	
-	% Crea una imagen vacía para guardar los resultados
-	outputImage = uInitializeImage (inputImage);
-    
 	% Asigna a los píxeles de la convolución su nuevo valor
 	outputImage(centers) = matConvolutionsOut;
 	
