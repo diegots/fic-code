@@ -8,7 +8,7 @@
 %	para aplicar un filtro de medianas
 function outputImage = uConvolve (inputImage, kernel, shape, operation)
 
-	FILLVALUE = 0;
+	FILLVALUE = 0.5;
 
 	% Nº de filas y columnas de la imagen original y el kernel
     [r, c] = size (inputImage);
@@ -31,7 +31,7 @@ function outputImage = uConvolve (inputImage, kernel, shape, operation)
 		outputImage = inputImage;
 	else
 		% Crea una imagen vacía para guardar los resultados
-		outputImage = uInitializeImage (inputImage);
+		outputImage = uInitializeImage (inputImage, FILLVALUE);
 	end
 
 	% Matriz de indices para toda la imagen original, desde 1 hasta r*c
