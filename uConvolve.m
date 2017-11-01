@@ -107,17 +107,6 @@ function outputImage = uConvolve (inputImage, kernel, shape, operation)
 			matConvolutionsOut = matConvolutionsSrt( ceil(kernelNumElements/2),: );
 		end
 
-	elseif (strcmp (operation, 'erode'))
-		disp('[uConvolve] Aplicando erosión')
-	elseif (strcmp (operation, 'dilate'))
-		disp('[uConvolve] Aplicando dilatación')
-	elseif (strcmp (operation, 'opening'))
-		disp('[uConvolve] Aplicando opening')
-	elseif (strcmp (operation, 'closing'))
-		disp('[uConvolve] Aplicando closing')
-
-	end
-
 	% Crea una imagen vacía para guardar los resultados
 	outputImage = uInitializeImage (inputImage);
     
