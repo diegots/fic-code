@@ -8,7 +8,9 @@
 %	para aplicar un filtro de medianas
 function outputImage = uConvolve (inputImage, kernel, shape, operation)
 
-    % Nº de filas y columnas de la imagen original y el kernel
+	FILLVALUE = 0;
+
+	% Nº de filas y columnas de la imagen original y el kernel
     [r, c] = size (inputImage);
     [kr, kc] = size (kernel);
 	disp(sprintf('[uConvolve] Tamaño del a imagen original: %dx%d', r, c))
@@ -24,7 +26,7 @@ function outputImage = uConvolve (inputImage, kernel, shape, operation)
 	% imagen de origen con un borde de valor 0 y luego situar la imagen en el 
 	% centro
 	if (strcmp (shape, 'full'))
-		inputImage = uExtendShrink(inputImage, kernel, 'extend');
+		inputImage = uExtendShrink(inputImage, kernel, 'extend', FILLVALUE);
 		[r,c] = size(inputImage);
 	end
 	
@@ -106,7 +108,8 @@ function outputImage = uConvolve (inputImage, kernel, shape, operation)
 				ceil(kernelNumElements/2), matConvolutionsSrt(ceil(kernelNumElements/2), 1)))
 			matConvolutionsOut = matConvolutionsSrt( ceil(kernelNumElements/2),: );
 		end
-
+	end
+	
 	% Crea una imagen vacía para guardar los resultados
 	outputImage = uInitializeImage (inputImage);
     
