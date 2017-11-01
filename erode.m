@@ -1,12 +1,10 @@
-% Operación de erosión morfológica
+% Operación morfológica de erosión
 function outputImage = erode (inputImage, strElType, strElSize)
 
     % THIS IS A BLACK & WHITE EROSION!
     % BEHAVIOUR UNDEFINED WITH MORE THAN BLACK & WHITE SOURCES!
 
     kernel = uKernelMorfologicos (strElType, strElSize);
-    %outputImage = uConvolve (inputImage, kernel, 'same', 'erode');
-    %outputImage (find (outputImage)) = WHITE; % draw ones as WHITE
 
 	% Se expande la imagen para tratar todos los puntos. Se rellena con px de 
 	% valor cero para no contabilizar los nuevos px en la operación find posterior
