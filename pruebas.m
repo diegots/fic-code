@@ -5,9 +5,10 @@ clear
 % Imagenes
 %imagen = 'images\lenna512.bmp';
 %imagen = 'images\landscape.jpg';
-imagen = 'images\building.jpg';
+%imagen = 'images\building.jpg';
 %imagen = 'images\guitar-1.jpg';
 %imagen = 'images\5-square.bmp';
+imagen = 'images\5-square-reverse.png';
 %%imagen = 'images\5-dot.png';
 %imagen = 'images/5-white-line.png';
 read_image = uReadImage (imagen);
@@ -105,8 +106,8 @@ read_image = uReadImage (imagen);
 % Kernels para operaciones morfológicas
 %
 %type = 'cross';
-%type = 'square';
-type = 'lineh';
+type = 'square';
+%type = 'lineh';
 %type = 'linev';
 %kernel = uKernelMorfologicos (type, 5)
 
@@ -115,7 +116,7 @@ type = 'lineh';
 % Erosión
 %
 read_image = uThresholding (read_image, 0.5);
-o = erode (read_image, type, 15); % inputImage, strElType, strElSize
+o = erode (read_image, type, 3); % inputImage, strElType, strElSize
 
 
 %figure(1)
