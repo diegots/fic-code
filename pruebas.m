@@ -105,25 +105,44 @@ read_image = uReadImage (imagen);
 %
 % Kernels para operaciones morfológicas
 %
-%type = 'cross';
-%type = 'square';
-%type = 'lineh';
-type = 'linev';
-%kernel = uKernelMorfologicos (type, 5)
+%strElType = 'cross';
+strElType = 'square';
+%strElType = 'lineh';
+%strElType = 'linev';
+%kernel = uKernelMorfologicos (strElType, 5)
 
 
 %
 % Erosión
 %
 %read_image = uThresholding (read_image, 0.5);
-%o = erode (read_image, type, 3); % inputImage, strElType, strElSize
+%o = erode (read_image, strElType, 3); % inputImage, strElType, strElSize
 
 %
 % Dilatación
 %
-read_image = uThresholding (read_image, 0.7);
-o = dilate (read_image, type, 7); % inputImage, strElType, strElSize
+%read_image = uThresholding (read_image, 0.7);
+%o = dilate (read_image, strElType, 7); % inputImage, strElType, strElSize
 
+%
+% Apertura: erosión -> dilatación
+%
+%read_image = uThresholding (read_image, 0.7);
+%o = opening (read_image, strElType, 7); % inputImage, strElType, strElSize
+
+%
+% Cierre: dilatación -> erosión
+%
+%read_image = uThresholding (read_image, 0.7);
+%o = closing (read_image, strElType, 7); % inputImage, strElType, strElSize
+
+%
+% TopHat
+%
+% blanco: imagen - apertura = imagen - (erosión -> dilatación)
+% negro: cierre - imagen = (dilatación -> erosión) - imagen
+read_image = uThresholding (read_image, 0.6);
+o = tophatFilter (read_image, strElType, 7, 'black'); % inputImage, strElType, strElSize
 
 %figure(1)
 %imhist(read_image) % histograma original
