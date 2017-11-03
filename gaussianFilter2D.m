@@ -4,7 +4,11 @@
 %
 function outputImage = gaussianFilter2D (inputImage, sigma)
 
+	shape = 'full'
+	%shape = 'same'
+
 	kernel = gaussKernel2D(sigma);
-	outputImage = convolve (inputImage, kernel, 'full');
+	%outputImage = convolve (inputImage, kernel, shape);
+	outputImage = conv2(inputImage, kernel, shape);
 
 end
