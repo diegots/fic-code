@@ -4,6 +4,7 @@ function operator = uSpecial (operator)
 		operator = [0 1; -1 0];
 	
 	elseif (strcmp (operator, 'CentralDiff'))
+		operator = [-1 0 1];
 	
 	elseif (strcmp (operator, 'Prewitt'))
 		operator = [1 1 1; 0 0 0; -1 -1 -1];
