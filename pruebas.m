@@ -3,9 +3,9 @@ clc
 clear
 
 % Imagenes
-%imagen = 'images\lenna512.bmp';
+imagen = 'images\lenna512.bmp';
 %imagen = 'images\landscape.jpg';
-imagen = 'images\building.jpg';
+%imagen = 'images\building.jpg';
 %imagen = 'images\guitar-1.jpg';
 %imagen = 'images\5-square.bmp';
 %imagen = 'images\5-square-reverse.png';
@@ -31,15 +31,16 @@ read_image = uReadImage (imagen);
 %
 % histAdapt
 %
-%%max = 127; % estos valores son convertidos en histAdapt al rango 0-1
-%%min = 30;
 %min = 0.17;
 %max = 0.84;
 
-% Función equivalente en MATLAB:
-%o = imadjust(read_image,stretchlim(read_image),[min max]);
 %o = histAdapt(read_image, min, max);
-%%o = histAdapt(o, 10, 233); % Probamos a expandir el resultado anterior
+%o = histAdapt(o, 0.1, 0.5); % Probamos a expandir el resultado anterior
+%o = histAdapt(o, 0.01, 0.99); 
+
+%o = imadjust(read_image,stretchlim(read_image),[min max]); % impl MATLAB
+%o = imadjust(o,stretchlim(o),[0.1 0.5]);
+%o = imadjust(o,stretchlim(o),[0.01 0.99]);
 
 %
 % convolve
@@ -75,30 +76,30 @@ read_image = uReadImage (imagen);
 % rotar la imagen a la salida para recuperar la posición original.
 % Otra opción sería rotar el filtro y mantener la imagen
 %
-%o = convolve (read_image, kernel); % rotando la imagen
-%o = convolve (o', kernel)';
+%o = convolve (read_image, kernel, shape); % rotando la imagen
+%o = convolve (o', kernel, shape)';
 %
-%o = convolve (read_image, kernel); % rotando el kernel
-%o = convolve (o, kernel');
+%o = convolve (read_image, kernel, shape); % rotando el kernel
+%o = convolve (o, kernel', shape);
 
 %
 % gaussianFilter2D
 %
-%o = gaussianFilter2D (read_image, 0.4);
+%o = gaussianFilter2D (read_image, 2.5);
 
 %
 % medianFilter2D
 %
-%o = medianFilter2D (read_image, 25);
+%o = medianFilter2D (read_image, 15);
 
 %
 % highBoost
 %
 %method = 'gaussian' ;
-%parameter = 5;
+%parameter = 15;
 %
 %method = 'median';
-%parameter = 15;
+%parameter = 11;
 %A = 1.2;
 %o = highBoost (read_image, A, method, parameter);
 
@@ -106,7 +107,7 @@ read_image = uReadImage (imagen);
 % Kernels para operaciones morfológicas
 %
 %strElType = 'cross';
-strElType = 'square';
+%strElType = 'square';
 %strElType = 'lineh';
 %strElType = 'linev';
 %kernel = uKernelMorfologicos (strElType, 5)
@@ -141,8 +142,27 @@ strElType = 'square';
 %
 % blanco: imagen - apertura = imagen - (erosión -> dilatación)
 % negro: cierre - imagen = (dilatación -> erosión) - imagen
-read_image = uThresholding (read_image, 0.6);
-o = tophatFilter (read_image, strElType, 7, 'black'); % inputImage, strElType, strElSize
+%read_image = uThresholding (read_image, 0.6);
+%o = tophatFilter (read_image, strElType, 7, 'black'); % inputImage, strElType, strElSize
+
+%
+% Derivatives
+%
+%operator = 'Prewitt';
+%operator = 'Sobel';
+%operator = 'Robets';
+%operator = 'CentralDiff';
+%gy = conv2(read_image, operator);
+%[gx, gy] = derivatives (read_image, operator);
+%o = histAdapt(gx, 0, 1);
+
+%
+% Canny
+%
+
+%
+% Harris
+%
 
 %figure(1)
 %imhist(read_image) % histograma original
