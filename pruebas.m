@@ -96,11 +96,12 @@ read_image = uReadImage (imagen);
 % highBoost
 %
 %method = 'gaussian' ;
-%parameter = 15;
+%parameter = 9;
 %
 %method = 'median';
-%parameter = 11;
-%A = 1.2;
+%parameter = 13;
+%
+%A = 1.5;
 %o = highBoost (read_image, A, method, parameter);
 
 %
@@ -148,13 +149,19 @@ read_image = uReadImage (imagen);
 %
 % Derivatives
 %
-%operator = 'Prewitt';
+operator = 'Prewitt';
 %operator = 'Sobel';
 %operator = 'Robets';
 %operator = 'CentralDiff';
+
 %gy = conv2(read_image, operator);
-%[gx, gy] = derivatives (read_image, operator);
-%o = histAdapt(gx, 0, 1);
+
+[gx, gy] = derivatives (read_image, operator);
+
+% Se ajusta el histograma para visualizar las zonas sin cambios en el entorno
+% de 0.5 y las zonas de cambios como puntos negros o blancos según el cambio sea
+% de menos a más o de más a menos.
+o = histAdapt(gx, 0, 1); 
 
 %
 % Canny
@@ -170,6 +177,7 @@ read_image = uReadImage (imagen);
 figure(2)
 imhist(o) % histograma nuevo
 title ('Histograma nuevo')
+axis tight  % los rangos de valores son los rangos de los datos
 %
 figure(3)
 imshow(read_image, 'InitialMagnification','fit')
