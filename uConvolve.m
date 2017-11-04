@@ -8,13 +8,14 @@
 %	para aplicar un filtro de medianas
 function outputImage = uConvolve (inputImage, kernel, shape, operation)
 
-	FILLVALUE = 0.5;
+	FILLVALUE = 1;
 
 	% Nº de filas y columnas de la imagen original y el kernel
     [r, c] = size (inputImage);
     [kr, kc] = size (kernel);
 	disp(sprintf('[uConvolve] Tamaño del a imagen original: %dx%d', r, c))
 
+	
     % Se le da la vuelta al kernel, para aplicarlo rotado, tal y como se 
     % considera en los apuntes
     kernel = reshape (kernel(end:-1:1), kr, kc);
@@ -34,8 +35,10 @@ function outputImage = uConvolve (inputImage, kernel, shape, operation)
 		outputImage = uInitializeImage (inputImage, FILLVALUE);
 	end
 
+	
 	% Matriz de indices para toda la imagen original, desde 1 hasta r*c
     indexes = reshape([1:r*c],r,c);
+	
 	
 	% Coordenadas de los puntos de la primera convolución
     firstMatConv = indexes ([1:kr],[1:kc]);
@@ -50,15 +53,30 @@ function outputImage = uConvolve (inputImage, kernel, shape, operation)
 	disp (sprintf('[uConvolve] Coordenadas de los puntos de la convolución inicial: '))
 	disp (firstMatConv)
     
+
     % centers son las coordenadas de los puntos afectados por la convolución,
     % los puntos en la imagen original, SIN los bordes que no se pueden calcular.
-    centers = indexes (ceil(kr/2):r-(floor(kr/2)), ceil(kc/2):c-(floor(kc/2)));
+	% Se consideran kernels de lado impar o par para las filas y/o columnas.
+    if (mod(kr,2)) % rows impares
+		center_rows = ceil(kr/2) : r-(floor(kr/2));
+	else % rows pares
+		center_rows = (kr/2)+1 : r-(kr/2)+1;
+	end
+	
+	if (mod(kc,2)) % cols impares
+		center_cols = ceil(kc/2) : c-(floor(kc/2));
+	else % cols pares
+		center_cols = kc/2 : c-(kc/2);
+	end
+	
+	centers = indexes (center_rows, center_cols);
 	disp(sprintf('[uConvolve] El primer elemento a convolucionar es el %d, el último %d', ...
 		centers(1), centers(end)))
 	    
     % número de valores que se calculan para la imagen y kernel dados
     numberOfCerters = numel (centers);
 	disp(sprintf('[uConvolve] Nº total de puntos para calcular la convolución: %d', numberOfCerters)); 
+
     
 	% A partir de la matriz general de indices, se obtiene otra matriz con 
 	% los incrementos que hay que sumar a firstMatConv para obtener las 
@@ -72,6 +90,7 @@ function outputImage = uConvolve (inputImage, kernel, shape, operation)
 	% de centros o píxeles que hay que calcular.
     matConvolutions = repmat (firstMatConv, 1, numberOfCerters);
 
+	
 	% A las submatrices base se le suman cada incremento
 	%AA = bsxfun(@minus,A,b) where b is the vector and A is your big matrix
 	matConvolutionsIncr = bsxfun(@plus, matConvolutions,increments);
@@ -84,6 +103,7 @@ function outputImage = uConvolve (inputImage, kernel, shape, operation)
 		disp('[uConvolve] Cambiando kernel_ a formato columna')
 		kernel_ = kernel_';
 	end
+	
 	
 	% Operación de convolución 2D habitual: produtos y sumas
 	if (strcmp (operation, '2dconvo'))
