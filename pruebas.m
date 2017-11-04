@@ -53,13 +53,13 @@ read_image = uReadImage (imagen);
 %kernel = (repmat(1,5))/25; % tamaño 5x5
 %kernel = (repmat(1,7))/49; % tamaño 7x7
 %kernel = (repmat(1,9))/81; % tamaño 9x9
-%kernel = fspecial('gaussian', 15,1.5); % Filtro Gaussiano 15x15
+%kernel = fspecial('gaussian', 10,1.5); % Filtro Gaussiano 15x15
 %kernel = reshape(repmat(1/15,1,15),3,5); % kernel 3x5 también funciona
 %kernel = reshape(repmat(1/28,28,1),7,4); % kernel 7x4
 
 %shape = 'same';
-%shape = 'full';
 %o = convolve (read_image, kernel, shape);
+%shape = 'full';
 %o = conv2(read_image, kernel, shape);
 
 %o = uExtendShrink (o, kernel, 'shrink'); % shrink o extend
@@ -90,7 +90,10 @@ read_image = uReadImage (imagen);
 %
 % medianFilter2D
 %
-%o = medianFilter2D (read_image, 15);
+filterSize = 10;
+o = medianFilter2D (read_image, filterSize);
+kernel = ones (filterSize); % kernel ficticio para utilizar en el recorte
+o = uExtendShrink (o, kernel, 'shrink'); % shrink o extend
 
 %
 % highBoost
@@ -149,19 +152,21 @@ read_image = uReadImage (imagen);
 %
 % Derivatives
 %
+%operator = 'Roberts';
+%operator = 'CentralDiff';
 operator = 'Prewitt';
 %operator = 'Sobel';
-%operator = 'Robets';
-%operator = 'CentralDiff';
 
 %gy = conv2(read_image, operator);
 
-[gx, gy] = derivatives (read_image, operator);
+%[gx, gy] = derivatives (read_image, operator);
 
 % Se ajusta el histograma para visualizar las zonas sin cambios en el entorno
 % de 0.5 y las zonas de cambios como puntos negros o blancos según el cambio sea
 % de menos a más o de más a menos.
-o = histAdapt(gx, 0, 1); 
+%o = histAdapt(gx, 0, 1); 
+
+
 
 %
 % Canny
