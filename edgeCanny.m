@@ -9,26 +9,20 @@ function outputImage = edgeCanny (inputImage, sigma, tlow, thigh)
 		sig = 0;
 	
 		if (strcmp (direccion, 'H'))
-		
 			if (c_+1 <= c)
 				sig = sub2ind([r c], r_, c_+1);
 			end
+		
 		elseif (strcmp (direccion, 'V'))
-			
-			%if (actual == 1799)
-			%	disp('Actual 1799 y estoy en V')
-			%end
 			if (r_+1 <= r)
 				sig = sub2ind([r c], r_+1, c_);
-			%	if (actual == 1799)
-			%		disp(sprintf('despues de 1799 --> %d', sig))
-			%	end
-
 			end
+
 		elseif (strcmp (direccion, 'I'))
 			if (r_-1>0 & c_+1<=c)
 				sig = sub2ind([r c], r_-1, c_+1);
 			end
+
 		elseif (strcmp (direccion, 'D'))
 			if (r_+1<=r & c_+1<=c)
 				sig = sub2ind([r c], r_+1, c_+1);
@@ -36,17 +30,9 @@ function outputImage = edgeCanny (inputImage, sigma, tlow, thigh)
 		end
 		
 		% Última comprobación: el nuevo punto debe estar entre los porVisitar
-		
 		if (find(ismember(porVisitar,sig)))
-			%if (actual == 1799)
-			%	disp(sprintf('No me lo cargo en isMember'));
-			%end
 			;
 		else
-			%if (actual == 1799)
-			%	ismember(porVisitar,sig)
-			%	disp(sprintf('ME lo cargo en isMember'));
-			%end
 			sig = 0;
 		end
 		
@@ -54,9 +40,6 @@ function outputImage = edgeCanny (inputImage, sigma, tlow, thigh)
 	end
 
 	function bor = afinaBorde (bordes, magnitud, direccion, dk, r,c)
-		%if (strcmp (direccion, 'V'))
-		%	porVisitar = find (dk)
-		%end
 		
 		numEvit = 0;
 		numbor = 0;
@@ -65,44 +48,23 @@ function outputImage = edgeCanny (inputImage, sigma, tlow, thigh)
 		
 		while (porVisitar)
 			actual = porVisitar(1);
-			%	if (actual == 1800)
-			%		disp(sprintf('Me lo cargo en el bucle principal: %d', actual))
-			%	end
 			porVisitar(1) = [];
 			mayor = actual;
 			viaja = actual;
 
 			while (viaja)
-			%	if (viaja == 1799)
-			%		disp(sprintf('viaja es 1799'))
-			%	end
 				if (magnitud(viaja) > magnitud(mayor))
 					mayor = viaja;
 				end
-			%	if (viaja == 1799)
-			%		[tmp porVisitar] = siguiente (viaja, direccion, porVisitar, r, c);
-			%		disp(sprintf('antes %s, despues de 1799 -> %d', direccion, tmp))
-			%		viaja = tmp;
-			%	end
 				[viaja porVisitar] = siguiente (viaja, direccion, porVisitar, r, c);
-			%	if (viaja == 1799)
-			%		disp(sprintf('despues de 1799 -> %d', viaja))
-			%	end
 				if (viaja)
-				%	numEvit = numEvit+1;
-				%	if (numel(porVisitar)<viaja)
-				%		disp('porVisitar tiene menos que el valor de viaja')
-				%	end
 					p = find(porVisitar==viaja);
 					porVisitar (p) = [];
 				end
 			end
 			
 			bor(mayor) = magnitud(mayor);
-		%	numbor = numbor + 1;
 		end
-		%disp(sprintf('Puntos borde: %d', numbor))
-		%disp(sprintf('Evitados: %d', numEvit))
 	end
 
 	% Inicializaciones
@@ -140,16 +102,13 @@ function outputImage = edgeCanny (inputImage, sigma, tlow, thigh)
     dk3 = (Eo>=90 & Eo<135);  % 90º to 135º  --> |
     dk4 = (Eo>=135 & Eo<180); % 135º to 180º --> \
 	
-	%disp(sprintf('En dk1: %d', numel(find(dk1))))
+	% aplica supresión no máxima
 	outputImage = afinaBorde (outputImage, Em, 'V', dk1, r, c);
 	outputImage = afinaBorde (outputImage, Em, 'D', dk2, r, c);
 	outputImage = afinaBorde (outputImage, Em, 'H', dk3, r, c);
 	outputImage = afinaBorde (outputImage, Em, 'I', dk4, r, c);
-	%
 
-	
-	
-	% umbralización por 
+	% umbralización por histéresis
 	
 	
 end
