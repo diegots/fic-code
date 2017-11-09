@@ -3,7 +3,14 @@ clc
 clear
 
 % Imagenes
-imagen = 'images\lenna512.bmp';
+%imagen = 'images\gradiente.png';
+imagen = 'images\gradiente-horizontal.png';
+%imagen = 'images\circle.png';
+%imagen = 'images\square.png';
+%imagen = 'images\star.png';
+%imagen = 'images\down.png';
+%imagen = 'images\4-orientaciones.png';
+%imagen = 'images\lenna512.bmp';
 %imagen = 'images\landscape.jpg';
 %imagen = 'images\building.jpg';
 %imagen = 'images\guitar-1.jpg';
@@ -45,7 +52,7 @@ read_image = uReadImage (imagen);
 %
 % convolve
 %
-%kernel = fspecial ('sobel');
+%kernel = fspecial ('sobel')
 %kernel = fspecial ('prewitt');
 %kernel = (repmat(1,3))/9 % filtro de media 3x3
 %kernel = [1 1 1; 1 2 1; 1 1 1] / 10;
@@ -58,9 +65,15 @@ read_image = uReadImage (imagen);
 %kernel = reshape(repmat(1/28,28,1),7,4); % kernel 7x4
 
 %shape = 'same';
+%shape = 'same';
 %o = convolve (read_image, kernel, shape);
-%shape = 'full';
-%o = conv2(read_image, kernel, shape);
+%gy = conv2(read_image, kernel, shape);
+%gx = conv2(read_image, kernel', shape);
+%disp('y:')
+%disp(gy(33:39,300:320))
+%disp('x:')
+%disp(gx(33:39,300:320))
+%read_image(33:39,300:320)
 
 %o = uExtendShrink (o, kernel, 'shrink'); % shrink o extend
 
@@ -90,10 +103,10 @@ read_image = uReadImage (imagen);
 %
 % medianFilter2D
 %
-filterSize = 10;
-o = medianFilter2D (read_image, filterSize);
-kernel = ones (filterSize); % kernel ficticio para utilizar en el recorte
-o = uExtendShrink (o, kernel, 'shrink'); % shrink o extend
+%filterSize = 10;
+%o = medianFilter2D (read_image, filterSize);
+%kernel = ones (filterSize); % kernel ficticio para utilizar en el recorte
+%o = uExtendShrink (o, kernel, 'shrink'); % shrink o extend
 
 %
 % highBoost
@@ -154,27 +167,35 @@ o = uExtendShrink (o, kernel, 'shrink'); % shrink o extend
 %
 %operator = 'Roberts';
 %operator = 'CentralDiff';
-operator = 'Prewitt';
+%operator = 'Prewitt';
 %operator = 'Sobel';
 
 %gy = conv2(read_image, operator);
 
 %[gx, gy] = derivatives (read_image, operator);
+%o = uExtendShrink (gx, ones(2), 'shrink'); % shrink o extend
 
 % Se ajusta el histograma para visualizar las zonas sin cambios en el entorno
 % de 0.5 y las zonas de cambios como puntos negros o blancos según el cambio sea
 % de menos a más o de más a menos.
-%o = histAdapt(gx, 0, 1); 
-
+%o = histAdapt(o, 0, 1); 
 
 
 %
 % Canny
 %
+uBajo = 0.02;
+sigma=0.01;
+o = edgeCanny (read_image, sigma, uBajo, uBajo*4);
+%o = edge(read_image,'canny', [uBajo uBajo*4], sigma);
 
 %
 % Harris
 %
+%sigmaD=1.2;
+%sigmaI=2.5;
+%t=1.0e+10
+%o = cornerHarris (read_image, sigmaD, sigmaI, t);
 
 %figure(1)
 %imhist(read_image) % histograma original
