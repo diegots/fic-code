@@ -114,7 +114,7 @@ function outputImage = edgeCanny (inputImage, sigma, tlow, thigh)
 				% indice de la mayor de las magnitudes dentro del vector v: 1, 2 o 3
 				max_index = find (v == max(v)); % encuentra el índice del mayor en el vector v
 				
-				% Si el Ã­ndice obtenido se corresponde con 1, que es el del punto actual,
+				% Si el Índice obtenido se corresponde con 1, que es el del punto actual,
 				% enconces la comparación es true y vale 1, en caso contrario 0.
 				% Por último multiplica ese 0 o 1 por el valor de la magnitud del
 				% elemento actual, que es lo que se almacena
@@ -146,6 +146,8 @@ function outputImage = edgeCanny (inputImage, sigma, tlow, thigh)
 	smoothImage = uExtendShrink (smoothImage, gaussKernel2D(sigma), operation, fillValue);
 	
 	% Localización de bordes empleando el detector de Sobel
+	% gy son bordes verticales, gradiente horizontal
+	% gx son bordes horizontales, gradiente vertical
 	[gy, gx] = derivatives (smoothImage, 'Sobel');
 
 	% Recorta los bordes bordes que se añaden la convolución tipo full
@@ -159,18 +161,18 @@ function outputImage = edgeCanny (inputImage, sigma, tlow, thigh)
 	Eo = radtodeg (Eo); % Cambia los valores de radianes a grados
 	Eo = mod (Eo+360, 180); % Pasamos todos los ángulos al primer y segundo cuadrantes
 	
-	% 4 grupos dk de orientaciones
-	dk1 = (Eo>=0 & Eo<45);     % 0º to 45º -----> -
-    dk2 = (Eo>=45 & Eo<90);   % 45º to 90º ----> /
-    dk3 = (Eo>=90 & Eo<135);  % 90º to 135º  --> |
-    dk4 = (Eo>=135 & Eo<180); % 135º to 180º --> \
+	% se reparten las orientaciones de los bordes en 4 grupos
+	dk1 = (Eo>=0 & Eo<45);     % 0º to 45º -----> - y /
+    dk2 = (Eo>=45 & Eo<90);   % 45º to 90º ----> / y |
+    dk3 = (Eo>=90 & Eo<135);  % 90º to 135º  --> | y \
+    dk4 = (Eo>=135 & Eo<180); % 135º to 180º --> \ y -
 	
 	% supresión no máxima - mirando sólo los vecinos adyacentes de cada punto
 	output = supresion (output, Em, 'V', dk1, r, c);
-	output = supresion (output, Em, 'I', dk2, r, c);
+	output = supresion (output, Em, 'D', dk2, r, c);
 	output = supresion (output, Em, 'H', dk3, r, c);
-	output = supresion (output, Em, 'D', dk4, r, c);
-	outputImage = output;
+	output = supresion (output, Em, 'I', dk4, r, c);
+	
 	% desactiva todos los puntos con valor inferior a tlow
 	output(output<=tlow) = 0;
 	
