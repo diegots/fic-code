@@ -1,9 +1,11 @@
-function [gx, gy] = derivatives (inputImage, operator)
+function [borVert, borHoriz] = derivatives (inputImage, operator)
 
-	opY = uSpecial(operator);
-	opX = opY';
-
-	gy = convolve (inputImage, opY, 'full');
-	gx = convolve (inputImage, opX, 'full');
+	% Operador para bordes horizontales, gradiente vertical
+	opH = uSpecial(operator);
+	borHoriz = convolve (inputImage, opH, 'full');
+	
+	% Operador para bordes verticales, gradiente horizontal
+	opV = opH';
+	borVert = convolve (inputImage, opV, 'full');
 
 end
