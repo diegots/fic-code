@@ -7,18 +7,14 @@
 function outputImage = cornerHarris (inputImage, sigmaD, sigmaI, t)
 % Algoritmo
 % => Montar la matriz S:
-%     a. Convolucionar la imagen con kernel Gaussiano de tamaño sigmaD
-%     b. Derivar con Sobel en cada eje
-%     c. Multiplicar el resultado de cada eje por el valor de la imagen
-%     d. Obtener las 4 componentes de la matriz S (productos y cuadrados)
-%        considerando ventanas de tamaño sigmaD
-%     e. Convolucionar con sigmaI la imagen
-%     f. Calcular el producto de sigmaD^2 y el resultado anterior
-%     g. fin
+%     a. Obtener las derivadas en cada eje con un operador tipo centralDiff
+%     b. Suavizar las derivadas con el kernel sigmaD
+%     c. Obtener las 4 componentes de la matriz S (producto y cuadrados)
+%     d. Aplicar un filtro Gaussiano con sigmaI las componentes obtenidas antes
+%     e. Calcular el producto de sigmaD^2 y el resultado anterior
 % => Determinante y traza
-%     a. Considerar ventanas de tamaño sigmaD
-%     b. considerar un k = [0.04,0.06]
-%     c. Para cada ventana se tiene la matriz S creada anteriormente
+%     a. considerar un k = [0.04,0.06]
+%     b. Para cada ventana se tiene la matriz S creada anteriormente
 %        Obtener M(r,c) = det(S(r,c)) - k*traza(S(r,c))^2
 % => Descartar puntos que no superan el umbral
 %     a. Aplicar M = M(M>t)
@@ -27,6 +23,82 @@ function outputImage = cornerHarris (inputImage, sigmaD, sigmaI, t)
 % => Una vez se tiene la matriz final hay que representarla para verla
 %    plot(0,0,'+','LineWidth',250,'MarkerSize',100)
 %    plot([0 10],[0 9],'+','LineWidth',20,'MarkerSize',50)
+
+	
+	[r c] = size(inputImage);
+	
+	k = 0.04;
+	dx = uSpecial ('CentralDiff');
+	kernelD = gaussKernel2D (sigmaD);
+	kernelI = gaussKernel2D (sigmaI);
+	
+	Bx = gaussianFilter2D (inputImage, sigmaD);
+	Bx = uExtendShrink (Bx, kernelD, 'shrink', 0);
+	
+	By = gaussianFilter2D (inputImage, sigmaD);
+	By = uExtendShrink (By, kernelD, 'shrink', 0);
+
+	Lx = conv2(Bx, dx, 'same');  
+	Ly = conv2(By, dx', 'same'); 
+
+	Lx2 = Lx.^2;
+	Ly2 = Ly.^2;
+	Lxy = Lx .* Ly;
+
+	Mx = sigmaD^2 .* gaussianFilter2D (Lx2, sigmaI);
+	Mx = uExtendShrink (Mx, kernelI, 'shrink', 0);
+	
+	My = sigmaD^2 .* gaussianFilter2D (Ly2, sigmaI);
+	My = uExtendShrink (My, kernelI, 'shrink', 0);
+	
+	Mxy = sigmaD^2 .* gaussianFilter2D (Lxy, sigmaI);
+	Mxy = uExtendShrink (Mxy, kernelI, 'shrink', 0);
+	
+	R = (Mx .* My - Mxy.^2) - (k * (Mx + My).^2);
+	
+	% Descarta los valores que no superen el umbral
+	outputImage = find(R>t);
+
+%	% Supresión no máxima
+%	Em = sqrt (gy.^2 + gx.^2); % Matriz de magnitudes
+%	
+%	% Matriz de orientaciones
+%	Eo = atan (gy ./ gx); % OjO: result in radians.
+%	Eo = radtodeg (Eo); % Cambia los valores de radianes a grados
+%	Eo = mod (Eo+360, 180); % Pasamos todos los ángulos al primer y segundo cuadrantes
+%	
+%	% se reparten las orientaciones de los bordes en 4 grupos
+%	dk1 = (Eo>=0 & Eo<45);    % 0º to 45º -----> - y /
+%    dk2 = (Eo>=45 & Eo<90);   % 45º to 90º ----> / y |
+%    dk3 = (Eo>=90 & Eo<135);  % 90º to 135º  --> | y \
+%    dk4 = (Eo>=135 & Eo<180); % 135º to 180º --> \ y -
+%	
+%	% supresión no máxima - mirando sólo los vecinos adyacentes de cada punto
+%	output = uSupresion (output, Em, 'V', dk1, r, c);
+%	output = uSupresion (output, Em, 'D', dk2, r, c);
+%	output = uSupresion (output, Em, 'H', dk3, r, c);
+%	output = uSupresion (output, Em, 'I', dk4, r, c);	
+%	
+%	%function bor = uSupresion (bordes, magnitud, direccion, dk, r, c)	
+%	outputImage = uSupresion ();
+	
+	
+	% Muestra resultado
+	figure(8)
+	imshow(inputImage)
+	hold on
+	
+	for e = outputImage'
+		[i,j] = ind2sub([r c], e);
+		disp(sprintf('[cornerHarris] e:%d -> (i:%d, j:%d)', e, i, j))
+		plot ([j], [i], '*')
+		%plot([0 10],[0 9],'+','LineWidth',20,'MarkerSize',50)
+	end
+	
+	
+	
+	
+
 end
 
 %% información: https://technicache.wordpress.com/2010/11/24/harris-corner-detector-in-matla/
