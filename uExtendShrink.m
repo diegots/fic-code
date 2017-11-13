@@ -3,10 +3,6 @@
 %	dicho marco.
 function outputImage = uExtendShrink (inputImage, kernel, operation, fillValue)
 	
-	% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %
-	% SE CONSIDERA UN KERNEL DE LADO IMPAR PARA ESTA OPERACIÓN %
-	% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %
-	
 	[r, c] = size (inputImage);
 	[kr kc] = size (kernel);
 

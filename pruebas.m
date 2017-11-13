@@ -4,13 +4,13 @@ clear
 
 % Imagenes
 %imagen = 'images\gradiente.png';
-imagen = 'images\gradiente-horizontal.png';
+%imagen = 'images\gradiente-horizontal.png';
 %imagen = 'images\circle.png';
 %imagen = 'images\square.png';
 %imagen = 'images\star.png';
 %imagen = 'images\down.png';
 %imagen = 'images\4-orientaciones.png';
-%imagen = 'images\lenna512.bmp';
+imagen = 'images\lenna512.bmp';
 %imagen = 'images\landscape.jpg';
 %imagen = 'images\building.jpg';
 %imagen = 'images\guitar-1.jpg';
@@ -184,33 +184,52 @@ read_image = uReadImage (imagen);
 %
 % Canny
 %
-uBajo = 0.02;
-sigma=0.01;
-o = edgeCanny (read_image, sigma, uBajo, uBajo*4);
+%uBajo = 0.05;
+%sigma=1;
+%o = edgeCanny (read_image, sigma, uBajo, uBajo*4);
 %o = edge(read_image,'canny', [uBajo uBajo*4], sigma);
 
 %
 % Harris
 %
-%sigmaD=1.2;
 %sigmaI=2.5;
-%t=1.0e+10
-%o = cornerHarris (read_image, sigmaD, sigmaI, t);
-
-%figure(1)
-%imhist(read_image) % histograma original
-%title ('Histograma original')
-figure(2)
-imhist(o) % histograma nuevo
-title ('Histograma nuevo')
-axis tight  % los rangos de valores son los rangos de los datos
+%sigmaD=0.7*sigmaI;
+%t=0.00002;
+%outputImage = cornerHarris (read_image, sigmaD, sigmaI, t);
 %
-figure(3)
-imshow(read_image, 'InitialMagnification','fit')
-title('Imagen original')
+%%
+%% Visualiza los resultados (depuración Harris)
+%% 
+%figure(8)
+%imshow(read_image)
+%hold on
+%
+%[r c] = size (read_image);
+%for e = find(outputImage(1:end))
+%%	for e = puntos' % todos los valores dados por Harris
+%	[i,j] = ind2sub([r c], e);
+%	%disp(sprintf('[cornerHarris] e:%d -> (i:%d, j:%d)', e, i, j))
+%	plot ([j], [i], 'ro--')
+%	%plot([0 10],[0 9],'+','LineWidth',20,'MarkerSize',50)
+%end
 
-figure(4)
-% InitialMagnification elimina warning:
-% Image is too big to fit on screen; displaying
-imshow(o, 'InitialMagnification','fit')
-title('Imagen modificada')
+%
+%
+%%figure(1)
+%%imhist(read_image) % histograma original
+%%title ('Histograma original')
+%figure(2)
+%imhist(o) % histograma nuevo
+%title ('Histograma nuevo')
+%axis tight  % los rangos de valores son los rangos de los datos
+%%
+%figure(3)
+%imshow(read_image, 'InitialMagnification','fit')
+%title('Imagen original')
+%
+%figure(4)
+%% InitialMagnification elimina warning:
+%% Image is too big to fit on screen; displaying
+%imshow(o, 'InitialMagnification','fit')
+%title('Imagen modificada')
+%
