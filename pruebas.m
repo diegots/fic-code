@@ -1,7 +1,6 @@
 clc
 clear
 
-
 for index = [1:20]
 	% Lectura de la imagen
 	imagenPath = strcat('imagenes\retinografia-', int2str(index), '.jpg');
@@ -27,45 +26,63 @@ for index = [1:20]
 	% Descarta valores oscuros que pertenecen al marco negro de la imagen. Los
 	% demás píxeles de la imagen se ponen a la intensidad máxima para comprobar
 	% visualmente si se pierde información en la zona de trabajo.
-	i (i<=10) = 10;
-	i_red (i_red<=10) = 10;
-	i_green (i_green<=10) = 10;
-	i_blue (i_blue<=10) = 10;
+	i (i<=10) = 0;
+	i_red (i_red<=10) = 0;
+	i_green (i_green<=10) = 0;
+	i_blue (i_blue<=10) = 0;
 
 	% Se busca aumentar el contraste para poder descartar las venas
 	% Según http://ieeexplore.ieee.org/document/6428782/?part=1 el canal verde
 	% es especialmente apropiado
 	
 	% Se utiliza una expansión de histograma para aumentar el contraste
-	a = 0.01;
-	b = 0.99;
-	i = imadjust(i,stretchlim(i),[a, b]);
-	i_red = imadjust(i_red,stretchlim(i_red),[a, b]);
-	i_green = imadjust(i_green,stretchlim(i_green),[a, b]);
-	i_blue = imadjust(i_blue,stretchlim(i_blue),[a, b]);
+	i = histeq(i);
+	i_red = histeq(i_red);
+	i_green = histeq(i_green);
+	i_blue = histeq(i_blue);
 	
 	% Muestra imágenes e histogramas
-	figure(1), imshow(i) 
+	hFigure = figure(1); 
+    imshow(i) 
+    set (hFigure, 'ToolBar', 'none');
 	title (sprintf('Imagen %d', index))
-	figure(2), imhist (i)
+
+	hFigure = figure(2); 
+    imhist (i)
+    set (hFigure, 'ToolBar', 'none');
 	title (sprintf('Histograma de la imagen %d', index))
 	axis tight
 	
-	figure(3), imshow (i_red)
+	hFigure = figure(3); 
+    imshow (i_red)
+    set (hFigure, 'ToolBar', 'none');
 	title (sprintf('Canal R de la imagen %d', index))
-	figure(4), imhist (i_red)
+
+	hFigure = figure(4); 
+    imhist (i_red)
+    set (hFigure, 'ToolBar', 'none');
 	title (sprintf('Histograma del canal R en la imagen %d', index))
 	axis tight
 	
-	figure(5), imshow (i_green)
+	hFigure = figure(5); 
+    imshow (i_green)
+    set (hFigure, 'ToolBar', 'none');
 	title (sprintf('Canal G de la imagen %d', index))
-	figure(6), imhist (i_green)
+
+	hFigure = figure(6); 
+    imhist (i_green)
+    set (hFigure, 'ToolBar', 'none');
 	title (sprintf('Histograma del canal G en la imagen %d', index))
 	axis tight
 	
-	figure(7), imshow (i_blue)
+	hFigure = figure(7);
+    imshow (i_blue)
+    set (hFigure, 'ToolBar', 'none');
 	title (sprintf('Canal B de la imagen %d', index))
-	figure(8), imhist (i_blue)
+
+	hFigure = figure(8); 
+    imhist (i_blue)
+    set (hFigure, 'ToolBar', 'none');
 	title (sprintf('Histograma del canal B en la imagen %d', index))
 	axis tight
 	
