@@ -6,20 +6,20 @@ for index = [1:20]
 	imagenPath = strcat('imagenes\retinografia-', int2str(index), '.jpg');
 	i = imread (imagenPath);
 	disp(sprintf('[pruebas] leída imagen %d', index))
-	
+
 	% Información separada de los canales RGB
 	i_red = i(:,:,1);
 	i_green = i(:,:,2);
 	i_blue = i(:,:,3);
-	
+
 	% Convierte la imagen a escala de grises
 	% Según la documentación, 'help rgb2gray', se aplica:
-	%    rgb2gray converts RGB values to grayscale values by forming a weighted 
+	%    rgb2gray converts RGB values to grayscale values by forming a weighted
 	%    sum of the R, G, and B components:
 	%
 	%    0.2989 * R + 0.5870 * G + 0.1140 * B
 	i = rgb2gray (i);
-	
+
 	% Tamaño de la imagen
 	[r c] = size (i);
 
@@ -34,7 +34,7 @@ for index = [1:20]
 	% Se busca aumentar el contraste para poder descartar las venas
 	% Según http://ieeexplore.ieee.org/document/6428782/?part=1 el canal verde
 	% es especialmente apropiado
-	
+
 	% Se utiliza una expansión de histograma para aumentar el contraste
 	i = histeq(i);
 	i_red = histeq(i_red);
@@ -47,13 +47,13 @@ for index = [1:20]
     % | 20   | 116 |                   | 20  | 124 |
     % | 2    | 131 |                   | 2   | 131 |
     % | 0.2  | 131 |                   | 0.2 | 131 |
-    % | 0.02 | 131 |                   
+    % | 0.02 | 131 |
     T0 = 0.2;
     T = 40;
 
     p = i_green(i_green<T);
     u1 = mean (p);
-    p = i_green(i_green>=T);           
+    p = i_green(i_green>=T);
     u2 = mean (p);
     T_old = T;
     T = 0.5 * (u1+u2);
@@ -61,7 +61,7 @@ for index = [1:20]
     while (abs(T_old - T) >= T0)
         p = i_green(i_green<T);
         u1 = mean (p);
-        p = i_green(i_green>=T);           
+        p = i_green(i_green>=T);
         u2 = mean (p);
         T_old = T;
         T = 0.5 * (u1+u2);
@@ -72,49 +72,49 @@ for index = [1:20]
     i_green(i_green>=T) = 255;
 
 	% Muestra imágenes e histogramas
-	%hFigure = figure(1); 
-    %imshow(i) 
-    %set (hFigure, 'ToolBar', 'none');
+	%hFigure = figure(1);
+        %imshow(i)
+        %set (hFigure, 'ToolBar', 'none');
 	%title (sprintf('Imagen %d', index))
 
-	%hFigure = figure(2); 
-    %imhist (i)
-    %set (hFigure, 'ToolBar', 'none');
+	%hFigure = figure(2);
+        %imhist (i)
+        %set (hFigure, 'ToolBar', 'none');
 	%title (sprintf('Histograma de la imagen %d', index))
 	%axis tight
-	
-	%hFigure = figure(3); 
-    %imshow (i_red)
-    %set (hFigure, 'ToolBar', 'none');
+
+	%hFigure = figure(3);
+        %imshow (i_red)
+        %set (hFigure, 'ToolBar', 'none');
 	%title (sprintf('Canal R de la imagen %d', index))
 
-	%hFigure = figure(4); 
-    %imhist (i_red)
-    %set (hFigure, 'ToolBar', 'none');
+	%hFigure = figure(4);
+        %imhist (i_red)
+        %set (hFigure, 'ToolBar', 'none');
 	%title (sprintf('Histograma del canal R en la imagen %d', index))
 	%axis tight
-	
-	hFigure = figure(5); 
-    imshow (i_green)
-    set (hFigure, 'ToolBar', 'none');
+
+	hFigure = figure(5);
+        imshow (i_green)
+        set (hFigure, 'ToolBar', 'none');
 	title (sprintf('Canal G de la imagen %d', index))
 
-	%hFigure = figure(6); 
-    %imhist (i_green)
-    %set (hFigure, 'ToolBar', 'none');
+	%hFigure = figure(6);
+        %imhist (i_green)
+        %set (hFigure, 'ToolBar', 'none');
 	%title (sprintf('Histograma del canal G en la imagen %d', index))
 	%axis tight
-	
+
 	%hFigure = figure(7);
-    %imshow (i_blue)
-    %set (hFigure, 'ToolBar', 'none');
+        %imshow (i_blue)
+        %set (hFigure, 'ToolBar', 'none');
 	%title (sprintf('Canal B de la imagen %d', index))
 
-	%hFigure = figure(8); 
-    %imhist (i_blue)
-    %set (hFigure, 'ToolBar', 'none');
+	%hFigure = figure(8);
+        %imhist (i_blue)
+        %set (hFigure, 'ToolBar', 'none');
 	%title (sprintf('Histograma del canal B en la imagen %d', index))
 	%axis tight
-	
+
 	pause
 end
