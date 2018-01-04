@@ -35,16 +35,20 @@ for index = [1:20]
 	% Según http://ieeexplore.ieee.org/document/6428782/?part=1 el canal verde
 	% es especialmente apropiado
 
-	% Se utiliza una expansión de histograma para aumentar el contraste
+	% Se utiliza una ecualización del histograma para aumentar el contraste
 	i = histeq(i);
 	i_red = histeq(i_red);
 	i_green = histeq(i_green);
 	i_blue = histeq(i_blue);
 
-        level = graythresh(i_green);
-        binary_image = imbinarize(i_green,level);
+        levels = multithresh(i_green, 9);
+        seg_I = imquantize(i_green,levels);
+        result = label2rgb(seg_I);
         figure (9)
-        imshowpair(i_green,binary_image,'montage')
+        imshowpair(i_green,result,'montage')
+        str = horzcat ('Canal G de la imagen %d ecualizado (izq) y tras ', ...
+                'segmentación multinivel (der)');
+	title (sprintf(str, index))
 
 	% Muestra imágenes e histogramas
 	%hFigure = figure(1);
