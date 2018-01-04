@@ -41,35 +41,10 @@ for index = [1:20]
 	i_green = histeq(i_green);
 	i_blue = histeq(i_blue);
 
-    % Determinar un umbral global para el canal G de la imagen (tema 5, pag. 16)
-    % Se hacen varias pruebas con distintos valores de T0 y T:
-    % |  T0  |  T  | T inicial = 100   | T0  |  T  | T inicial 40
-    % | 20   | 116 |                   | 20  | 124 |
-    % | 2    | 131 |                   | 2   | 131 |
-    % | 0.2  | 131 |                   | 0.2 | 131 |
-    % | 0.02 | 131 |
-    T0 = 0.2;
-    T = 40;
-
-    p = i_green(i_green<T);
-    u1 = mean (p);
-    p = i_green(i_green>=T);
-    u2 = mean (p);
-    T_old = T;
-    T = 0.5 * (u1+u2);
-
-    while (abs(T_old - T) >= T0)
-        p = i_green(i_green<T);
-        u1 = mean (p);
-        p = i_green(i_green>=T);
-        u2 = mean (p);
-        T_old = T;
-        T = 0.5 * (u1+u2);
-    end
-	sprintf('Umbral final: %d', T)
-
-    i_green(i_green<T) = 0;
-    i_green(i_green>=T) = 255;
+        level = graythresh(i_green);
+        binary_image = imbinarize(i_green,level);
+        figure (9)
+        imshowpair(i_green,binary_image,'montage')
 
 	% Muestra imágenes e histogramas
 	%hFigure = figure(1);
@@ -94,10 +69,10 @@ for index = [1:20]
 	%title (sprintf('Histograma del canal R en la imagen %d', index))
 	%axis tight
 
-	hFigure = figure(5);
-        imshow (i_green)
-        set (hFigure, 'ToolBar', 'none');
-	title (sprintf('Canal G de la imagen %d', index))
+	%hFigure = figure(5);
+        %imshow (i_green)
+        %set (hFigure, 'ToolBar', 'none');
+	%title (sprintf('Canal G de la imagen %d', index))
 
 	%hFigure = figure(6);
         %imhist (i_green)
