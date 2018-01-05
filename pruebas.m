@@ -1,16 +1,16 @@
 clc
 clear
 
-for index = [1:20]
+for index = [1:5]
 	% Lectura de la imagen
 	imagenPath = strcat('imagenes\retinografia-', int2str(index), '.jpg');
-	i = imread (imagenPath);
+	i_orig = imread (imagenPath);
 	disp(sprintf('[pruebas] leída imagen %d', index))
 
 	% Información separada de los canales RGB
-	i_red = i(:,:,1);
-	i_green = i(:,:,2);
-	i_blue = i(:,:,3);
+	i_red = i_orig(:,:,1);
+	i_green = i_orig(:,:,2);
+	i_blue = i_orig(:,:,3);
 
 	% Convierte la imagen a escala de grises
 	% Según la documentación, 'help rgb2gray', se aplica:
@@ -18,7 +18,7 @@ for index = [1:20]
 	%    sum of the R, G, and B components:
 	%
 	%    0.2989 * R + 0.5870 * G + 0.1140 * B
-	i = rgb2gray (i);
+	i = rgb2gray (i_orig);
 
 	% Tamaño de la imagen
 	[r c] = size (i);
@@ -31,24 +31,37 @@ for index = [1:20]
 	i_green (i_green<=10) = 0;
 	i_blue (i_blue<=10) = 0;
 
-	% Se busca aumentar el contraste para poder descartar las venas
-	% Según http://ieeexplore.ieee.org/document/6428782/?part=1 el canal verde
-	% es especialmente apropiado
-
 	% Se utiliza una ecualización del histograma para aumentar el contraste
 	i = histeq(i);
 	i_red = histeq(i_red);
 	i_green = histeq(i_green);
 	i_blue = histeq(i_blue);
 
+        % Se reduce la información de la imagen mediante la segmentación 
+        % previa por el método de Otsu multinivel
         levels = multithresh(i_green, 9);
         seg_I = imquantize(i_green,levels);
-        result = label2rgb(seg_I);
-        figure (9)
-        imshowpair(i_green,result,'montage')
-        str = horzcat ('Canal G de la imagen %d ecualizado (izq) y tras ', ...
-                'segmentación multinivel (der)');
-	title (sprintf(str, index))
+        figure(9)
+        pos = find (not(eq(seg_I,  10)));
+        otsu_multi_level = i;
+        otsu_multi_level(pos) = 0;
+
+        imshow(otsu_multi_level)
+
+        %se = strel('square', 3);
+        %erosionada = imerode(i_green,se);
+        %se = strel('sphere', 15);
+        %dilatada = imdilate(erosionada,se);
+
+
+	disp(sprintf('[pruebas] imagen %d procesada', index))
+
+        %result = label2rgb(seg_I);
+        %figure (9)
+        %imshowpair(i_green,result,'montage')
+        %str = horzcat ('Canal G de la imagen %d ecualizado (izq) y tras ', ...
+        %        'segmentación multinivel (der)');
+	%title (sprintf(str, index))
 
 	% Muestra imágenes e histogramas
 	%hFigure = figure(1);
