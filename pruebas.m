@@ -31,28 +31,36 @@ for index = [1:5]
 	i_green (i_green<=10) = 0;
 	i_blue (i_blue<=10) = 0;
 
+        % Suavizado con un filtro de medias
+        filter = fspecial ('average', [5 5]);
+        i_green = imfilter (i_green, filter, 'replicate', 'same');
+
 	% Se utiliza una ecualización del histograma para aumentar el contraste
-	i = histeq(i);
-	i_red = histeq(i_red);
 	i_green = histeq(i_green);
-	i_blue = histeq(i_blue);
 
         % Se reduce la información de la imagen mediante la segmentación 
         % previa por el método de Otsu multinivel
         levels = multithresh(i_green, 9);
         seg_I = imquantize(i_green,levels);
-        figure(9)
-        pos = find (not(eq(seg_I,  10)));
-        otsu_multi_level = i;
-        otsu_multi_level(pos) = 0;
+        result = label2rgb(seg_I);
 
-        imshow(otsu_multi_level)
+        figure (9)
+        imshowpair(i_green,result,'montage')
+        str = horzcat ('Canal G de la imagen %d ecualizado (izq), tras ', ...
+                'segmentación multinivel (der) y filtrado de medias previo 25x25');
+        title (sprintf(str, index))
+
+        % Se descarta la información que no pertenece al umbral de interés
+        %pos = find (not(eq(seg_I,  10)));
+        %otsu_multi_level = i;
+        %otsu_multi_level(pos) = 0;
+
+        %imshow(otsu_multi_level)
 
         %se = strel('square', 3);
         %erosionada = imerode(i_green,se);
         %se = strel('sphere', 15);
         %dilatada = imdilate(erosionada,se);
-
 
 	disp(sprintf('[pruebas] imagen %d procesada', index))
 
