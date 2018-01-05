@@ -31,8 +31,8 @@ for index = [1:5]
 	i_green (i_green<=10) = 0;
 	i_blue (i_blue<=10) = 0;
 
-        % Suavizado con un filtro de medias
-        filter = fspecial ('average', [25 25]);
+        % Suavizado con un filtro Gaussiano
+        filter = fspecial ('gaussian', 3, 4);
         i_green = imfilter (i_green, filter, 'replicate', 'same');
 
 	% Se utiliza una ecualización del histograma para aumentar el contraste
@@ -46,8 +46,8 @@ for index = [1:5]
 
         figure (9)
         imshowpair(i_green,result,'montage')
-        str = horzcat ('Canal G de la imagen %d ecualizado (izq), tras ', ...
-                'segmentación multinivel (der) y filtrado de medias previo 25x25');
+        str = horzcat ('Canal G de la imagen %d ecualizado (izq), con ', ...
+                'segmentación multinivel (der) y un Gaussiano tamaño 3 y sigma 4');
         title (sprintf(str, index))
 
         % Se descarta la información que no pertenece al umbral de interés
