@@ -32,7 +32,7 @@ for index = [1:5]
 	i_blue (i_blue<=10) = 0;
 
         % Suavizado con un filtro de medias
-        filter = fspecial ('average', [5 5]);
+        filter = fspecial ('average', [25 25]);
         i_green = imfilter (i_green, filter, 'replicate', 'same');
 
 	% Se utiliza una ecualización del histograma para aumentar el contraste
