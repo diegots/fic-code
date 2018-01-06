@@ -44,32 +44,25 @@ for index = [1:5]
         seg_I = imquantize(i_green,levels);
         result = label2rgb(seg_I);
 
-        figure (9)
-        imshowpair(i_green,result,'montage')
-        str = horzcat ('Canal G de la imagen %d ecualizado (izq), con ', ...
-                'segmentación multinivel (der) y un Gaussiano tamaño 3 y sigma 4');
-        title (sprintf(str, index))
-
         % Se descarta la información que no pertenece al umbral de interés
-        %pos = find (not(eq(seg_I,  10)));
-        %otsu_multi_level = i;
-        %otsu_multi_level(pos) = 0;
+        pos = find (not(eq(seg_I,  10)));
+        otsu_multi_level = i;
+        otsu_multi_level(pos) = 0;
 
         %imshow(otsu_multi_level)
 
-        %se = strel('square', 3);
-        %erosionada = imerode(i_green,se);
-        %se = strel('sphere', 15);
-        %dilatada = imdilate(erosionada,se);
+        se = strel('square', 3);
+        erosionada = imerode(otsu_multi_level,se);
+        se = strel('octagon', 6);
+        dilatada = imdilate(erosionada,se);
+
+        figure (9)
+        imshowpair(otsu_multi_level,dilatada,'montage')
+        str = horzcat ('Imagen %d con Otsu multinivel (izq), tras erosión', ...
+                ' y dilatación (der)');
+	title (sprintf(str, index))
 
 	disp(sprintf('[pruebas] imagen %d procesada', index))
-
-        %result = label2rgb(seg_I);
-        %figure (9)
-        %imshowpair(i_green,result,'montage')
-        %str = horzcat ('Canal G de la imagen %d ecualizado (izq) y tras ', ...
-        %        'segmentación multinivel (der)');
-	%title (sprintf(str, index))
 
 	% Muestra imágenes e histogramas
 	%hFigure = figure(1);
