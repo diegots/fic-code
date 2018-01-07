@@ -1,7 +1,7 @@
 clc
 clear
 
-for index = [1:5]
+for index = [5:5]
 	% Lectura de la imagen
 	imagenPath = strcat('imagenes\retinografia-', int2str(index), '.jpg');
 	i_orig = imread (imagenPath);
@@ -36,6 +36,7 @@ for index = [1:5]
         i_green = imfilter (i_green, filter, 'replicate', 'same');
 
 	% Se utiliza una ecualización del histograma para aumentar el contraste
+	i = histeq(i);
 	i_green = histeq(i_green);
 
         % Se reduce la información de la imagen mediante la segmentación 
@@ -51,63 +52,30 @@ for index = [1:5]
 
         %imshow(otsu_multi_level)
 
+        % Erosión seguida de dilatación con distinto EE
         se = strel('square', 3);
         erosionada = imerode(otsu_multi_level,se);
         se = strel('octagon', 6);
         dilatada = imdilate(erosionada,se);
 
-        figure (9)
-        imshowpair(otsu_multi_level,dilatada,'montage')
-        str = horzcat ('Imagen %d con Otsu multinivel (izq), tras erosión', ...
-                ' y dilatación (der)');
+        %Algoritmo de Hough para detectar círculos
+        % Tamaño del radio obtenido: 180 píxeles.
+        % Métodos PhaseCode y TwoStage
+        [centers, radii, metric] = imfindcircles(i, [175 195],...
+                'Sensitivity',0.99, ...
+                'Method','PhaseCode', ... 
+                'EdgeThreshold',0.1);
+        [r,c] = size (centers);
+        centersStrong5 = centers(1:r,:);
+        radiiStrong5 = radii(1:r);
+        imshow (i)
+        viscircles(centersStrong5, radiiStrong5,'EdgeColor','b');
+
+        %imshowpair(otsu_multi_level,dilatada,'montage')
+        str = horzcat ('Imagen %d con ecualización y Hough PhaseCode');
 	title (sprintf(str, index))
 
 	disp(sprintf('[pruebas] imagen %d procesada', index))
-
-	% Muestra imágenes e histogramas
-	%hFigure = figure(1);
-        %imshow(i)
-        %set (hFigure, 'ToolBar', 'none');
-	%title (sprintf('Imagen %d', index))
-
-	%hFigure = figure(2);
-        %imhist (i)
-        %set (hFigure, 'ToolBar', 'none');
-	%title (sprintf('Histograma de la imagen %d', index))
-	%axis tight
-
-	%hFigure = figure(3);
-        %imshow (i_red)
-        %set (hFigure, 'ToolBar', 'none');
-	%title (sprintf('Canal R de la imagen %d', index))
-
-	%hFigure = figure(4);
-        %imhist (i_red)
-        %set (hFigure, 'ToolBar', 'none');
-	%title (sprintf('Histograma del canal R en la imagen %d', index))
-	%axis tight
-
-	%hFigure = figure(5);
-        %imshow (i_green)
-        %set (hFigure, 'ToolBar', 'none');
-	%title (sprintf('Canal G de la imagen %d', index))
-
-	%hFigure = figure(6);
-        %imhist (i_green)
-        %set (hFigure, 'ToolBar', 'none');
-	%title (sprintf('Histograma del canal G en la imagen %d', index))
-	%axis tight
-
-	%hFigure = figure(7);
-        %imshow (i_blue)
-        %set (hFigure, 'ToolBar', 'none');
-	%title (sprintf('Canal B de la imagen %d', index))
-
-	%hFigure = figure(8);
-        %imhist (i_blue)
-        %set (hFigure, 'ToolBar', 'none');
-	%title (sprintf('Histograma del canal B en la imagen %d', index))
-	%axis tight
 
 	pause
 end
