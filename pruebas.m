@@ -11,7 +11,10 @@ for index = [1:20]
 	disp(sprintf('[pruebas] leída imagen %d', index))
 
 	% Tamaño de la imagen
-	[r c] = size (i_orig);
+	[r c, ~] = size (i_orig);
+        centro = r/2
+        mayor_r = r
+        menor_r = 1
 
 	% Información separada de los canales RGB
 	i_red = i_orig(:,:,1);
@@ -63,9 +66,9 @@ for index = [1:20]
         % Erosión  con EE de tipo disco
         se = strel('disk', 15, 8);
         erosionada = imerode(otsu_multi_level,se);
-        %figure (4)
-        %imshow (erosionada)
-        %title  (sprintf('Imagen %d erosionada', index))
+        figure (4)
+        imshow (erosionada)
+        title  (sprintf('Imagen %d erosionada', index))
 
         % Componentes conexas de la imagen binaria generada tras la erosión
         [componentes, NUM] = bwlabel (erosionada);
@@ -75,10 +78,32 @@ for index = [1:20]
         num_px = 0;
         good_label = 0;
         for label = 1:NUM
-            n = numel (componentes (componentes == label));
-            if (n > num_px)
+
+            [r_,c_] = ind2sub (size(i), find (componentes == label));
+            max_ = max (r_)
+            min_ = min (r_)
+
+            n = numel (componentes (componentes == label))
+            if (max_ > centro & min_ > centro) % mitad inferior de la imagen
+                if (min_ < menor_r & n > num_px)
+                    good_label = label;
+                    num_px = n;
+                    menor_r = min_;
+                else
+                    disp(sprintf ('[pruebas] no cumple (mitad inferior)!'))
+                end
+            elseif  (max_ < centro & min_ < centro) % mitad superior de la imagen
+                if (max_ < mayor_r & n > num_px)
+                    good_label = label;
+                    num_px = n;
+                    mayor_r = max_;
+                else
+                    disp(sprintf ('[pruebas] no cumple (mitad superior)!'))
+                end
+            else
                 good_label = label;
-                num_px = n;
+                disp(sprintf ('[pruebas] sobre el centro!'))
+                break;
             end
         end
         componentes (not (componentes == good_label)) = 0;
