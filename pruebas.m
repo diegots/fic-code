@@ -1,11 +1,17 @@
 clc
 clear
 
-for index = [5:5]
+for index = [1:20]
 	% Lectura de la imagen
-	imagenPath = strcat('imagenes\retinografia-', int2str(index), '.jpg');
+	imagenPath = strcat('imagenes\retinografia-rec-', int2str(index), '.jpg');
 	i_orig = imread (imagenPath);
+        %figure (1)
+        %imshow(i_orig)
+        %title  (sprintf('Imagen %d original', index))
 	disp(sprintf('[pruebas] leída imagen %d', index))
+
+	% Tamaño de la imagen
+	[r c] = size (i_orig);
 
 	% Información separada de los canales RGB
 	i_red = i_orig(:,:,1);
@@ -20,9 +26,6 @@ for index = [5:5]
 	%    0.2989 * R + 0.5870 * G + 0.1140 * B
 	i = rgb2gray (i_orig);
 
-	% Tamaño de la imagen
-	[r c] = size (i);
-
 	% Descarta valores oscuros que pertenecen al marco negro de la imagen. Los
 	% demás píxeles de la imagen se ponen a la intensidad máxima para comprobar
 	% visualmente si se pierde información en la zona de trabajo.
@@ -32,56 +35,62 @@ for index = [5:5]
 	i_blue (i_blue<=10) = 0;
 
         % Suavizado con un filtro Gaussiano
-        filter = fspecial ('gaussian', 3, 4);
+        filter = fspecial ('gaussian', 11, 15);
         i_green = imfilter (i_green, filter, 'replicate', 'same');
 
 	% Se utiliza una ecualización del histograma para aumentar el contraste
-	i = histeq(i);
-	i_red= histeq(i_red);
+        % pero sólo en el canal G, que es el que ofrece más contraste de 
+        % forma natural
 	i_green = histeq(i_green);
-	i_blue = histeq(i_blue);
-
-        figure (1)
-        imhist (i_red)
-        title (sprintf('Histograma del canal R imagen %d'))
 
         % Se reduce la información de la imagen mediante la segmentación 
         % previa por el método de Otsu multinivel
-        levels = multithresh(i_green, 9);
+        levels = multithresh(i_green, 19);
         seg_I = imquantize(i_green,levels);
         result = label2rgb(seg_I);
+        %figure (2)
+        %imshow(result)
+        %title  (sprintf('Imagen %d tras aplicar Otsu multinivel', index))
 
-        % Se descarta la información que no pertenece al umbral de interés
-        pos = find (not(eq(seg_I,  10)));
-        otsu_multi_level = i;
-        otsu_multi_level(pos) = 0;
-
+        % Se descarta la información que no pertenece al umbral de interés 
+        % dado por Otsu
+        pos = find (eq(seg_I,  20));
+        otsu_multi_level = zeros (r,c);
+        otsu_multi_level(pos) = i(pos);
+        %figure (3)
         %imshow(otsu_multi_level)
 
-        % Erosión seguida de dilatación con distinto EE
-        se = strel('square', 3);
+        % Erosión  con EE de tipo disco
+        se = strel('disk', 15, 8);
         erosionada = imerode(otsu_multi_level,se);
-        se = strel('octagon', 6);
-        dilatada = imdilate(erosionada,se);
+        %figure (4)
+        %imshow (erosionada)
+        %title  (sprintf('Imagen %d erosionada', index))
 
-        %Algoritmo de Hough para detectar círculos
-        % Tamaño del radio obtenido: 180 píxeles.
-        % Métodos PhaseCode y TwoStage
-        [centers, radii, metric] = imfindcircles(i, [175 195],...
-                'Sensitivity',0.99, ...
-                'Method','PhaseCode', ... 
-                'EdgeThreshold',0.1);
-        [r,c] = size (centers);
-        centersStrong5 = centers(1:r,:);
-        radiiStrong5 = radii(1:r);
-        %imshow (i)
-        %viscircles(centersStrong5, radiiStrong5,'EdgeColor','b');
+        % Componentes conexas de la imagen binaria generada tras la erosión
+        [componentes, NUM] = bwlabel (erosionada);
 
-        %imshowpair(otsu_multi_level,dilatada,'montage')
-        %str = horzcat ('Imagen %d con ecualización y Hough PhaseCode');
-	%title (sprintf(str, index))
+        % Se busca la región de más area, que es la que tendrá el disco 
+        % óptico
+        num_px = 0;
+        good_label = 0;
+        for label = 1:NUM
+            n = numel (componentes (componentes == label));
+            if (n > num_px)
+                good_label = label;
+                num_px = n;
+            end
+        end
+        componentes (not (componentes == good_label)) = 0;
+        %figure (5)
+        %imshow (componentes)
+
+        % Se muestra en negro la zona seleccionada sobre la imagen original
+        i(find (componentes)) = 0;
+        figure (7)
+        imshow (i)
+        title (sprintf('Imagen %d con la zona reconocida como dísco óptico', index))
 
 	disp(sprintf('[pruebas] imagen %d procesada', index))
-
 	pause
 end
