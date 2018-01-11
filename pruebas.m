@@ -37,7 +37,13 @@ for index = [5:5]
 
 	% Se utiliza una ecualización del histograma para aumentar el contraste
 	i = histeq(i);
+	i_red= histeq(i_red);
 	i_green = histeq(i_green);
+	i_blue = histeq(i_blue);
+
+        figure (1)
+        imhist (i_red)
+        title (sprintf('Histograma del canal R imagen %d'))
 
         % Se reduce la información de la imagen mediante la segmentación 
         % previa por el método de Otsu multinivel
@@ -68,12 +74,12 @@ for index = [5:5]
         [r,c] = size (centers);
         centersStrong5 = centers(1:r,:);
         radiiStrong5 = radii(1:r);
-        imshow (i)
-        viscircles(centersStrong5, radiiStrong5,'EdgeColor','b');
+        %imshow (i)
+        %viscircles(centersStrong5, radiiStrong5,'EdgeColor','b');
 
         %imshowpair(otsu_multi_level,dilatada,'montage')
-        str = horzcat ('Imagen %d con ecualización y Hough PhaseCode');
-	title (sprintf(str, index))
+        %str = horzcat ('Imagen %d con ecualización y Hough PhaseCode');
+	%title (sprintf(str, index))
 
 	disp(sprintf('[pruebas] imagen %d procesada', index))
 
