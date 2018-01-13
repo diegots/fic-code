@@ -11,7 +11,7 @@ for index = [1:20]
 	disp(sprintf('[pruebas] leída imagen %d', index))
 
 	% Tamaño de la imagen
-	[r c, ~] = size (i_orig);
+	[r c, ~] = size (i_orig)
         centro = r/2;
         mayor_r = r;
         menor_r = 1;
@@ -115,10 +115,58 @@ for index = [1:20]
         %imshow (componentes)
 
         % Se muestra en negro la zona seleccionada sobre la imagen original
-        i(find (componentes)) = 0;
-        figure (7)
+        %i(find (componentes)) = 0;
+        %figure (7)
+        %imshow (i)
+        %title (sprintf('Imagen %d con la zona reconocida como dísco óptico', index))
+
+        % Región de la imagen a tratar
+        new_i = uint8 ((zeros (r,c)));
+        new_i (find (componentes)) = i(find (componentes));
+        %figure(8)
+        %imshow (new_i)
+        %title (sprintf('Imagen %d con la zona reconocida como dísco óptico', index))
+
+        % Ahora se quiere buscar la región de mayor area y que tenga mayor 
+        % intensidad. Se utiliza bwlabel para buscar componentes conexas por
+        % intensidades. Pero una búsqueda muestra que para cada intensidad en
+        % todas las imágenes sólo hay una componente conexa, lo que simplifica
+        % las cosas ya que no hay que escoger entre dos areas de igual 
+        % intensidad.
+        max_ = max (max (new_i));
+        count = 1;
+        counts = zeros (max_ - min_, 2);
+        for intensity = max_:-1:1 
+            counts (count, 1) = intensity; % intensidad
+            counts (count, 2) = numel (new_i (new_i == intensity)); % numero px
+            
+            [componentes, NUM] = bwlabel (new_i (new_i == intensity));
+            if (NUM > 1)
+                disp(sprintf('Intensidad con más de un área conexa!'))
+                pause
+            end
+            count = count + 1;
+        end
+
+        m = counts (1:5, :); % 5 máximas intensidades y nº px.
+        max_area = max ( m (:,2) ); % nº px. con mayor intensidad
+        for j = 1:size (m,1) % nº filas matriz m
+            if (m(j,2) == max_area) 
+                disp(sprintf('[pruebas] max intensity position (%d)', j))
+                new_i (new_i == m(j,1)) = 255;
+                break;
+            end
+        end 
+
+        [y x] = ind2sub (size(i), find (new_i == 255));
+        radii = repmat ([40], size([y, x],1),1);
+        figure(9)
+        imshow (new_i)
+        viscircles([x, y], radii,'EdgeColor','b');
+
+        figure(10)
         imshow (i)
-        title (sprintf('Imagen %d con la zona reconocida como dísco óptico', index))
+        viscircles([x, y], radii,'EdgeColor','b');
 
 	disp(sprintf('[pruebas] imagen %d procesada', index))
 	pause
