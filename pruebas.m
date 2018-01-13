@@ -12,9 +12,9 @@ for index = [1:20]
 
 	% Tamaño de la imagen
 	[r c, ~] = size (i_orig);
-        centro = r/2
-        mayor_r = r
-        menor_r = 1
+        centro = r/2;
+        mayor_r = r;
+        menor_r = 1;
 
 	% Información separada de los canales RGB
 	i_red = i_orig(:,:,1);
@@ -66,24 +66,26 @@ for index = [1:20]
         % Erosión  con EE de tipo disco
         se = strel('disk', 15, 8);
         erosionada = imerode(otsu_multi_level,se);
-        figure (4)
-        imshow (erosionada)
-        title  (sprintf('Imagen %d erosionada', index))
+        %figure (4)
+        %imshow (erosionada)
+        %title  (sprintf('Imagen %d erosionada', index))
 
         % Componentes conexas de la imagen binaria generada tras la erosión
         [componentes, NUM] = bwlabel (erosionada);
 
-        % Se busca la región de más area, que es la que tendrá el disco 
-        % óptico
+        % Se emplean dos propiedades de las imágenes para localizar la
+        % componente conexa correcta después de la erosión.
+        % - La más cercana al centro del eje Y en la imagen
+        % - Aquella región que sea más grande
         num_px = 0;
         good_label = 0;
         for label = 1:NUM
 
             [r_,c_] = ind2sub (size(i), find (componentes == label));
-            max_ = max (r_)
-            min_ = min (r_)
+            max_ = max (r_);
+            min_ = min (r_);
 
-            n = numel (componentes (componentes == label))
+            n = numel (componentes (componentes == label));
             if (max_ > centro & min_ > centro) % mitad inferior de la imagen
                 if (min_ < menor_r & n > num_px)
                     good_label = label;
@@ -106,6 +108,8 @@ for index = [1:20]
                 break;
             end
         end
+
+        % Descarta las componentes no seleccionadas
         componentes (not (componentes == good_label)) = 0;
         %figure (5)
         %imshow (componentes)
