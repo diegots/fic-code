@@ -148,6 +148,8 @@ for index = [1:20]
             count = count + 1;
         end
 
+        % Selecciona todos los px con las intensidades escogidas y pinta los
+        % circulos sobre ellas
         m = counts (1:5, :); % 5 máximas intensidades y nº px.
         max_area = max ( m (:,2) ); % nº px. con mayor intensidad
         for j = 1:size (m,1) % nº filas matriz m
@@ -158,15 +160,28 @@ for index = [1:20]
             end
         end 
 
+        %figure(9)
+        %imshow (new_i)
         [y x] = ind2sub (size(i), find (new_i == 255));
-        radii = repmat ([40], size([y, x],1),1);
-        figure(9)
-        imshow (new_i)
-        viscircles([x, y], radii,'EdgeColor','b');
+        %radii = repmat ([40], size([y, x],1),1);
+        %viscircles([x, y], radii,'EdgeColor','b');
+        %title (sprintf('Area de la imagen %d con los todos los centros', index))
 
-        figure(10)
-        imshow (i)
-        viscircles([x, y], radii,'EdgeColor','b');
+        %figure(10)
+        %imshow (i)
+        %viscircles([x, y], radii,'EdgeColor','b');
+        %title (sprintf('Imagen %d completa con los todos los centros', index))
+
+        % Selecciona un caditato. Si el DO se encuentra en la parte derecha de
+        % la imagen se escoge un px. el candidato más a la izquierda, al 
+        % contrario en la parte derecha
+        x_ = x (x==min(x))
+        y_ = y (x==min(x))
+
+        figure(11)
+        imshow (i_orig)
+        viscircles([x_(1), y_(1)], 40,'EdgeColor','b');
+        title (sprintf('Imagen %d con el disco óptico encontrado', index))
 
 	disp(sprintf('[pruebas] imagen %d procesada', index))
 	pause
