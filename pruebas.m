@@ -1,6 +1,7 @@
 clc
 clear
 
+accuracies = 0;
 for index = [1:20]
 	% Lectura de la imagen
 	imagenPath = strcat('imagenes\retinografia-rec-', int2str(index), '.jpg');
@@ -11,7 +12,7 @@ for index = [1:20]
 	disp(sprintf('[pruebas] leída imagen %d', index))
 
 	% Tamaño de la imagen
-	[r c, ~] = size (i_orig)
+	[r c, ~] = size (i_orig);
         centro = r/2;
         mayor_r = r;
         menor_r = 1;
@@ -175,14 +176,46 @@ for index = [1:20]
         % Selecciona un caditato. Si el DO se encuentra en la parte derecha de
         % la imagen se escoge un px. el candidato más a la izquierda, al 
         % contrario en la parte derecha
-        x_ = x (x==min(x))
-        y_ = y (x==min(x))
+        x_ = x (x==min(x));
+        y_ = y (x==min(x));
 
-        figure(11)
-        imshow (i_orig)
-        viscircles([x_(1), y_(1)], 40,'EdgeColor','b');
-        title (sprintf('Imagen %d con el disco óptico encontrado', index))
+        %H = figure(11);
+        %imshow (i_orig)
+        %viscircles([x_(1), y_(1)], 40,'EdgeColor','b');
+        %title (sprintf('Imagen %d con el disco óptico localizado', index))
+
+        % Alternativa para pintar los círculos
+        %rectangle ('Position', [-40+x_(1) -40+y_(1) 80 80], ...
+        %        'Curvature', [1 1], ...
+        %        'FaceColor', [1 1 1], ...
+        %        'EdgeColor', 'w', ...
+        %        'LineWidth', 2)
+
+
+        mask = createCirclesMask(i, [x_ y_], 40);
+        %[predicted_group, NUM] = bwlabel (mask);
+
+        %H = figure(12);
+        %imshow (i_orig)
+        %imshow (mask)
+
+	imagenPath = strcat('imagenes\retinografia-rec-test-', int2str(index), '.jpg');
+	i_known = imread (imagenPath);
+	i_known = rgb2gray (i_known);
+        tmp = logical (zeros (r,c));
+        tmp (find (i_known)) = 1;
+
+        predicted_group = mask (1:end);
+        known_group = tmp (1:end);
+        
+        [C,order] = ...
+            confusionmat(known_group, predicted_group); % known and predicted groups
+
+        accuracy = (C(1) + C(4)) / (C(1) + C(2) + C(3) + C(4))
+        accuracies = accuracies + accuracy;
 
 	disp(sprintf('[pruebas] imagen %d procesada', index))
-	pause
+	%pause
 end
+
+disp(sprintf('Precisión promedio %d', accuracies / 20))
