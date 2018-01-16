@@ -7,6 +7,10 @@ https://github.com/diegots/fic-va-retinografia
 
 El código principal está en el fichero altoritmo-deteccion.m
 
+La memoria mostrada en la defensa se encuentra disponible en:
+https://docs.google.com/document/d/1CTX7rcBk5FNtvy1y3wR-OWE_DPKVxc2wqgJTYXF5j1k/edit?usp=sharing
+además del fichero Memoria.pdf
+
 El dataset DRIVE para las pruebas con el paper "Optic disc localization in 
 retinal images using histogram matching", fue descargado de:
 https://www.isi.uu.nl/Research/Databases/DRIVE/index.html
