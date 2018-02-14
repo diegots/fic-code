@@ -1,4 +1,4 @@
-package com.company.recommender;
+package com.company;
 
 import java.util.*;
 

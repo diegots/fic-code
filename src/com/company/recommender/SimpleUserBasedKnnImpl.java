@@ -1,5 +1,7 @@
 package com.company.recommender;
 
+import com.company.Util;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
