@@ -1,13 +1,14 @@
 package com.company.recommender;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class UserSimilarity {
 
     private int userId;
 
     // Similarities between userId and every other user
-    private HashMap<Integer, Double> similarities; // HashMap <NeighborId, Similarity>
+    private Map<Integer, Double> similarities; // HashMap <NeighborId, Similarity>
 
 
     public UserSimilarity(Integer userId) {
@@ -27,7 +28,7 @@ public class UserSimilarity {
     }
 
 
-    public void setSimilarities(HashMap<Integer, Double> similarities) {
+    public void setSimilarities(Map<Integer, Double> similarities) {
         this.similarities = similarities;
     }
 
