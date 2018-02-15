@@ -1,4 +1,4 @@
-package simpleknnrecommender;
+package main;
 
 public class Main {
 
