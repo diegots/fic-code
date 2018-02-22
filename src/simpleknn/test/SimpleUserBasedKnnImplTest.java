@@ -1,8 +1,8 @@
-package test.recommender;
+package simpleknn.test.recommender;
 
 import org.junit.jupiter.api.Assertions;
-import recommender.SimpleUserBasedKnn;
-import recommender.SimpleUserBasedKnnImpl;
+import simpleknn.recommender.SimpleUserBasedKnn;
+import simpleknn.recommender.SimpleUserBasedKnnImpl;
 
 import java.util.Collections;
 import java.util.List;

@@ -1,4 +1,4 @@
-package recommender;
+package simpleknn.recommender;
 
 
 import java.util.HashMap;

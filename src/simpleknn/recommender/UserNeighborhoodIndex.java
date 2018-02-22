@@ -1,7 +1,7 @@
-package recommender;
+package simpleknn.recommender;
 
 
-import main.Util;
+import simpleknn.util.Util;
 
 import java.util.*;
 
@@ -57,8 +57,6 @@ public class UserNeighborhoodIndex {
 
     public List<Integer> getUserNeighborhood (int user, int k) {
 
-
-
         // In order to obtain user neighborhood, similarity between current user and all other user is needed.
         Map<Integer, Double> userSimilarities;
 
@@ -72,14 +70,12 @@ public class UserNeighborhoodIndex {
             usersSimilarities.put(user, u); // Save user similarities
         }
 
-        // Util.sortMapByValue
-//        userSimilarities
         userSimilarities = Util.sortMapByValue(userSimilarities);
         List<Integer> keys = new ArrayList(userSimilarities.keySet());
         List<Integer> userNeighborhood = new ArrayList<>();
 
         for (int i=keys.size()-1; i>keys.size()-1-k; i--) {
-            System.err.println("Neighbor: " + keys.get(i) + ", similarity: " + userSimilarities.get(keys.get(i)));
+//            System.err.println("Neighbor: " + keys.get(i) + ", similarity: " + userSimilarities.get(keys.get(i)));
             userNeighborhood.add(keys.get(i));
         }
 

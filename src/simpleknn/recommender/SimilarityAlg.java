@@ -1,4 +1,4 @@
-package recommender;
+package simpleknn.recommender;
 
 abstract public class SimilarityAlg {
 

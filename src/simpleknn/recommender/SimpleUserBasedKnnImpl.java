@@ -1,6 +1,7 @@
-package recommender;
+package simpleknn.recommender;
 
-import main.Util;
+import simpleknn.Controller;
+import simpleknn.util.Util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,9 +14,10 @@ public class SimpleUserBasedKnnImpl implements SimpleUserBasedKnn {
     private final UserProfileIndex userProfileIndex;
     private final UserNeighborhoodIndex userNeighborhoodIndex;
     private final SimilarityAlg similarityAlg;
+    private final Controller controller;
 
 
-    public SimpleUserBasedKnnImpl(String datasetPath) {
+    public SimpleUserBasedKnnImpl(Controller controller, String datasetPath) {
         this.datasetPath = datasetPath;
 
         userProfileIndex = new UserProfileIndex();
@@ -23,11 +25,8 @@ public class SimpleUserBasedKnnImpl implements SimpleUserBasedKnn {
 
         similarityAlg = new CosineVectorSimilarityAlg(userProfileIndex);
         userNeighborhoodIndex = new UserNeighborhoodIndex(userProfileIndex, similarityAlg);
-    }
 
-
-    public String getDatasetPath() {
-        return datasetPath;
+        this.controller = controller;
     }
 
 
@@ -66,6 +65,7 @@ public class SimpleUserBasedKnnImpl implements SimpleUserBasedKnn {
         return userNeighborhoodIndex.getUserNeighborhood(user, k);
     }
 
+
     @Override
     public List<Integer> recommendedItems(int user, int n, int k) {
 
@@ -89,7 +89,7 @@ public class SimpleUserBasedKnnImpl implements SimpleUserBasedKnn {
         List<Integer> idx = new ArrayList(weights.keySet());
 
         for (int i=idx.size()-1; i>idx.size()-1-n; i--) {
-            System.err.println("i: " + i + ", idx.get(i): " + idx.get(i) + ", Weight: " + weights.get(idx.get(i)));
+//            System.err.println("i: " + i + ", idx.get(i): " + idx.get(i) + ", Weight: " + weights.get(idx.get(i)));
             recommendations.add(idx.get(i));
         }
 

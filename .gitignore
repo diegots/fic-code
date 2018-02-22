@@ -2,3 +2,6 @@
 .idea/workspace.xml
 lib/
 out/
+simple_recommender.conf
+.idea/artifacts/
+src/META-INF/

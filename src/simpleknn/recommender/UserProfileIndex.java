@@ -1,5 +1,8 @@
-package recommender;
+package simpleknn.recommender;
 
+import simpleknn.Controller;
+
+import javax.naming.ldap.Control;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -81,7 +84,7 @@ public class UserProfileIndex {
     }
 
 
-    /** buildIndex builds the User Profile Index with data read from path
+    /** Builds the User Profile Index with data read from path
      *
      * @param path
      */
@@ -96,6 +99,8 @@ public class UserProfileIndex {
         try {
             Path p = Paths.get(path);
             Files.lines(p).forEach(consumer);
+        } catch (NumberFormatException e) {
+            System.err.println(Controller.TAG + " Couldn't proccess n");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -105,7 +110,7 @@ public class UserProfileIndex {
      *
      * @param dataLine
      */
-    private void readData (String dataLine) {
+    private void readData (String dataLine) throws NumberFormatException {
         //System.err.print("[UserProfileIndex:data]\n");
 
         // Fields order in u.data

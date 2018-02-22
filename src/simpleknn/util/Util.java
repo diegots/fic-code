@@ -1,4 +1,4 @@
-package main;
+package simpleknn.util;
 
 import java.util.*;
 
