@@ -1,6 +1,7 @@
 package simpleknn.recommender;
 
 import simpleknn.Controller;
+import simpleknn.storage.Storage;
 import simpleknn.util.Util;
 
 import java.util.ArrayList;
@@ -15,20 +16,21 @@ public class SimpleUserBasedKnnImpl implements SimpleUserBasedKnn {
     private final UserNeighborhoodIndex userNeighborhoodIndex;
     private final SimilarityAlg similarityAlg;
     private final Controller controller;
+    private final Storage storage;
 
-
-    public SimpleUserBasedKnnImpl(Controller controller, String datasetPath) {
+    public SimpleUserBasedKnnImpl(Controller controller, String datasetPath, Storage storage) {
         this.datasetPath = datasetPath;
 
-        userProfileIndex = new UserProfileIndex();
+        userProfileIndex = new UserProfileIndex(storage);
         userProfileIndex.buildIndex(datasetPath);
 
         similarityAlg = new CosineVectorSimilarityAlg(userProfileIndex);
         userNeighborhoodIndex = new UserNeighborhoodIndex(userProfileIndex, similarityAlg);
 
         this.controller = controller;
-    }
+        this.storage = storage;
 
+    }
 
     @Override
     public List<Integer> getItems() {
@@ -56,7 +58,18 @@ public class SimpleUserBasedKnnImpl implements SimpleUserBasedKnn {
 
     @Override
     public Double getSimilarity(int userA, int userU) {
-        return similarityAlg.computeSimilarity(userA, userU);
+
+        Double similarityValue = storage.getSimilarity(userA, userU);
+//        System.out.println("Stored similarity "+ userA + "-"+ userU + " : " + similarityValue);
+
+        if (similarityValue < 0) {
+            similarityValue = similarityAlg.computeSimilarity(userA, userU);
+//            System.out.println("Computed similarity "+ userA + "-"+ userU + " : " + similarityValue);
+
+            storage.storeSimilarity(userA, userU, similarityValue); // Store similarity
+        }
+
+        return similarityValue;
     }
 
 
@@ -76,8 +89,9 @@ public class SimpleUserBasedKnnImpl implements SimpleUserBasedKnn {
         for (Integer item: getItems()) {
             numerator = denominator = 0.0;
             for (Integer neighbor : neighbors) {
-                numerator += getSimilarity(user, neighbor) * getRatingForItem(neighbor, item);
-                denominator += getSimilarity(user, neighbor);
+                double similarityValue = getSimilarity(user, neighbor);
+                numerator += similarityValue * getRatingForItem(neighbor, item);
+                denominator += similarityValue;
             }
             weight = numerator / denominator;
             weights.put(item, weight);

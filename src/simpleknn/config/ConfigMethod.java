@@ -6,6 +6,6 @@ import java.io.FileNotFoundException;
 import java.util.Map;
 
 public interface ConfigMethod {
-    public Map<String,String> readConfig(Object... input);
+    Map<String,String> readConfig(Object... input);
 
 }

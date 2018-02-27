@@ -4,6 +4,8 @@ import simpleknn.config.ToolConfig;
 import simpleknn.exceptions.ArgumentsException;
 import simpleknn.recommender.SimpleUserBasedKnn;
 import simpleknn.recommender.SimpleUserBasedKnnImpl;
+import simpleknn.storage.Storage;
+import simpleknn.storage.StorageFactory;
 
 import java.util.List;
 
@@ -12,14 +14,9 @@ public class Controller {
     public final static String TAG = "-> ";
     public final static String configFileName = "simple_recommender.conf";
 
-    private String dbType;
-    private String dbConnectionString;
-    private String dbEndpoint;
-    private String dbUser;
-    private String dbPasswd;
-
+    private Storage storage;
     private ToolConfig toolConfig;
-    SimpleUserBasedKnn simpleUserBasedKnn;
+    private SimpleUserBasedKnn simpleUserBasedKnn;
 
     public Controller(String [] args) {
         toolConfig = new ToolConfig(this, args);
@@ -28,42 +25,24 @@ public class Controller {
     public void setDatabaseData (
             String dbType, String dbConnectionString, String dbEndpoint, String dbUser, String dbPasswd ) {
 
-        this.dbType = dbType;
-        this.dbConnectionString = dbConnectionString;
-        this.dbEndpoint = dbEndpoint;
-        this.dbUser = dbUser;
-        this.dbPasswd = dbPasswd;
-    }
-
-    public String getDbType() {
-        return dbType;
-    }
-
-    public String getDbConnectionString() {
-        return dbConnectionString;
-    }
-
-    public String getDbEndpoint() {
-        return dbEndpoint;
-    }
-
-    public String getDbUser() {
-        return dbUser;
-    }
-
-    public String getDbPasswd() {
-        return dbPasswd;
+        storage = new StorageFactory().getStorage(dbType, dbConnectionString, dbEndpoint, dbUser, dbPasswd);
+        storage.createTables (); // Prepare storage if not created
     }
 
     public void batchProcess (String dataset, int numberRecs, int neighborSize) {
+
+        // TODO compute all users recommendations
     }
 
     public void userProcess (String dataset, int user, int numberRecs, int neighborSize) {
 
-        simpleUserBasedKnn = new SimpleUserBasedKnnImpl(this, dataset);
+        simpleUserBasedKnn = new SimpleUserBasedKnnImpl(this, dataset, storage);
 
         List<Integer> recommendations = simpleUserBasedKnn.
                 recommendedItems(user, numberRecs, neighborSize);
+
+        for (Integer i: recommendations)
+            System.out.println("Recommendation " + i);
     }
 
     public void run () {

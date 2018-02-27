@@ -57,9 +57,9 @@ public class CommandLineInput implements ConfigMethod {
 
         Map<String, String> res = new HashMap<>();
         res.put(ToolConfig.getToolOptionNames()[0], commandLine.getOptionValue("datasetPath"));
-        res.put(ToolConfig.getToolOptionNames()[1], commandLine.getOptionValue("user"));
-        res.put(ToolConfig.getToolOptionNames()[3], commandLine.getOptionValue("neighborSize"));
-        res.put(ToolConfig.getToolOptionNames()[2], commandLine.getOptionValue("numberRecs"));
+        res.put(ToolConfig.getToolOptionNames()[8], commandLine.getOptionValue("user"));
+        res.put(ToolConfig.getToolOptionNames()[6], commandLine.getOptionValue("neighborSize"));
+        res.put(ToolConfig.getToolOptionNames()[7], commandLine.getOptionValue("numberRecs"));
 
 
 //        for (String s: res.keySet())

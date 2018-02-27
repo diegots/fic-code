@@ -17,15 +17,15 @@ public class ToolConfig {
     private ConfigFactory configFactory;
 
     private final static String [] toolOptionNames = new String[] {
-            "DATASET_PATH",
-            "DB_CONNECTION_STRING",
-            "DB_ENDPOINT",
-            "DB_PASSWD",
-            "DB_TYPE",
-            "DB_USER",
-            "NEIGHBOR_SIZE",
-            "NUMBER_RECS",
-            "USER_ID"
+            "DATASET_PATH", // 0
+            "DB_CONNECTION_STRING", // 1
+            "DB_ENDPOINT", // 2
+            "DB_PASSWD", // 3
+            "DB_TYPE", // 4
+            "DB_USER", // 5
+            "NEIGHBOR_SIZE", // 6
+            "NUMBER_RECS", // 7
+            "USER_ID" // 8
     };
 
     private final static String [] toolOptionDesc = new String[] {

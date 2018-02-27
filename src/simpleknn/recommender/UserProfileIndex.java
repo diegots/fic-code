@@ -1,6 +1,8 @@
 package simpleknn.recommender;
 
+import org.junit.jupiter.api.extension.ExtensionContext;
 import simpleknn.Controller;
+import simpleknn.storage.Storage;
 
 import javax.naming.ldap.Control;
 import java.io.IOException;
@@ -12,13 +14,15 @@ import java.util.function.Consumer;
 
 public class UserProfileIndex {
 
-
+    private final Storage storage;
     private HashMap<Integer, List<UserData>> userProfileIndex; // HashMap <UserIds, List < Rated items > >
     private String path;
     private Set<Integer> itemsValue;
 
 
-    public UserProfileIndex() {
+    public UserProfileIndex(Storage storage) {
+        this.storage = storage;
+
         userProfileIndex = new HashMap();
         itemsValue = new HashSet<>();
     }
@@ -100,10 +104,14 @@ public class UserProfileIndex {
             Path p = Paths.get(path);
             Files.lines(p).forEach(consumer);
         } catch (NumberFormatException e) {
-            System.err.println(Controller.TAG + " Couldn't proccess n");
+            System.err.println(Controller.TAG + " Couldn't process n");
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        System.err.println("Store users into database");
+        storage.storeUsers(getUsers()); // Finally store users into database
+
     }
 
     /**
