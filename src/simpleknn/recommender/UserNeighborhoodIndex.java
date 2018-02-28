@@ -1,6 +1,7 @@
 package simpleknn.recommender;
 
 
+import simpleknn.storage.Storage;
 import simpleknn.util.Util;
 
 import java.util.*;
@@ -12,22 +13,17 @@ public class UserNeighborhoodIndex {
 
     private UserProfileIndex userProfileIndex;
     private SimilarityAlg similarity;
+    private Storage storage;
 
-
-    public UserNeighborhoodIndex(UserProfileIndex userProfileIndex, SimilarityAlg similarity) {
+    public UserNeighborhoodIndex(UserProfileIndex userProfileIndex, SimilarityAlg similarity, Storage storage) {
         // Save references
         this.userProfileIndex = userProfileIndex;
         this.similarity = similarity;
+        this.storage = storage;
 
         usersSimilarities = new HashMap<>();
     }
 
-
-    /**
-     *
-     * @param userA
-     * @return
-     */
     public HashMap<Integer, Double> computeAllUserSimilarities (int userA) {
 
         // If similarities for userA where already computed, just return them
@@ -70,12 +66,21 @@ public class UserNeighborhoodIndex {
             usersSimilarities.put(user, u); // Save user similarities
         }
 
-        userSimilarities = Util.sortMapByValue(userSimilarities);
-        List<Integer> keys = new ArrayList(userSimilarities.keySet());
-        List<Integer> userNeighborhood = new ArrayList<>();
+        // Recover user's neighborhood from db
+        List<Integer> keys = storage.getNeighborhoodForUser(user);
 
+        if (keys.size() <= 0) {
+            // If db is empty, compute and store it
+            userSimilarities = Util.sortMapByValue(userSimilarities); // Sort neighborhood
+            keys = new ArrayList(userSimilarities.keySet());
+            storage.storeNeighborhoodForUser(user, keys);
+        }
+
+//        System.err.println("Neighbor size: " + keys.size());
+
+        List<Integer> userNeighborhood = new ArrayList<>();
         for (int i=keys.size()-1; i>keys.size()-1-k; i--) {
-//            System.err.println("Neighbor: " + keys.get(i) + ", similarity: " + userSimilarities.get(keys.get(i)));
+            System.err.println("Neighbor: " + keys.get(i) + ", similarity: " + userSimilarities.get(keys.get(i)));
             userNeighborhood.add(keys.get(i));
         }
 

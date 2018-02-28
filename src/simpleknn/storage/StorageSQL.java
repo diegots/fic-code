@@ -19,6 +19,16 @@ public class StorageSQL implements Storage {
     }
 
     @Override
+    public void storeNeighborhoodForUser(int userA, List<Integer> neighborhood) {
+
+    }
+
+    @Override
+    public List<Integer> getNeighborhoodForUser(int userA) {
+        return null;
+    }
+
+    @Override
     public Double getSimilarity(int userA, int userU) {
         return null;
     }

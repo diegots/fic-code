@@ -25,7 +25,7 @@ public class SimpleUserBasedKnnImpl implements SimpleUserBasedKnn {
         userProfileIndex.buildIndex(datasetPath);
 
         similarityAlg = new CosineVectorSimilarityAlg(userProfileIndex);
-        userNeighborhoodIndex = new UserNeighborhoodIndex(userProfileIndex, similarityAlg);
+        userNeighborhoodIndex = new UserNeighborhoodIndex(userProfileIndex, similarityAlg, storage);
 
         this.controller = controller;
         this.storage = storage;

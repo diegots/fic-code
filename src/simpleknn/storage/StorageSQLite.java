@@ -2,6 +2,7 @@ package simpleknn.storage;
 
 import java.io.File;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StorageSQLite implements Storage {
@@ -58,6 +59,53 @@ public class StorageSQLite implements Storage {
     }
 
     @Override
+    public void storeNeighborhoodForUser(int userA, List<Integer> neighborhood) {
+
+        String queryString;
+
+        try (Connection connection = DriverManager.getConnection(connectionString)) {
+            Statement stmt = connection.createStatement();
+            stmt.setQueryTimeout(30);
+
+            for (Integer neighbor: neighborhood) {
+
+                queryString = "SELECT userU FROM u_neighborhood WHERE userA = " + userA + " AND userU = " + neighbor;
+                ResultSet resultSet = stmt.executeQuery(queryString);
+
+                if (resultSet.isClosed()) {
+                    queryString = "INSERT INTO u_neighborhood (userA, userU) VALUES (" + userA + "," + neighbor + ")";
+                    stmt.execute(queryString);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<Integer> getNeighborhoodForUser(int userA) {
+
+        String queryString = "SELECT userU FROM u_neighborhood WHERE userA = " + userA;
+        List<Integer> res = new ArrayList<>();
+
+        try (Connection connection = DriverManager.getConnection(connectionString)) {
+            Statement stmt = connection.createStatement();
+            stmt.setQueryTimeout(30);
+            ResultSet resultSet = stmt.executeQuery(queryString);
+
+            if (!resultSet.isClosed()) {
+                while (resultSet.next())
+                    res.add(resultSet.getInt("userU"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return res;
+
+    }
+
+    @Override
     public Double getSimilarity(int userA, int userU) {
 
         String queryString = "SELECT similarity FROM u_similarity WHERE userA = " +
@@ -100,6 +148,16 @@ public class StorageSQLite implements Storage {
                 "FOREIGN KEY('userU') REFERENCES users ( userId )," +
                 "FOREIGN KEY('userA') REFERENCES users ( userId ))";
 
+        final String createTableUNeighborhood = "CREATE TABLE 'u_neighborhood' ("
+                + "'neighborhoodId' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+                + "'userA' INTEGER NOT NULL,"
+                + "'userU' INTEGER NOT NULL,"
+                + "FOREIGN KEY('userA')"
+                + "REFERENCES users ( userId ),"
+                + " FOREIGN KEY('userU')"
+                + "REFERENCES users ( userId ));";
+
+
         try (Connection connection = DriverManager.getConnection(connectionString)) {
             Statement stmt = connection.createStatement();
             stmt.setQueryTimeout(30);
@@ -108,7 +166,8 @@ public class StorageSQLite implements Storage {
             if (resultSet.getInt("num_tables") <= 0) {
                 System.out.println("-> No tables found. Creating 'users' and 'u_similarity'");
                 stmt.execute(createTableU);
-                stmt.execute(createTableUSimilarity );
+                stmt.execute(createTableUSimilarity);
+                stmt.execute(createTableUNeighborhood);
             }
         } catch (SQLException e) {
             e.printStackTrace();
