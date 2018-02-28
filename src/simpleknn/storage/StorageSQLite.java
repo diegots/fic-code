@@ -18,18 +18,23 @@ public class StorageSQLite implements Storage {
     public void storeUsers(List<Integer> usersList) {
 
         // TODO this storing operation should only be done the first time the app is run. Where the db is empty
-
-        String queryString = "";
+        System.err.println("-> Store missing users into database");
+        String queryString;
 
         try (Connection connection = DriverManager.getConnection(connectionString)) {
             Statement stmt = connection.createStatement();
             stmt.setQueryTimeout(30);
 
             for (Integer userId: usersList) {
-                queryString = "INSERT INTO users VALUES (" + userId + ")";
-                stmt.execute(queryString);
-            }
 
+                queryString = "SELECT userId FROM users WHERE userId = " + userId;
+                ResultSet resultSet = stmt.executeQuery(queryString);
+
+                if (resultSet.isClosed()) {
+                    queryString = "INSERT INTO users VALUES (" + userId + ")";
+                    stmt.execute(queryString);
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -109,7 +109,6 @@ public class UserProfileIndex {
             e.printStackTrace();
         }
 
-        System.err.println("Store users into database");
         storage.storeUsers(getUsers()); // Finally store users into database
 
     }
