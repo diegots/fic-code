@@ -125,35 +125,45 @@ public class Main {
         System.out.print("Computing similarities");
 
         Map<Integer, Map<Integer, Double>> mSimil = new HashMap<>();
-        Map<Integer, Double> mk;
+        Map<Integer, Double> mi, mj = null;
         Set<Integer> itemsUserI , itemsUserJ, sharedItems;
         double sum, res;
 
         for (int userI: mData.keySet()) {
             System.out.print(".");
 
-            mk = mSimil.get(userI);
-            if (null == mk) {
-                mk = new HashMap<>();
+            mi = mSimil.get(userI);
+            if (null == mi) {
+                mi = new HashMap<>();
             }
 
             itemsUserI = new HashSet<>(mData.get(userI).keySet());
+
             for (int userJ: mData.keySet()) {
-                itemsUserJ = mData.get(userJ).keySet();
+                if (userJ >= userI) {
 
-                sharedItems = new HashSet<>(itemsUserI);
-                sharedItems.retainAll(itemsUserJ); // items comunes
+                    itemsUserJ = mData.get(userJ).keySet();
 
-                sum = 0.0;
-                for (int sharedItem: sharedItems) {
-                    sum += mData.get(userI).get(sharedItem) * mData.get(userJ).get(sharedItem);
+                    sharedItems = new HashSet<>(itemsUserI);
+                    sharedItems.retainAll(itemsUserJ); // items comunes
+
+                    sum = 0.0;
+                    for (int sharedItem : sharedItems) {
+                        sum += mData.get(userI).get(sharedItem) * mData.get(userJ).get(sharedItem);
+                    }
+
+                    res = sum / (mDenom.get(userI) * mDenom.get(userJ));
+                    mi.put(userJ, res);
+
+                    mj = mSimil.get(userJ);
+                    if (null == mj) {
+                        mj = new HashMap<>();
+                    }
+                    mj.put(userI, res);
+                    mSimil.put(userJ, mj);
                 }
-
-                res = sum / (mDenom.get(userI) * mDenom.get(userJ));
-
-                mk.put(userJ, res);
             }
-            mSimil.put(userI, mk);
+            mSimil.put(userI, mi);
         }
 
         System.out.println(" done.");
