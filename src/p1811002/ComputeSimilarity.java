@@ -10,12 +10,24 @@ import java.util.*;
 public class ComputeSimilarity {
 
     private String path, similaritiesPath, neighborsPath;
+
+    /**
+     * fullData contains all read data from input file. This is, all the ratings from
+     * every user and item. Timestamps were not preserved.
+     */
     private Map<Integer, Map<Integer, Double>> fullData;
+
+    /**
+     * Denominators from every user as needed by cosine similarity.
+     */
     private Map<Integer, Double> denominators;
+
+    /**
+     * User's items as a map of TreeLists. TreeList was selectec because it's a faster
+     * implementation of a list, compared to any of the standard API classes.
+     */
     private Map<Integer, TreeList<Integer>> usersItems;
 
-    private Map<Integer, Map<Integer, Double>> similarities;
-    private Map<Integer, List<Integer>> neighbors;
 
     public ComputeSimilarity(String path, String similaritiesPath, String neighborsPath) {
         this.path = path;
@@ -23,12 +35,18 @@ public class ComputeSimilarity {
         this.neighborsPath = neighborsPath;
     }
 
+
+    /**
+     * Start the algorithm. Steps:
+     *  1. Read the dataset from the input path.
+     *  2. Compute denominators.
+     *  3. Store user's items into TreeList objects.
+     *  4. Compute cosine similarity writing every row to disk.
+     */
     public void start () {
 
         try {
-
             fullData = readDataset(path);
-
             denominators = computeDenom(fullData);
             usersItems = userItemsToTreeList(fullData);
             cosineSimilarity(fullData, denominators);
@@ -39,6 +57,11 @@ public class ComputeSimilarity {
     }
 
 
+    /**
+     * Build a TreeList for every user's items
+     * @param mData
+     * @return
+     */
     private Map<Integer, TreeList<Integer>> userItemsToTreeList (
             Map<Integer, Map<Integer, Double>> mData) {
 
@@ -68,88 +91,20 @@ public class ComputeSimilarity {
         return res;
     }
 
-    private void writeNeigh (
-            Map<Integer, List<Integer>> mNeigh, String outputFile)
-            throws java.io.IOException {
 
-        System.out.print("Writing neighborsPath to disk...");
-
-        StringBuilder linea, cuerpo = new StringBuilder();
-
-        for (int userId: mNeigh.keySet()) {
-            linea = new StringBuilder();
-            for (int neighborId: mNeigh.get(userId)) {
-                linea.append("," + neighborId);
-            }
-            linea.delete(0,1);
-            linea.append("\n");
-            cuerpo.append(linea);
-        }
-
-        BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
-        bw.append(cuerpo.toString());
-        bw.close();
-
-        System.out.println(" done.");
-    }
-
-    private void writeSimil (
-            Map<Integer, Map<Integer, Double>> mData,
-            Map<Integer, Map<Integer, Double>> mSimil,
-            String outputFile) throws java.io.IOException {
-
-        System.out.print("Writing similaritiesPath to disk...");
-
-        // Cabecera en la primera linea con los userIds
-        StringBuilder cabecera = new StringBuilder();
-        for (int i: new TreeSet<>(mData.keySet())) {
-            cabecera.append("," + i);
-        }
-        cabecera.delete(0, 1);
-        cabecera.append('\n');
-
-        // Similaridades
-        StringBuilder linea, cuerpo = new StringBuilder();
-        Map<Integer, Double> mu;
-        for (int i: new TreeSet<>(mData.keySet())) {
-
-            linea = new StringBuilder();
-            mu = mSimil.get(i);
-            for (int j: new TreeSet<>(mu.keySet())) {
-                linea.append("," + mu.get(j));
-            }
-
-            linea.delete(0,1);
-            linea.append("\n");
-            cuerpo.append(linea);
-        }
-
-        BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
-        bw.write(cabecera.toString());
-        bw.append(cuerpo.toString());
-        bw.close();
-
-        System.out.println(" done.");
-    }
-
-    private Map<Integer, List<Integer>> orderNeigh (
-            Map<Integer, Map<Integer, Double>> m,
-            Map<Integer, Map<Integer, Double>> mSimil) {
-
-        System.out.print("Ordering neighborsPath...");
-
-        Map<Integer, List<Integer>> mNeigh = new HashMap<>();
-        Map<Integer, Double> mu, mOrdered;
-
-        for (int i: m.keySet()) {
-            mOrdered = Utilities.sortMapByValue(mSimil.get(i));
-            mNeigh.put(i, new ArrayList<>(mOrdered.keySet()));
-        }
-
-        System.out.println(" done.");
-        return mNeigh;
-    }
-
+    /**
+     * Compute cosine similarity for every pair of users if an userJ's id is greater than userI's id.
+     * This way only the upper triangular part of the matrix is computed, almost halving the computing time needed.
+     * Retriving similarity have to be always done like sim = neighMatrix (minor, major) fashion.
+     *
+     * Also, for every row computed its line writed to the similaritiesPath. Data is not stored in memory because
+     * that approach becomes impossible with any big enough dataset.
+     *
+     * Every shared item is taken into account only once. This avoids lots of iterations in the most consumnig part of
+     * the algorithm, computing shared items for every pair of users.
+     * @param mData
+     * @param mDenom
+     */
     private void cosineSimilarity(
             Map<Integer, Map<Integer, Double>> mData,
             Map<Integer, Double> mDenom) {
@@ -180,9 +135,7 @@ public class ComputeSimilarity {
 //                neighborIds.append(userJ + ",");
 
                     itemsUserJ = new TreeList<>(usersItems.get(userJ));
-                    //itemsUserJ = usersItems.get(userJ);
                     iteratorI = itemsUserI.iterator();
-
 
                     // Obtain shared items
                     idx = 0;
@@ -229,6 +182,12 @@ public class ComputeSimilarity {
         System.out.println(" for " + (count) + " users took " + ((System.currentTimeMillis() - start)/1000) + " seconds.");
     }
 
+
+    /**
+     * Compute denominator of cosine similarity formula for every user in the dataset.
+     * @param m
+     * @return
+     */
     private Map<Integer, Double> computeDenom(Map<Integer, Map<Integer, Double>> m) {
 
         System.out.print("Computing denominators...");
@@ -256,6 +215,13 @@ public class ComputeSimilarity {
         return md;
     }
 
+
+    /**
+     * Read data from input path and returns a Map holding it.
+     * @param inputPath
+     * @return
+     * @throws IOException
+     */
     private Map<Integer, Map<Integer, Double>> readDataset(String inputPath) throws IOException {
 
         System.out.print("Reading input data...");
