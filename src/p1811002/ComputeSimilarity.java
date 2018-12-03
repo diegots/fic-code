@@ -28,6 +28,7 @@ public class ComputeSimilarity {
      */
     private Map<Integer, TreeList<Integer>> usersItems;
 
+    private Set<Integer> items;
 
     public ComputeSimilarity(String path, String similaritiesPath, String neighborsPath) {
         this.path = path;
@@ -112,57 +113,50 @@ public class ComputeSimilarity {
         System.out.print("Computing similarities");
 
         long start = System.currentTimeMillis();
-        double sum, res;
-        int idx, itemI, itemJ, count=0, sharedItem;
+        double sum, res, ratingI, ratingJ;
+        int count=0;
         int MAX_USERS = 1384;
 
-        TreeList<Integer> itemsUserI, itemsUserJ, sharedItems;
-        Iterator<Integer> iteratorJ, iteratorI, iterator;
+        TreeList<Integer> itemsUserI;
+        Iterator<Integer> iterator, iteratorUsersJ, iteratorUsersI;
         StringBuilder similaritiesString, neighborIds;
+        Integer item, userJ, userI;
 
-        for (int userI: mData.keySet()) {
+        iteratorUsersI = mData.keySet().iterator();
+        while (iteratorUsersI.hasNext()) {
 
+            userI = iteratorUsersI.next();
             System.out.print(".");
+
             neighborIds = new StringBuilder().append(userI + "\t");
             similaritiesString = new StringBuilder();
             itemsUserI = usersItems.get(userI);
 
-            for (int userJ: mData.keySet()) {
+            iteratorUsersJ = mData.keySet().iterator();
+            while (iteratorUsersJ.hasNext()) {
+                userJ = iteratorUsersJ.next();
 
                 if (userJ < userI) {
                     similaritiesString.append("0,");
                 } else {
-//                neighborIds.append(userJ + ",");
-
-                    itemsUserJ = new TreeList<>(usersItems.get(userJ));
-                    iteratorI = itemsUserI.iterator();
-
-                    // Obtain shared items
-                    idx = 0;
-                    sharedItems = new TreeList<>();
-                    while (iteratorI.hasNext()) {
-                        itemI = iteratorI.next();
-                        iteratorJ = itemsUserJ.iterator();
-                        while (iteratorJ.hasNext()) {
-                            itemJ = iteratorJ.next();
-
-                            if (itemI == itemJ) {
-                                sharedItems.add(idx++, itemI);
-                                itemsUserJ.remove(itemsUserJ.indexOf(itemI));
-
-                                break;
-                            }
-                        }
-                    }
 
                     sum = 0.0;
-                    iterator = sharedItems.iterator();
-                    while (iterator.hasNext()) {
-                        sharedItem = iterator.next();
-                        sum += fullData.get(userI).get(sharedItem) * fullData.get(userJ).get(sharedItem);
-                    }
-                    res = sum / (mDenom.get(userI) * mDenom.get(userJ));
 
+                    iterator = itemsUserI.iterator();
+                    while (iterator.hasNext()) {
+                        item = iterator.next();
+
+                        if (usersItems.get(userJ).contains(item)) {
+                            ratingJ = fullData.get(userJ).get(item);
+                        } else {
+                            continue;
+                        }
+
+                        ratingI = fullData.get(userI).get(item);
+                        sum += ratingI * ratingJ;
+                    }
+
+                    res = sum / (mDenom.get(userI) * mDenom.get(userJ));
                     similaritiesString.append(res + ",");
                 }
             }
@@ -230,7 +224,8 @@ public class ComputeSimilarity {
         final String HEADER_ITEM = "userId";
         Map<Integer, Map<Integer, Double>> m = new HashedMap<>();
         Map<Integer, Double> mu;
-        Integer userId;
+        Set<Integer> items = new HashSet<>();
+        Integer userId, itemId;
 
         String s;
         String [] ss;
@@ -249,12 +244,15 @@ public class ComputeSimilarity {
                     mu = new HashedMap<>();
                 }
 
-                mu.put(new Integer(ss[1]), new Double(ss[2]).doubleValue());
+                itemId = new Integer(ss[1]);
+                mu.put(itemId, new Double(ss[2]).doubleValue());
                 m.put(userId, mu);
+                items.add(itemId);
             }
         }
 
         br.close();
+        this.items = items;
         System.out.println(" done.");
         return m;
     }
