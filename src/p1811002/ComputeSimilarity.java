@@ -1,5 +1,6 @@
 package p1811002;
 
+import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.collections4.map.HashedMap;
 import p1811002.utils.Utilities;
@@ -118,9 +119,11 @@ public class ComputeSimilarity {
         int MAX_USERS = 1384;
 
         TreeList<Integer> itemsUserI;
+        MapIterator<Integer, Double> mapIterator;
         Iterator<Integer> iterator, iteratorUsersJ, iteratorUsersI;
         StringBuilder similaritiesString, neighborIds;
         Integer item, userJ, userI;
+        HashedMap<Integer, Double> hm;
 
         iteratorUsersI = mData.keySet().iterator();
         while (iteratorUsersI.hasNext()) {
@@ -142,18 +145,20 @@ public class ComputeSimilarity {
 
                     sum = 0.0;
 
-                    iterator = itemsUserI.iterator();
-                    while (iterator.hasNext()) {
-                        item = iterator.next();
+                    // Change to MapIterator
+                    hm = (HashedMap<Integer, Double>) mData.get(userI);
+                    mapIterator = hm.mapIterator();
 
-                        if (usersItems.get(userJ).contains(item)) {
+                    while (mapIterator.hasNext()) {
+                        item = mapIterator.next();
+
+                        if (fullData.get(userJ).containsKey(item)) {
                             ratingJ = fullData.get(userJ).get(item);
                         } else {
                             continue;
                         }
 
-                        ratingI = fullData.get(userI).get(item);
-                        sum += ratingI * ratingJ;
+                        sum += mapIterator.getValue() * ratingJ;
                     }
 
                     res = sum / (mDenom.get(userI) * mDenom.get(userJ));
