@@ -11,6 +11,7 @@ import java.util.*;
 public class ComputeSimilarity {
 
     private String path, similaritiesPath, neighborsPath;
+    private Set<Integer> items;
 
     /**
      * fullData contains all read data from input file. This is, all the ratings from
@@ -18,18 +19,19 @@ public class ComputeSimilarity {
      */
     private Map<Integer, Map<Integer, Double>> fullData;
 
+
     /**
      * Denominators from every user as needed by cosine similarity.
      */
     private Map<Integer, Double> denominators;
 
+
     /**
      * User's items as a map of TreeLists. TreeList was selectec because it's a faster
      * implementation of a list, compared to any of the standard API classes.
      */
-    private Map<Integer, TreeList<Integer>> usersItems;
+    private Map<Integer, TreeList<Integer>> invertedUserProfileIdx;
 
-    private Set<Integer> items;
 
     public ComputeSimilarity(String path, String similaritiesPath, String neighborsPath) {
         this.path = path;
@@ -50,7 +52,7 @@ public class ComputeSimilarity {
         try {
             fullData = readDataset(path);
             denominators = computeDenom(fullData);
-            usersItems = userItemsToTreeList(fullData);
+            invertedUserProfileIdx = userItemsToTreeList(fullData);
             cosineSimilarity(fullData, denominators);
 
         } catch (IOException e) {
@@ -133,7 +135,6 @@ public class ComputeSimilarity {
 
             neighborIds = new StringBuilder().append(userI + "\t");
             similaritiesString = new StringBuilder();
-            itemsUserI = usersItems.get(userI);
 
             iteratorUsersJ = mData.keySet().iterator();
             while (iteratorUsersJ.hasNext()) {
