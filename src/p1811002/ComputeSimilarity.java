@@ -116,16 +116,18 @@ public class ComputeSimilarity {
         System.out.print("Computing similarities");
 
         long start = System.currentTimeMillis();
-        double sum, res, ratingI, ratingJ;
+        double sum, ratingJ;
         int count=0;
         int MAX_USERS = 1384;
 
+        Double res;
         TreeList<Integer> itemsUserI;
         MapIterator<Integer, Double> mapIterator;
         Iterator<Integer> iterator, iteratorUsersJ, iteratorUsersI;
         StringBuilder similaritiesString, neighborIds;
         Integer item, userJ, userI;
         HashedMap<Integer, Double> hm;
+        List<Integer> similarities;
 
         iteratorUsersI = mData.keySet().iterator();
         while (iteratorUsersI.hasNext()) {
@@ -134,14 +136,16 @@ public class ComputeSimilarity {
             System.out.print(".");
 
             neighborIds = new StringBuilder().append(userI + "\t");
-            similaritiesString = new StringBuilder();
+            //similaritiesString = new StringBuilder();
+            similarities = new ArrayList<>();
 
             iteratorUsersJ = mData.keySet().iterator();
             while (iteratorUsersJ.hasNext()) {
                 userJ = iteratorUsersJ.next();
 
                 if (userJ < userI) {
-                    similaritiesString.append("0,");
+                    //similaritiesString.append("0,");
+                    similarities.add(0);
                 } else {
 
                     sum = 0.0;
@@ -162,13 +166,16 @@ public class ComputeSimilarity {
                         sum += mapIterator.getValue() * ratingJ;
                     }
 
-                    res = sum / (mDenom.get(userI) * mDenom.get(userJ));
-                    similaritiesString.append(res + ",");
+                    res = (sum / (mDenom.get(userI) * mDenom.get(userJ))) * 1000;
+                    //similaritiesString.append(res.intValue() + ",");
+                    similarities.add(res.intValue());
+
                 }
             }
 
-            similaritiesString.delete(similaritiesString.length()-1, similaritiesString.length());
-            Utilities.writeLine(similaritiesPath, similaritiesString.toString());
+            //similaritiesString.delete(similaritiesString.length()-1, similaritiesString.length());
+            //Utilities.writeLine(similaritiesPath, similaritiesString.toString());
+            Utilities.writeLine(similaritiesPath, similarities);
 
             Utilities.writeLine(neighborsPath, neighborIds.toString());
 

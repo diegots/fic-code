@@ -1,6 +1,9 @@
 package p1811002.utils;
 
+import it.unimi.dsi.io.OutputBitStream;
+
 import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -31,6 +34,23 @@ public class Utilities {
             bw.append(line);
             bw.append('\n');
             bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeLine (String outFile, List<Integer> line) {
+
+        Iterator<Integer> iterator = line.iterator();
+        try {
+            FileOutputStream fos = new FileOutputStream(outFile, true);
+            OutputBitStream obs = new OutputBitStream(fos);
+
+            while (iterator.hasNext()) {
+                obs.writeDelta(iterator.next());
+            }
+            obs.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
