@@ -11,7 +11,6 @@ import java.util.*;
 public class ComputeSimilarity {
 
     private String path, similaritiesPath, neighborsPath;
-    private Set<Integer> items;
 
     /**
      * fullData contains all read data from input file. This is, all the ratings from
@@ -24,13 +23,6 @@ public class ComputeSimilarity {
      * Denominators from every user as needed by cosine similarity.
      */
     private Map<Integer, Double> denominators;
-
-
-    /**
-     * User's items as a map of TreeLists. TreeList was selectec because it's a faster
-     * implementation of a list, compared to any of the standard API classes.
-     */
-    private Map<Integer, TreeList<Integer>> invertedUserProfileIdx;
 
 
     public ComputeSimilarity(String path, String similaritiesPath, String neighborsPath) {
@@ -52,7 +44,6 @@ public class ComputeSimilarity {
         try {
             fullData = readDataset(path);
             denominators = computeDenom(fullData);
-            invertedUserProfileIdx = userItemsToTreeList(fullData);
             cosineSimilarity(fullData, denominators);
 
         } catch (IOException e) {
@@ -121,10 +112,9 @@ public class ComputeSimilarity {
         int MAX_USERS = 1384;
 
         Double res;
-        TreeList<Integer> itemsUserI;
         MapIterator<Integer, Double> mapIterator;
-        Iterator<Integer> iterator, iteratorUsersJ, iteratorUsersI;
-        StringBuilder similaritiesString, neighborIds;
+        Iterator<Integer> iteratorUsersJ, iteratorUsersI;
+        StringBuilder neighborIds;
         Integer item, userJ, userI;
         HashedMap<Integer, Double> hm;
         List<Integer> similarities;
@@ -136,7 +126,6 @@ public class ComputeSimilarity {
             System.out.print(".");
 
             neighborIds = new StringBuilder().append(userI + "\t");
-            //similaritiesString = new StringBuilder();
             similarities = new ArrayList<>();
 
             iteratorUsersJ = mData.keySet().iterator();
@@ -144,7 +133,6 @@ public class ComputeSimilarity {
                 userJ = iteratorUsersJ.next();
 
                 if (userJ < userI) {
-                    //similaritiesString.append("0,");
                     similarities.add(0);
                 } else {
 
@@ -167,16 +155,12 @@ public class ComputeSimilarity {
                     }
 
                     res = (sum / (mDenom.get(userI) * mDenom.get(userJ))) * 1000;
-                    //similaritiesString.append(res.intValue() + ",");
                     similarities.add(res.intValue());
 
                 }
             }
 
-            //similaritiesString.delete(similaritiesString.length()-1, similaritiesString.length());
-            //Utilities.writeLine(similaritiesPath, similaritiesString.toString());
             Utilities.writeLine(similaritiesPath, similarities);
-
             Utilities.writeLine(neighborsPath, neighborIds.toString());
 
             count++;
@@ -265,7 +249,6 @@ public class ComputeSimilarity {
         }
 
         br.close();
-        this.items = items;
         System.out.println(" done.");
         return m;
     }
