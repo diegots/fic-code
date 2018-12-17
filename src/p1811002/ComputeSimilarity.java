@@ -13,10 +13,10 @@ public class ComputeSimilarity {
     private String path, similaritiesPath, neighborsPath;
 
     /**
-     * fullData contains all read data from input file. This is, all the ratings from
+     * neighborSimilarityIdx contains all read data from input file. This is, all the ratings from
      * every user and item. Timestamps were not preserved.
      */
-    private Map<Integer, Map<Integer, Double>> fullData;
+    private Map<Integer, Map<Integer, Double>> neighborSimilarityIdx;
 
 
     /**
@@ -42,9 +42,9 @@ public class ComputeSimilarity {
     public void start () {
 
         try {
-            fullData = readDataset(path);
-            denominators = computeDenom(fullData);
-            cosineSimilarity(fullData, denominators);
+            neighborSimilarityIdx = readDataset(path);
+            denominators = computeDenom(neighborSimilarityIdx);
+            cosineSimilarity(neighborSimilarityIdx, denominators);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -123,7 +123,7 @@ public class ComputeSimilarity {
         while (iteratorUsersI.hasNext()) {
 
             userI = iteratorUsersI.next();
-            System.out.print(".");
+            //System.out.print(".");
 
             neighborIds = new StringBuilder().append(userI + "\t");
             similarities = new ArrayList<>();
@@ -145,8 +145,8 @@ public class ComputeSimilarity {
                     while (mapIterator.hasNext()) {
                         item = mapIterator.next();
 
-                        if (fullData.get(userJ).containsKey(item)) {
-                            ratingJ = fullData.get(userJ).get(item);
+                        if (mData.get(userJ).containsKey(item)) {
+                            ratingJ = mData.get(userJ).get(item);
                         } else {
                             continue;
                         }
@@ -184,21 +184,30 @@ public class ComputeSimilarity {
         System.out.print("Computing denominators...");
 
         double d, sum;
+        int userId;
+
         Map<Integer, Double> userData;
         Map<Integer, Double> md = new HashedMap<>();
         List<Integer> userIds = new ArrayList<>(m.keySet());
+        Iterator<Integer> iteratorItems, iteratorUsers = userIds.iterator();
 
-        for (int userId: userIds) {
+        while (iteratorUsers.hasNext()) {
+            userId = iteratorUsers.next();
             md.put(userId, 0.0);
         }
 
-        for (int userId: userIds) {
+        iteratorUsers = userIds.iterator();
+        while (iteratorUsers.hasNext()) {
+            userId = iteratorUsers.next();
             sum = 0.0;
             userData = m.get(userId);
-            for (int userItemId: userData.keySet()) {
-                d = userData.get(userItemId);
+
+            iteratorItems = userData.keySet().iterator();
+            while (iteratorItems.hasNext()) {
+                d = userData.get(iteratorItems.next());
                 sum += Math.pow(d, 2);
             }
+
             md.put(userId, Math.sqrt(sum));
         }
 
