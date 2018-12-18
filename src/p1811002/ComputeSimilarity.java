@@ -162,14 +162,17 @@ public class ComputeSimilarity {
 
             Utilities.writeLine(similaritiesPath, similarities);
 
+            if (neighborIds.size() >= 100) {
+                Utilities.writeLine(neighborsPath, neighborIds);
+                neighborIds = new ArrayList<>();
+            }
+
             count++;
             // Stop algorithm after MAX_USERS was reached. This is for testing purposes
             if (count >= MAX_USERS) {
                 break;
             }
         }
-
-        Utilities.writeLine(neighborsPath, neighborIds);
 
         System.out.println(" for " + (count) + " users took " + ((System.currentTimeMillis() - start)/1000) + " seconds.");
     }
