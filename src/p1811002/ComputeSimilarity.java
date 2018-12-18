@@ -10,7 +10,7 @@ import java.util.*;
 
 public class ComputeSimilarity {
 
-    private String path, similaritiesPath, neighborsPath;
+    private String dataSetPath, similaritiesPath, neighborsPath;
 
     /**
      * neighborSimilarityIdx contains all read data from input file. This is, all the ratings from
@@ -25,8 +25,8 @@ public class ComputeSimilarity {
     private Map<Integer, Double> denominators;
 
 
-    public ComputeSimilarity(String path, String similaritiesPath, String neighborsPath) {
-        this.path = path;
+    public ComputeSimilarity(String dataSetPath, String similaritiesPath, String neighborsPath) {
+        this.dataSetPath = dataSetPath;
         this.similaritiesPath = similaritiesPath;
         this.neighborsPath = neighborsPath;
     }
@@ -34,7 +34,7 @@ public class ComputeSimilarity {
 
     /**
      * Start the algorithm. Steps:
-     *  1. Read the dataset from the input path.
+     *  1. Read the dataset from the input dataSetPath.
      *  2. Compute denominators.
      *  3. Store user's items into TreeList objects.
      *  4. Compute cosine similarity writing every row to disk.
@@ -42,7 +42,7 @@ public class ComputeSimilarity {
     public void start () {
 
         try {
-            neighborSimilarityIdx = readDataset(path);
+            neighborSimilarityIdx = readDataset(dataSetPath);
             denominators = computeDenom(neighborSimilarityIdx);
             cosineSimilarity(neighborSimilarityIdx, denominators);
 
@@ -221,7 +221,7 @@ public class ComputeSimilarity {
 
 
     /**
-     * Read data from input path and returns a Map holding it.
+     * Read data from input dataSetPath and returns a Map holding it.
      * @param inputPath
      * @return
      * @throws IOException
