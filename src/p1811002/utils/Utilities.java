@@ -1,11 +1,9 @@
 package p1811002.utils;
 
+import it.unimi.dsi.io.InputBitStream;
 import it.unimi.dsi.io.OutputBitStream;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class Utilities {
@@ -54,6 +52,33 @@ public class Utilities {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static List<Integer> readLine (String inFile) {
+
+        List<Integer> res = new ArrayList();
+
+        try {
+            FileInputStream fis = new FileInputStream(inFile);
+            InputBitStream ibs = new InputBitStream(fis);
+
+            while (ibs.available() > 0) {
+                int i = ibs.readDelta();
+                res.add(i);
+            }
+
+            ibs.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (EOFException e) {
+            // This is not an exception, the input was read completelly
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return res;
     }
 
 }
