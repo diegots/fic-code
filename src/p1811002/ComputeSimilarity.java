@@ -114,7 +114,7 @@ public class ComputeSimilarity {
         Double res;
         MapIterator<Integer, Double> mapIterator;
         Iterator<Integer> iteratorUsersJ, iteratorUsersI;
-        StringBuilder neighborIds;
+        List<Integer> neighborIds = new ArrayList<>();
         Integer item, userJ, userI;
         HashedMap<Integer, Double> hm;
         List<Integer> similarities;
@@ -125,7 +125,7 @@ public class ComputeSimilarity {
             userI = iteratorUsersI.next();
             //System.out.print(".");
 
-            neighborIds = new StringBuilder().append(userI + "\t");
+            neighborIds.add(userI);
             similarities = new ArrayList<>();
 
             iteratorUsersJ = mData.keySet().iterator();
@@ -161,7 +161,6 @@ public class ComputeSimilarity {
             }
 
             Utilities.writeLine(similaritiesPath, similarities);
-            Utilities.writeLine(neighborsPath, neighborIds.toString());
 
             count++;
             // Stop algorithm after MAX_USERS was reached. This is for testing purposes
@@ -169,6 +168,8 @@ public class ComputeSimilarity {
                 break;
             }
         }
+
+        Utilities.writeLine(neighborsPath, neighborIds);
 
         System.out.println(" for " + (count) + " users took " + ((System.currentTimeMillis() - start)/1000) + " seconds.");
     }
