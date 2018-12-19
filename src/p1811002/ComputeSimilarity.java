@@ -82,20 +82,26 @@ public class ComputeSimilarity {
 
         System.out.print("Computing similarities");
 
-        long start = System.currentTimeMillis();
-        double sum, ratingJ;
+        final int MAX_USERS = 1384;
+        final int TIMES = 1000;
+        final int MAX_IDS_STORE = 1000;
+
+        final long start = System.currentTimeMillis();
+        double ratingJ;
+        double sum;
         int count=0;
-        int MAX_USERS = 1384;
 
         Double res;
         MapIterator<Integer, Double> mapIterator;
-        Iterator<Integer> iteratorUsersJ, iteratorUsersI;
-        List<Integer> neighborIds = new ArrayList<>();
-        Integer item, userJ, userI;
+        Integer item;
+        Integer userI;
+        Integer userJ;
         HashedMap<Integer, Double> hm;
         List<Integer> similarities;
+        List<Integer> neighborIds = new ArrayList<>();
+        Iterator<Integer> iteratorUsersJ;
+        Iterator<Integer> iteratorUsersI = mData.keySet().iterator();;
 
-        iteratorUsersI = mData.keySet().iterator();
         while (iteratorUsersI.hasNext()) {
 
             userI = iteratorUsersI.next();
@@ -130,7 +136,7 @@ public class ComputeSimilarity {
                         sum += mapIterator.getValue() * ratingJ;
                     }
 
-                    res = (sum / (mDenom.get(userI) * mDenom.get(userJ))) * 1000;
+                    res = (sum / (mDenom.get(userI) * mDenom.get(userJ))) * TIMES;
                     similarities.add(res.intValue());
 
                 }
@@ -138,7 +144,7 @@ public class ComputeSimilarity {
 
             Utilities.writeLine(similaritiesPath, similarities);
 
-            if (neighborIds.size() >= 100) {
+            if (neighborIds.size() >= MAX_IDS_STORE) {
                 Utilities.writeLine(neighborsPath, neighborIds);
                 neighborIds = new ArrayList<>();
             }
@@ -150,7 +156,8 @@ public class ComputeSimilarity {
             }
         }
 
-        System.out.println(" for " + (count) + " users took " + ((System.currentTimeMillis() - start)/1000) + " seconds.");
+        System.out.println(" for " + (count) + " users "
+            + "took " + ((System.currentTimeMillis() - start)/1000) + " seconds.");
     }
 
     /**
