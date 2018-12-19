@@ -64,40 +64,6 @@ public class ComputeSimilarity {
     }
 
     /**
-     * Build a TreeList for every user's items.
-     * @param mData
-     * @return
-     */
-    private Map<Integer, TreeList<Integer>> userItemsToTreeList (
-            Map<Integer, Map<Integer, Double>> mData) {
-
-        System.out.print("Storing user's items to TreeLists");
-
-        Map<Integer, TreeList<Integer>> res = new HashMap<>();
-        TreeList<Integer> treeList;
-        int idx, count=0;
-
-        for (Integer user: mData.keySet()) {
-
-            if (count++ % 1000 == 0) {
-                System.out.print(".");
-            }
-
-            idx = 0;
-
-            treeList = new TreeList<>();
-            for (Integer item: mData.get(user).keySet()) {
-                treeList.add(idx++, item);
-            }
-            res.put(user, treeList);
-        }
-
-        System.out.println(" done.");
-
-        return res;
-    }
-
-    /**
      * Compute cosine similarity for every pair of users if an userJ's id is greater than userI's id.
      * This way only the upper triangular part of the matrix is computed, almost halving the computing time needed.
      * Retriving similarity have to be always done like sim = neighMatrix (minor, major) fashion.
