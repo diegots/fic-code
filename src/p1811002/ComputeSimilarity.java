@@ -1,12 +1,23 @@
 package p1811002;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.collections4.map.HashedMap;
-import p1811002.utils.Utilities;
 
-import java.io.*;
-import java.util.*;
+import p1811002.utils.Utilities;
 
 public class ComputeSimilarity {
 
