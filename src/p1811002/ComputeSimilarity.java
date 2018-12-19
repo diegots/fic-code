@@ -21,7 +21,12 @@ import p1811002.utils.Utilities;
 
 public class ComputeSimilarity {
 
-    private String dataSetPath, similaritiesPath, neighborsPath;
+    /** Input data path */
+    private static String dataSetPath;
+
+    /** Output data paths */
+    private static String similaritiesPath;
+    private static String neighborsPath;
 
     /**
      * neighborSimilarityIdx contains all read data from input file. This is, all the ratings from
@@ -29,19 +34,16 @@ public class ComputeSimilarity {
      */
     private Map<Integer, Map<Integer, Double>> neighborSimilarityIdx;
 
-
     /**
      * Denominators from every user as needed by cosine similarity.
      */
     private Map<Integer, Double> denominators;
-
 
     public ComputeSimilarity(String dataSetPath, String similaritiesPath, String neighborsPath) {
         this.dataSetPath = dataSetPath;
         this.similaritiesPath = similaritiesPath;
         this.neighborsPath = neighborsPath;
     }
-
 
     /**
      * Start the algorithm. Steps:
@@ -60,7 +62,6 @@ public class ComputeSimilarity {
             e.printStackTrace();
         }
     }
-
 
     /**
      * Build a TreeList for every user's items.
@@ -95,7 +96,6 @@ public class ComputeSimilarity {
 
         return res;
     }
-
 
     /**
      * Compute cosine similarity for every pair of users if an userJ's id is greater than userI's id.
@@ -187,7 +187,6 @@ public class ComputeSimilarity {
         System.out.println(" for " + (count) + " users took " + ((System.currentTimeMillis() - start)/1000) + " seconds.");
     }
 
-
     /**
      * Compute denominator of cosine similarity formula for every user in the dataset.
      * @param m
@@ -228,7 +227,6 @@ public class ComputeSimilarity {
         System.out.println(" done.");
         return md;
     }
-
 
     /**
      * Read data from input dataSetPath and returns a Map holding it.
