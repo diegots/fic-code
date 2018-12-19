@@ -36,8 +36,7 @@ public class ComputeSimilarity {
      * Start the algorithm. Steps:
      *  1. Read the dataset from the input dataSetPath.
      *  2. Compute denominators.
-     *  3. Store user's items into TreeList objects.
-     *  4. Compute cosine similarity writing every row to disk.
+     *  3. Compute cosine similarity writing every row to disk.
      */
     public void start () {
 
@@ -53,7 +52,7 @@ public class ComputeSimilarity {
 
 
     /**
-     * Build a TreeList for every user's items
+     * Build a TreeList for every user's items.
      * @param mData
      * @return
      */
