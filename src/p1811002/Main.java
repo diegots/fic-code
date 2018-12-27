@@ -22,11 +22,12 @@ public class Main {
 
     // Compute similarity
     NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(args[1], args[2], messages);
-    long timeSpent = neighborhoodSimilarity.compute(dataset);
+    long t0 = neighborhoodSimilarity.compute(dataset);
+    messages.printMessageln("Computing similarities took " + Units.milisecondsToSeconds(t0) + " seconds.");
 
-    messages.printMessageln("Computing similarities took " + Units.milisecondsToSeconds(timeSpent) + " seconds.");
-
-    // Obtain ordered indexes
-    //new OrderSimilarities(args[1], args[3]).start();
+    // Compute ordered indexes
+    OrderSimilarities orderSimilarities = new OrderSimilarities(args[1], args[3], messages);
+    long t1 = orderSimilarities.order();
+    messages.printMessageln("Ordering similarities took " + Units.milisecondsToSeconds(t1) + " seconds.");
   }
 }

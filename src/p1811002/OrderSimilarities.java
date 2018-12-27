@@ -14,16 +14,19 @@ public class OrderSimilarities {
 
     private String similaritiesPath;
     private String idxPath;
+    private final Messages messages;
 
-    public OrderSimilarities(String similaritiesPath, String idxPath) {
+    public OrderSimilarities(String similaritiesPath, String idxPath, Messages messages) {
         this.similaritiesPath = similaritiesPath;
         this.idxPath = idxPath;
+        this.messages = messages;
     }
 
-    public void start () {
+    public long order () {
 
-        System.out.print("Start ordering");
+        messages.printMessageln("Start ordering");
 
+        final long start = System.currentTimeMillis();
         final String DELIMITER = ",";
         HashMap<Integer, Double> map;
         Map<Integer, Double> aux;
@@ -59,7 +62,7 @@ public class OrderSimilarities {
                 Utilities.writeLine(idxPath, idx.toString());
 
                 if (count++ % 100 == 0) {
-                    System.out.print(".");
+                    messages.printDoing();
                 }
             }
 
@@ -68,6 +71,8 @@ public class OrderSimilarities {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(" done.");
+        messages.printMessageln(" done.");
+
+        return System.currentTimeMillis() - start;
     }
 }
