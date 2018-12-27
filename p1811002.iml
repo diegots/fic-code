@@ -22,5 +22,6 @@
     <orderEntry type="library" name="com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.7" level="project" />
     <orderEntry type="library" name="com.fasterxml.jackson.core:jackson-databind:2.9.7" level="project" />
     <orderEntry type="library" name="org.apache.commons:commons-collections4:4.2" level="project" />
+    <orderEntry type="library" name="junit:junit:4.12" level="project" />
   </component>
 </module>
