@@ -52,15 +52,15 @@ public interface Dataset {
 
           if (!HEADER_ITEM.equals(ss[0])) {
 
-            userId = new Integer(ss[0]);
+            userId = Integer.valueOf(ss[0]);
 
             mu = dataset.get(userId);
             if (null == mu) {
               mu = new HashedMap<>();
             }
 
-            itemId = new Integer(ss[1]);
-            mu.put(itemId, new Double(ss[2]).doubleValue());
+            itemId = Integer.valueOf(ss[1]);
+            mu.put(itemId, Double.parseDouble(ss[2]));
             dataset.put(userId, mu);
             items.add(itemId);
           }

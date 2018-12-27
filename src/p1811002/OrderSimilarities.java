@@ -47,7 +47,7 @@ public class OrderSimilarities {
                 // Put every element into a map
                 map = new HashMap();
                 for (int i=0; i<ss.length; i++) {
-                    map.put(i, new Double(ss[i]).doubleValue());
+                    map.put(i, Double.parseDouble(ss[i]));
                 }
 
                 aux = Utilities.sortMapByValue(map);
