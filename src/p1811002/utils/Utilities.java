@@ -2,6 +2,7 @@ package p1811002.utils;
 
 import it.unimi.dsi.io.InputBitStream;
 import it.unimi.dsi.io.OutputBitStream;
+import p1811002.RowDelimiterException;
 
 import java.io.*;
 import java.util.*;
@@ -54,7 +55,7 @@ public class Utilities {
         }
     }
 
-    public static List<Integer> readLine (String inFile) {
+    public static List<Integer> readAllFile(String inFile) {
 
         List<Integer> res = new ArrayList();
 
@@ -81,4 +82,9 @@ public class Utilities {
         return res;
     }
 
+    public static void checkNull (Object o) {
+        if (null == o) {
+            throw new NullPointerException();
+        }
+    }
 }

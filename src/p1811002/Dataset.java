@@ -84,6 +84,5 @@ public interface Dataset {
     public Set<Integer> getUserIds() {
       return dataset.keySet();
     }
-
   }
 }

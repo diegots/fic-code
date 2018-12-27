@@ -23,7 +23,7 @@ public class ComputeSimilarityTest {
     Dataset dataset = new Dataset.MovieLensDataset();
     dataset.read(datasetPath);
 
-    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(similaritiesPath, neighborsPath, new Messages.Symbol("."));
+    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(similaritiesPath, neighborsPath, new Messages.Void());
     neighborhoodSimilarity.compute(dataset);
   }
 
@@ -33,10 +33,10 @@ public class ComputeSimilarityTest {
     Dataset dataset = new Dataset.MovieLensDataset();
     dataset.read(datasetPath);
 
-    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(similaritiesPath, neighborsPath, new Messages.Symbol("."));
+    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(similaritiesPath, neighborsPath, new Messages.Void());
     neighborhoodSimilarity.compute(dataset);
 
-    List<Integer> readData = Utilities.readLine(neighborsPath);
+    List<Integer> readData = Utilities.readAllFile(neighborsPath);
     assertEquals(671, readData.size());
   }
 

@@ -2,18 +2,13 @@ package p1811002;
 
 import p1811002.utils.Utilities;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 public class OrderSimilarities {
 
-    private String similaritiesPath;
-    private String idxPath;
+    private final String similaritiesPath;
+    private final String idxPath;
     private final Messages messages;
 
     public OrderSimilarities(String similaritiesPath, String idxPath, Messages messages) {
@@ -22,57 +17,33 @@ public class OrderSimilarities {
         this.messages = messages;
     }
 
-    public long order () {
-
+    public long order() {
         messages.printMessageln("Start ordering");
-
         final long start = System.currentTimeMillis();
-        final String DELIMITER = ",";
-        HashMap<Integer, Double> map;
-        Map<Integer, Double> aux;
-        Iterator<Integer> iterator;
-        StringBuilder idx;
 
-        int count = 1;
-        String s;
-        String [] ss;
-        File f = new File(similaritiesPath);
-
+        // 1. read from disk
         try {
-            BufferedReader br = new BufferedReader(new FileReader(f));
+            DataElement dataElement = new DataElement(new FileInputStream(Conf.getConf().getSimilaritiesPath()));
+            while (dataElement.hasMoreBits()) {
+                Map<Integer, Integer> dataRow = dataElement.readRowDelta();
 
-            while ((s = br.readLine()) != null) {
-                ss = s.split(DELIMITER);
+                // 2. order values
+                Map<Integer, Integer> sortedDataRow = Utilities.sortMapByValue(dataRow);
 
-                // Put every element into a map
-                map = new HashMap();
-                for (int i=0; i<ss.length; i++) {
-                    map.put(i, Double.parseDouble(ss[i]));
-                }
-
-                aux = Utilities.sortMapByValue(map);
-
-                idx = new StringBuilder();
-                iterator = aux.keySet().iterator();
-                while (iterator.hasNext()) {
-                    idx.append(iterator.next() + ",");
-                }
-                idx.delete(idx.length()-1, idx.length());
-
-                Utilities.writeLine(idxPath, idx.toString());
-
-                if (count++ % 100 == 0) {
-                    messages.printDoing();
-                }
+                // 3. store indexes as coded values
+                List<Integer> res = new ArrayList<>(sortedDataRow.keySet());
+                res.add(Conf.getConf().getRowDelimiter());
+                Utilities.writeLine(Conf.getConf().getOrderedIndexesPath(), res);
             }
 
-            br.close();
+            dataElement.closeStream();
 
-        } catch (IOException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
+            System.exit(1);
         }
-        messages.printMessageln(" done.");
 
+        messages.printMessageln(" done.");
         return System.currentTimeMillis() - start;
     }
 }

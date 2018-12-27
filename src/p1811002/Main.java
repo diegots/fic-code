@@ -14,13 +14,26 @@ public class Main {
      *  args[3] ordered indexes by weight
      */
 
+    // Prepare stuff
+    Conf conf = Conf.getConf();
+    try {
+      conf.setRowDelimiter(2000);
+    } catch (RowDelimiterException e) {
+      System.err.println("Bad row delimiter");
+      System.exit(1);
+    }
+    conf.setDataPath(args[0]);
+    conf.setSimilaritiesPath(args[1]);
+    conf.setNeighborhoodPath(args[2]);
+    conf.setOrderedIndexesPath(args[3]);
+
     final Messages messages = new Messages.Symbol(".");
 
     // Read dataset
     Dataset dataset = new Dataset.MovieLensDataset();
     dataset.read(args[0]);
 
-    // Compute similarity
+    // Compute similarities
     NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(args[1], args[2], messages);
     long t0 = neighborhoodSimilarity.compute(dataset);
     messages.printMessageln("Computing similarities took " + Units.milisecondsToSeconds(t0) + " seconds.");
