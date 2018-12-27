@@ -3,6 +3,7 @@ package test;
 import org.junit.After;
 import org.junit.Test;
 import p1811002.Dataset;
+import p1811002.Messages;
 import p1811002.NeighborhoodSimilarity;
 import p1811002.utils.Utilities;
 
@@ -22,7 +23,7 @@ public class ComputeSimilarityTest {
     Dataset dataset = new Dataset.MovieLensDataset();
     dataset.read(datasetPath);
 
-    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(similaritiesPath, neighborsPath, true);
+    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(similaritiesPath, neighborsPath, new Messages.Symbol("."));
     neighborhoodSimilarity.compute(dataset);
   }
 
@@ -32,7 +33,7 @@ public class ComputeSimilarityTest {
     Dataset dataset = new Dataset.MovieLensDataset();
     dataset.read(datasetPath);
 
-    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(similaritiesPath, neighborsPath, true);
+    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(similaritiesPath, neighborsPath, new Messages.Symbol("."));
     neighborhoodSimilarity.compute(dataset);
 
     List<Integer> readData = Utilities.readLine(neighborsPath);

@@ -19,16 +19,11 @@ public interface NeighborhoodSimilarity {
     private static String neighborsPath;
     private final Messages messages;
 
-    public Impl(String similaritiesPath, String neighborsPath, boolean withDots) {
+    public Impl(String similaritiesPath, String neighborsPath, Messages messages) {
 
       this.similaritiesPath = similaritiesPath;
       this.neighborsPath = neighborsPath;
-
-      if (withDots) {
-        messages = new Messages.Dot();
-      } else {
-        messages = new Messages.Void();
-      }
+      this.messages = messages;
     }
 
     class Denominators {
@@ -81,6 +76,8 @@ public interface NeighborhoodSimilarity {
       /* Fist compute denominators for all users */
       Denominators denominators = new Denominators();
       denominators.compute(dataset);
+
+      messages.printMessage("Computing similarities");
 
       final int MAX_USERS = 1384;
       final int TIMES = 1000;
@@ -159,13 +156,9 @@ public interface NeighborhoodSimilarity {
 
       /* Turn over the last batch of userIds */
       Utilities.writeLine(neighborsPath, neighborIds);
+      messages.printMessageln("done.");
 
-      return System.currentTimeMillis() - start / 1000;
-
-//      System.out.println(" for " + (count) + " users "
-//          + "took " + ((System.currentTimeMillis() - start)/1000) + " seconds.");
-
-
+      return System.currentTimeMillis() - start;
     }
   }
 
