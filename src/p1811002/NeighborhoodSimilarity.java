@@ -140,6 +140,9 @@ public interface NeighborhoodSimilarity {
           }
         }
 
+        // The matrix needs some special Id to mark the end of a row in case some variable length encoding is in use
+        similarities.add(Conf.getConf().getRowDelimiter());
+
         Utilities.writeLine(similaritiesPath, similarities);
 
         if (neighborIds.size() >= MAX_IDS_STORE) {
