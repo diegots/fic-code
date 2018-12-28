@@ -29,7 +29,7 @@ public class Conf {
   }
 
   public static void validRowDelimiter (int value) throws RowDelimiterException {
-    if (value >= LOWER_VALUE || value <= UPPER_VALUE ) {
+    if (value >= LOWER_VALUE && value <= UPPER_VALUE ) {
       throw new RowDelimiterException();
     }
   }
