@@ -134,13 +134,15 @@ public interface NeighborhoodSimilarity {
               sum += mapIterator.getValue() * ratingJ;
             }
 
-            res = TIMES * (sum / (denominators.getDenominator(userI) * denominators.getDenominator(userJ)));
+            res = TIMES * (sum / (denominators.getDenominator(userI)
+                * denominators.getDenominator(userJ)));
             similarities.add(res.intValue());
 
           }
         }
 
-        // The matrix needs some special Id to mark the end of a row in case some variable length encoding is in use
+        /* The matrix needs some special Id to mark the end of a row in case some variable length
+         * encoding is in use */
         similarities.add(Conf.getConf().getRowDelimiter());
 
         Utilities.writeLine(similaritiesPath, similarities);
