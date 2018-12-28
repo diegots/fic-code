@@ -4,7 +4,9 @@ public interface Messages {
 
   void printDoing ();
   void printMessage (String message);
+  void printMessage (int message);
   void printMessageln (String message);
+  void printMessageln (int message);
   void printErrln (String message);
 
   class Void implements Messages {
@@ -16,12 +18,20 @@ public interface Messages {
     public void printMessage(String message) {}
 
     @Override
+    public void printMessage(int message) {
+
+    }
+
+    @Override
     public void printMessageln(String message) {}
 
     @Override
-    public void printErrln(String message) {
+    public void printMessageln(int message) {
 
     }
+
+    @Override
+    public void printErrln(String message) {}
   }
 
   class Symbol implements Messages {
@@ -43,7 +53,17 @@ public interface Messages {
     }
 
     @Override
+    public void printMessage(int message) {
+      System.out.print(message);
+    }
+
+    @Override
     public void printMessageln(String message) {
+      System.out.println(message);
+    }
+
+    @Override
+    public void printMessageln(int message) {
       System.out.println(message);
     }
 
