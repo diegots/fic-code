@@ -15,11 +15,13 @@ public class Main {
      */
 
     // Prepare stuff
+    final Messages messages = new Messages.Symbol(".");
+
     Conf conf = Conf.getConf();
     try {
       conf.setRowDelimiter(2000);
     } catch (RowDelimiterException e) {
-      System.err.println("Bad row delimiter");
+      messages.printErrln("Bad row delimiter");
       System.exit(1);
     }
     conf.setDataPath(args[0]);
@@ -27,10 +29,8 @@ public class Main {
     conf.setNeighborhoodPath(args[2]);
     conf.setOrderedIndexesPath(args[3]);
 
-    final Messages messages = new Messages.Symbol(".");
-
     // Read dataset
-    Dataset dataset = new Dataset.MovieLensDataset();
+    Dataset dataset = new Dataset.MovieLensDataset(messages);
     dataset.read(args[0]);
 
     // Compute similarities

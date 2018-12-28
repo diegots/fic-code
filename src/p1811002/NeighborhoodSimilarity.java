@@ -31,7 +31,7 @@ public interface NeighborhoodSimilarity {
       private Map<Integer, Double> denominators;
 
       public void compute (Dataset dataset) {
-        System.out.print("Computing denominators...");
+        messages.printMessage("Computing denominators...");
 
         double d, sum;
         int userId;
@@ -61,7 +61,7 @@ public interface NeighborhoodSimilarity {
           md.put(userId, Math.sqrt(sum));
         }
 
-        System.out.println(" done.");
+        messages.printMessageln(" done.");
         denominators = md;
       }
       double getDenominator (int userId) {
