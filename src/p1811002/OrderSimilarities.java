@@ -7,14 +7,16 @@ import java.util.*;
 
 public class OrderSimilarities {
 
-    private final String similaritiesPath;
-    private final String idxPath;
     private final Messages messages;
+    private StreamOut streamOut;
 
-    public OrderSimilarities(String similaritiesPath, String idxPath, Messages messages) {
-        this.similaritiesPath = similaritiesPath;
-        this.idxPath = idxPath;
+    public OrderSimilarities(String idxPath, Messages messages) {
         this.messages = messages;
+        try {
+            streamOut = new StreamOut.DeltaStreamOut(new FileOutputStream(idxPath));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public long order() {
@@ -32,17 +34,19 @@ public class OrderSimilarities {
                 // 2. order values
                 Map<Integer, Integer> sortedDataRow = Utilities.sortMapByValue(dataRow);
 
+                Iterator<Integer> it = sortedDataRow.keySet().iterator();
+                while (it.hasNext())
+                    System.out.println("Id: " + it.next());
+
                 // 3. store indexes as coded values
                 List<Integer> res = new ArrayList<>(sortedDataRow.keySet());
                 res.add(Conf.getConf().getRowDelimiter());
-
-                // TODO write ordered indexes with compression
-                Utilities.writeLine(Conf.getConf().getOrderedIndexesPath(), res);
-
+                streamOut.write(res);
 
             }
 
             dataElement.closeStream();
+            streamOut.close();
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

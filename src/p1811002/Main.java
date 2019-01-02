@@ -40,7 +40,7 @@ public class Main {
     messages.printMessageln("Computing similarities took " + Units.milisecondsToSeconds(t0) + " seconds.");
 
     // Compute ordered indexes
-    OrderSimilarities orderSimilarities = new OrderSimilarities(args[1], args[3], messages);
+    OrderSimilarities orderSimilarities = new OrderSimilarities(args[3], messages);
     long t1 = orderSimilarities.order();
     messages.printMessageln("Ordering similarities took " + Units.milisecondsToSeconds(t1) + " seconds.");
   }

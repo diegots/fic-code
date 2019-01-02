@@ -8,9 +8,9 @@ import java.util.Iterator;
 import java.util.List;
 
 public interface StreamOut {
-  public void write(int [] a, int start, int count);
-  public void write(List<Integer> data);
-  public void close();
+  void write(int [] a, int start, int count);
+  void write(List<Integer> data);
+  void close();
 
   class DeltaStreamOut implements StreamOut {
 

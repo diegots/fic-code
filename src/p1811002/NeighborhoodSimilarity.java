@@ -102,9 +102,9 @@ public interface NeighborhoodSimilarity {
       Iterator<Integer> iteratorUsersI = dataset.getUserIds().iterator();
 
       // Prepare write destination
-      DeltaStreamOut writeDeltaSimilarities = null;
+      StreamOut streamOut = null;
       try {
-        writeDeltaSimilarities = new DeltaStreamOut(
+        streamOut = new StreamOut.DeltaStreamOut(
             new FileOutputStream(Conf.getConf().getSimilaritiesPath()));
       } catch (FileNotFoundException e) {
         e.printStackTrace();
@@ -156,7 +156,7 @@ public interface NeighborhoodSimilarity {
          * encoding is in use */
         similarities.add(Conf.getConf().getRowDelimiter());
 
-        writeDeltaSimilarities.writeDelta(similarities);
+        streamOut.write(similarities);
 
         if (neighborIds.size() >= MAX_IDS_STORE) {
           Utilities.writeLine(neighborsPath, neighborIds);
@@ -170,7 +170,7 @@ public interface NeighborhoodSimilarity {
         }
       }
 
-      writeDeltaSimilarities.close();
+      streamOut.close();
 
       /* Turn over the last batch of userIds */
       Utilities.writeLine(neighborsPath, neighborIds);
