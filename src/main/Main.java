@@ -1,6 +1,6 @@
-package p1811002;
+package main;
 
-import p1811002.utils.Units;
+import main.utils.Units;
 
 public class Main {
 

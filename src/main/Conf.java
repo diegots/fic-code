@@ -1,4 +1,4 @@
-package p1811002;
+package main;
 
 public class Conf {
 

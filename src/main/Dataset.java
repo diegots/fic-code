@@ -1,4 +1,4 @@
-package p1811002;
+package main;
 
 import org.apache.commons.collections4.map.HashedMap;
 

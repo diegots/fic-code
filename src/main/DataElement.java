@@ -1,8 +1,8 @@
-package p1811002;
+package main;
 
 import it.unimi.dsi.io.InputBitStream;
 import org.apache.commons.collections4.map.HashedMap;
-import p1811002.utils.Utilities;
+import main.utils.Utilities;
 
 import java.io.IOException;
 import java.io.InputStream;

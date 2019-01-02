@@ -3,8 +3,8 @@ package test;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import p1811002.*;
-import p1811002.utils.Utilities;
+import main.*;
+import main.utils.Utilities;
 
 import java.io.File;
 import java.util.Iterator;

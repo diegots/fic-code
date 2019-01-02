@@ -1,8 +1,8 @@
-package p1811002.utils;
+package main.utils;
 
 import it.unimi.dsi.io.InputBitStream;
 import it.unimi.dsi.io.OutputBitStream;
-import p1811002.Conf;
+import main.Conf;
 
 import java.io.*;
 import java.util.*;

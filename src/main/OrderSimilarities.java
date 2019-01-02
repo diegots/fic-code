@@ -1,6 +1,6 @@
-package p1811002;
+package main;
 
-import p1811002.utils.Utilities;
+import main.utils.Utilities;
 
 import java.io.*;
 import java.util.*;
