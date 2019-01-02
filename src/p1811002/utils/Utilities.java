@@ -3,7 +3,6 @@ package p1811002.utils;
 import it.unimi.dsi.io.InputBitStream;
 import it.unimi.dsi.io.OutputBitStream;
 import p1811002.Conf;
-import p1811002.RowDelimiterException;
 
 import java.io.*;
 import java.util.*;

@@ -23,7 +23,8 @@ public class OrderSimilarities {
 
         // 1. read from disk
         try {
-            DataElement dataElement = new DataElement(new FileInputStream(Conf.getConf().getSimilaritiesPath()));
+            DataElement dataElement = new DataElement(
+                new FileInputStream(Conf.getConf().getSimilaritiesPath()));
             while (dataElement.hasMoreBits()) {
                 messages.printDoing();
                 Map<Integer, Integer> dataRow = dataElement.readRowDelta();
@@ -34,7 +35,11 @@ public class OrderSimilarities {
                 // 3. store indexes as coded values
                 List<Integer> res = new ArrayList<>(sortedDataRow.keySet());
                 res.add(Conf.getConf().getRowDelimiter());
+
+                // TODO write ordered indexes with compression
                 Utilities.writeLine(Conf.getConf().getOrderedIndexesPath(), res);
+
+
             }
 
             dataElement.closeStream();
