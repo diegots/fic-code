@@ -27,12 +27,15 @@ public class ComputeSimilarityTest {
 
     conf = Conf.getConf();
     conf.setRowDelimiter(2000);
+    conf.setSimilaritiesPath(similaritiesPath);
+    conf.setDataPath(datasetPath);
+    conf.setNeighborhoodPath(neighborsPath);
   }
 
   @Test
   public void generateOutput () {
     Dataset dataset = new Dataset.MovieLensDataset(messages);
-    dataset.read(datasetPath);
+    dataset.read(conf.getDataPath());
 
     NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(similaritiesPath, neighborsPath, messages);
     neighborhoodSimilarity.compute(dataset);

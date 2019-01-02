@@ -4,6 +4,8 @@ import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.map.HashedMap;
 import p1811002.utils.Utilities;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -97,7 +99,16 @@ public interface NeighborhoodSimilarity {
       List<Integer> similarities;
       List<Integer> neighborIds = new ArrayList<>();
       Iterator<Integer> iteratorUsersJ;
-      Iterator<Integer> iteratorUsersI = dataset.getUserIds().iterator();;
+      Iterator<Integer> iteratorUsersI = dataset.getUserIds().iterator();
+
+      // Prepare write destination
+      WriteDeltaStream writeDeltaSimilarities = null;
+      try {
+        writeDeltaSimilarities = new WriteDeltaStream(
+            new FileOutputStream(Conf.getConf().getSimilaritiesPath()));
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
 
       while (iteratorUsersI.hasNext()) {
 
@@ -145,7 +156,7 @@ public interface NeighborhoodSimilarity {
          * encoding is in use */
         similarities.add(Conf.getConf().getRowDelimiter());
 
-        Utilities.writeLine(similaritiesPath, similarities);
+        writeDeltaSimilarities.writeOut(similarities);
 
         if (neighborIds.size() >= MAX_IDS_STORE) {
           Utilities.writeLine(neighborsPath, neighborIds);
@@ -158,6 +169,8 @@ public interface NeighborhoodSimilarity {
           break;
         }
       }
+
+      writeDeltaSimilarities.close();
 
       /* Turn over the last batch of userIds */
       Utilities.writeLine(neighborsPath, neighborIds);

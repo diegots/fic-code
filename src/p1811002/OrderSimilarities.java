@@ -18,13 +18,14 @@ public class OrderSimilarities {
     }
 
     public long order() {
-        messages.printMessageln("Start ordering");
+        messages.printMessage("Start ordering");
         final long start = System.currentTimeMillis();
 
         // 1. read from disk
         try {
             DataElement dataElement = new DataElement(new FileInputStream(Conf.getConf().getSimilaritiesPath()));
             while (dataElement.hasMoreBits()) {
+                messages.printDoing();
                 Map<Integer, Integer> dataRow = dataElement.readRowDelta();
 
                 // 2. order values

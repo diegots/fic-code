@@ -20,12 +20,13 @@ public class DataElement {
   public Map<Integer, Integer> readRowDelta () {
 
     Map<Integer, Integer> res = new HashedMap<>();
-    int value = 0;
+    int value;
     int i = 0;
     try {
       while (bitStream.available() > 0) {
+        value = bitStream.readDelta();
         if (Conf.getConf().getRowDelimiter() != value) {
-          res.put(i++, bitStream.readDelta());
+          res.put(i++, value);
         } else {
           break;
         }

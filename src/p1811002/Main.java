@@ -16,10 +16,11 @@ public class Main {
 
     // Prepare stuff
     final Messages messages = new Messages.Symbol(".");
+    //final Messages messages = new Messages.Void();
 
     Conf conf = Conf.getConf();
     try {
-      conf.setRowDelimiter(2000);
+      conf.setRowDelimiter(1002);
     } catch (RowDelimiterException e) {
       messages.printErrln("Bad row delimiter");
       System.exit(1);
