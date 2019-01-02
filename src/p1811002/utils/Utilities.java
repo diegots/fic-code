@@ -2,6 +2,7 @@ package p1811002.utils;
 
 import it.unimi.dsi.io.InputBitStream;
 import it.unimi.dsi.io.OutputBitStream;
+import p1811002.Conf;
 import p1811002.RowDelimiterException;
 
 import java.io.*;
@@ -75,6 +76,30 @@ public class Utilities {
         } catch (EOFException e) {
             // This is not an exception, the input was read completelly
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return res;
+    }
+
+    public static List<Integer> readOneRow(String inFile) {
+        List<Integer> res = new ArrayList<>();
+
+        try {
+            FileInputStream fis = new FileInputStream(inFile);
+            InputBitStream ibs = new InputBitStream(fis);
+
+            while (ibs.available() > 0) {
+                int i = ibs.readDelta();
+
+                if (Conf.getConf().getRowDelimiter() == i) {
+                    break;
+                }
+
+                res.add(i);
+            }
+            ibs.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
