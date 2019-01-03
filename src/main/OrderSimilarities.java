@@ -27,21 +27,21 @@ public class OrderSimilarities {
 
     // 1. read from disk
     try {
-      DataElement dataElement = new DataElement(
+      Row row = new Row(
           new FileInputStream(Conf.getConf().getSimilaritiesPath()));
-      while (dataElement.hasMoreBits()) {
+      while (row.hasMoreBits()) {
         messages.printDoing();
-        Map<Integer, Integer> dataRow = dataElement.readRowDelta();
+        Map<Integer, Integer> readRow = row.readRowDelta();
 
         // 2. order values
-        LinkedMap<Integer, Integer> sortedDataRow = Utilities.sortMapByValue(dataRow);
+        LinkedMap<Integer, Integer> sortedRow = Utilities.sortMapByValue(readRow);
 
         // 3. store indexes as coded values
         List<Integer> res = new ArrayList<>();
 
         // Insert only k elements
         int i = 0;
-        MapIterator<Integer, Integer> iterator = sortedDataRow.mapIterator();
+        MapIterator<Integer, Integer> iterator = sortedRow.mapIterator();
         while (iterator.hasNext() && i++ < Conf.getConf().getK()) {
           iterator.next();
           res.add(iterator.getKey());
@@ -51,7 +51,7 @@ public class OrderSimilarities {
         streamOut.write(res);
       }
 
-      dataElement.closeStream();
+      row.closeStream();
       streamOut.close();
 
     } catch (FileNotFoundException e) {
