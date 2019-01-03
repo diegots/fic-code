@@ -44,5 +44,12 @@ public class Main {
     OrderSimilarities orderSimilarities = new OrderSimilarities(args[3], messages);
     long t1 = orderSimilarities.order();
     messages.printMessageln("Ordering similarities took " + Units.milisecondsToSeconds(t1) + " seconds.");
+
+    // Similarities reassignment
+      // 1. Real all similarities file for computing frequency
+      // 2. Write final final changing values by frequency
+      // 3. Delete all file
+      // 4. Write mapping table to disk
+
   }
 }
