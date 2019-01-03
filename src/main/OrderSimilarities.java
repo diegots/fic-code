@@ -1,6 +1,8 @@
 package main;
 
 import main.utils.Utilities;
+import org.apache.commons.collections4.MapIterator;
+import org.apache.commons.collections4.map.LinkedMap;
 
 import java.io.*;
 import java.util.*;
@@ -32,17 +34,21 @@ public class OrderSimilarities {
                 Map<Integer, Integer> dataRow = dataElement.readRowDelta();
 
                 // 2. order values
-                Map<Integer, Integer> sortedDataRow = Utilities.sortMapByValue(dataRow);
-
-                Iterator<Integer> it = sortedDataRow.keySet().iterator();
-                while (it.hasNext())
-                    System.out.println("Id: " + it.next());
+                LinkedMap<Integer, Integer> sortedDataRow = Utilities.sortMapByValue(dataRow);
 
                 // 3. store indexes as coded values
-                List<Integer> res = new ArrayList<>(sortedDataRow.keySet());
+                List<Integer> res = new ArrayList<>();
+
+                // Insert only k elements
+                int i = 0;
+                MapIterator<Integer, Integer> iterator = sortedDataRow.mapIterator();
+                while (iterator.hasNext() && i++ < Conf.getConf().getK()) {
+                  iterator.next();
+                  res.add(iterator.getKey());
+                }
+
                 res.add(Conf.getConf().getRowDelimiter());
                 streamOut.write(res);
-
             }
 
             dataElement.closeStream();

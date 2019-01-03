@@ -3,13 +3,14 @@ package main.utils;
 import it.unimi.dsi.io.InputBitStream;
 import it.unimi.dsi.io.OutputBitStream;
 import main.Conf;
+import org.apache.commons.collections4.map.LinkedMap;
 
 import java.io.*;
 import java.util.*;
 
 public class Utilities {
 
-    public static <K, V extends Comparable<? super V>> Map<K, V> sortMapByValue(Map<K, V> map) {
+    public static <K, V extends Comparable<? super V>> LinkedMap<K, V> sortMapByValue(Map<K, V> map) {
         List<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
 
         Collections.sort( list, new Comparator<Map.Entry<K, V>>() {
@@ -19,7 +20,7 @@ public class Utilities {
             }
         });
 
-        Map<K, V> result = new LinkedHashMap<>();
+        LinkedMap<K, V> result = new LinkedMap<>();
         for (Map.Entry<K, V> entry : list)
             result.put(entry.getKey(), entry.getValue());
 

@@ -29,6 +29,7 @@ public class Main {
     conf.setSimilaritiesPath(args[1]);
     conf.setNeighborhoodPath(args[2]);
     conf.setOrderedIndexesPath(args[3]);
+    conf.setK(25);
 
     // Read dataset
     Dataset dataset = new Dataset.MovieLensDataset(messages);

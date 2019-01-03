@@ -6,6 +6,8 @@ public class Conf {
   private static final int UPPER_VALUE = 1000;
 
   private int rowDelimiter;
+  private int k;
+
   private String dataPath;
   private String similaritiesPath;
   private String neighborhoodPath;
@@ -64,5 +66,13 @@ public class Conf {
 
   public void setOrderedIndexesPath(String orderedIndexesPath) {
     this.orderedIndexesPath = orderedIndexesPath;
+  }
+
+  public int getK() {
+    return k;
+  }
+
+  public void setK(int k) {
+    this.k = k;
   }
 }
