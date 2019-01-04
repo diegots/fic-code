@@ -12,6 +12,19 @@ public interface StreamOut {
   void write(List<Integer> data);
   void close();
 
+  /** Avoids any kind of writing in case engine result is going to be kept in memory */
+  class Default implements StreamOut {
+
+    @Override
+    public void write(int[] a, int start, int count) {}
+
+    @Override
+    public void write(List<Integer> data) {}
+
+    @Override
+    public void close() {}
+  }
+
   class DeltaStreamOut implements StreamOut {
 
     private final OutputBitStream outputBitStream;

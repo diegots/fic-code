@@ -11,16 +11,11 @@ public class ProccessRows {
   private final Messages messages;
   private StreamOut streamOut;
 
-  public ProccessRows(String destPath, Messages messages) {
+  public ProccessRows(Messages messages) {
     this.messages = messages;
-    try {
-      streamOut = new StreamOut.DeltaStreamOut(new FileOutputStream(destPath));
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
   }
 
-  public long process(RowTask rowTask) {
+  public long process(RowTask rowTask, StreamOut streamOut) {
     messages.printMessage("Start processing rows");
     final long start = System.currentTimeMillis();
 
@@ -36,6 +31,7 @@ public class ProccessRows {
         List<Integer> computedValues = rowTask.doTheTask(readRow);
 
         // Do something with the results
+        rowTask.storeResults(computedValues);
         computedValues.add(Conf.getConf().getRowDelimiter());
         streamOut.write(computedValues);
       }

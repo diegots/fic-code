@@ -2,6 +2,9 @@ package main;
 
 import main.utils.Units;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
 public class Main {
 
   public static void main(String[] args) {
@@ -41,17 +44,23 @@ public class Main {
     messages.printMessageln("Computing similarities took " + Units.milisecondsToSeconds(t0) + " seconds.");
 
     // Get processing engine
-    ProccessRows rowsEngine = new ProccessRows(args[3], messages);
+    ProccessRows rowsEngine = new ProccessRows(messages);
 
     // Compute ordered indexes
-    long t1 = rowsEngine.process(new RowTask.Order());
+    StreamOut streamOut = null;
+    try {
+      streamOut = new StreamOut.DeltaStreamOut(new FileOutputStream(args[3]));
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+    long t1 = rowsEngine.process(new RowTask.Order(), streamOut);
     messages.printMessageln("Ordering similarities took " + Units.milisecondsToSeconds(t1) + " seconds.");
 
     // Frequency compuring
-    long t2 = rowsEngine.process(new RowTask.FrequencyCompute());
+    long t2 = rowsEngine.process(new RowTask.FrequencyCompute(), new StreamOut.Default());
 
     // Ids reassingment
-    long t3 = rowsEngine.process(new RowTask.ReassignIds());
+    long t3 = rowsEngine.process(new RowTask.ReassignIds(), new StreamOut.Default());
 
   }
 }
