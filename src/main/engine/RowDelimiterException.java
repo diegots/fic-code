@@ -1,3 +1,3 @@
-package main;
+package main.engine;
 
 public class RowDelimiterException extends Exception{}

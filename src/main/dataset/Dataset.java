@@ -1,4 +1,4 @@
-package main;
+package main.dataset;
 
 import main.utils.Messages;
 import org.apache.commons.collections4.map.HashedMap;

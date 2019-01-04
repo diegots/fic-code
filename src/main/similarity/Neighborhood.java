@@ -1,5 +1,8 @@
-package main;
+package main.similarity;
 
+import main.Conf;
+import main.dataset.Dataset;
+import main.stream.StreamOut;
 import main.utils.Messages;
 import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.map.HashedMap;
@@ -12,11 +15,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public interface NeighborhoodSimilarity {
+public interface Neighborhood {
 
   long compute (Dataset dataset);
 
-  class Impl implements NeighborhoodSimilarity {
+  class Impl implements Neighborhood {
 
     private static String similaritiesPath;
     private static String neighborsPath;

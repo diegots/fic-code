@@ -1,5 +1,11 @@
 package main;
 
+import main.dataset.Dataset;
+import main.engine.ProccessRows;
+import main.engine.RowDelimiterException;
+import main.engine.RowTask;
+import main.similarity.Neighborhood;
+import main.stream.StreamOut;
 import main.utils.Messages;
 import main.utils.Units;
 
@@ -40,8 +46,8 @@ public class Main {
     dataset.read(args[0]);
 
     // Compute similarities
-    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(args[1], args[2], messages);
-    long t0 = neighborhoodSimilarity.compute(dataset);
+    Neighborhood neighborhood = new Neighborhood.Impl(args[1], args[2], messages);
+    long t0 = neighborhood.compute(dataset);
     messages.printMessageln("Computing similarities took " + Units.milisecondsToSeconds(t0) + " seconds.");
 
     // Get processing engine
@@ -57,11 +63,11 @@ public class Main {
     long t1 = rowsEngine.process(new RowTask.Order(), streamOut);
     messages.printMessageln("Ordering similarities took " + Units.milisecondsToSeconds(t1) + " seconds.");
 
-    // Frequency compuring
-    long t2 = rowsEngine.process(new RowTask.FrequencyCompute(), new StreamOut.Default());
-
-    // Ids reassingment
-    long t3 = rowsEngine.process(new RowTask.ReassignIds(), new StreamOut.Default());
+//    // Frequency compuring
+//    long t2 = rowsEngine.process(new RowTask.FrequencyCompute(), new StreamOut.Default());
+//
+//    // Ids reassingment
+//    long t3 = rowsEngine.process(new RowTask.ReassignIds(), new StreamOut.Default());
 
   }
 }

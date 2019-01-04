@@ -1,5 +1,7 @@
 package main;
 
+import main.engine.RowDelimiterException;
+
 public class Conf {
 
   private static final int LOWER_VALUE = 0;

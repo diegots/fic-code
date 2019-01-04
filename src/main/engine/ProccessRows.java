@@ -1,5 +1,7 @@
-package main;
+package main.engine;
 
+import main.Conf;
+import main.stream.StreamOut;
 import main.utils.Messages;
 
 import java.io.FileInputStream;
@@ -10,14 +12,13 @@ import java.util.Map;
 public class ProccessRows {
 
   private final Messages messages;
-  private StreamOut streamOut;
 
   public ProccessRows(Messages messages) {
     this.messages = messages;
   }
 
   public long process(RowTask rowTask, StreamOut streamOut) {
-    messages.printMessage("Start processing rows");
+    messages.printMessage("Start " + rowTask.getTaskName());
     final long start = System.currentTimeMillis();
 
     // 1. read from disk
@@ -31,9 +32,7 @@ public class ProccessRows {
         // Do something with this row
         List<Integer> computedValues = rowTask.doTheTask(readRow);
 
-        // Do something with the results
-        rowTask.storeResults(computedValues);
-        computedValues.add(Conf.getConf().getRowDelimiter());
+        // Store it
         streamOut.write(computedValues);
       }
 

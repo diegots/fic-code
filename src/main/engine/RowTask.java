@@ -1,5 +1,6 @@
-package main;
+package main.engine;
 
+import main.Conf;
 import main.utils.Utilities;
 import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.map.LinkedMap;
@@ -12,13 +13,16 @@ import java.util.Map;
 public interface RowTask {
 
   List<Integer> doTheTask (Map<Integer, Integer> row);
+  String getTaskName ();
 
   class Order implements RowTask {
+
+    static final String TASK_NAME = "Ordering";
 
     @Override
     public List<Integer> doTheTask(Map<Integer, Integer> row) {
 
-      // 2. process values
+      // 2. sort values
       LinkedMap<Integer, Integer> sortedRow = Utilities.sortMapByValue(row);
 
       // Store indexes as coded values but insert only the k-top elements
@@ -29,12 +33,22 @@ public interface RowTask {
         iterator.next();
         result.add(iterator.getKey());
       }
+
+      // Add row delimiter
+      result.add(Conf.getConf().getRowDelimiter());
+
       return result;
+    }
+
+    @Override
+    public String getTaskName() {
+      return TASK_NAME;
     }
   }
 
   class FrequencyCompute implements RowTask {
 
+    static final String TASK_NAME = "Computing frequency";
     private final List<Integer> frequencies = new ArrayList<>();
 
     @Override
@@ -53,13 +67,25 @@ public interface RowTask {
       }
       return frequencies;
     }
+
+    @Override
+    public String getTaskName() {
+      return TASK_NAME;
+    }
   }
 
   class ReassignIds implements RowTask {
 
+    static final String TASK_NAME = "Compute frequency";
+
     @Override
     public List<Integer> doTheTask(Map<Integer, Integer> row) {
       return null;
+    }
+
+    @Override
+    public String getTaskName() {
+      return TASK_NAME;
     }
   }
 }

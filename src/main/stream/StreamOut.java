@@ -1,4 +1,4 @@
-package main;
+package main.stream;
 
 import it.unimi.dsi.io.OutputBitStream;
 

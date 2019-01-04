@@ -1,6 +1,7 @@
-package main;
+package main.engine;
 
 import it.unimi.dsi.io.InputBitStream;
+import main.Conf;
 import org.apache.commons.collections4.map.HashedMap;
 import main.utils.Utilities;
 
