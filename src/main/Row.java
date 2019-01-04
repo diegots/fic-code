@@ -8,11 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-public class DataElement {
+public class Row {
 
   private final InputBitStream bitStream;
 
-  public DataElement(InputStream stream) {
+  public Row(InputStream stream) {
     Utilities.checkNull(stream);
     bitStream = new InputBitStream(stream);
   }
