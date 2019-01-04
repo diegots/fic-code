@@ -11,6 +11,8 @@ import main.utils.Units;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 
@@ -64,11 +66,12 @@ public class Main {
     messages.printMessageln("Ordering similarities took " + Units.milisecondsToSeconds(t1) + " seconds.");
 
     // Frequency compuring
-    long t2 = rowsEngine.process(new RowTask.FrequencyCompute(), new StreamOut.Default());
+    final List<Integer> frequencyTable = new ArrayList<>();
+    long t2 = rowsEngine.process(new RowTask.FrequencyCompute(), new StreamOut.Memory(frequencyTable));
     messages.printMessageln("Frequency computing took " + Units.milisecondsToSeconds(t2) + " seconds.");
-//
-//    // Ids reassingment
-//    long t3 = rowsEngine.process(new RowTask.ReassignIds(), new StreamOut.Default());
+
+    // Ids reassingment
+//    long t3 = rowsEngine.process(new RowTask.ReassignIds(), new StreamOut.Memory());
 
   }
 }

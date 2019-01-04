@@ -68,7 +68,6 @@ public interface RowTask {
         int similarity = row.get(rowIterator.next());
         Integer count = frequencies.get(similarity);
         count++;
-        System.err.println("Similarity: " + similarity + " - time: " + count);
         frequencies.set(similarity, count);
 
       }
@@ -87,6 +86,9 @@ public interface RowTask {
 
     @Override
     public List<Integer> doTheTask(Map<Integer, Integer> row) {
+
+      // Convert read values into new values and write them out
+
       return null;
     }
 

@@ -13,16 +13,27 @@ public interface StreamOut {
   void close();
 
   /** Avoids any kind of writing in case engine result is going to be kept in memory */
-  class Default implements StreamOut {
+  class Memory implements StreamOut {
+
+    final private List<Integer> exportData;
+    private List<Integer> currentData;
+
+    public Memory(List<Integer> data) {
+      this.exportData = data;
+    }
 
     @Override
     public void write(int[] a, int start, int count) {}
 
     @Override
-    public void write(List<Integer> data) {}
+    public void write(List<Integer> data) {
+      currentData = data;
+    }
 
     @Override
-    public void close() {}
+    public void close() {
+      exportData.addAll(currentData);
+    }
   }
 
   class DeltaStreamOut implements StreamOut {
