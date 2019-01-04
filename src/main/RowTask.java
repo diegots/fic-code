@@ -5,12 +5,13 @@ import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.map.LinkedMap;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public interface RowTask {
 
-  public List<Integer> doTheTask (Map<Integer, Integer> row);
+  List<Integer> doTheTask (Map<Integer, Integer> row);
 
   class Order implements RowTask {
 
@@ -32,12 +33,33 @@ public interface RowTask {
     }
   }
 
+  class FrequencyCompute implements RowTask {
+
+    private final List<Integer> frequencies = new ArrayList<>();
+
+    @Override
+    public List<Integer> doTheTask(Map<Integer, Integer> row) {
+
+      Iterator<Integer> rowIterator = row.keySet().iterator();
+      while (rowIterator.hasNext()) {
+        int rowValue = row.get(rowIterator.next());
+
+        Integer count = frequencies.get(rowValue);
+        if (null == count) {
+          frequencies.add(rowValue, 1);
+        } else {
+          frequencies.add(rowValue, count++);
+        }
+      }
+      return frequencies;
+    }
+  }
+
   class ReassignIds implements RowTask {
+
     @Override
     public List<Integer> doTheTask(Map<Integer, Integer> row) {
       return null;
     }
   }
-
-
 }

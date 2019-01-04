@@ -40,13 +40,18 @@ public class Main {
     long t0 = neighborhoodSimilarity.compute(dataset);
     messages.printMessageln("Computing similarities took " + Units.milisecondsToSeconds(t0) + " seconds.");
 
+    // Get processing engine
+    ProccessRows rowsEngine = new ProccessRows(args[3], messages);
+
     // Compute ordered indexes
-    ProccessRows rows = new ProccessRows(args[3], messages);
-    long t1 = rows.process(new RowTask.Order());
+    long t1 = rowsEngine.process(new RowTask.Order());
     messages.printMessageln("Ordering similarities took " + Units.milisecondsToSeconds(t1) + " seconds.");
 
-    // Similarities reassignment
+    // Frequency compuring
+    long t2 = rowsEngine.process(new RowTask.FrequencyCompute());
 
+    // Ids reassingment
+    long t3 = rowsEngine.process(new RowTask.ReassignIds());
 
   }
 }

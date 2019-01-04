@@ -21,7 +21,7 @@ public class ProccessRows {
   }
 
   public long process(RowTask rowTask) {
-    messages.printMessage("Start ordering");
+    messages.printMessage("Start processing rows");
     final long start = System.currentTimeMillis();
 
     // 1. read from disk
@@ -33,10 +33,11 @@ public class ProccessRows {
         Map<Integer, Integer> readRow = row.readRowDelta();
 
         // Do something with this row
-        List<Integer> newRow = rowTask.doTheTask(readRow);
+        List<Integer> computedValues = rowTask.doTheTask(readRow);
 
-        newRow.add(Conf.getConf().getRowDelimiter());
-        streamOut.write(newRow);
+        // Do something with the results
+        computedValues.add(Conf.getConf().getRowDelimiter());
+        streamOut.write(computedValues);
       }
 
       streamOut.close();
