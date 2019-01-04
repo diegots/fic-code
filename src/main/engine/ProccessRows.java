@@ -25,12 +25,14 @@ public class ProccessRows {
     try {
       Row row = new Row(
           new FileInputStream(Conf.getConf().getSimilaritiesPath()));
+
+      List<Integer> computedValues = null;
       while (row.hasMoreBits()) {
         messages.printDoing();
         Map<Integer, Integer> readRow = row.readRowDelta();
 
         // Do something with this row
-        List<Integer> computedValues = rowTask.doTheTask(readRow);
+        computedValues = rowTask.doTheTask(readRow);
 
         // Store it
         streamOut.write(computedValues);

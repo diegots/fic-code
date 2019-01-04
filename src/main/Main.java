@@ -63,8 +63,9 @@ public class Main {
     long t1 = rowsEngine.process(new RowTask.Order(), streamOut);
     messages.printMessageln("Ordering similarities took " + Units.milisecondsToSeconds(t1) + " seconds.");
 
-//    // Frequency compuring
-//    long t2 = rowsEngine.process(new RowTask.FrequencyCompute(), new StreamOut.Default());
+    // Frequency compuring
+    long t2 = rowsEngine.process(new RowTask.FrequencyCompute(), new StreamOut.Default());
+    messages.printMessageln("Frequency computing took " + Units.milisecondsToSeconds(t2) + " seconds.");
 //
 //    // Ids reassingment
 //    long t3 = rowsEngine.process(new RowTask.ReassignIds(), new StreamOut.Default());

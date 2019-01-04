@@ -48,22 +48,29 @@ public interface RowTask {
 
   class FrequencyCompute implements RowTask {
 
+    static final int SIMILARITY_MAX = 1000;
     static final String TASK_NAME = "Computing frequency";
-    private final List<Integer> frequencies = new ArrayList<>();
+    private final List<Integer> frequencies;
+
+    public FrequencyCompute() {
+      frequencies = new ArrayList<>();
+      for (int i=0; i<=SIMILARITY_MAX; i++) {
+        frequencies.add(0);
+      }
+
+    }
 
     @Override
     public List<Integer> doTheTask(Map<Integer, Integer> row) {
 
       Iterator<Integer> rowIterator = row.keySet().iterator();
       while (rowIterator.hasNext()) {
-        int rowValue = row.get(rowIterator.next());
+        int similarity = row.get(rowIterator.next());
+        Integer count = frequencies.get(similarity);
+        count++;
+        System.err.println("Similarity: " + similarity + " - time: " + count);
+        frequencies.set(similarity, count);
 
-        Integer count = frequencies.get(rowValue);
-        if (null == count) {
-          frequencies.add(rowValue, 1);
-        } else {
-          frequencies.add(rowValue, count++);
-        }
       }
       return frequencies;
     }
