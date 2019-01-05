@@ -4,6 +4,7 @@ import it.unimi.dsi.io.InputBitStream;
 import main.Conf;
 import org.apache.commons.collections4.map.HashedMap;
 import main.utils.Utilities;
+import org.apache.commons.collections4.map.LinkedMap;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +21,7 @@ public class Row {
 
   public Map<Integer, Integer> readRowDelta () {
 
-    Map<Integer, Integer> res = new HashedMap<>();
+    Map<Integer, Integer> res = new LinkedMap<>();
     int value;
     int i = 0;
     try {
