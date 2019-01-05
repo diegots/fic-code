@@ -56,13 +56,7 @@ public class Main {
     ProccessRows rowsEngine = new ProccessRows(messages);
 
     // Compute ordered indexes
-    StreamOut streamOut = null;
-    try {
-      streamOut = new StreamOut.DeltaStreamOut(new FileOutputStream(args[3]));
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
-    long t1 = rowsEngine.process(new RowTask.Order(), streamOut);
+    long t1 = rowsEngine.process(new RowTask.Order(), createDeltaStreamOut("uncompressed-" + args[3]));
     messages.printMessageln("Ordering similarities took " + Units.milisecondsToSeconds(t1) + " seconds.");
 
     // Frequency compuring
@@ -71,7 +65,17 @@ public class Main {
     messages.printMessageln("Frequency computing took " + Units.milisecondsToSeconds(t2) + " seconds.");
 
     // Ids reassingment
-//    long t3 = rowsEngine.process(new RowTask.ReassignIds(), new StreamOut.Memory());
+    long t3 = rowsEngine.process(new RowTask.ReassignIds(frequencyTable), createDeltaStreamOut(args[3]));
+    messages.printMessageln("Frequency computing took " + Units.milisecondsToSeconds(t3) + " seconds.");
+  }
 
+  static StreamOut createDeltaStreamOut(String pathToFile) {
+    StreamOut streamOut = null;
+    try {
+      streamOut = new StreamOut.DeltaStreamOut(new FileOutputStream(pathToFile));
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+    return streamOut;
   }
 }
