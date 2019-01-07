@@ -1,6 +1,7 @@
 package main;
 
 import main.dataset.Dataset;
+import main.dataset.FrequencyTable;
 import main.engine.ProccessRows;
 import main.engine.RowDelimiterException;
 import main.engine.RowTask;
@@ -21,18 +22,19 @@ public class Main {
     /**
      *  This programm uses the following parameters:
      *  args[0] dataset file -> userId | movieId | rating | timestamp
-     *  args[1] similatiries matrix path
+     *  args[1] not reassigned similatiries matrix destination
      *  args[2] similarities matrix's indexes
      *  args[3] ordered indexes by weight
+     *  args[4] reassigned similarities matrix destination
      */
 
     // Prepare stuff
-    final Messages messages = new Messages.Symbol(".");
-    //final Messages messages = new Messages.Void();
+    //final Messages messages = new Messages.Symbol(".");
+    final Messages messages = new Messages.Void();
 
     Conf conf = Conf.getConf();
     try {
-      conf.setRowDelimiter(1002);
+      conf.setRowDelimiter(1001);
     } catch (RowDelimiterException e) {
       messages.printErrln("Bad row delimiter");
       System.exit(1);
@@ -56,17 +58,17 @@ public class Main {
     ProccessRows rowsEngine = new ProccessRows(messages);
 
     // Compute ordered indexes
-    long t1 = rowsEngine.process(new RowTask.Order(), createDeltaStreamOut("uncompressed-" + args[3]));
+    long t1 = rowsEngine.process(new RowTask.Order(), createDeltaStreamOut(args[3]));
     messages.printMessageln("Ordering similarities took " + Units.milisecondsToSeconds(t1) + " seconds.");
 
     // Frequency compuring
-    final List<Integer> frequencyTable = new ArrayList<>();
-    long t2 = rowsEngine.process(new RowTask.FrequencyCompute(), new StreamOut.Memory(frequencyTable));
+    final List<Integer> aux = new ArrayList<>();
+    long t2 = rowsEngine.process(new RowTask.FrequencyCompute(), new StreamOut.Memory(aux));
     messages.printMessageln("Frequency computing took " + Units.milisecondsToSeconds(t2) + " seconds.");
 
     // Ids reassingment
-    long t3 = rowsEngine.process(new RowTask.ReassignIds(frequencyTable), createDeltaStreamOut(args[3]));
-    messages.printMessageln("Frequency computing took " + Units.milisecondsToSeconds(t3) + " seconds.");
+    long t3 = rowsEngine.process(new RowTask.ReassignIds(new FrequencyTable(aux)), createDeltaStreamOut(args[4]));
+    messages.printMessageln("Similarity values reassignment took " + Units.milisecondsToSeconds(t3) + " seconds.");
   }
 
   static StreamOut createDeltaStreamOut(String pathToFile) {

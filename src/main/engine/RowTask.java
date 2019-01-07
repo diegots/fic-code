@@ -1,6 +1,7 @@
 package main.engine;
 
 import main.Conf;
+import main.dataset.FrequencyTable;
 import main.utils.Utilities;
 import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.map.LinkedMap;
@@ -83,13 +84,34 @@ public interface RowTask {
   class ReassignIds implements RowTask {
 
     static final String TASK_NAME = "Compute frequency";
+    final FrequencyTable frequencyTable;
+
+    public ReassignIds(FrequencyTable frequencyTable) {
+      this.frequencyTable = frequencyTable;
+    }
 
     @Override
     public List<Integer> doTheTask(Map<Integer, Integer> row) {
 
-      // Convert read values into new values and write them out
+      List<Integer> result = new ArrayList<>();
 
-      return null;
+      // Receive a fresh read row
+      LinkedMap<Integer, Integer> orderedMap = null;
+      if (row instanceof LinkedMap) {
+        orderedMap = (LinkedMap<Integer, Integer>) row;
+      }
+
+      MapIterator<Integer, Integer> iterator = orderedMap.mapIterator();
+      while (iterator.hasNext()) {
+        iterator.next();
+        int value = iterator.getValue();
+        result.add(frequencyTable.encodeValue(value));
+      }
+
+      // Add row delimiter
+      result.add(Conf.getConf().getRowDelimiter());
+
+      return result;
     }
 
     @Override

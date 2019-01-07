@@ -4,6 +4,8 @@ package main.dataset;
 import main.utils.Utilities;
 import org.apache.commons.collections4.map.LinkedMap;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class FrequencyTable {
@@ -17,7 +19,10 @@ public class FrequencyTable {
       aux.put(i, unsortedFrequencyTable.get(i));
     }
 
-    frequencyTable = Utilities.sortMapByValue(aux).asList();
+    LinkedMap<Integer, Integer> sortedFreqTable = Utilities.sortMapByValue(aux);
+
+    frequencyTable = new ArrayList<>(sortedFreqTable.asList());
+    Collections.reverse(frequencyTable);
   }
 
   public int encodeValue (int rawValue) {
