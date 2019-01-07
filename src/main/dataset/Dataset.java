@@ -8,17 +8,41 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Represents any recommendation dataset read into memory.
+ */
 public interface Dataset {
 
+  /**
+   * Reads the dataset from the filesystem.
+   * @param inPath Path to the dataset.
+   */
   void read (String inPath);
+
+  /**
+   * Retrieves one particular user profile as a Map.
+   * @param userId Id for whom his profile will be retrieved.
+   * @return User rated values.
+   */
   Map<Integer, Double> getUserProfile (int userId);
+
+  /**
+   * Obtains all users Ids contained in the dataset.
+   * @return Set with user's Id.
+   */
   Set<Integer> getUserIds ();
 
+  /**
+   * MovieLens dataset specific implementation.
+   */
   class MovieLensDataset implements Dataset {
 
     private final Map<Integer, Map<Integer, Double>> dataset;
     private final Messages messages;
 
+    /**
+     * @param messages Handler for printing messages out.
+     */
     public MovieLensDataset(Messages messages) {
       dataset = new HashedMap<>();
       this.messages = messages;
