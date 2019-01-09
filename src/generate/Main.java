@@ -30,14 +30,12 @@ public class Main {
 class Job {
 
   static final int ROW_DELIMITER = 1001;
-  static final int kValue = 25;
 
   static final String RATING_MATRIX_MODE = "-matrix";
   static final String NEIGHBORHOOD_MODE = "-neighborhood";
   static final String HELP_SHORT_MODE = "-h";
   static final String HELP_LONG_MODE = "-help";
   static final String VERBOSE_MODE = "-v";
-
 
   private final Conf conf;
   private Messages messages = new Messages.Void();
@@ -93,8 +91,6 @@ class Job {
           help();
           System.exit(1);
       }
-
-
     }
   }
 
@@ -138,6 +134,7 @@ class Job {
 
   private void ratingMatrixComputing (Dataset dataset) {
     RatingMatrix ratingMatrix = new RatingMatrix();
+
 
   }
 
