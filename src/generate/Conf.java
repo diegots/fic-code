@@ -1,6 +1,6 @@
-package main;
+package similarity;
 
-import main.engine.RowDelimiterException;
+import similarity.engine.RowDelimiterException;
 
 public class Conf {
 

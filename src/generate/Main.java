@@ -1,14 +1,14 @@
-package main;
+package similarity;
 
-import main.dataset.Dataset;
-import main.dataset.FrequencyTable;
-import main.engine.ProccessRows;
-import main.engine.RowDelimiterException;
-import main.engine.RowTask;
-import main.similarity.Neighborhood;
-import main.stream.StreamOut;
-import main.utils.Messages;
-import main.utils.Units;
+import similarity.dataset.Dataset;
+import similarity.dataset.FrequencyTable;
+import similarity.engine.ProccessRows;
+import similarity.engine.RowDelimiterException;
+import similarity.engine.RowTask;
+import similarity.similarity.Neighborhood;
+import similarity.stream.StreamOut;
+import similarity.utils.Messages;
+import similarity.utils.Units;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

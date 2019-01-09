@@ -1,6 +1,6 @@
-package main.dataset;
+package similarity.dataset;
 
-import main.utils.Messages;
+import similarity.utils.Messages;
 import org.apache.commons.collections4.map.HashedMap;
 
 import java.io.*;

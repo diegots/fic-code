@@ -1,12 +1,12 @@
-package main.similarity;
+package similarity.similarity;
 
-import main.Conf;
-import main.dataset.Dataset;
-import main.stream.StreamOut;
-import main.utils.Messages;
+import similarity.Conf;
+import similarity.dataset.Dataset;
+import similarity.stream.StreamOut;
+import similarity.utils.Messages;
 import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.map.HashedMap;
-import main.utils.Utilities;
+import similarity.utils.Utilities;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

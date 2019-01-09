@@ -1,8 +1,8 @@
-package main.engine;
+package similarity.engine;
 
-import main.Conf;
-import main.stream.StreamOut;
-import main.utils.Messages;
+import similarity.Conf;
+import similarity.stream.StreamOut;
+import similarity.utils.Messages;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

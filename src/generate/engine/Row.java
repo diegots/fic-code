@@ -1,9 +1,8 @@
-package main.engine;
+package similarity.engine;
 
 import it.unimi.dsi.io.InputBitStream;
-import main.Conf;
-import org.apache.commons.collections4.map.HashedMap;
-import main.utils.Utilities;
+import similarity.Conf;
+import similarity.utils.Utilities;
 import org.apache.commons.collections4.map.LinkedMap;
 
 import java.io.IOException;

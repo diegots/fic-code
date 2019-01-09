@@ -1,4 +1,4 @@
-package main.utils;
+package similarity.utils;
 
 public interface Messages {
 

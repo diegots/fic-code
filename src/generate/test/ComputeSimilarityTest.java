@@ -1,14 +1,14 @@
-package test;
+package similarity_test;
 
-import main.dataset.Dataset;
-import main.engine.RowDelimiterException;
-import main.similarity.Neighborhood;
-import main.utils.Messages;
+import similarity.dataset.Dataset;
+import similarity.engine.RowDelimiterException;
+import similarity.similarity.Neighborhood;
+import similarity.utils.Messages;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import main.*;
-import main.utils.Utilities;
+import similarity.*;
+import similarity.utils.Utilities;
 
 import java.io.File;
 import java.util.Iterator;

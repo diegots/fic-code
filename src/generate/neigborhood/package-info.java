@@ -1,4 +1,4 @@
 /**
  * Actual Neighborhood Similarity computing.
  */
-package main.similarity;
+package similarity.similarity;
