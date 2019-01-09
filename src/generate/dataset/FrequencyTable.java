@@ -1,7 +1,7 @@
-package similarity.dataset;
+package generate.dataset;
 
 
-import similarity.utils.Utilities;
+import generate.utils.Utilities;
 import org.apache.commons.collections4.map.LinkedMap;
 
 import java.util.ArrayList;

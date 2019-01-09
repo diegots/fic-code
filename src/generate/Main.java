@@ -1,14 +1,14 @@
-package similarity;
+package generate;
 
-import similarity.dataset.Dataset;
-import similarity.dataset.FrequencyTable;
-import similarity.engine.ProccessRows;
-import similarity.engine.RowDelimiterException;
-import similarity.engine.RowTask;
-import similarity.similarity.Neighborhood;
-import similarity.stream.StreamOut;
-import similarity.utils.Messages;
-import similarity.utils.Units;
+import generate.dataset.Dataset;
+import generate.dataset.FrequencyTable;
+import generate.engine.ProccessRows;
+import generate.engine.RowDelimiterException;
+import generate.engine.RowTask;
+import generate.neigborhood.Similarity;
+import generate.stream.StreamOut;
+import generate.utils.Messages;
+import generate.utils.Units;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -50,8 +50,8 @@ public class Main {
     dataset.read(args[0]);
 
     // Compute similarities
-    Neighborhood neighborhood = new Neighborhood.Impl(args[1], args[2], messages);
-    long t0 = neighborhood.compute(dataset);
+    Similarity similarity = new Similarity.Impl(args[1], args[2], messages);
+    long t0 = similarity.compute(dataset);
     messages.printMessageln("Computing similarities took " + Units.milisecondsToSeconds(t0) + " seconds.");
 
     // Get processing engine

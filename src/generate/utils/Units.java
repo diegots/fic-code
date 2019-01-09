@@ -1,4 +1,4 @@
-package similarity.utils;
+package generate.utils;
 
 public class Units {
 

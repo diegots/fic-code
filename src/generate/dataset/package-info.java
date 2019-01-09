@@ -1,4 +1,4 @@
 /**
  * In memory ketp data.
  */
-package similarity.dataset;
+package generate.dataset;

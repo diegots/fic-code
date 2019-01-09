@@ -1,14 +1,14 @@
-package similarity_test;
+package generate.test;
 
-import similarity.dataset.Dataset;
-import similarity.engine.RowDelimiterException;
-import similarity.similarity.Neighborhood;
-import similarity.utils.Messages;
+import generate.dataset.Dataset;
+import generate.engine.RowDelimiterException;
+import generate.neigborhood.Similarity;
+import generate.utils.Messages;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import similarity.*;
-import similarity.utils.Utilities;
+import generate.*;
+import generate.utils.Utilities;
 
 import java.io.File;
 import java.util.Iterator;
@@ -41,8 +41,8 @@ public class ComputeSimilarityTest {
     Dataset dataset = new Dataset.MovieLensDataset(messages);
     dataset.read(conf.getDataPath());
 
-    Neighborhood neighborhood = new Neighborhood.Impl(similaritiesPath, neighborsPath, messages);
-    neighborhood.compute(dataset);
+    Similarity similarity = new Similarity.Impl(similaritiesPath, neighborsPath, messages);
+    similarity.compute(dataset);
   }
 
   @Test
@@ -51,8 +51,8 @@ public class ComputeSimilarityTest {
     Dataset dataset = new Dataset.MovieLensDataset(messages);
     dataset.read(datasetPath);
 
-    Neighborhood neighborhood = new Neighborhood.Impl(similaritiesPath, neighborsPath, messages);
-    neighborhood.compute(dataset);
+    Similarity similarity = new Similarity.Impl(similaritiesPath, neighborsPath, messages);
+    similarity.compute(dataset);
 
     List<Integer> readData = Utilities.readAllFile(neighborsPath);
     assertEquals(671, readData.size());
@@ -63,9 +63,9 @@ public class ComputeSimilarityTest {
     Dataset dataset = new Dataset.MovieLensDataset(messages);
     dataset.read(datasetPath);
 
-    Neighborhood neighborhood = new Neighborhood.Impl(
+    Similarity similarity = new Similarity.Impl(
         similaritiesPath, neighborsPath, messages);
-    neighborhood.compute(dataset);
+    similarity.compute(dataset);
 
     List<Integer> readData = Utilities.readOneRow(similaritiesPath);
 

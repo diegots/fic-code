@@ -1,8 +1,8 @@
-package similarity.engine;
+package generate.engine;
 
-import similarity.Conf;
-import similarity.dataset.FrequencyTable;
-import similarity.utils.Utilities;
+import generate.Conf;
+import generate.dataset.FrequencyTable;
+import generate.utils.Utilities;
 import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.map.LinkedMap;
 

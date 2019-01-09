@@ -1,8 +1,8 @@
-package similarity.utils;
+package generate.utils;
 
 import it.unimi.dsi.io.InputBitStream;
 import it.unimi.dsi.io.OutputBitStream;
-import similarity.Conf;
+import generate.Conf;
 import org.apache.commons.collections4.map.LinkedMap;
 
 import java.io.*;

@@ -1,12 +1,12 @@
-package similarity.similarity;
+package generate.neigborhood;
 
-import similarity.Conf;
-import similarity.dataset.Dataset;
-import similarity.stream.StreamOut;
-import similarity.utils.Messages;
+import generate.Conf;
+import generate.dataset.Dataset;
+import generate.stream.StreamOut;
+import generate.utils.Messages;
 import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.map.HashedMap;
-import similarity.utils.Utilities;
+import generate.utils.Utilities;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -15,11 +15,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public interface Neighborhood {
+public interface Similarity {
 
   long compute (Dataset dataset);
 
-  class Impl implements Neighborhood {
+  class Impl implements Similarity {
 
     private static String similaritiesPath;
     private static String neighborsPath;

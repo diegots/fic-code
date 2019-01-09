@@ -1,3 +1,3 @@
-package similarity.engine;
+package generate.engine;
 
 public class RowDelimiterException extends Exception{}

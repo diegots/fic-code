@@ -1,4 +1,4 @@
-package similarity.stream;
+package generate.stream;
 
 import it.unimi.dsi.io.OutputBitStream;
 
