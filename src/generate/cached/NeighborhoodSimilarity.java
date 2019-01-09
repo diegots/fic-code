@@ -156,7 +156,7 @@ public interface Similarity {
           }
         }
 
-        /* The matrix needs some special Id to mark the end of a row in case some variable length
+        /* The rating needs some special Id to mark the end of a row in case some variable length
          * encoding is in use */
         similarities.add(Conf.getConf().getRowDelimiter());
 
