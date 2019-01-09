@@ -4,6 +4,10 @@ import generate.engine.RowDelimiterException;
 
 public class Conf {
 
+  enum Mode {MATRIX, NEIGHBORHOOD, UNDEFINED}
+  private Mode mode;
+
+  // Neighborhood similarity mode
   private static final int LOWER_VALUE = 0;
   private static final int UPPER_VALUE = 1000;
 
@@ -14,10 +18,49 @@ public class Conf {
   private String similaritiesPath;
   private String neighborhoodPath;
   private String orderedIndexesPath;
+  private String reassignedSimilaritiesPath;
+
+  // Rating matrix mode
+  private String ratingMatrix;
+  private int shardsNumber;
+
+  public int getShardsNumber() {
+    return shardsNumber;
+  }
+
+  public void setShardsNumber(int shardsNumber) {
+    this.shardsNumber = shardsNumber;
+  }
+
+  public Mode getMode() {
+    return mode;
+  }
+
+  public void setMode(Mode mode) {
+    this.mode = mode;
+  }
+
+  public String getRatingMatrix() {
+    return ratingMatrix;
+  }
+
+  public void setRatingMatrix(String ratingMatrix) {
+    this.ratingMatrix = ratingMatrix;
+  }
+
+  public String getReassignedSimilaritiesPath() {
+    return reassignedSimilaritiesPath;
+  }
+
+  public void setReassignedSimilaritiesPath(String reassignedSimilaritiesPath) {
+    this.reassignedSimilaritiesPath = reassignedSimilaritiesPath;
+  }
 
   private static final Conf conf = new Conf();
 
-  private Conf () {}
+  private Conf () {
+    mode = Mode.UNDEFINED;
+  }
 
   public static final Conf getConf () {
     return conf;

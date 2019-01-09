@@ -1,11 +1,12 @@
 package generate;
 
+import generate.cached.NeighborhoodSimilarity;
+import generate.cached.RatingMatrix;
 import generate.dataset.Dataset;
 import generate.dataset.FrequencyTable;
 import generate.engine.ProccessRows;
 import generate.engine.RowDelimiterException;
 import generate.engine.RowTask;
-import generate.neigborhood.Similarity;
 import generate.stream.StreamOut;
 import generate.utils.Messages;
 import generate.utils.Units;
@@ -19,46 +20,139 @@ public class Main {
 
   public static void main(String[] args) {
 
-    /**
-     *  This programm uses the following parameters:
-     *  args[0] dataset file -> userId | movieId | rating | timestamp
-     *  args[1] not reassigned similatiries matrix destination
-     *  args[2] similarities matrix's indexes
-     *  args[3] ordered indexes by weight
-     *  args[4] reassigned similarities matrix destination
-     */
-
     // Prepare stuff
-    //final Messages messages = new Messages.Symbol(".");
-    final Messages messages = new Messages.Void();
+    Job job = new Job(Conf.getConf());
+    job.parseCommandLine(args);
+    job.start();
+  }
+}
 
-    Conf conf = Conf.getConf();
-    try {
-      conf.setRowDelimiter(1001);
-    } catch (RowDelimiterException e) {
-      messages.printErrln("Bad row delimiter");
+class Job {
+
+  static final int ROW_DELIMITER = 1001;
+  static final int kValue = 25;
+
+  static final String RATING_MATRIX_MODE = "-matrix";
+  static final String NEIGHBORHOOD_MODE = "-neighborhood";
+  static final String HELP_SHORT_MODE = "-h";
+  static final String HELP_LONG_MODE = "-help";
+  static final String VERBOSE_MODE = "-v";
+
+
+  private final Conf conf;
+  private Messages messages = new Messages.Void();
+
+  public Job(Conf conf) {
+    this.conf = conf;
+  }
+
+  void parseCommandLine (String[] args) {
+
+    int i = 0;
+    while (i < args.length) {
+      switch (args[i]) {
+        case RATING_MATRIX_MODE:
+          conf.setMode(Conf.Mode.MATRIX);
+          conf.setDataPath(args[i+1]);
+          conf.setRatingMatrix(args[i+2]);
+          conf.setShardsNumber(Integer.valueOf(args[i+3]));
+          i+=4;
+          break;
+
+        case NEIGHBORHOOD_MODE:
+          conf.setMode(Conf.Mode.NEIGHBORHOOD);
+          conf.setDataPath(args[i+1]);
+          conf.setK(Integer.valueOf(args[i+2]));
+          conf.setSimilaritiesPath(args[i+3]);
+          conf.setNeighborhoodPath(args[i+4]);
+          conf.setOrderedIndexesPath(args[i+5]);
+          conf.setReassignedSimilaritiesPath(args[i+6]);
+          i+=7;
+          try {
+            conf.setRowDelimiter(ROW_DELIMITER);
+          } catch (RowDelimiterException e) {
+            messages.printErrln("Bad row delimiter!");
+            System.exit(1);
+          }
+          break;
+
+        case HELP_SHORT_MODE:
+          help();
+          System.exit(0);
+
+        case HELP_LONG_MODE:
+          help();
+          System.exit(0);
+
+        case VERBOSE_MODE:
+          messages = new Messages.Symbol(".");
+          i++;
+          break;
+
+        default:
+          help();
+          System.exit(1);
+      }
+
+
+    }
+  }
+
+  public void start() {
+
+    if (Conf.Mode.UNDEFINED.equals(conf.getMode())) {
+      messages.printErrln("Mode not recognized! Showing usage.");
+      help();
       System.exit(1);
     }
-    conf.setDataPath(args[0]);
-    conf.setSimilaritiesPath(args[1]);
-    conf.setNeighborhoodPath(args[2]);
-    conf.setOrderedIndexesPath(args[3]);
-    conf.setK(25);
 
     // Read dataset
     Dataset dataset = new Dataset.MovieLensDataset(messages);
-    dataset.read(args[0]);
+    dataset.read(conf.getDataPath());
+
+    if (Conf.Mode.MATRIX.equals(conf.getMode())) {
+      ratingMatrixComputing(dataset);
+
+    } else if (Conf.Mode.NEIGHBORHOOD.equals(conf.getMode())) {
+      neighborhoodComputing(dataset);
+    }
+  }
+
+  private void help () {
+    messages.printMessageln("This program computes either a Neighborhood Similarity matrix"
+        + " or the grouped Rating Matrix according to the dessired number of shards.");
+    System.out.println("Usage:");
+    System.out.println("    java -jar JAR_NAME [-v] -<mode> <dataset path> +other-specific-params");
+    System.out.println("Mode is one of: '-h', '-help', '-matrix' or '-neighborhood'");
+    System.out.println("'" + HELP_LONG_MODE + "' or '" + HELP_SHORT_MODE + "': show this help.");
+    System.out.println("'" + RATING_MATRIX_MODE + "' mode extra params:");
+    System.out.println("    <rating matrix path>");
+    System.out.println("    <number of shards>");
+    System.out.println("'" + NEIGHBORHOOD_MODE + "' mode extra params:");
+    System.out.println("    <k value>");
+    System.out.println("    <uncompressed similarities matrix path>");
+    System.out.println("    <neighborhood Ids order list path>");
+    System.out.println("    <ordered indexes path>");
+    System.out.println("    <similarities matrix path>");
+  }
+
+  private void ratingMatrixComputing (Dataset dataset) {
+    RatingMatrix ratingMatrix = new RatingMatrix();
+
+  }
+
+  private void neighborhoodComputing(Dataset dataset)  {
 
     // Compute similarities
-    Similarity similarity = new Similarity.Impl(args[1], args[2], messages);
-    long t0 = similarity.compute(dataset);
+    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(conf.getSimilaritiesPath(), conf.getNeighborhoodPath(), messages);
+    long t0 = neighborhoodSimilarity.compute(dataset);
     messages.printMessageln("Computing similarities took " + Units.milisecondsToSeconds(t0) + " seconds.");
 
     // Get processing engine
     ProccessRows rowsEngine = new ProccessRows(messages);
 
     // Compute ordered indexes
-    long t1 = rowsEngine.process(new RowTask.Order(), createDeltaStreamOut(args[3]));
+    long t1 = rowsEngine.process(new RowTask.Order(), createDeltaStreamOut(conf.getOrderedIndexesPath()));
     messages.printMessageln("Ordering similarities took " + Units.milisecondsToSeconds(t1) + " seconds.");
 
     // Frequency compuring
@@ -67,8 +161,8 @@ public class Main {
     messages.printMessageln("Frequency computing took " + Units.milisecondsToSeconds(t2) + " seconds.");
 
     // Ids reassingment
-    long t3 = rowsEngine.process(new RowTask.ReassignIds(new FrequencyTable(aux)), createDeltaStreamOut(args[4]));
-    messages.printMessageln("Similarity values reassignment took " + Units.milisecondsToSeconds(t3) + " seconds.");
+    long t3 = rowsEngine.process(new RowTask.ReassignIds(new FrequencyTable(aux)), createDeltaStreamOut(conf.getReassignedSimilaritiesPath()));
+    messages.printMessageln("NeighborhoodSimilarity values reassignment took " + Units.milisecondsToSeconds(t3) + " seconds.");
   }
 
   static StreamOut createDeltaStreamOut(String pathToFile) {
