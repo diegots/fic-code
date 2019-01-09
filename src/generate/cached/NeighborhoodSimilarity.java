@@ -1,4 +1,4 @@
-package generate.neigborhood;
+package generate.cached;
 
 import generate.Conf;
 import generate.dataset.Dataset;
@@ -15,11 +15,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public interface Similarity {
+/**
+ * Computes neighborhood similarity
+ */
+public interface NeighborhoodSimilarity {
 
   long compute (Dataset dataset);
 
-  class Impl implements Similarity {
+  class Impl implements NeighborhoodSimilarity {
 
     private static String similaritiesPath;
     private static String neighborsPath;

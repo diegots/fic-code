@@ -1,8 +1,8 @@
 package generate.test;
 
+import generate.cached.NeighborhoodSimilarity;
 import generate.dataset.Dataset;
 import generate.engine.RowDelimiterException;
-import generate.neigborhood.Similarity;
 import generate.utils.Messages;
 import org.junit.After;
 import org.junit.Before;
@@ -16,7 +16,7 @@ import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 
-public class ComputeSimilarityTest {
+public class ComputeNeighborhoodSimilarityTest {
 
   private final static String datasetPath = "./datasets/movielens-100k.csv";
   private final static String similaritiesPath = "./out/sim.data";
@@ -41,8 +41,8 @@ public class ComputeSimilarityTest {
     Dataset dataset = new Dataset.MovieLensDataset(messages);
     dataset.read(conf.getDataPath());
 
-    Similarity similarity = new Similarity.Impl(similaritiesPath, neighborsPath, messages);
-    similarity.compute(dataset);
+    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(similaritiesPath, neighborsPath, messages);
+    neighborhoodSimilarity.compute(dataset);
   }
 
   @Test
@@ -51,8 +51,8 @@ public class ComputeSimilarityTest {
     Dataset dataset = new Dataset.MovieLensDataset(messages);
     dataset.read(datasetPath);
 
-    Similarity similarity = new Similarity.Impl(similaritiesPath, neighborsPath, messages);
-    similarity.compute(dataset);
+    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(similaritiesPath, neighborsPath, messages);
+    neighborhoodSimilarity.compute(dataset);
 
     List<Integer> readData = Utilities.readAllFile(neighborsPath);
     assertEquals(671, readData.size());
@@ -63,9 +63,9 @@ public class ComputeSimilarityTest {
     Dataset dataset = new Dataset.MovieLensDataset(messages);
     dataset.read(datasetPath);
 
-    Similarity similarity = new Similarity.Impl(
+    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(
         similaritiesPath, neighborsPath, messages);
-    similarity.compute(dataset);
+    neighborhoodSimilarity.compute(dataset);
 
     List<Integer> readData = Utilities.readOneRow(similaritiesPath);
 
