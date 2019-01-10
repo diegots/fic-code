@@ -21,7 +21,7 @@ public class Conf {
   private String reassignedSimilaritiesPath;
 
   // Rating matrix mode
-  private String ratingMatrix;
+  private String ratingMatrixPath;
   private int shardsNumber;
 
   public int getShardsNumber() {
@@ -40,12 +40,12 @@ public class Conf {
     this.mode = mode;
   }
 
-  public String getRatingMatrix() {
-    return ratingMatrix;
+  public String getRatingMatrixPath() {
+    return ratingMatrixPath;
   }
 
-  public void setRatingMatrix(String ratingMatrix) {
-    this.ratingMatrix = ratingMatrix;
+  public void setRatingMatrixPath(String ratingMatrixPath) {
+    this.ratingMatrixPath = ratingMatrixPath;
   }
 
   public String getReassignedSimilaritiesPath() {
