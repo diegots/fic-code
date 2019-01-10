@@ -1,8 +1,8 @@
 package generate.utils;
 
+import generate.Conf;
 import it.unimi.dsi.io.InputBitStream;
 import it.unimi.dsi.io.OutputBitStream;
-import generate.Conf;
 import org.apache.commons.collections4.map.LinkedMap;
 
 import java.io.*;
@@ -25,6 +25,22 @@ public class Utilities {
       result.put(entry.getKey(), entry.getValue());
 
     return result;
+  }
+
+  public static void objectToFile (String outFile, Object o) {
+    try {
+      FileOutputStream fileStream = new FileOutputStream(outFile, true);
+      ObjectOutputStream objectStream = new ObjectOutputStream(fileStream);
+
+      objectStream.writeObject(o);
+
+      objectStream.close();
+      fileStream.close();
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   public static void writeLine (String outFile, String line) {
