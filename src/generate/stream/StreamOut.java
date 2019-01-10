@@ -2,6 +2,8 @@ package generate.stream;
 
 import it.unimi.dsi.io.OutputBitStream;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
@@ -74,5 +76,15 @@ public interface StreamOut {
         e.printStackTrace();
       }
     }
+  }
+
+  static StreamOut createDeltaStreamOut(String pathToFile) {
+    StreamOut streamOut = null;
+    try {
+      streamOut = new StreamOut.DeltaStreamOut(new FileOutputStream(pathToFile));
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+    return streamOut;
   }
 }

@@ -16,6 +16,8 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static generate.stream.StreamOut.createDeltaStreamOut;
+
 public class Main {
 
   public static void main(String[] args) {
@@ -159,16 +161,5 @@ class Job {
     // Ids reassingment
     long t3 = rowsEngine.process(new RowTask.ReassignIds(new FrequencyTable(aux)), createDeltaStreamOut(conf.getReassignedSimilaritiesPath()));
     messages.printMessageln("NeighborhoodSimilarity values reassignment took " + Units.milisecondsToSeconds(t3) + " seconds.");
-  }
-
-  // TODO move this method to the stream object
-  static StreamOut createDeltaStreamOut(String pathToFile) {
-    StreamOut streamOut = null;
-    try {
-      streamOut = new StreamOut.DeltaStreamOut(new FileOutputStream(pathToFile));
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
-    return streamOut;
   }
 }
