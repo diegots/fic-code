@@ -2,8 +2,8 @@ package generate;
 
 import generate.cached.NeighborhoodSimilarity;
 import generate.cached.RatingMatrix;
-import generate.dataset.Dataset;
-import generate.dataset.FrequencyTable;
+import generate.model.Dataset;
+import generate.model.FrequencyTable;
 import generate.engine.ProccessRows;
 import generate.engine.RowDelimiterException;
 import generate.engine.RowTask;
@@ -52,7 +52,7 @@ class Job {
         case RATING_MATRIX_MODE:
           conf.setMode(Conf.Mode.MATRIX);
           conf.setDataPath(args[i+1]);
-          conf.setRatingMatrix(args[i+2]);
+          conf.setRatingMatrixPath(args[i+2]);
           conf.setShardsNumber(Integer.valueOf(args[i+3]));
           i+=4;
           break;
@@ -133,9 +133,8 @@ class Job {
   }
 
   private void ratingMatrixComputing (Dataset dataset) {
-    RatingMatrix ratingMatrix = new RatingMatrix();
-
-
+    RatingMatrix ratingMatrix = new RatingMatrix(dataset);
+    ratingMatrix.distribureUsersToShards();
   }
 
   private void neighborhoodComputing(Dataset dataset)  {
@@ -162,6 +161,7 @@ class Job {
     messages.printMessageln("NeighborhoodSimilarity values reassignment took " + Units.milisecondsToSeconds(t3) + " seconds.");
   }
 
+  // TODO move this method to the stream object
   static StreamOut createDeltaStreamOut(String pathToFile) {
     StreamOut streamOut = null;
     try {

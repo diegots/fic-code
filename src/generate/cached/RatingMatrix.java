@@ -1,8 +1,8 @@
 package generate.cached;
 
 import generate.Conf;
-import generate.dataset.Dataset;
-import generate.dataset.User;
+import generate.model.Dataset;
+import generate.model.User;
 import generate.utils.Utilities;
 
 import java.util.Iterator;

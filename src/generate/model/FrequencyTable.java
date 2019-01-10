@@ -1,4 +1,4 @@
-package generate.dataset;
+package generate.model;
 
 
 import generate.utils.Utilities;

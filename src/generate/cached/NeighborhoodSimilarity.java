@@ -1,7 +1,7 @@
 package generate.cached;
 
 import generate.Conf;
-import generate.dataset.Dataset;
+import generate.model.Dataset;
 import generate.stream.StreamOut;
 import generate.utils.Messages;
 import org.apache.commons.collections4.MapIterator;

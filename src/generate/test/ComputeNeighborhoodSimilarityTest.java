@@ -1,7 +1,7 @@
 package generate.test;
 
 import generate.cached.NeighborhoodSimilarity;
-import generate.dataset.Dataset;
+import generate.model.Dataset;
 import generate.engine.RowDelimiterException;
 import generate.utils.Messages;
 import org.junit.After;
