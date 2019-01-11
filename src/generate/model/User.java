@@ -14,6 +14,14 @@ public class User implements Serializable {
     this.userProfile = userProfile;
   }
 
+  public static User getEmptyUser() {
+    return new User(0, null);
+  }
+
+  public static boolean isEmptyUser(User user) {
+    return 0 == user.getUserId() && null == user.userProfile;
+  }
+
   public int getUserId() {
     return userId;
   }
