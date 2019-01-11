@@ -27,20 +27,34 @@ public class Utilities {
     return result;
   }
 
-  public static void objectToFile (String outFile, Object o) {
+  public static void objectToFile (OutputStream stream, Object o) {
     try {
-      FileOutputStream fileStream = new FileOutputStream(outFile, true);
-      ObjectOutputStream objectStream = new ObjectOutputStream(fileStream);
-
+      ObjectOutputStream objectStream = new ObjectOutputStream(stream);
       objectStream.writeObject(o);
-
-      objectStream.close();
-      fileStream.close();
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  public static <T> List<T> objectFromFile (InputStream stream) {
+
+    List<T> results = null;
+
+    try {
+      ObjectInputStream objectStream = new ObjectInputStream(stream);
+      results = (List<T>) objectStream.readObject();
+      objectStream.close();
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+    }
+
+    return results;
   }
 
   public static void writeLine (String outFile, String line) {
