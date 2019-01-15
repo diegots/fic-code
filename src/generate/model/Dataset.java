@@ -1,5 +1,6 @@
 package generate.model;
 
+import common.model.User;
 import generate.utils.Messages;
 import org.apache.commons.collections4.map.HashedMap;
 
@@ -31,6 +32,8 @@ public interface Dataset {
    * @return Set with user's Id.
    */
   Set<Integer> getUserIds ();
+
+  public User getUser(int userId);
 
   /**
    * MovieLens dataset specific implementation.
@@ -108,6 +111,11 @@ public interface Dataset {
     @Override
     public Set<Integer> getUserIds() {
       return dataset.keySet();
+    }
+
+    @Override
+    public User getUser(int userId) {
+      return new User(userId, dataset.get(userId));
     }
   }
 }
