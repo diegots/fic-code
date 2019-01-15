@@ -6,7 +6,7 @@ import generate.stream.StreamOut;
 import generate.utils.Messages;
 import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.map.HashedMap;
-import generate.utils.Utilities;
+import common.util.Utilities;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
