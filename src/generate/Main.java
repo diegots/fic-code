@@ -7,14 +7,14 @@ import generate.model.FrequencyTable;
 import generate.engine.ProccessRows;
 import generate.engine.RowDelimiterException;
 import generate.engine.RowTask;
-import generate.stream.StreamOut;
+import common.stream.StreamOut;
 import generate.utils.Messages;
 import common.util.Utilities;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static generate.stream.StreamOut.createDeltaStreamOut;
+import static common.stream.StreamOut.createDeltaStreamOut;
 
 public class Main {
 

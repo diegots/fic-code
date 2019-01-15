@@ -1,7 +1,7 @@
 package generate.engine;
 
 import generate.Conf;
-import generate.stream.StreamOut;
+import common.stream.StreamOut;
 import generate.utils.Messages;
 
 import java.io.FileInputStream;

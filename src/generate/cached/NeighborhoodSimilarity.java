@@ -2,7 +2,7 @@ package generate.cached;
 
 import generate.Conf;
 import generate.model.Dataset;
-import generate.stream.StreamOut;
+import common.stream.StreamOut;
 import generate.utils.Messages;
 import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.map.HashedMap;
