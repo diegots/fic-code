@@ -1,4 +1,4 @@
-package hadoop.model;
+package hadoop.types;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.WritableComparable;
