@@ -2,7 +2,7 @@ package generate.engine;
 
 import it.unimi.dsi.io.InputBitStream;
 import generate.Conf;
-import generate.utils.Utilities;
+import common.util.Utilities;
 import org.apache.commons.collections4.map.LinkedMap;
 
 import java.io.IOException;

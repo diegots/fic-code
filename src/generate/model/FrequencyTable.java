@@ -1,7 +1,7 @@
 package generate.model;
 
 
-import generate.utils.Utilities;
+import common.util.Utilities;
 import org.apache.commons.collections4.map.LinkedMap;
 
 import java.util.ArrayList;

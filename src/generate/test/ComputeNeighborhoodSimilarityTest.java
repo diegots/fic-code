@@ -8,7 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import generate.*;
-import generate.utils.Utilities;
+import common.util.Utilities;
 
 import java.io.File;
 import java.util.Iterator;

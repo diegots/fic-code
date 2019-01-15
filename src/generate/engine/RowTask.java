@@ -2,7 +2,7 @@ package generate.engine;
 
 import generate.Conf;
 import generate.model.FrequencyTable;
-import generate.utils.Utilities;
+import common.util.Utilities;
 import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.map.LinkedMap;
 
