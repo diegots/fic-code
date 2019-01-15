@@ -117,21 +117,23 @@ class Job {
   // TODO Add more horizontal space in options
   // TODO Say that mode options have to be user in the same order
   private void help () {
-    messages.printMessageln("This program computes either a Neighborhood Similarity matrix"
-        + " or the grouped Rating Matrix according to the dessired number of shards.");
+    System.out.println("This program computes either a Neighborhood Similarity matrix"
+        + " or the grouped Rating Matrix according to the requested number of shards.");
+    System.out.println("");
     System.out.println("Usage:");
-    System.out.println("    java -jar JAR_NAME [-v] -<mode> <dataset path> +other-specific-params");
-    System.out.println("Mode is one of: '-h', '-help', '-matrix' or '-neighborhood'");
-    System.out.println("'" + HELP_LONG_MODE + "' or '" + HELP_SHORT_MODE + "': show this help.");
-    System.out.println("'" + RATING_MATRIX_MODE + "' mode extra params:");
-    System.out.println("    <rating matrix output path>");
-    System.out.println("    <number of shards>");
-    System.out.println("'" + NEIGHBORHOOD_MODE + "' mode extra params:");
-    System.out.println("    <k value>");
-    System.out.println("    <uncompressed similarities matrix path>");
-    System.out.println("    <neighborhood Ids order list path>");
-    System.out.println("    <ordered indexes path>");
-    System.out.println("    <similarities matrix path>");
+    System.out.println("        java -jar JAR_NAME [-v] -<mode> <dataset path> +mode-specific-params");
+    System.out.println("");
+    System.out.println("Mode is one of: '-h', '-help', '-matrix' or '-neighborhood',");
+    System.out.println("    '" + HELP_LONG_MODE + "' or '" + HELP_SHORT_MODE + "': show this help.");
+    System.out.println("    '" + RATING_MATRIX_MODE + "' mode specific params:");
+    System.out.println("        <output path>");
+    System.out.println("        <number of shards>");
+    System.out.println("    '" + NEIGHBORHOOD_MODE + "' mode specific params:");
+    System.out.println("        <k value>");
+    System.out.println("        <uncompressed similarities matrix path>");
+    System.out.println("        <neighborhood Ids order list path>");
+    System.out.println("        <reassigned indexes path>");
+    System.out.println("        <similarities matrix path>");
   }
 
   private void ratingMatrixComputing (Dataset dataset) {
