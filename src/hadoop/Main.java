@@ -9,11 +9,26 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 
   public static final String SHARDS_NUMBER = "SHARDS_NUMBER";
-  public static final String SHARD_FILE_NAME = "rating-matrix.data";
+
+  enum cachedData {
+    ratingMatrix0, ratingMatrix1, ratingMatrix2,
+    orderIds, reassignedIds, compressed
+  }
+
+  static final String[] cachedPaths = {
+      "/cached/rating-matrix0",
+      "/cached/rating-matrix1",
+      "/cached/rating-matrix2",
+      "/cached/orderIds",
+      "/cached/reassignedIds",
+      "/cached/compressed"
+  };
 
   public static void main(String[] args)
       throws IOException, ClassNotFoundException, InterruptedException {
@@ -47,15 +62,14 @@ public class Main {
     FileOutputFormat.setOutputPath(job1, new Path("/" + job1.getJobName()+"-out"));
 
     // Adds rating matrix shards to Distributed Cache
-    job1.addCacheFile(new Path("/cached/rating-matrix0").toUri());
-    job1.addCacheFile(new Path("/cached/rating-matrix1").toUri());
-    job1.addCacheFile(new Path("/cached/rating-matrix2").toUri());
+    job1.addCacheFile(new Path(cachedPaths[cachedData.ratingMatrix0.ordinal()]).toUri());
+    job1.addCacheFile(new Path(cachedPaths[cachedData.ratingMatrix1.ordinal()]).toUri());
+    job1.addCacheFile(new Path(cachedPaths[cachedData.ratingMatrix2.ordinal()]).toUri());
 
     // Adds neighborhood similarities to Distributed Cache
-    job1.addCacheFile(new Path("/cached/rating-matrix2").toUri());
-    job1.addCacheFile(new Path("/cached/rating-matrix2").toUri());
-    job1.addCacheFile(new Path("/cached/rating-matrix2").toUri());
-
+    job1.addCacheFile(new Path(cachedPaths[cachedData.orderIds.ordinal()]).toUri());
+    job1.addCacheFile(new Path(cachedPaths[cachedData.reassignedIds.ordinal()]).toUri());
+    job1.addCacheFile(new Path(cachedPaths[cachedData.compressed.ordinal()]).toUri());
 
     // Set number of reduce tasks
     job1.setNumReduceTasks(3);
