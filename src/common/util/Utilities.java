@@ -1,4 +1,4 @@
-package generate.utils;
+package common.util;
 
 import generate.Conf;
 import it.unimi.dsi.io.InputBitStream;
@@ -31,6 +31,7 @@ public class Utilities {
     try {
       ObjectOutputStream objectStream = new ObjectOutputStream(stream);
       objectStream.writeObject(o);
+      objectStream.close();
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     } catch (IOException e) {
@@ -38,13 +39,14 @@ public class Utilities {
     }
   }
 
-  public static <T> List<T> objectFromFile (InputStream stream) {
+  public static <K, V> Map<K, V> objectFromFile (InputStream stream) {
 
-    List<T> results = null;
+    Map<K, V> results = null;
 
     try {
       ObjectInputStream objectStream = new ObjectInputStream(stream);
-      results = (List<T>) objectStream.readObject();
+      results = (Map<K, V>) objectStream.readObject();
+
       objectStream.close();
     } catch (FileNotFoundException e) {
       e.printStackTrace();
@@ -141,5 +143,9 @@ public class Utilities {
     if (null == o) {
       throw new NullPointerException();
     }
+  }
+
+  public static long milisecondsToSeconds (long miliSeconds) {
+    return miliSeconds / 1000;
   }
 }
