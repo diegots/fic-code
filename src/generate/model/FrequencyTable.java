@@ -19,10 +19,7 @@ public class FrequencyTable {
       aux.put(i, unsortedFrequencyTable.get(i));
     }
 
-    LinkedMap<Integer, Integer> sortedFreqTable = Utilities.sortMapByValue(aux);
-
-    frequencyTable = new ArrayList<>(sortedFreqTable.asList());
-    Collections.reverse(frequencyTable);
+    frequencyTable = Utilities.sortMapByValue(aux).asList();
   }
 
   public int encodeValue (int rawValue) {
