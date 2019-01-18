@@ -23,7 +23,7 @@ public interface RowTask {
     @Override
     public List<Integer> doTheTask(Map<Integer, Integer> row) {
 
-      // 2. sort values
+      // Sort values
       LinkedMap<Integer, Integer> sortedRow = Utilities.sortMapByValue(row);
 
       // Store indexes as coded values but insert only the k-top elements
@@ -36,7 +36,8 @@ public interface RowTask {
       }
 
       // Add row delimiter
-      result.add(Conf.getConf().getRowDelimiter());
+      final int ROW_DELIMITER = 1000000;
+      result.add(ROW_DELIMITER);
 
       return result;
     }
@@ -49,13 +50,15 @@ public interface RowTask {
 
   class FrequencyCompute implements RowTask {
 
-    static final int SIMILARITY_MAX = 1000;
+    static final int SIMILARITY_MAX_VALUE = 1000;
     static final String TASK_NAME = "Computing frequency";
     private final List<Integer> frequencies;
 
     public FrequencyCompute() {
+
+      // Initialize frquencies List
       frequencies = new ArrayList<>();
-      for (int i=0; i<=SIMILARITY_MAX; i++) {
+      for (int i = 0; i<= SIMILARITY_MAX_VALUE; i++) {
         frequencies.add(0);
       }
 
