@@ -90,7 +90,7 @@ public interface NeighborhoodSimilarity {
 
       final int MAX_USERS = 1384;
       final int TIMES = 1000;
-      final int MAX_IDS_STORE = 1000;
+      final int MAX_IDS_MEMORY_STORED = 1000;
 
       final long start = System.currentTimeMillis();
       double ratingJ;
@@ -165,7 +165,7 @@ public interface NeighborhoodSimilarity {
 
         streamOut.write(similarities);
 
-        if (neighborIds.size() >= MAX_IDS_STORE) {
+        if (neighborIds.size() >= MAX_IDS_MEMORY_STORED) {
           Utilities.writeLine(neighborsPath, neighborIds);
           neighborIds = new ArrayList<>();
         }
