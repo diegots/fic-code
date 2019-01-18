@@ -11,5 +11,6 @@
     <orderEntry type="library" name="org.apache.commons:commons-collections4:4.2" level="project" />
     <orderEntry type="library" name="junit:junit:4.12" level="project" />
     <orderEntry type="library" name="org.apache.hadoop:hadoop-client-api:3.0.3" level="project" />
+    <orderEntry type="library" name="org.apache.hadoop:hadoop-client-runtime:3.0.3" level="project" />
   </component>
 </module>
