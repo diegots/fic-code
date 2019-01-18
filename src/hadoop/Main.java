@@ -9,24 +9,22 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
 
   public static final String SHARDS_NUMBER = "SHARDS_NUMBER";
 
-  enum cachedData {
+  enum CachedData {
     ratingMatrix0, ratingMatrix1, ratingMatrix2,
-    orderIds, reassignedIds, compressed
+    userIdsOrder, kNeighbors, compressed
   }
 
   static final String[] cachedPaths = {
       "/cached/rating-matrix0",
       "/cached/rating-matrix1",
       "/cached/rating-matrix2",
-      "/cached/orderIds",
-      "/cached/reassignedIds",
+      "/cached/userIdsOrder",
+      "/cached/kNeighbors",
       "/cached/compressed"
   };
 
@@ -39,10 +37,10 @@ public class Main {
 
     Configuration conf = new Configuration();
     conf.set(SHARDS_NUMBER, args[1]);
-    
+
     Job job1 = Job.getInstance(conf);
     job1.setJobName("job1");
-    job1.setJarByClass(Main.class);
+    job1.setJarByClass(hadoop.Main.class);
 
     // Mapper and Reducer classes
     job1.setMapperClass(Job1.Map.class);
@@ -61,15 +59,13 @@ public class Main {
     FileInputFormat.addInputPath(job1, new Path(ACTIVE_USERS_FILE_PATH));
     FileOutputFormat.setOutputPath(job1, new Path("/" + job1.getJobName()+"-out"));
 
-    // Adds rating matrix shards to Distributed Cache
-    job1.addCacheFile(new Path(cachedPaths[cachedData.ratingMatrix0.ordinal()]).toUri());
-    job1.addCacheFile(new Path(cachedPaths[cachedData.ratingMatrix1.ordinal()]).toUri());
-    job1.addCacheFile(new Path(cachedPaths[cachedData.ratingMatrix2.ordinal()]).toUri());
-
-    // Adds neighborhood similarities to Distributed Cache
-    job1.addCacheFile(new Path(cachedPaths[cachedData.orderIds.ordinal()]).toUri());
-    job1.addCacheFile(new Path(cachedPaths[cachedData.reassignedIds.ordinal()]).toUri());
-    job1.addCacheFile(new Path(cachedPaths[cachedData.compressed.ordinal()]).toUri());
+    // Add files to Distributed Cache
+    for (CachedData fileName: CachedData.values()) {
+      System.out.println("ordinal: " + fileName.ordinal()
+        + ", cachedPath: " + cachedPaths[fileName.ordinal()]);
+      Path p = new Path(cachedPaths[fileName.ordinal()]);
+      job1.addCacheFile(p.toUri());
+    }
 
     // Set number of reduce tasks
     job1.setNumReduceTasks(3);
