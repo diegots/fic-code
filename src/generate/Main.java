@@ -1,5 +1,6 @@
 package generate;
 
+import common.DefaultValues;
 import generate.cached.NeighborhoodSimilarity;
 import generate.cached.RatingMatrix;
 import generate.model.Dataset;
@@ -28,8 +29,6 @@ public class Main {
 }
 
 class Job {
-
-  static final int ROW_DELIMITER = 1001;
 
   static final String RATING_MATRIX_MODE = "-matrix";
   static final String NEIGHBORHOOD_MODE = "-neighborhood";
@@ -67,7 +66,7 @@ class Job {
           conf.setReassignedSimilaritiesPath(args[i+6]);
           i+=7;
           try {
-            conf.setRowDelimiter(ROW_DELIMITER);
+            conf.setRowDelimiter(DefaultValues.ROW_DELIMITER);
           } catch (RowDelimiterException e) {
             messages.printErrln("Bad row delimiter!");
             System.exit(1);
@@ -114,8 +113,6 @@ class Job {
     }
   }
 
-  // TODO Add more horizontal space in options
-  // TODO Say that mode options have to be user in the same order
   private void help () {
     System.out.println("This program computes either a Neighborhood Similarity matrix"
         + " or the grouped Rating Matrix according to the requested number of shards.");
@@ -144,24 +141,32 @@ class Job {
   private void neighborhoodComputing(Dataset dataset)  {
 
     // Compute similarities
-    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(conf.getSimilaritiesPath(), conf.getNeighborhoodPath(), messages);
+    NeighborhoodSimilarity neighborhoodSimilarity =
+        new NeighborhoodSimilarity.Impl(
+            conf.getSimilaritiesPath(), conf.getNeighborhoodPath(), messages);
     long t0 = neighborhoodSimilarity.compute(dataset);
-    messages.printMessageln("Computing similarities took " + Utilities.milisecondsToSeconds(t0) + " seconds.");
+    messages.printMessageln("Computing similarities took "
+        + Utilities.milisecondsToSeconds(t0) + " seconds.");
 
     // Get processing engine
     ProccessRows rowsEngine = new ProccessRows(messages);
 
-    // Compute ordered indexes
-    long t1 = rowsEngine.process(new RowTask.Order(), createDeltaStreamOut(conf.getOrderedIndexesPath()));
-    messages.printMessageln("Ordering similarities took " + Utilities.milisecondsToSeconds(t1) + " seconds.");
+    // Compute k neighbors
+    long t1 = rowsEngine.process(new RowTask.Order(),
+        createDeltaStreamOut(conf.getOrderedIndexesPath()));
+    messages.printMessageln("Ordering similarities took "
+        + Utilities.milisecondsToSeconds(t1) + " seconds.");
 
-    // Frequency compuring
+    // Frequency computing for compressing similarities
     final List<Integer> aux = new ArrayList<>();
     long t2 = rowsEngine.process(new RowTask.FrequencyCompute(), new StreamOut.Memory(aux));
-    messages.printMessageln("Frequency computing took " + Utilities.milisecondsToSeconds(t2) + " seconds.");
+    messages.printMessageln("Frequency computing took " +
+        Utilities.milisecondsToSeconds(t2) + " seconds.");
 
-    // Ids reassingment
-    long t3 = rowsEngine.process(new RowTask.ReassignIds(new FrequencyTable(aux)), createDeltaStreamOut(conf.getReassignedSimilaritiesPath()));
-    messages.printMessageln("NeighborhoodSimilarity values reassignment took " + Utilities.milisecondsToSeconds(t3) + " seconds.");
+    // Do compress similarities based en frequency counts
+    long t3 = rowsEngine.process(new RowTask.ReassignIds(new FrequencyTable(aux)),
+        createDeltaStreamOut(conf.getReassignedSimilaritiesPath()));
+    messages.printMessageln("NeighborhoodSimilarity values reassignment took "
+        + Utilities.milisecondsToSeconds(t3) + " seconds.");
   }
 }
