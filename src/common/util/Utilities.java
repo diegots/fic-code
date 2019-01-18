@@ -16,11 +16,12 @@ public class Utilities {
     Collections.sort( list, new Comparator<Map.Entry<K, V>>() {
       @Override
       public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
-        return (o1.getValue()).compareTo(o2.getValue());
+        return (o2.getValue()).compareTo(o1.getValue());
       }
     });
 
     LinkedMap<K, V> result = new LinkedMap<>();
+
     for (Map.Entry<K, V> entry : list)
       result.put(entry.getKey(), entry.getValue());
 
