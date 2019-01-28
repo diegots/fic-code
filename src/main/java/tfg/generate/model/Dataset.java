@@ -1,6 +1,7 @@
 package tfg.generate.model;
 
 import org.apache.commons.collections4.map.HashedMap;
+import org.apache.commons.collections4.map.LinkedMap;
 import tfg.common.model.User;
 import tfg.generate.Conf;
 
@@ -40,10 +41,13 @@ public interface Dataset {
    */
   class MovieLensDataset implements Dataset {
 
+    /**
+     * Stores read dataset. userIds are kept ordered because the map is initialized as a LinkedMap.
+     */
     private final Map<Integer, Map<Integer, Double>> dataset;
 
     public MovieLensDataset() {
-      dataset = new HashedMap<>();
+      dataset = new LinkedMap<>();
     }
 
     @Override
@@ -53,7 +57,7 @@ public interface Dataset {
 
       final String DELIMITER = ",";
       final String HEADER_ITEM = "userId";
-      Map<Integer, Double> mu;
+      Map<Integer, Double> userProfile;
       Set<Integer> items = new HashSet<>();
       Integer userId, itemId;
 
@@ -77,14 +81,14 @@ public interface Dataset {
 
             userId = Integer.valueOf(ss[0]);
 
-            mu = dataset.get(userId);
-            if (null == mu) {
-              mu = new HashedMap<>();
+            userProfile = dataset.get(userId);
+            if (null == userProfile) {
+              userProfile = new HashedMap<>();
             }
 
             itemId = Integer.valueOf(ss[1]);
-            mu.put(itemId, Double.parseDouble(ss[2]));
-            dataset.put(userId, mu);
+            userProfile.put(itemId, Double.parseDouble(ss[2]));
+            dataset.put(userId, userProfile);
             items.add(itemId);
           }
         }
