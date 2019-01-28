@@ -37,7 +37,7 @@ class Job {
   static final String VERBOSE_MODE = "-v";
 
   private final Conf conf;
-  private Messages mainMessages = new Messages.Symbol("");
+  private Messages auxMessages = new Messages.Symbol("");
 
   public Job(Conf conf) {
     this.conf = conf;
@@ -68,7 +68,7 @@ class Job {
           try {
             conf.setRowDelimiter(DefaultValues.ROW_DELIMITER);
           } catch (RowDelimiterException e) {
-            mainMessages.printErrln("Bad row delimiter!");
+            auxMessages.printErrln("Bad row delimiter!");
             System.exit(1);
           }
           break;
@@ -96,7 +96,7 @@ class Job {
   public void start() {
 
     if (Conf.Mode.UNDEFINED.equals(conf.getMode())) {
-      mainMessages.printErrln("Mode not recognized! Showing usage.");
+      auxMessages.printErrln("Mode not recognized! Showing usage.");
       help();
       System.exit(1);
     }
@@ -125,12 +125,12 @@ class Job {
     System.out.println("    '" + HELP_LONG_MODE + "' or '" + HELP_SHORT_MODE + "': show this help.");
     System.out.println("    '" + RATING_MATRIX_MODE + "' mode specific params:");
     System.out.println("        <INPUT : number of shards>");
-    System.out.println("        <OUTPUT: rating matrix prefix filename>");
+    System.out.println("        <OUTPUT: rating matrix filename prefix (encoded)>");
     System.out.println("    '" + NEIGHBORHOOD_MODE + "' mode specific params:");
     System.out.println("        <INPUT : k value>");
     System.out.println("        <OUTPUT: similarity matrix filename (encoded)>");
-    System.out.println("        <OUTPUT: neighborhood Ids order list filename>");
-    System.out.println("        <OUTPUT: reassigned indexes filename>");
+    System.out.println("        <OUTPUT: userIds order filename (encoded)>");
+    System.out.println("        <OUTPUT: reassigned indexes filename (encoded)>");
     System.out.println("        <OUTPUT: similarity matrix filename (encoded, reassigned values)>");
   }
 
@@ -144,7 +144,7 @@ class Job {
     // Compute similarities
     NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.FullMatrix();
     long t0 = neighborhoodSimilarity.compute(dataset);
-    mainMessages.printMessageln("Computing similarities took "
+    auxMessages.printMessageln("Computing similarities took "
         + Utilities.milisecondsToSeconds(t0) + " seconds.");
 
     // Get processing engine
@@ -153,19 +153,19 @@ class Job {
     // Compute k neighbors
     long t1 = rowsEngine.process(new RowTask.Order(),
         createDeltaStreamOut(conf.getOrderedIndexesPath()));
-    mainMessages.printMessageln("Ordering similarities took "
+    auxMessages.printMessageln("Ordering similarities took "
         + Utilities.milisecondsToSeconds(t1) + " seconds.");
 
     // Frequency computing for compressing similarities
     final List<Integer> aux = new ArrayList<>();
     long t2 = rowsEngine.process(new RowTask.FrequencyCompute(), new StreamOut.Memory(aux));
-    mainMessages.printMessageln("Frequency computing took " +
+    auxMessages.printMessageln("Frequency computing took " +
         Utilities.milisecondsToSeconds(t2) + " seconds.");
 
     // Do compress similarities based en frequency counts
     long t3 = rowsEngine.process(new RowTask.ReassignIds(new FrequencyTable(aux)),
         createDeltaStreamOut(conf.getReassignedSimilaritiesPath()));
-    mainMessages.printMessageln("NeighborhoodSimilarity values reassignment took "
+    auxMessages.printMessageln("NeighborhoodSimilarity values reassignment took "
         + Utilities.milisecondsToSeconds(t3) + " seconds.");
   }
 }
