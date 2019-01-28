@@ -75,7 +75,8 @@ public interface NeighborhoodSimilarity {
       Denominators denominators = new Denominators();
       denominators.compute(dataset);
 
-      Conf.get().getMessages().printMessage("Computing similarities (TopHalfMatrix)");
+      Conf.get().getMessages().printMessage("Computing similarities ("
+          + this.getClass().getSimpleName() + ")");
 
       final int MAX_USERS = 1384;
       final int TIMES = 1000;
@@ -184,7 +185,8 @@ public interface NeighborhoodSimilarity {
       Denominators denominators = new Denominators();
       denominators.compute(dataset);
 
-      Conf.get().getMessages().printMessage("Computing similarities (TopHalfMatrix)");
+      Conf.get().getMessages().printMessage("Computing similarities ("
+        + this.getClass().getSimpleName() + ")");
 
       final int MAX_USERS = 1384;
       final int TIMES = 1000;
@@ -228,33 +230,27 @@ public interface NeighborhoodSimilarity {
         while (iteratorUsersJ.hasNext()) {
           userJ = iteratorUsersJ.next();
 
-          if (userJ < userI) {
-            similarities.add(0);
-          } else {
+          sum = 0.0;
 
-            sum = 0.0;
+          // Change to MapIterator
+          hm = (HashedMap<Integer, Double>) dataset.getUserProfile(userI);
+          mapIterator = hm.mapIterator();
 
-            // Change to MapIterator
-            hm = (HashedMap<Integer, Double>) dataset.getUserProfile(userI);
-            mapIterator = hm.mapIterator();
+          while (mapIterator.hasNext()) {
+            item = mapIterator.next();
 
-            while (mapIterator.hasNext()) {
-              item = mapIterator.next();
-
-              if (dataset.getUserProfile(userJ).containsKey(item)) {
-                ratingJ = dataset.getUserProfile(userJ).get(item);
-              } else {
-                continue;
-              }
-
-              sum += mapIterator.getValue() * ratingJ;
+            if (dataset.getUserProfile(userJ).containsKey(item)) {
+              ratingJ = dataset.getUserProfile(userJ).get(item);
+            } else {
+              continue;
             }
 
-            res = TIMES * (sum / (denominators.getDenominator(userI)
-                * denominators.getDenominator(userJ)));
-            similarities.add(res.intValue());
-
+            sum += mapIterator.getValue() * ratingJ;
           }
+
+          res = TIMES * (sum / (denominators.getDenominator(userI)
+              * denominators.getDenominator(userJ)));
+          similarities.add(res.intValue());
         }
 
         /* The rating needs some special Id to mark the end of a row in case some variable length
