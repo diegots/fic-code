@@ -37,7 +37,6 @@ class Job {
   static final String VERBOSE_MODE = "-v";
 
   private final Conf conf;
-  private Messages auxMessages = new Messages.Symbol("");
 
   public Job(Conf conf) {
     this.conf = conf;
@@ -68,7 +67,7 @@ class Job {
           try {
             conf.setRowDelimiter(DefaultValues.ROW_DELIMITER);
           } catch (RowDelimiterException e) {
-            auxMessages.printErrln("Bad row delimiter!");
+            System.err.println("Bad row delimiter!");
             System.exit(1);
           }
           break;
@@ -96,7 +95,7 @@ class Job {
   public void start() {
 
     if (Conf.Mode.UNDEFINED.equals(conf.getMode())) {
-      auxMessages.printErrln("Mode not recognized! Showing usage.");
+      System.err.println("Mode not recognized! Showing usage.");
       help();
       System.exit(1);
     }
@@ -144,7 +143,7 @@ class Job {
     // Compute similarities
     NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.FullMatrix();
     long t0 = neighborhoodSimilarity.compute(dataset);
-    auxMessages.printMessageln("Computing similarities took "
+    Conf.get().getMessages().printMessageln("Computing similarities took "
         + Utilities.milisecondsToSeconds(t0) + " seconds.");
 
     // Get processing engine
@@ -153,19 +152,19 @@ class Job {
     // Compute k neighbors
     long t1 = rowsEngine.process(new RowTask.Order(),
         createDeltaStreamOut(conf.getOrderedIndexesPath()));
-    auxMessages.printMessageln("Ordering similarities took "
+    Conf.get().getMessages().printMessageln("Ordering similarities took "
         + Utilities.milisecondsToSeconds(t1) + " seconds.");
 
     // Frequency computing for compressing similarities
     final List<Integer> aux = new ArrayList<>();
     long t2 = rowsEngine.process(new RowTask.FrequencyCompute(), new StreamOut.Memory(aux));
-    auxMessages.printMessageln("Frequency computing took " +
+    Conf.get().getMessages().printMessageln("Frequency computing took " +
         Utilities.milisecondsToSeconds(t2) + " seconds.");
 
     // Do compress similarities based en frequency counts
     long t3 = rowsEngine.process(new RowTask.ReassignIds(new FrequencyTable(aux)),
         createDeltaStreamOut(conf.getReassignedSimilaritiesPath()));
-    auxMessages.printMessageln("NeighborhoodSimilarity values reassignment took "
+    Conf.get().getMessages().printMessageln("NeighborhoodSimilarity values reassignment took "
         + Utilities.milisecondsToSeconds(t3) + " seconds.");
   }
 }
