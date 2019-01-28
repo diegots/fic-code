@@ -2,7 +2,6 @@ package tfg.generate.engine;
 
 import tfg.common.stream.StreamOut;
 import tfg.generate.Conf;
-import tfg.generate.utils.Messages;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,24 +10,18 @@ import java.util.Map;
 
 public class ProccessRows {
 
-  private final Messages messages;
-
-  public ProccessRows(Messages messages) {
-    this.messages = messages;
-  }
-
   public long process(RowTask rowTask, StreamOut streamOut) {
-    messages.printMessage("Start " + rowTask.getTaskName());
+    Conf.get().getMessages().printMessage("Start " + rowTask.getTaskName());
     final long start = System.currentTimeMillis();
 
     // 1. read from disk
     try {
       Row row = new Row(
-          new FileInputStream(Conf.getConf().getSimilaritiesPath()));
+          new FileInputStream(Conf.get().getSimilaritiesPath()));
 
       List<Integer> computedValues = null;
       while (row.hasMoreBits()) {
-        messages.printDoing();
+        Conf.get().getMessages().printDoing();
         Map<Integer, Integer> readRow = row.readRowDelta();
 
         // Do something with this row
@@ -46,7 +39,7 @@ public class ProccessRows {
       System.exit(1);
     }
 
-    messages.printMessageln(" done.");
+    Conf.get().getMessages().printMessageln(" done.");
     return System.currentTimeMillis() - start;
   }
 

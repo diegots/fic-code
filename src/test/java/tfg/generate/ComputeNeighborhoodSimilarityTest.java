@@ -29,7 +29,7 @@ public class ComputeNeighborhoodSimilarityTest {
     //messages = new Messages.Symbol(".");
     messages = new Messages.Void();
 
-    conf = Conf.getConf();
+    conf = Conf.get();
     conf.setRowDelimiter(2000);
     conf.setSimilaritiesPath(similaritiesPath);
     conf.setDataPath(datasetPath);
@@ -38,20 +38,20 @@ public class ComputeNeighborhoodSimilarityTest {
 
   @Test
   public void generateOutput () {
-    Dataset dataset = new Dataset.MovieLensDataset(messages);
+    Dataset dataset = new Dataset.MovieLensDataset();
     dataset.read(conf.getDataPath());
 
-    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(similaritiesPath, neighborsPath, messages);
+    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.FullMatrix();
     neighborhoodSimilarity.compute(dataset);
   }
 
   @Test
   public void readBackNeighborIds () {
 
-    Dataset dataset = new Dataset.MovieLensDataset(messages);
+    Dataset dataset = new Dataset.MovieLensDataset();
     dataset.read(datasetPath);
 
-    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(similaritiesPath, neighborsPath, messages);
+    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.FullMatrix();
     neighborhoodSimilarity.compute(dataset);
 
     List<Integer> readData = Utilities.readAllFile(neighborsPath);
@@ -60,11 +60,10 @@ public class ComputeNeighborhoodSimilarityTest {
 
   @Test
   public void testSimilarityRowLimit () {
-    Dataset dataset = new Dataset.MovieLensDataset(messages);
+    Dataset dataset = new Dataset.MovieLensDataset();
     dataset.read(datasetPath);
 
-    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.Impl(
-        similaritiesPath, neighborsPath, messages);
+    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.FullMatrix();
     neighborhoodSimilarity.compute(dataset);
 
     List<Integer> readData = Utilities.readOneRow(similaritiesPath);

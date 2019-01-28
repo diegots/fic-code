@@ -22,7 +22,7 @@ public class Main {
   public static void main(String[] args) {
 
     // Prepare stuff
-    Job job = new Job(Conf.getConf());
+    Job job = new Job(Conf.get());
     job.parseCommandLine(args);
     job.start();
   }
@@ -37,7 +37,7 @@ class Job {
   static final String VERBOSE_MODE = "-v";
 
   private final Conf conf;
-  private Messages messages = new Messages.Void();
+  private Messages mainMessages = new Messages.Symbol("");
 
   public Job(Conf conf) {
     this.conf = conf;
@@ -51,8 +51,8 @@ class Job {
         case RATING_MATRIX_MODE:
           conf.setMode(Conf.Mode.MATRIX);
           conf.setDataPath(args[i+1]);
-          conf.setRatingMatrixPath(args[i+2]);
-          conf.setShardsNumber(Integer.valueOf(args[i+3]));
+          conf.setShardsNumber(Integer.valueOf(args[i+2]));
+          conf.setRatingMatrixPath(args[i+3]);
           i+=4;
           break;
 
@@ -68,7 +68,7 @@ class Job {
           try {
             conf.setRowDelimiter(DefaultValues.ROW_DELIMITER);
           } catch (RowDelimiterException e) {
-            messages.printErrln("Bad row delimiter!");
+            mainMessages.printErrln("Bad row delimiter!");
             System.exit(1);
           }
           break;
@@ -82,7 +82,7 @@ class Job {
           System.exit(0);
 
         case VERBOSE_MODE:
-          messages = new Messages.Symbol(".");
+          conf.setMessages(new Messages.Symbol("."));
           i++;
           break;
 
@@ -96,13 +96,13 @@ class Job {
   public void start() {
 
     if (Conf.Mode.UNDEFINED.equals(conf.getMode())) {
-      messages.printErrln("Mode not recognized! Showing usage.");
+      mainMessages.printErrln("Mode not recognized! Showing usage.");
       help();
       System.exit(1);
     }
 
     // Read dataset
-    Dataset dataset = new Dataset.MovieLensDataset(messages);
+    Dataset dataset = new Dataset.MovieLensDataset();
     dataset.read(conf.getDataPath());
 
     if (Conf.Mode.MATRIX.equals(conf.getMode())) {
@@ -121,16 +121,17 @@ class Job {
     System.out.println("        java -jar JAR_NAME [-v] -<mode> <dataset path> +mode-specific-params");
     System.out.println("");
     System.out.println("Mode is one of: '-h', '-help', '-matrix' or '-neighborhood',");
+    System.out.println("");
     System.out.println("    '" + HELP_LONG_MODE + "' or '" + HELP_SHORT_MODE + "': show this help.");
     System.out.println("    '" + RATING_MATRIX_MODE + "' mode specific params:");
-    System.out.println("        <output path>");
-    System.out.println("        <number of shards>");
+    System.out.println("        <INPUT : number of shards>");
+    System.out.println("        <OUTPUT: rating matrix prefix filename>");
     System.out.println("    '" + NEIGHBORHOOD_MODE + "' mode specific params:");
-    System.out.println("        <k value>");
-    System.out.println("        <uncompressed similarities matrix path>");
-    System.out.println("        <neighborhood Ids order list path>");
-    System.out.println("        <reassigned indexes path>");
-    System.out.println("        <similarities matrix path>");
+    System.out.println("        <INPUT : k value>");
+    System.out.println("        <OUTPUT: similarity matrix filename (encoded)>");
+    System.out.println("        <OUTPUT: neighborhood Ids order list filename>");
+    System.out.println("        <OUTPUT: reassigned indexes filename>");
+    System.out.println("        <OUTPUT: similarity matrix filename (encoded, reassigned values)>");
   }
 
   private void ratingMatrixComputing (Dataset dataset) {
@@ -141,32 +142,30 @@ class Job {
   private void neighborhoodComputing(Dataset dataset)  {
 
     // Compute similarities
-    NeighborhoodSimilarity neighborhoodSimilarity =
-        new NeighborhoodSimilarity.Impl(
-            conf.getSimilaritiesPath(), conf.getNeighborhoodPath(), messages);
+    NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.FullMatrix();
     long t0 = neighborhoodSimilarity.compute(dataset);
-    messages.printMessageln("Computing similarities took "
+    mainMessages.printMessageln("Computing similarities took "
         + Utilities.milisecondsToSeconds(t0) + " seconds.");
 
     // Get processing engine
-    ProccessRows rowsEngine = new ProccessRows(messages);
+    ProccessRows rowsEngine = new ProccessRows();
 
     // Compute k neighbors
     long t1 = rowsEngine.process(new RowTask.Order(),
         createDeltaStreamOut(conf.getOrderedIndexesPath()));
-    messages.printMessageln("Ordering similarities took "
+    mainMessages.printMessageln("Ordering similarities took "
         + Utilities.milisecondsToSeconds(t1) + " seconds.");
 
     // Frequency computing for compressing similarities
     final List<Integer> aux = new ArrayList<>();
     long t2 = rowsEngine.process(new RowTask.FrequencyCompute(), new StreamOut.Memory(aux));
-    messages.printMessageln("Frequency computing took " +
+    mainMessages.printMessageln("Frequency computing took " +
         Utilities.milisecondsToSeconds(t2) + " seconds.");
 
     // Do compress similarities based en frequency counts
     long t3 = rowsEngine.process(new RowTask.ReassignIds(new FrequencyTable(aux)),
         createDeltaStreamOut(conf.getReassignedSimilaritiesPath()));
-    messages.printMessageln("NeighborhoodSimilarity values reassignment took "
+    mainMessages.printMessageln("NeighborhoodSimilarity values reassignment took "
         + Utilities.milisecondsToSeconds(t3) + " seconds.");
   }
 }

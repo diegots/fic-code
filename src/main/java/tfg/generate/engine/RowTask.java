@@ -30,7 +30,7 @@ public interface RowTask {
       List<Integer> result = new ArrayList<>();
       int i = 0;
       MapIterator<Integer, Integer> iterator = sortedRow.mapIterator();
-      while (iterator.hasNext() && i++ < Conf.getConf().getK()) {
+      while (iterator.hasNext() && i++ < Conf.get().getK()) {
         iterator.next();
         result.add(iterator.getKey());
       }
@@ -112,7 +112,7 @@ public interface RowTask {
       }
 
       // Add row delimiter
-      result.add(Conf.getConf().getRowDelimiter());
+      result.add(Conf.get().getRowDelimiter());
 
       return result;
     }

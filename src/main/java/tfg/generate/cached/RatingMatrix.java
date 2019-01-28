@@ -26,7 +26,7 @@ public class RatingMatrix {
 
     // Initialize shards
     List<Map<Integer, Map<Integer, Double>>> shards = new ArrayList<>();
-    for (int i = 0; i< Conf.getConf().getShardsNumber(); i++) {
+    for (int i = 0; i< Conf.get().getShardsNumber(); i++) {
       shards.add(i, new HashMap<>());
     }
 
@@ -37,15 +37,15 @@ public class RatingMatrix {
       int userId = iterator.next();
       Map<Integer, Double> userProfile = dataset.getUserProfile(userId);
 
-      int shardId = userId % Conf.getConf().getShardsNumber();
+      int shardId = userId % Conf.get().getShardsNumber();
 
       Map<Integer, Map<Integer, Double>> shard = shards.get(shardId);
       shard.put(userId, userProfile);
     }
 
-    for (int i=0; i<Conf.getConf().getShardsNumber(); i++) {
+    for (int i = 0; i<Conf.get().getShardsNumber(); i++) {
 
-      String shardPath = Conf.getConf().getRatingMatrixPath() + i;
+      String shardPath = Conf.get().getRatingMatrixPath() + i;
       try {
         FileOutputStream outputStream = new FileOutputStream(shardPath);
         Utilities.objectToFile(outputStream, shards.get(i));

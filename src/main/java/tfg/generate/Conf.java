@@ -1,8 +1,11 @@
 package tfg.generate;
 
 import tfg.generate.engine.RowDelimiterException;
+import tfg.generate.utils.Messages;
 
 public class Conf {
+
+  private Messages messages;
 
   enum Mode {MATRIX, NEIGHBORHOOD, UNDEFINED}
   private Mode mode;
@@ -60,10 +63,19 @@ public class Conf {
 
   private Conf () {
     mode = Mode.UNDEFINED;
+    messages = new Messages.Void();
   }
 
-  public static final Conf getConf () {
+  public static final Conf get() {
     return conf;
+  }
+
+  public Messages getMessages() {
+    return messages;
+  }
+
+  public void setMessages(Messages messages) {
+    this.messages = messages;
   }
 
   public int getRowDelimiter() {

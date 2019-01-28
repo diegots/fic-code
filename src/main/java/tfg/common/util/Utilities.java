@@ -126,7 +126,7 @@ public class Utilities {
       while (ibs.available() > 0) {
         int i = ibs.readDelta();
 
-        if (Conf.getConf().getRowDelimiter() == i) {
+        if (Conf.get().getRowDelimiter() == i) {
           break;
         }
 

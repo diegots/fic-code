@@ -2,7 +2,7 @@ package tfg.generate.model;
 
 import org.apache.commons.collections4.map.HashedMap;
 import tfg.common.model.User;
-import tfg.generate.utils.Messages;
+import tfg.generate.Conf;
 
 import java.io.*;
 import java.util.HashSet;
@@ -41,20 +41,15 @@ public interface Dataset {
   class MovieLensDataset implements Dataset {
 
     private final Map<Integer, Map<Integer, Double>> dataset;
-    private final Messages messages;
 
-    /**
-     * @param messages Handler for printing messages out.
-     */
-    public MovieLensDataset(Messages messages) {
+    public MovieLensDataset() {
       dataset = new HashedMap<>();
-      this.messages = messages;
     }
 
     @Override
     public void read (String inPath) {
 
-      messages.printMessage("Reading input data...");
+      Conf.get().getMessages().printMessage("Reading input data...");
 
       final String DELIMITER = ",";
       final String HEADER_ITEM = "userId";
@@ -100,7 +95,7 @@ public interface Dataset {
         e.printStackTrace();
       }
 
-      messages.printMessageln(" done.");
+      Conf.get().getMessages().printMessageln(" done.");
     }
 
     @Override

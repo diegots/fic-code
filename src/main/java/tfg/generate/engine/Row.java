@@ -26,7 +26,7 @@ public class Row {
     try {
       while (bitStream.available() > 0) {
         value = bitStream.readDelta();
-        if (Conf.getConf().getRowDelimiter() != value) {
+        if (Conf.get().getRowDelimiter() != value) {
           res.put(i++, value);
         } else {
           break;
