@@ -1,17 +1,17 @@
 package tfg.hadoop;
 
-import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
-import tfg.common.util.Utilities;
+import tfg.hadoop.model.Data;
+import tfg.hadoop.model.SimilarityMatrix;
 import tfg.hadoop.types.TripleWritable;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.List;
 
 public class Job1 {
   public static class Map
@@ -38,29 +38,28 @@ public class Job1 {
   public static class Reduce
       extends Reducer<IntWritable, IntWritable, IntWritable, TripleWritable> {
 
-    private int shardsNumber;
-    private List<Integer> userIdsOrder;
-    private List<Integer> kNeighbors;
-    private List<Integer> compressed;
+    private Data userIds;
+    private Data reassignedValues;
+    private SimilarityMatrix similarityMatrix;
 
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
 
-      // Get current shard assigned number
-      shardsNumber = Integer.valueOf(context.getConfiguration().get(Main.SHARDS_NUMBER));
+      // Cached files have to be retrieved by their **filename**. Avoid use of complete file path
+      FileInputStream fis = new FileInputStream(
+          new File(Main.cachedPaths[Main.CachedData.userIdsEncoded.ordinal()]).getName());
+      userIds = new Data(fis);
+      fis.close();
 
-      // Prepare neighborhood access
-//      FileInputStream inputStream = new FileInputStream(new Path(context.getCacheFiles()[userIdsOrder.ordinal()]).getName());
-//      userIdsOrder = new StreamIn.DeltaStreamIn().read(inputStream);
-//      inputStream.close();
-//
-//      kNeighbors = new StreamIn.DeltaStreamIn().read(
-//          new FileInputStream(new Path(context.getCacheFiles()[kNeighbors.ordinal()]).getName())
-//      );
-//
-//      compressed = new StreamIn.DeltaStreamIn().read(
-//          new FileInputStream(new Path(context.getCacheFiles()[compressed.ordinal()]).getName())
-//      );
+      fis = new FileInputStream(
+          new File(Main.cachedPaths[Main.CachedData.reassignedValuesEncoded.ordinal()]).getName());
+      reassignedValues = new Data(fis);
+      fis.close();
+
+      fis = new FileInputStream(
+          new File(Main.cachedPaths[Main.CachedData.simMatEncodedReassig.ordinal()]).getName());
+      similarityMatrix = new SimilarityMatrix(fis);
+      fis.close();
     }
 
     @Override
@@ -69,14 +68,14 @@ public class Job1 {
       //System.out.println("-> Start " + key.get());
 
       // Prepare rating matrix
-      if (null != context.getCacheFiles() && context.getCacheFiles().length > 0) {
-        //System.out.println("-> Open shard at " + key.get());
-        Path path = new Path(context.getCacheFiles()[key.get()]);
-        FileInputStream stream = new FileInputStream(path.getName());
-        java.util.Map<Integer, java.util.Map<Integer, Double>> shard = Utilities.objectFromFile(stream);
-        stream.close();
-        //System.out.println("-> Shard read" + key.get());
-      }
+//      if (null != context.getCacheFiles() && context.getCacheFiles().length > 0) {
+//        //System.out.println("-> Open shard at " + key.get());
+//        Path path = new Path(context.getCacheFiles()[key.get()]);
+//        FileInputStream stream = new FileInputStream(path.getName());
+//        java.util.Map<Integer, java.util.Map<Integer, Double>> shard = Utilities.objectFromFile(stream);
+//        stream.close();
+//        //System.out.println("-> Shard read" + key.get());
+//      }
 
       /**
        * Manage reassigned Ids:
@@ -90,15 +89,15 @@ public class Job1 {
 
 
         // Find active user neighborhood
-        for (int i=0; i<kNeighbors.size(); i++) {
-
-          if (kNeighbors.get(i) == 1000000) {
-            //System.out.println(" ->    row");
-            continue; // row delimiter
-          }
-
-          //System.out.print(" " + kNeighbors.get(i));
-        }
+//        for (int i=0; i<kNeighbors.size(); i++) {
+//
+//          if (kNeighbors.get(i) == 1000000) {
+//            //System.out.println(" ->    row");
+//            continue; // row delimiter
+//          }
+//
+//          //System.out.print(" " + kNeighbors.get(i));
+//        }
         //System.out.println("-> Active user: " + activeUser.get());
 
         break; // DEBUG - Stops after the first active user
