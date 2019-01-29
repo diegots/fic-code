@@ -16,16 +16,16 @@ public class Main {
 
   enum CachedData {
     ratingMatrix0, ratingMatrix1, ratingMatrix2,
-    userIdsOrder, kNeighbors, compressed
+    reassignedValuesEncoded, simMatEncodedReassig, userIdsEncoded
   }
 
   static final String[] cachedPaths = {
       "/cached/rating-matrix0",
       "/cached/rating-matrix1",
       "/cached/rating-matrix2",
-      "/cached/userIdsOrder",
-      "/cached/kNeighbors",
-      "/cached/compressed"
+      "/cached/reassigned.encoded",
+      "/cached/sim.mat.encoded.reassig",
+      "/cached/user.ids.encoded"
   };
 
   public static void main(String[] args)
@@ -40,7 +40,7 @@ public class Main {
 
     Job job1 = Job.getInstance(conf);
     job1.setJobName("job1");
-    job1.setJarByClass(Main.class);
+    job1.setJarByClass(tfg.hadoop.Main.class);
 
     // Mapper and Reducer classes
     job1.setMapperClass(Job1.Map.class);
@@ -63,8 +63,7 @@ public class Main {
     for (CachedData fileName: CachedData.values()) {
       System.out.println("ordinal: " + fileName.ordinal()
         + ", cachedPath: " + cachedPaths[fileName.ordinal()]);
-      Path p = new Path(cachedPaths[fileName.ordinal()]);
-      job1.addCacheFile(p.toUri());
+      job1.addCacheFile(new Path(cachedPaths[fileName.ordinal()]).toUri());
     }
 
     // Set number of reduce tasks
