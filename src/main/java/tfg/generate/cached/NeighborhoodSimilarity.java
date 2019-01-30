@@ -102,7 +102,7 @@ public interface NeighborhoodSimilarity {
       StreamOut streamOut = null;
       try {
         streamOut = new StreamOut.DeltaStreamOut(
-            new FileOutputStream(Conf.get().getSimilaritiesPath()));
+            new FileOutputStream(Conf.get().getSimilaritiesOutPath()));
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       }
@@ -156,7 +156,7 @@ public interface NeighborhoodSimilarity {
         streamOut.write(similarities);
 
         if (neighborIds.size() >= MAX_IDS_MEMORY_STORED) {
-          Utilities.writeLine(Conf.get().getNeighborhoodPath(), neighborIds);
+          Utilities.writeLine(Conf.get().getNeighborhoodOutPath(), neighborIds);
           neighborIds = new ArrayList<>();
         }
 
@@ -170,7 +170,7 @@ public interface NeighborhoodSimilarity {
       streamOut.close();
 
       /* Turn over the last batch of userIds */
-      Utilities.writeLine(Conf.get().getNeighborhoodPath(), neighborIds);
+      Utilities.writeLine(Conf.get().getNeighborhoodOutPath(), neighborIds);
       Conf.get().getMessages().printMessageln("done.");
 
       return System.currentTimeMillis() - start;
@@ -212,7 +212,7 @@ public interface NeighborhoodSimilarity {
       StreamOut streamOut = null;
       try {
         streamOut = new StreamOut.DeltaStreamOut(
-            new FileOutputStream(Conf.get().getSimilaritiesPath()));
+            new FileOutputStream(Conf.get().getSimilaritiesOutPath()));
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       }
@@ -260,7 +260,7 @@ public interface NeighborhoodSimilarity {
         streamOut.write(similarities);
 
         if (neighborIds.size() >= MAX_IDS_MEMORY_STORED) {
-          Utilities.writeLine(Conf.get().getNeighborhoodPath(), neighborIds);
+          Utilities.writeLine(Conf.get().getNeighborhoodOutPath(), neighborIds);
           neighborIds = new ArrayList<>();
         }
 
@@ -274,7 +274,7 @@ public interface NeighborhoodSimilarity {
       streamOut.close();
 
       /* Turn over the last batch of userIds */
-      Utilities.writeLine(Conf.get().getNeighborhoodPath(), neighborIds);
+      Utilities.writeLine(Conf.get().getNeighborhoodOutPath(), neighborIds);
       Conf.get().getMessages().printMessageln("done.");
 
       return System.currentTimeMillis() - start;

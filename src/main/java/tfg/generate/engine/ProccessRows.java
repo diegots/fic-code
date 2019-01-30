@@ -17,7 +17,7 @@ public class ProccessRows {
     // 1. read from disk
     try {
       Row row = new Row(
-          new FileInputStream(Conf.get().getSimilaritiesPath()));
+          new FileInputStream(Conf.get().getSimilaritiesOutPath()));
 
       List<Integer> computedValues = null;
       while (row.hasMoreBits()) {

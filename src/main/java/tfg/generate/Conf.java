@@ -17,11 +17,11 @@ public class Conf {
   private int rowDelimiter;
   private int k;
 
-  private String dataPath;
-  private String similaritiesPath;
-  private String neighborhoodPath;
-  private String orderedIndexesPath;
-  private String reassignedSimilaritiesPath;
+  private String datasetInPath;
+  private String similaritiesOutPath; // encoded sim mat
+  private String neighborhoodOutPath; // list of treated users
+  private String orderedIndexesPath; // k neighbors
+  private String reassignedSimilaritiesOutPath; // encoded.reassigned sim mat
 
   // Rating matrix mode
   private String ratingMatrixPath;
@@ -51,12 +51,12 @@ public class Conf {
     this.ratingMatrixPath = ratingMatrixPath;
   }
 
-  public String getReassignedSimilaritiesPath() {
-    return reassignedSimilaritiesPath;
+  public String getReassignedSimilaritiesOutPath() {
+    return reassignedSimilaritiesOutPath;
   }
 
-  public void setReassignedSimilaritiesPath(String reassignedSimilaritiesPath) {
-    this.reassignedSimilaritiesPath = reassignedSimilaritiesPath;
+  public void setReassignedSimilaritiesOutPath(String reassignedSimilaritiesOutPath) {
+    this.reassignedSimilaritiesOutPath = reassignedSimilaritiesOutPath;
   }
 
   private static final Conf conf = new Conf();
@@ -93,28 +93,28 @@ public class Conf {
     }
   }
 
-  public String getDataPath() {
-    return dataPath;
+  public String getDatasetInPath() {
+    return datasetInPath;
   }
 
-  public void setDataPath(String dataPath) {
-    this.dataPath = dataPath;
+  public void setDatasetInPath(String datasetInPath) {
+    this.datasetInPath = datasetInPath;
   }
 
-  public String getSimilaritiesPath() {
-    return similaritiesPath;
+  public String getSimilaritiesOutPath() {
+    return similaritiesOutPath;
   }
 
-  public void setSimilaritiesPath(String similaritiesPath) {
-    this.similaritiesPath = similaritiesPath;
+  public void setSimilaritiesOutPath(String similaritiesOutPath) {
+    this.similaritiesOutPath = similaritiesOutPath;
   }
 
-  public String getNeighborhoodPath() {
-    return neighborhoodPath;
+  public String getNeighborhoodOutPath() {
+    return neighborhoodOutPath;
   }
 
-  public void setNeighborhoodPath(String neighborhoodPath) {
-    this.neighborhoodPath = neighborhoodPath;
+  public void setNeighborhoodOutPath(String neighborhoodOutPath) {
+    this.neighborhoodOutPath = neighborhoodOutPath;
   }
 
   public String getOrderedIndexesPath() {

@@ -49,7 +49,7 @@ class Job {
       switch (args[i]) {
         case RATING_MATRIX_MODE:
           conf.setMode(Conf.Mode.MATRIX);
-          conf.setDataPath(args[i+1]);
+          conf.setDatasetInPath(args[i+1]);
           conf.setShardsNumber(Integer.valueOf(args[i+2]));
           conf.setRatingMatrixPath(args[i+3]);
           i+=4;
@@ -57,12 +57,12 @@ class Job {
 
         case NEIGHBORHOOD_MODE:
           conf.setMode(Conf.Mode.NEIGHBORHOOD);
-          conf.setDataPath(args[i+1]);
+          conf.setDatasetInPath(args[i+1]);
           conf.setK(Integer.valueOf(args[i+2]));
-          conf.setSimilaritiesPath(args[i+3]);
-          conf.setNeighborhoodPath(args[i+4]);
+          conf.setSimilaritiesOutPath(args[i+3]);
+          conf.setNeighborhoodOutPath(args[i+4]);
           conf.setOrderedIndexesPath(args[i+5]);
-          conf.setReassignedSimilaritiesPath(args[i+6]);
+          conf.setReassignedSimilaritiesOutPath(args[i+6]);
           i+=7;
           try {
             conf.setRowDelimiter(DefaultValues.ROW_DELIMITER);
@@ -102,7 +102,7 @@ class Job {
 
     // Read dataset
     Dataset dataset = new Dataset.MovieLensDataset();
-    dataset.read(conf.getDataPath());
+    dataset.read(conf.getDatasetInPath());
 
     if (Conf.Mode.MATRIX.equals(conf.getMode())) {
       ratingMatrixComputing(dataset);
@@ -128,7 +128,7 @@ class Job {
     System.out.println("    '" + NEIGHBORHOOD_MODE + "' mode specific params:");
     System.out.println("        <INPUT : k value>");
     System.out.println("        <OUTPUT: similarity matrix filename (encoded)>");
-    System.out.println("        <OUTPUT: userIds order filename (encoded)>");
+    System.out.println("        <OUTPUT: user's k neigborhoods (encoded)>");
     System.out.println("        <OUTPUT: reassigned indexes filename (encoded)>");
     System.out.println("        <OUTPUT: similarity matrix filename (encoded, reassigned values)>");
   }
@@ -163,7 +163,7 @@ class Job {
 
     // Do compress similarities based en frequency counts
     long t3 = rowsEngine.process(new RowTask.ReassignIds(new FrequencyTable(aux)),
-        createDeltaStreamOut(conf.getReassignedSimilaritiesPath()));
+        createDeltaStreamOut(conf.getReassignedSimilaritiesOutPath()));
     Conf.get().getMessages().printMessageln("NeighborhoodSimilarity values reassignment took "
         + Utilities.milisecondsToSeconds(t3) + " seconds.");
   }
