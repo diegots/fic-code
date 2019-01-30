@@ -43,18 +43,9 @@ hadoop-start:
 
 hadoop-prepare: 
 	hdfs dfs -mkdir /input /cached
-	# Active users to process
-	hdfs dfs -put ~/IdeaProjects/p1811002/input/active-user/active-user.csv /input
-	# Rating matrix split into shards
-	hdfs dfs -put ~/IdeaProjects/p1811002/input/rating-matrix/rating-matrix0 /cached 
-	hdfs dfs -put ~/IdeaProjects/p1811002/input/rating-matrix/rating-matrix1 /cached
-	hdfs dfs -put ~/IdeaProjects/p1811002/input/rating-matrix/rating-matrix2 /cached
-	# Similarity data
-	hdfs dfs -put ~/IdeaProjects/p1811002/input/similarity-data/encoded.reassigned.sim.mat /cached
-	hdfs dfs -put ~/IdeaProjects/p1811002/input/similarity-data/encoded.sim.mat /cached
-	hdfs dfs -put ~/IdeaProjects/p1811002/input/similarity-data/encoded.user.ids /cached
-	hdfs dfs -put ~/IdeaProjects/p1811002/input/similarity-data/encoded.users.k.neighbors /cached
-	hdfs dfs -put ~/IdeaProjects/p1811002/input/similarity-data/plain.frequency.table /cached
+	hdfs dfs -put $(BASE)/input/active-user/active-user.csv /input
+	for i in $(SHARDS_DATA)/*; do hdfs dfs -put $$i /cached; done
+	for i in $(SIMILARITY_DATA)/*; do hdfs dfs -put $$i /cached; done
 
 hadoop-jar: 
 	hdfs dfs -rm -f -R /job1-out
