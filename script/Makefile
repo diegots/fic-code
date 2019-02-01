@@ -1,23 +1,28 @@
+# Project base dir
 BASE=~/IdeaProjects/p1811002
 
+# Jar files
 HADOOP_JAR=$(BASE)/out/artifacts/p1811002_hadoop/p1811002_hadoop.jar
 GENERATE_JAR=$(BASE)/out/artifacts/p1811002_generate/p1811002_generate.jar
 
+# Datasets
 DS=$(BASE)/input/dataset/movielens-100k.csv
 
+# Similarities generation variables
 SIMILARITY_DATA=$(BASE)/input/similarity-data
 K=5
 
-SHARDS_NUMBER=3
-SHARDS_PREFIX=shard
-SHARDS_DATA=$(BASE)/input/shards
-
-# Neighborhood generation file names
+# Neighborhood generation output file names
 A=encoded.sim.mat
 B=encoded.user.ids
 C=encoded.users.k.neighbors
 D=plain.frequency.table
 E=encoded.reassigned.sim.mat
+
+# Shard generation variables
+SHARDS_NUMBER=3
+SHARDS_PREFIX=shard
+SHARDS_DATA=$(BASE)/input/shards
 
 generate: generate-shards generate-similarities
 
@@ -39,7 +44,7 @@ generate-clean:
 hadoop-start: 
 	hdfs namenode -format -force
 	/usr/local/hadoop/sbin/start-dfs.sh
-	$(shell $HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver)
+	$$HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver
 
 hadoop-prepare: 
 	hdfs dfs -mkdir /input /cached
@@ -50,7 +55,7 @@ hadoop-prepare:
 hadoop-jar: 
 	hdfs dfs -rm -f -R /job1-out
 	$(shell export HADOOP_CLASSPATH=$(HADOOP_JAR):$HADOOP_CLASSPATH)
-	cd /tmp && hadoop jar $(HADOOP_JAR) /input 3
+	cd /tmp && hadoop jar $(HADOOP_JAR) /input $(SHARDS_NUMBER)
 
 hadoop-stop: 
 	/usr/local/hadoop/sbin/stop-all.sh
