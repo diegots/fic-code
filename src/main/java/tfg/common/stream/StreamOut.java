@@ -25,7 +25,7 @@ public interface StreamOut {
     }
 
     @Override
-    public void write(int[] a, int start, int count) {}
+    public void write(int[] data, int start, int count) {}
 
     @Override
     public void write(List<Integer> data) {
@@ -38,6 +38,47 @@ public interface StreamOut {
     }
   }
 
+  class PlainStreamOut implements StreamOut {
+
+    private final OutputStream outputStream;
+
+    public PlainStreamOut(OutputStream outputStream) {
+      this.outputStream = outputStream;
+    }
+
+    @Override
+    public void write(int[] data, int start, int count) {
+      for (int i = start; i < start + count; i++) {
+        try {
+          outputStream.write(data[i]);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+
+    @Override
+    public void write(List<Integer> data) {
+      Iterator<Integer> iterator = data.iterator();
+      while (iterator.hasNext()) {
+        try {
+          outputStream.write(iterator.next());
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+
+    @Override
+    public void close() {
+      try {
+        outputStream.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
   class DeltaStreamOut implements StreamOut {
 
     private final OutputBitStream outputBitStream;
@@ -46,11 +87,11 @@ public interface StreamOut {
       outputBitStream = new OutputBitStream(outputStream);
     }
 
-    public void write(int[] a, int start, int count) {
+    public void write(int[] data, int start, int count) {
 
       for (int i = start; i < start + count; i++) {
         try {
-          outputBitStream.writeDelta(a[i]);
+          outputBitStream.writeDelta(data[i]);
 
         } catch (IOException e) {
           e.printStackTrace();
@@ -78,10 +119,20 @@ public interface StreamOut {
     }
   }
 
-  static StreamOut createDeltaStreamOut(String pathToFile) {
+  static StreamOut createPlainStreamOut(String outFilePath) {
     StreamOut streamOut = null;
     try {
-      streamOut = new StreamOut.DeltaStreamOut(new FileOutputStream(pathToFile));
+      streamOut = new StreamOut.PlainStreamOut(new FileOutputStream(outFilePath));
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+    return streamOut;
+  }
+
+  static StreamOut createDeltaStreamOut(String outFilePath) {
+    StreamOut streamOut = null;
+    try {
+      streamOut = new StreamOut.DeltaStreamOut(new FileOutputStream(outFilePath));
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
