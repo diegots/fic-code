@@ -151,7 +151,7 @@ public interface NeighborhoodSimilarity {
 
         /* The rating needs some special Id to mark the end of a row in case some variable length
          * encoding is in use */
-        similarities.add(Conf.get().getRowDelimiter());
+        similarities.add(Conf.get().SIMILARITY_ROWS_DELIMITER);
 
         streamOut.write(similarities);
 
@@ -255,7 +255,7 @@ public interface NeighborhoodSimilarity {
 
         /* The rating needs some special Id to mark the end of a row in case some variable length
          * encoding is in use */
-        similarities.add(Conf.get().getRowDelimiter());
+        similarities.add(Conf.get().SIMILARITY_ROWS_DELIMITER);
 
         streamOut.write(similarities);
 

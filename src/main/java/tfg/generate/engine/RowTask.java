@@ -36,7 +36,7 @@ public interface RowTask {
       }
 
       // Add row delimiter
-      final int ROW_DELIMITER = 1000000;
+      final int ROW_DELIMITER = Conf.get().USERS_ROWS_DELIMITER;
       result.add(ROW_DELIMITER);
 
       return result;
@@ -50,7 +50,6 @@ public interface RowTask {
 
   class FrequencyCompute implements RowTask {
 
-    static final int SIMILARITY_MAX_VALUE = 1000;
     static final String TASK_NAME = "Computing frequency";
     private final List<Integer> frequencies;
 
@@ -58,7 +57,7 @@ public interface RowTask {
 
       // Initialize frquencies List
       frequencies = new ArrayList<>();
-      for (int i = 0; i<= SIMILARITY_MAX_VALUE; i++) {
+      for (int i = 0; i<= Conf.get().SIMILARITY_MAX_VALUE; i++) {
         frequencies.add(0);
       }
 
@@ -86,7 +85,7 @@ public interface RowTask {
 
   class ReassignIds implements RowTask {
 
-    static final String TASK_NAME = "Compute frequency";
+    static final String TASK_NAME = "Reassign Ids";
     final FrequencyTable frequencyTable;
 
     public ReassignIds(FrequencyTable frequencyTable) {
@@ -112,7 +111,7 @@ public interface RowTask {
       }
 
       // Add row delimiter
-      result.add(Conf.get().getRowDelimiter());
+      result.add(Conf.get().SIMILARITY_ROWS_DELIMITER);
 
       return result;
     }

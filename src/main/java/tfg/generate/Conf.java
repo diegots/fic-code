@@ -1,20 +1,19 @@
 package tfg.generate;
 
-import tfg.generate.engine.RowDelimiterException;
 import tfg.generate.utils.Messages;
 
 public class Conf {
+
+  public final int SIMILARITY_ROWS_DELIMITER = 1001;
+  public final int USERS_ROWS_DELIMITER = 0;
+
+  public final int SIMILARITY_MAX_VALUE = 1000;
 
   private Messages messages;
 
   enum Mode {MATRIX, NEIGHBORHOOD, UNDEFINED}
   private Mode mode;
 
-  // Neighborhood similarity mode
-  private static final int LOWER_VALUE = 0;
-  private static final int UPPER_VALUE = 1000;
-
-  private int rowDelimiter;
   private int k;
 
   private String datasetInPath;
@@ -76,21 +75,6 @@ public class Conf {
 
   public void setMessages(Messages messages) {
     this.messages = messages;
-  }
-
-  public int getRowDelimiter() {
-    return rowDelimiter;
-  }
-
-  public void setRowDelimiter(int rowDelimiter) throws RowDelimiterException {
-    Conf.validRowDelimiter(rowDelimiter);
-    this.rowDelimiter = rowDelimiter;
-  }
-
-  public static void validRowDelimiter (int value) throws RowDelimiterException {
-    if (value >= LOWER_VALUE && value <= UPPER_VALUE ) {
-      throw new RowDelimiterException();
-    }
   }
 
   public String getDatasetInPath() {

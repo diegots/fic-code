@@ -28,7 +28,7 @@ public class Row {
     try {
       while (bitStream.available() > 0) {
         value = bitStream.readDelta();
-        if (Conf.get().getRowDelimiter() != value) {
+        if (Conf.get().SIMILARITY_ROWS_DELIMITER != value) {
           res.put(i++, value);
         } else {
           break;

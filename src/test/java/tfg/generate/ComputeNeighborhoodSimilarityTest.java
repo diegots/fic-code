@@ -9,7 +9,6 @@ import tfg.generate.engine.RowDelimiterException;
 import tfg.generate.model.Dataset;
 import tfg.generate.utils.Messages;
 
-
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
@@ -30,7 +29,6 @@ public class ComputeNeighborhoodSimilarityTest {
     messages = new Messages.Void();
 
     conf = Conf.get();
-    conf.setRowDelimiter(2000);
     conf.setSimilaritiesOutPath(similaritiesPath);
     conf.setDatasetInPath(datasetPath);
     conf.setNeighborhoodOutPath(neighborsPath);

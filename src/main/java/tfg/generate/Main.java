@@ -1,12 +1,10 @@
 package tfg.generate;
 
-import tfg.common.DefaultValues;
 import tfg.common.stream.StreamOut;
 import tfg.common.util.Utilities;
 import tfg.generate.cached.NeighborhoodSimilarity;
 import tfg.generate.cached.RatingMatrix;
 import tfg.generate.engine.ProccessRows;
-import tfg.generate.engine.RowDelimiterException;
 import tfg.generate.engine.RowTask;
 import tfg.generate.model.Dataset;
 import tfg.generate.model.FrequencyTable;
@@ -64,12 +62,6 @@ class Job {
           conf.setOrderedIndexesPath(args[i+5]);
           conf.setReassignedSimilaritiesOutPath(args[i+6]);
           i+=7;
-          try {
-            conf.setRowDelimiter(DefaultValues.ROW_DELIMITER);
-          } catch (RowDelimiterException e) {
-            System.err.println("Bad row delimiter!");
-            System.exit(1);
-          }
           break;
 
         case HELP_SHORT_MODE:
