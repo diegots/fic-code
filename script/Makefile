@@ -1,5 +1,6 @@
 # Project base dir
 BASE=~/IdeaProjects/p1811002
+OUT=/tmp
 
 # Jar files
 HADOOP_JAR=$(BASE)/out/artifacts/p1811002_hadoop/p1811002_hadoop.jar
@@ -13,11 +14,11 @@ SIMILARITY_DATA=$(BASE)/input/similarity-data
 K=5
 
 # Neighborhood generation output file names
-A=encoded.sim.mat
-B=encoded.user.ids
-C=encoded.users.k.neighbors
-D=plain.frequency.table
-E=encoded.reassigned.sim.mat
+A=$(OUT)/encoded.sim.mat
+B=$(OUT)/encoded.user.ids
+C=$(OUT)/encoded.users.k.neighbors
+D=$(OUT)/plain.frequency.table
+E=$(OUT)/encoded.reassigned.sim.mat
 
 # Shard generation variables
 SHARDS_NUMBER=3
@@ -32,8 +33,8 @@ generate-shards:
 
 generate-similarities:
 	java -jar $(GENERATE_JAR) -v -neighborhood $(DS) $(K) $(A) $(B) $(C) $(D) $(E)  
-	mv -v encoded.* $(SIMILARITY_DATA) 
-	mv -v plain.* $(SIMILARITY_DATA)
+	mv -v $(OUT)/encoded.* $(SIMILARITY_DATA) 
+	mv -v $(OUT)/plain.* $(SIMILARITY_DATA)
 
 generate-help:
 	java -jar $(JAR) -h
