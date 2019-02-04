@@ -60,6 +60,7 @@ public interface NeighborhoodSimilarity {
       Conf.get().getMessages().printMessageln(" done.");
       denominators = md;
     }
+
     double getDenominator (int userId) {
       return denominators.get(userId);
     }
@@ -97,13 +98,7 @@ public interface NeighborhoodSimilarity {
       Iterator<Integer> iteratorUsersI = dataset.getUserIds().iterator();
 
       // Prepare write destination
-      StreamOut streamOut = null;
-      try {
-        streamOut = new StreamOut.DeltaStreamOut(
-            new FileOutputStream(Conf.get().getEncodedSimMatPath()));
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
+      StreamOut streamOut = StreamOut.createDeltaStreamOut(Conf.get().getEncodedSimMatPath());
 
       while (iteratorUsersI.hasNext()) {
 
