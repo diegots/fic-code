@@ -60,8 +60,9 @@ class Job {
           conf.setEncodedSimMatPath(args[i+3]);
           conf.setEncodedUserIdsPath(args[i+4]);
           conf.setEncodedUsersKNeighborsPath(args[i+5]);
-          conf.setEncodedReassignedSimMatPath(args[i+6]);
-          i+=7;
+          conf.setPlainFrequencyTablePath(args[i+6]);
+          conf.setEncodedReassignedSimMatPath(args[i+7]);
+          i+=8;
           break;
 
         case HELP_SHORT_MODE:
@@ -114,15 +115,18 @@ class Job {
     System.out.println("Mode is one of: '-h', '-help', '-matrix' or '-neighborhood',");
     System.out.println("");
     System.out.println("    '" + HELP_LONG_MODE + "' or '" + HELP_SHORT_MODE + "': show this help.");
+    System.out.println("");
     System.out.println("    '" + RATING_MATRIX_MODE + "' mode specific params:");
     System.out.println("        <INPUT : number of shards>");
     System.out.println("        <OUTPUT: rating matrix filename prefix (encoded)>");
+    System.out.println("");
     System.out.println("    '" + NEIGHBORHOOD_MODE + "' mode specific params:");
     System.out.println("        <INPUT : k value>");
     System.out.println("        <OUTPUT: similarity matrix filename (encoded)>");
-    System.out.println("        <OUTPUT: user's k neigborhoods (encoded)>");
-    System.out.println("        <OUTPUT: reassigned indexes filename (encoded)>");
-    System.out.println("        <OUTPUT: similarity matrix filename (encoded, reassigned values)>");
+    System.out.println("        <OUTPUT: users Ids filename (encoded)>");
+    System.out.println("        <OUTPUT: user's k neigborhoods filename (encoded)>");
+    System.out.println("        <OUTPUT: frecuency table filename (plain)>");
+    System.out.println("        <OUTPUT: similarity matrix filename (encoded, reassigned)>");
   }
 
   private void ratingMatrixComputing (Dataset dataset) {
