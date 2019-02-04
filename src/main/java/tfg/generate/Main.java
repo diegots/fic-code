@@ -57,10 +57,10 @@ class Job {
           conf.setMode(Conf.Mode.NEIGHBORHOOD);
           conf.setDatasetInPath(args[i+1]);
           conf.setK(Integer.valueOf(args[i+2]));
-          conf.setSimilaritiesOutPath(args[i+3]);
-          conf.setNeighborhoodOutPath(args[i+4]);
-          conf.setOrderedIndexesPath(args[i+5]);
-          conf.setReassignedSimilaritiesOutPath(args[i+6]);
+          conf.setEncodedSimMatPath(args[i+3]);
+          conf.setEncodedUserIdsPath(args[i+4]);
+          conf.setEncodedUsersKNeighborsPath(args[i+5]);
+          conf.setEncodedReassignedSimMatPath(args[i+6]);
           i+=7;
           break;
 
@@ -143,7 +143,7 @@ class Job {
 
     // Compute k neighbors
     long t1 = rowsEngine.process(new RowTask.Order(),
-        createDeltaStreamOut(conf.getOrderedIndexesPath()));
+        createDeltaStreamOut(conf.getEncodedUsersKNeighborsPath()));
     Conf.get().getMessages().printMessageln("Ordering similarities took "
         + Utilities.milisecondsToSeconds(t1) + " seconds.");
 
@@ -155,7 +155,7 @@ class Job {
 
     // Do compress similarities based en frequency counts
     long t3 = rowsEngine.process(new RowTask.ReassignIds(new FrequencyTable(aux)),
-        createDeltaStreamOut(conf.getReassignedSimilaritiesOutPath()));
+        createDeltaStreamOut(conf.getEncodedReassignedSimMatPath()));
     Conf.get().getMessages().printMessageln("NeighborhoodSimilarity values reassignment took "
         + Utilities.milisecondsToSeconds(t3) + " seconds.");
   }

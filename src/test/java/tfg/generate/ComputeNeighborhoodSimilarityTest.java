@@ -29,9 +29,9 @@ public class ComputeNeighborhoodSimilarityTest {
     messages = new Messages.Void();
 
     conf = Conf.get();
-    conf.setSimilaritiesOutPath(similaritiesPath);
+    conf.setEncodedSimMatPath(similaritiesPath);
     conf.setDatasetInPath(datasetPath);
-    conf.setNeighborhoodOutPath(neighborsPath);
+    conf.setEncodedUserIdsPath(neighborsPath);
   }
 
   @Test

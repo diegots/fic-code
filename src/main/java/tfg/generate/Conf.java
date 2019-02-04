@@ -17,10 +17,11 @@ public class Conf {
   private int k;
 
   private String datasetInPath;
-  private String similaritiesOutPath; // encoded sim mat
-  private String neighborhoodOutPath; // list of treated users
-  private String orderedIndexesPath; // k neighbors
-  private String reassignedSimilaritiesOutPath; // encoded.reassigned sim mat
+  private String encodedSimMatPath; // encoded.sim.mat
+  private String encodedUserIdsPath; // encoded.user.ids
+  private String encodedUsersKNeighborsPath; // encoded.users.k.neighbors
+  private String plainFrequencyTablePath; // plain.frequency.table
+  private String encodedReassignedSimMatPath; // encoded.reassigned sim mat
 
   // Rating matrix mode
   private String ratingMatrixPath;
@@ -42,6 +43,14 @@ public class Conf {
     this.mode = mode;
   }
 
+  public String getPlainFrequencyTablePath() {
+    return plainFrequencyTablePath;
+  }
+
+  public void setPlainFrequencyTablePath(String plainFrequencyTablePath) {
+    this.plainFrequencyTablePath = plainFrequencyTablePath;
+  }
+
   public String getRatingMatrixPath() {
     return ratingMatrixPath;
   }
@@ -50,12 +59,12 @@ public class Conf {
     this.ratingMatrixPath = ratingMatrixPath;
   }
 
-  public String getReassignedSimilaritiesOutPath() {
-    return reassignedSimilaritiesOutPath;
+  public String getEncodedReassignedSimMatPath() {
+    return encodedReassignedSimMatPath;
   }
 
-  public void setReassignedSimilaritiesOutPath(String reassignedSimilaritiesOutPath) {
-    this.reassignedSimilaritiesOutPath = reassignedSimilaritiesOutPath;
+  public void setEncodedReassignedSimMatPath(String encodedReassignedSimMatPath) {
+    this.encodedReassignedSimMatPath = encodedReassignedSimMatPath;
   }
 
   private static final Conf conf = new Conf();
@@ -85,28 +94,28 @@ public class Conf {
     this.datasetInPath = datasetInPath;
   }
 
-  public String getSimilaritiesOutPath() {
-    return similaritiesOutPath;
+  public String getEncodedSimMatPath() {
+    return encodedSimMatPath;
   }
 
-  public void setSimilaritiesOutPath(String similaritiesOutPath) {
-    this.similaritiesOutPath = similaritiesOutPath;
+  public void setEncodedSimMatPath(String encodedSimMatPath) {
+    this.encodedSimMatPath = encodedSimMatPath;
   }
 
-  public String getNeighborhoodOutPath() {
-    return neighborhoodOutPath;
+  public String getEncodedUserIdsPath() {
+    return encodedUserIdsPath;
   }
 
-  public void setNeighborhoodOutPath(String neighborhoodOutPath) {
-    this.neighborhoodOutPath = neighborhoodOutPath;
+  public void setEncodedUserIdsPath(String encodedUserIdsPath) {
+    this.encodedUserIdsPath = encodedUserIdsPath;
   }
 
-  public String getOrderedIndexesPath() {
-    return orderedIndexesPath;
+  public String getEncodedUsersKNeighborsPath() {
+    return encodedUsersKNeighborsPath;
   }
 
-  public void setOrderedIndexesPath(String orderedIndexesPath) {
-    this.orderedIndexesPath = orderedIndexesPath;
+  public void setEncodedUsersKNeighborsPath(String encodedUsersKNeighborsPath) {
+    this.encodedUsersKNeighborsPath = encodedUsersKNeighborsPath;
   }
 
   public int getK() {
