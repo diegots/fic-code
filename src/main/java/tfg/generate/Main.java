@@ -146,8 +146,9 @@ class Job {
     ProccessRows rowsEngine = new ProccessRows();
 
     // Compute k neighbors
-    long t1 = rowsEngine.process(new RowTask.Order(),
-        createDeltaStreamOut(conf.getEncodedUsersKNeighborsPath()));
+    StreamOut streamOut = createDeltaStreamOut(conf.getEncodedUsersKNeighborsPath());
+    long t1 = rowsEngine.process(new RowTask.Order(), streamOut);
+    streamOut.close();
     Conf.get().getMessages().printMessageln("Ordering similarities took "
         + Utilities.milisecondsToSeconds(t1) + " seconds.");
 
@@ -157,9 +158,15 @@ class Job {
     Conf.get().getMessages().printMessageln("Frequency computing took " +
         Utilities.milisecondsToSeconds(t2) + " seconds.");
 
+    // Store frequency table to disk
+    streamOut = createDeltaStreamOut(Conf.get().getPlainFrequencyTablePath());
+    streamOut.write(aux);
+    streamOut.close();
+
     // Do compress similarities based en frequency counts
-    long t3 = rowsEngine.process(new RowTask.ReassignIds(new FrequencyTable(aux)),
-        createDeltaStreamOut(conf.getEncodedReassignedSimMatPath()));
+    streamOut = createDeltaStreamOut(conf.getEncodedReassignedSimMatPath());
+    long t3 = rowsEngine.process(new RowTask.ReassignIds(new FrequencyTable(aux)), streamOut);
+    streamOut.close();
     Conf.get().getMessages().printMessageln("NeighborhoodSimilarity values reassignment took "
         + Utilities.milisecondsToSeconds(t3) + " seconds.");
   }
