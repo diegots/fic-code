@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static tfg.common.stream.StreamOut.createDeltaStreamOut;
+import static tfg.common.stream.StreamOut.createPlainStreamOut;
 
 public class Main {
 
@@ -159,7 +160,7 @@ class Job {
         Utilities.milisecondsToSeconds(t2) + " seconds.");
 
     // Store frequency table to disk
-    streamOut = createDeltaStreamOut(Conf.get().getPlainFrequencyTablePath());
+    streamOut = createPlainStreamOut(Conf.get().getPlainFrequencyTablePath());
     streamOut.write(aux);
     streamOut.close();
 
