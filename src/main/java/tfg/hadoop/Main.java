@@ -1,42 +1,56 @@
 package tfg.hadoop;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 import tfg.hadoop.types.PairWritable;
 
 import java.io.IOException;
 
-public class Main {
+public class Main extends Configured implements Tool {
 
   public static final String SHARDS_NUMBER = "SHARDS_NUMBER";
 
   enum CachedData {
-    ratingMatrix0, ratingMatrix1, ratingMatrix2,
-    reassignedValuesEncoded, simMatEncodedReassig, userIdsEncoded
+    shard0, shard1, shard2,
+    encodedUserIds,
+    encodedUsersKNeighbors,
+    plainFrequencyTable,
+    encodedReassignedSimMat
   }
 
   static final String[] cachedPaths = {
-      "/cached/rating-matrix0",
-      "/cached/rating-matrix1",
-      "/cached/rating-matrix2",
-      "/cached/reassigned.encoded",
-      "/cached/sim.mat.encoded.reassig",
-      "/cached/user.ids.encoded"
+      "/cached/shard0",
+      "/cached/shard1",
+      "/cached/shard2",
+      "/cached/encoded.user.ids",
+      "/cached/encoded.users.k.neighbors",
+      "/cached/plain.frequency.table",
+      "/cached/encoded.reassigned.sim.mat"
   };
 
   public static void main(String[] args)
-      throws IOException, ClassNotFoundException, InterruptedException {
-
-    // Expected params
-    // args[0] -> userIds to whom compute recommendations
-    // args[1] -> number of shards
+      throws Exception {
 
     Configuration conf = new Configuration();
-    conf.set(SHARDS_NUMBER, args[1]);
+    ToolRunner.run(conf, new Main(), args);
+  }
+
+  @Override
+  public int run(String[] strings) throws Exception {
+
+    // Expected params
+    // strings[0] -> userIds to whom compute recommendations
+    // strings[1] -> number of shards
+
+    Configuration conf = getConf();
+    conf.setInt(SHARDS_NUMBER, Integer.valueOf(strings[1]));
 
     Job job1 = Job.getInstance(conf);
     job1.setJobName("job1");
@@ -55,14 +69,14 @@ public class Main {
     job1.setOutputValueClass(PairWritable.class);
 
     // Input and output dirs for this job
-    final String ACTIVE_USERS_FILE_PATH = args[0];
+    final String ACTIVE_USERS_FILE_PATH = strings[0];
     FileInputFormat.addInputPath(job1, new Path(ACTIVE_USERS_FILE_PATH));
     FileOutputFormat.setOutputPath(job1, new Path("/" + job1.getJobName()+"-out"));
 
     // Add files to Distributed Cache
     for (CachedData fileName: CachedData.values()) {
       System.out.println("ordinal: " + fileName.ordinal()
-        + ", cachedPath: " + cachedPaths[fileName.ordinal()]);
+          + ", cachedPath: " + cachedPaths[fileName.ordinal()]);
       job1.addCacheFile(new Path(cachedPaths[fileName.ordinal()]).toUri());
     }
 
@@ -70,9 +84,6 @@ public class Main {
     job1.setNumReduceTasks(3);
 
     // Run this job
-    int result = job1.waitForCompletion(true) ? 0: 1;
-    if (result == 1) {
-      System.exit(result);
-    }
+    return job1.waitForCompletion(true) ? 0: 1;
   }
 }
