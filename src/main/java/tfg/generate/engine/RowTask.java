@@ -33,11 +33,12 @@ public interface RowTask {
       while (iterator.hasNext() && i++ < Conf.get().getK()) {
         iterator.next();
         result.add(iterator.getKey());
+//        System.err.println("    Idx: " + iterator.getKey()
+//            + ", value: " + iterator.getValue());
       }
 
       // Add row delimiter
-      final int ROW_DELIMITER = Conf.get().USERS_ROWS_DELIMITER;
-      result.add(ROW_DELIMITER);
+      result.add(Conf.get().USERS_ROWS_DELIMITER);
 
       return result;
     }
