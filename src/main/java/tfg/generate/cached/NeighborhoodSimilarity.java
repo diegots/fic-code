@@ -87,7 +87,7 @@ public interface NeighborhoodSimilarity {
       int count=0;
 
       Double res;
-      MapIterator<Integer, Double> mapIterator;
+      MapIterator<Integer, Double> itemUserI;
       Integer item;
       Integer userI;
       Integer userJ;
@@ -113,22 +113,27 @@ public interface NeighborhoodSimilarity {
         while (iteratorUsersJ.hasNext()) {
           userJ = iteratorUsersJ.next();
 
+          // Same user similarity is stored as 0
+          if (userI == userJ) {
+            similarities.add(0);
+            continue;
+          }
+
           sum = 0.0;
 
-          // Change to MapIterator
-          hm = (HashedMap<Integer, Double>) dataset.getUserProfile(userI);
-          mapIterator = hm.mapIterator();
+          // Iterator on user I items
+          itemUserI = ((HashedMap<Integer, Double>) dataset.getUserProfile(userI)).mapIterator();
 
-          while (mapIterator.hasNext()) {
-            item = mapIterator.next();
+          while (itemUserI.hasNext()) {
+            item = itemUserI.next();
 
             if (dataset.getUserProfile(userJ).containsKey(item)) {
               ratingJ = dataset.getUserProfile(userJ).get(item);
             } else {
-              continue;
+              continue; // Skips current iteration
             }
 
-            sum += mapIterator.getValue() * ratingJ;
+            sum += itemUserI.getValue() * ratingJ;
           }
 
           res = TIMES * (sum / (denominators.getDenominator(userI)
