@@ -6,30 +6,23 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import tfg.hadoop.model.Data;
-import tfg.hadoop.model.SimilarityMatrix;
+import tfg.hadoop.model.UsersKNeighbors;
 import tfg.hadoop.types.TripleWritable;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 
 public class Job1 {
   public static class Map
       extends Mapper<LongWritable, Text, IntWritable, IntWritable> {
 
-    private int shardsNumber;
-
-    @Override
-    protected void setup(Context context) throws IOException, InterruptedException {
-      // Get current shard assigned number
-      shardsNumber = Integer.valueOf(context.getConfiguration().get(Main.SHARDS_NUMBER));
-    }
-
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 
       // Reducers for every shard have to treat this active user
-      for (int shard=0; shard<shardsNumber; shard++) {
+      for (int shard=0; shard<context.getConfiguration().getInt(Main.SHARDS_NUMBER, 0); shard++) {
         context.write(new IntWritable(shard), new IntWritable(Integer.valueOf(value.toString())));
       }
     }
@@ -39,83 +32,58 @@ public class Job1 {
       extends Reducer<IntWritable, IntWritable, IntWritable, TripleWritable> {
 
     private Data userIds;
-    private Data reassignedValues;
-    private SimilarityMatrix similarityMatrix;
+    private UsersKNeighbors usersKNeighbors;
 
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
 
-      // Cached files have to be retrieved by their **filename**. Avoid use of complete file path
+      // User Ids
       FileInputStream fis = new FileInputStream(
-          new File(Main.cachedPaths[Main.CachedData.userIdsEncoded.ordinal()]).getName());
+          new File(Main.cachedSimilarities[Main.CachedSimilarities.encodedUserIds.ordinal()]).getName());
       userIds = new Data(fis);
       fis.close();
 
+      // Users neighborhoods
       fis = new FileInputStream(
-          new File(Main.cachedPaths[Main.CachedData.reassignedValuesEncoded.ordinal()]).getName());
-      reassignedValues = new Data(fis);
-      fis.close();
-
-      fis = new FileInputStream(
-          new File(Main.cachedPaths[Main.CachedData.simMatEncodedReassig.ordinal()]).getName());
-      similarityMatrix = new SimilarityMatrix(fis);
+          new File(Main.cachedSimilarities[Main.CachedSimilarities.encodedUsersKNeighbors.ordinal()]).getName());
+      usersKNeighbors = new UsersKNeighbors(fis);
       fis.close();
     }
 
     @Override
     protected void reduce(IntWritable key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
 
-      //System.out.println("-> Start " + key.get());
+      System.err.println("-> Start worker: " + key.get());
 
-      // Prepare rating matrix
-//      if (null != context.getCacheFiles() && context.getCacheFiles().length > 0) {
-//        //System.out.println("-> Open shard at " + key.get());
-//        Path path = new Path(context.getCacheFiles()[key.get()]);
-//        FileInputStream stream = new FileInputStream(path.getName());
-//        java.util.Map<Integer, java.util.Map<Integer, Double>> shard = Utilities.objectFromFile(stream);
-//        stream.close();
-//        //System.out.println("-> Shard read" + key.get());
-//      }
+      // Access shard for reading
 
-      /**
-       * Manage reassigned Ids:
-       *    Encode: list.indexOf (rawId)
-       *    Decode: list.get(Id)
-       * Example:
-       *    compressed.indexOf (999) yields 3
-       *    compressed.get(3) yields 999
-       */
       for (IntWritable activeUser: values) {
 
+        System.out.println("-> Active user: " + activeUser.get()
+            + ", with index: " + userIds.findIndex(activeUser.get()));
 
-        // Find active user neighborhood
-//        for (int i=0; i<kNeighbors.size(); i++) {
-//
-//          if (kNeighbors.get(i) == 1000000) {
-//            //System.out.println(" ->    row");
-//            continue; // row delimiter
-//          }
-//
-//          //System.out.print(" " + kNeighbors.get(i));
-//        }
-        //System.out.println("-> Active user: " + activeUser.get());
+        // Obtain activeUser non rated items
 
-        break; // DEBUG - Stops after the first active user
+        List<Integer> neighbors = usersKNeighbors.getNeighbors(userIds.findIndex(activeUser.get()));
+        for (Integer neighborIdx: neighbors) {
+          System.out.println("    -> Neighbor: " + userIds.getId(neighborIdx));
 
-        // This active user has the following neighbors
+          if (userIds.getId(neighborIdx) % context.getConfiguration().getInt(Main.SHARDS_NUMBER, 0) == key.get()) {
+            System.out.println("        -> In this shard!");
 
-        // If at least one neighbor is accesible from this shard
+            // for every non rated item, compute
+              // W_item = Similarity (activeuser, currentNeighbor) * Rating (currentNeighbor, currentItem)
+              // write results: context.write (activeuser, new PairWritable(itemId, W_item))
 
-        // Obtain activeUser non rated values
+          }
+        }
 
-        // for every non rated item, compute
-
-            // W_item = Similarity (activeuser, currentNeighbor) * Rating (currentNeighbor, currentItem)
-
-            // write results: context.write (activeuser, new PairWritable(itemId, W_item))
+        //break; // DEBUG - Stops after the first active user
+        if (activeUser.get() == 71)
+          break;
 
       }
-      //System.out.println("-> End " + key.get());
+      System.err.println("-> End worker: " + key.get());
     }
   }
 }

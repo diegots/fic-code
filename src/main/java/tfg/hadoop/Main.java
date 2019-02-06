@@ -11,24 +11,30 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import tfg.hadoop.types.PairWritable;
 
-import java.io.IOException;
-
 public class Main extends Configured implements Tool {
 
   public static final String SHARDS_NUMBER = "SHARDS_NUMBER";
 
-  enum CachedData {
-    shard0, shard1, shard2,
+  enum CachedShards {
+    shard0,
+    shard1,
+    shard2,
+  }
+
+  static final String[] cachedShards = {
+      "/cached/shard0",
+      "/cached/shard1",
+      "/cached/shard2"
+  };
+
+  enum CachedSimilarities {
     encodedUserIds,
     encodedUsersKNeighbors,
     plainFrequencyTable,
     encodedReassignedSimMat
   }
 
-  static final String[] cachedPaths = {
-      "/cached/shard0",
-      "/cached/shard1",
-      "/cached/shard2",
+  static final String[] cachedSimilarities = {
       "/cached/encoded.user.ids",
       "/cached/encoded.users.k.neighbors",
       "/cached/plain.frequency.table",
@@ -38,8 +44,7 @@ public class Main extends Configured implements Tool {
   public static void main(String[] args)
       throws Exception {
 
-    Configuration conf = new Configuration();
-    ToolRunner.run(conf, new Main(), args);
+    ToolRunner.run(new Configuration(), new Main(), args);
   }
 
   @Override
@@ -52,38 +57,40 @@ public class Main extends Configured implements Tool {
     Configuration conf = getConf();
     conf.setInt(SHARDS_NUMBER, Integer.valueOf(strings[1]));
 
-    Job job1 = Job.getInstance(conf);
-    job1.setJobName("job1");
-    job1.setJarByClass(tfg.hadoop.Main.class);
+    final String job0Name = "job0";
+    final String job0OutPath = "/" + job0Name + "-out";
+    final int job0NumberReducers = 3;
+
+    Job job0 = Job.getInstance(conf);
+    job0.setJobName(job0Name);
+    job0.setJarByClass(tfg.hadoop.Main.class);
 
     // Mapper and Reducer classes
-    job1.setMapperClass(Job1.Map.class);
-    job1.setReducerClass(Job1.Reduce.class);
+    job0.setMapperClass(PrepareActiveUser.Map.class);
+    job0.setReducerClass(PrepareActiveUser.Reduce.class);
 
     // Map output types
-    job1.setMapOutputKeyClass(IntWritable.class);
-    job1.setMapOutputValueClass(IntWritable.class);
+    job0.setMapOutputKeyClass(IntWritable.class);
+    job0.setMapOutputValueClass(IntWritable.class);
 
     // Map and Reducer output types
-    job1.setOutputKeyClass(IntWritable.class);
-    job1.setOutputValueClass(PairWritable.class);
+    job0.setOutputKeyClass(IntWritable.class);
+    job0.setOutputValueClass(PairWritable.class);
 
     // Input and output dirs for this job
     final String ACTIVE_USERS_FILE_PATH = strings[0];
-    FileInputFormat.addInputPath(job1, new Path(ACTIVE_USERS_FILE_PATH));
-    FileOutputFormat.setOutputPath(job1, new Path("/" + job1.getJobName()+"-out"));
+    FileInputFormat.addInputPath(job0, new Path(ACTIVE_USERS_FILE_PATH));
+    FileOutputFormat.setOutputPath(job0, new Path(job0OutPath));
 
     // Add files to Distributed Cache
-    for (CachedData fileName: CachedData.values()) {
-      System.out.println("ordinal: " + fileName.ordinal()
-          + ", cachedPath: " + cachedPaths[fileName.ordinal()]);
-      job1.addCacheFile(new Path(cachedPaths[fileName.ordinal()]).toUri());
+    for (CachedShards shardFileName: CachedShards.values()) {
+      job0.addCacheFile(new Path(cachedShards[shardFileName.ordinal()]).toUri());
     }
 
     // Set number of reduce tasks
-    job1.setNumReduceTasks(3);
+    job0.setNumReduceTasks(job0NumberReducers);
 
     // Run this job
-    return job1.waitForCompletion(true) ? 0: 1;
+    return job0.waitForCompletion(true) ? 0: 1;
   }
 }
