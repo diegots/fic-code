@@ -10,7 +10,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import java.io.IOException;
 
 
-public class PrepareActiveUser {
+public class PrepareActiveUsers {
   public static class Map
       extends Mapper<LongWritable, Text, IntWritable, IntWritable> {
     @Override

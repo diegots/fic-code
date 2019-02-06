@@ -66,8 +66,8 @@ public class Main extends Configured implements Tool {
     job0.setJarByClass(tfg.hadoop.Main.class);
 
     // Mapper and Reducer classes
-    job0.setMapperClass(PrepareActiveUser.Map.class);
-    job0.setReducerClass(PrepareActiveUser.Reduce.class);
+    job0.setMapperClass(PrepareActiveUsers.Map.class);
+    job0.setReducerClass(PrepareActiveUsers.Reduce.class);
 
     // Map output types
     job0.setMapOutputKeyClass(IntWritable.class);
