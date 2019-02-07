@@ -1,13 +1,15 @@
-package tfg.hadoop;
+package tfg.hadooprec;
 
+import org.apache.hadoop.io.ArrayWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
-import tfg.hadoop.model.Data;
-import tfg.hadoop.model.UsersKNeighbors;
-import tfg.hadoop.types.TripleWritable;
+import tfg.hadooprec.model.ActiveUser;
+import tfg.hadooprec.model.Data;
+import tfg.hadooprec.model.UsersKNeighbors;
+import tfg.hadooprec.types.TripleWritable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,20 +18,19 @@ import java.util.List;
 
 public class Job1 {
   public static class Map
-      extends Mapper<LongWritable, Text, IntWritable, IntWritable> {
+      extends Mapper<LongWritable, Text, IntWritable, ActiveUser> {
 
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-
       // Reducers for every shard have to treat this active user
       for (int shard=0; shard<context.getConfiguration().getInt(Main.SHARDS_NUMBER, 0); shard++) {
-        context.write(new IntWritable(shard), new IntWritable(Integer.valueOf(value.toString())));
+        context.write(new IntWritable(shard), new ActiveUser(value));
       }
     }
   }
 
   public static class Reduce
-      extends Reducer<IntWritable, IntWritable, IntWritable, TripleWritable> {
+      extends Reducer<IntWritable, ActiveUser, IntWritable, TripleWritable> {
 
     private Data userIds;
     private UsersKNeighbors usersKNeighbors;
@@ -51,20 +52,18 @@ public class Job1 {
     }
 
     @Override
-    protected void reduce(IntWritable key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+    protected void reduce(IntWritable key, Iterable<ActiveUser> values, Context context) throws IOException, InterruptedException {
 
       System.err.println("-> Start worker: " + key.get());
 
       // Access shard for reading
 
-      for (IntWritable activeUser: values) {
+      for (ActiveUser activeUser: values) {
 
-        System.out.println("-> Active user: " + activeUser.get()
-            + ", with index: " + userIds.findIndex(activeUser.get()));
+        System.out.println("-> Active user: " + activeUser.getUserId().get()
+            + ", with index: " + userIds.findIndex(activeUser.getUserId().get()));
 
-        // Obtain activeUser non rated items
-
-        List<Integer> neighbors = usersKNeighbors.getNeighbors(userIds.findIndex(activeUser.get()));
+        List<Integer> neighbors = usersKNeighbors.getNeighbors(userIds.findIndex(activeUser.getUserId().get()));
         for (Integer neighborIdx: neighbors) {
           System.out.println("    -> Neighbor: " + userIds.getId(neighborIdx));
 
@@ -79,7 +78,7 @@ public class Job1 {
         }
 
         //break; // DEBUG - Stops after the first active user
-        if (activeUser.get() == 71)
+        if (activeUser.getUserId().get() == 71)
           break;
 
       }

@@ -30,8 +30,7 @@ public class RatingMatrix {
       shards.add(i, new HashMap<>());
     }
 
-    Set<Integer> userIds = dataset.getUserIds();
-    Iterator<Integer> iterator = userIds.iterator();
+    Iterator<Integer> iterator = dataset.getUserIds().iterator();
     while (iterator.hasNext()) {
 
       int userId = iterator.next();

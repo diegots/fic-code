@@ -1,10 +1,12 @@
 # Project base dir
 BASE=~/IdeaProjects/p1811002
 OUT=/tmp
+ARTIFACTS=out/artifacts
 
 # Jar files
-HADOOP_JAR=$(BASE)/out/artifacts/p1811002_hadoop/p1811002_hadoop.jar
-GENERATE_JAR=$(BASE)/out/artifacts/p1811002_generate/p1811002_generate.jar
+GENERATE_JAR=$(BASE)/$(ARTIFACTS)/p1811002_generate/p1811002_generate.jar
+HADOOP_ACTIVE_USERS_JAR=$(BASE)/$(ARTIFACTS)/p1811002_hadoop_active_users/hadoop-active-users.jar
+HADOOP_RECOMENDATIONS_JAR=$(BASE)/$(ARTIFACTS)/p1811002_hadoop_recomendations/p1811002_hadoop-recomendations.jar
 
 # Datasets
 DS=$(BASE)/input/dataset/movielens-100k.csv
@@ -19,6 +21,9 @@ B=$(OUT)/encoded.user.ids
 C=$(OUT)/encoded.users.k.neighbors
 D=$(OUT)/plain.frequency.table
 E=$(OUT)/encoded.reassigned.sim.mat
+
+# Active users generation
+REDUCERS_NUMBER=3
 
 # Shard generation variables
 SHARDS_NUMBER=3
@@ -48,15 +53,21 @@ hadoop-start:
 	$$HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver
 
 hadoop-prepare: 
-	hdfs dfs -mkdir /input /cached
+	hdfs dfs -mkdir /input /cached /dataset
+	hdfs dfs -put $(BASE)/input/dataset/movielens-100k.csv /dataset
 	hdfs dfs -put $(BASE)/input/active-user/active-user.csv /input
 	for i in $(SHARDS_DATA)/*; do hdfs dfs -put $$i /cached; done
 	for i in $(SIMILARITY_DATA)/*; do hdfs dfs -put $$i /cached; done
 
-hadoop-jar: 
-	hdfs dfs -rm -f -R /job1-out
-	$(shell export HADOOP_CLASSPATH=$(HADOOP_JAR):$HADOOP_CLASSPATH)
-	cd /tmp && hadoop jar $(HADOOP_JAR) /input $(SHARDS_NUMBER)
+hadoop-active-users: 
+	hdfs dfs -rm -f -R /active-users*
+	$(shell export HADOOP_CLASSPATH=$(HADOOP_ACTIVE_USERS_JAR):$HADOOP_CLASSPATH)
+	cd /tmp && hadoop jar $(HADOOP_ACTIVE_USERS_JAR) /dataset /active-users $(REDUCERS_NUMBER)
+
+hadoop-recomendations: 
+	hdfs dfs -rm -f -R /recommendations*
+	$(shell export HADOOP_CLASSPATH=$(HADOOP_RECOMENDATIONS_JAR):$HADOOP_CLASSPATH)
+	cd /tmp && hadoop jar $(HADOOP_RECOMENDATIONS_JAR) /active-users /recommendations $(SHARDS_NUMBER)
 
 hadoop-stop: 
 	/usr/local/hadoop/sbin/stop-all.sh
@@ -64,5 +75,5 @@ hadoop-stop:
 hadoop-clean: 
 	hdfs dfs -rm -R /input /cached
 
-.PHONY: generate generate-shards generate-similarities generate-help generate-clean hadoop-start hadoop-prepare hadoop-jar hadoop-stop hadoop-clean
+.PHONY: generate generate-shards generate-similarities generate-help generate-clean hadoop-start hadoop-prepare hadoop-active-users hadoop-recomendations hadoop-stop hadoop-clean
 

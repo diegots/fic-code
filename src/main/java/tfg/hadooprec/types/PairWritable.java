@@ -1,4 +1,4 @@
-package tfg.hadoop.types;
+package tfg.hadooprec.types;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.WritableComparable;
