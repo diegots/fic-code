@@ -1,14 +1,14 @@
 package tfg.hadooprec;
 
-import org.apache.hadoop.io.ArrayWritable;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.Text;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
+import tfg.common.util.Utilities;
 import tfg.hadooprec.model.ActiveUser;
 import tfg.hadooprec.model.Data;
 import tfg.hadooprec.model.UsersKNeighbors;
+import tfg.hadooprec.types.PairWritable;
 import tfg.hadooprec.types.TripleWritable;
 
 import java.io.File;
@@ -56,7 +56,9 @@ public class Job1 {
 
       System.err.println("-> Start worker: " + key.get());
 
-      // Access shard for reading
+      // Access shard for reading. Shard depends on key value
+      java.util.Map<Integer, java.util.Map<Integer, Double>> shard =
+          Utilities.objectFromFile(new FileInputStream(new Path(Main.cachedShards[key.get()]).getName()));
 
       for (ActiveUser activeUser: values) {
 
@@ -70,10 +72,20 @@ public class Job1 {
           if (userIds.getId(neighborIdx) % context.getConfiguration().getInt(Main.SHARDS_NUMBER, 0) == key.get()) {
             System.out.println("        -> In this shard!");
 
-            // for every non rated item, compute
-              // W_item = Similarity (activeuser, currentNeighbor) * Rating (currentNeighbor, currentItem)
-              // write results: context.write (activeuser, new PairWritable(itemId, W_item))
+            // Get similarity between users
+            Double similarity = Double.valueOf(0.0);
 
+            for (Integer item: activeUser.getNonRatedItemsArray()) {
+              Double rating = shard.get(userIds.getId(neighborIdx)).get(item);
+              if (rating != null) {
+                Writable weight = new DoubleWritable(similarity * rating);
+                System.out.println("            -> Rating for item '" + item + "' is: " + rating);
+                context.write(
+                    activeUser.getUserId(),
+                    new TripleWritable(new IntWritable(0), new IntWritable(0), new IntWritable(0))
+                );
+              }
+            }
           }
         }
 
