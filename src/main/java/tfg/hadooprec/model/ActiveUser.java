@@ -13,6 +13,7 @@ public class ActiveUser implements WritableComparable<ActiveUser> {
 
   private IntWritable userId;
   private ArrayWritable nonRatedItems;
+  private Integer[] nonRatedItemsArray = null;
 
   public ActiveUser() {
     userId = new IntWritable();
@@ -31,6 +32,18 @@ public class ActiveUser implements WritableComparable<ActiveUser> {
 
   public ArrayWritable getNonRatedItems() {
     return nonRatedItems;
+  }
+
+  public Integer[] getNonRatedItemsArray () {
+
+    if (null == nonRatedItemsArray) {
+      String [] values = nonRatedItems.toStrings();
+      nonRatedItemsArray = new Integer[values.length];
+      for (int i=0; i<values.length; i++) {
+        nonRatedItemsArray[i] = Integer.valueOf(values[i]);
+      }
+    }
+    return nonRatedItemsArray;
   }
 
   @Override
