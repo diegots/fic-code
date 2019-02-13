@@ -11,19 +11,19 @@ public class UsersKNeighbors {
   private final List<Integer> data;
 
   public UsersKNeighbors(InputStream inputStream) {
-    data = new StreamIn.DeltaStreamIn().read(inputStream);
+    data = new StreamIn.DeltaStreamIn(inputStream).read();
   }
 
-  public List<Integer> getNeighbors(int index) {
+  public List<Integer> getNeighbors(int requestedIdx) {
     List<Integer> result = new ArrayList<>();
-
+    System.out.println("getNeighbors requested: " + requestedIdx);
     int pos = 0;
-    for (int i= 0; i<data.size(); i++) {
+    for (int i=0; i<data.size(); i++) {
       if (Conf.get().USERS_ROWS_DELIMITER == data.get(i)) {
         pos++;
       }
 
-      if (pos == index) {
+      if (pos == requestedIdx) {
         result.add(data.get(i));
       }
     }

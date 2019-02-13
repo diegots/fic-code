@@ -9,7 +9,8 @@ HADOOP_ACTIVE_USERS_JAR=$(BASE)/$(ARTIFACTS)/p1811002_hadoop_active_users/hadoop
 HADOOP_RECOMENDATIONS_JAR=$(BASE)/$(ARTIFACTS)/p1811002_hadoop_recomendations/p1811002_hadoop-recomendations.jar
 
 # Datasets
-DS=$(BASE)/input/dataset/movielens-100k.csv
+DS=$(BASE)/input/dataset/test-data-25.csv
+#DS=$(BASE)/input/dataset/movielens-100k.csv
 
 # Similarities generation variables
 SIMILARITY_DATA=$(BASE)/input/similarity-data
@@ -45,16 +46,16 @@ generate-help:
 	java -jar $(JAR) -h
 
 generate-clean:
-	rm -fv $(SIMILARITY_DATA)/* $(SHARDS_DATA)/*
+	rm -fv $() $(SIMILARITY_DATA)/* $(SHARDS_DATA)/*
 
 hadoop-start: 
 	hdfs namenode -format -force
 	/usr/local/hadoop/sbin/start-dfs.sh
-	$$HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver
+	#$$HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver
 
 hadoop-prepare: 
 	hdfs dfs -mkdir /input /cached /dataset
-	hdfs dfs -put $(BASE)/input/dataset/movielens-100k.csv /dataset
+	hdfs dfs -put $(DS) /dataset
 	hdfs dfs -put $(BASE)/input/active-user/active-user.csv /input
 	for i in $(SHARDS_DATA)/*; do hdfs dfs -put $$i /cached; done
 	for i in $(SIMILARITY_DATA)/*; do hdfs dfs -put $$i /cached; done
@@ -73,7 +74,7 @@ hadoop-stop:
 	/usr/local/hadoop/sbin/stop-all.sh
 
 hadoop-clean: 
-	hdfs dfs -rm -R /input /cached
+	hdfs dfs -rm -R /input /cached /dataset
 
 .PHONY: generate generate-shards generate-similarities generate-help generate-clean hadoop-start hadoop-prepare hadoop-active-users hadoop-recomendations hadoop-stop hadoop-clean
 
