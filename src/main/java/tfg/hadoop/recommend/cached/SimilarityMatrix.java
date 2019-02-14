@@ -1,4 +1,4 @@
-package tfg.hadooprec.cached;
+package tfg.hadoop.recommend.cached;
 
 import org.apache.commons.collections4.map.LinkedMap;
 

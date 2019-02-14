@@ -1,4 +1,4 @@
-package tfg.hadoopgenerate;
+package tfg.hadoop.generate.unique.items;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;

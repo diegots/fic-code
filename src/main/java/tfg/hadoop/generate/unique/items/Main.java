@@ -1,4 +1,4 @@
-package tfg.hadoopgenerate;
+package tfg.hadoop.generate.unique.items;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -38,7 +38,7 @@ public class Main extends Configured implements Tool {
      * IN  -> strings[2] -> number of splits */
     Job job0 = Job.getInstance(getConf());
     job0.setJobName("job0");
-    job0.setJarByClass(tfg.hadoopgenerate.Main.class);
+    job0.setJarByClass(Main.class);
 
     // Mapper and Reducer classes
     job0.setMapperClass(Job0.Map.class);
@@ -68,7 +68,7 @@ public class Main extends Configured implements Tool {
      * ********** */
     Job job1 = Job.getInstance(getConf());
     job1.setJobName("job1");
-    job1.setJarByClass(tfg.hadoopgenerate.Main.class);
+    job1.setJarByClass(Main.class);
 
     // Mapper and Reducer classes
     job1.setMapperClass(Job1.Map.class);
@@ -105,7 +105,7 @@ public class Main extends Configured implements Tool {
 
     Job job2 = Job.getInstance(conf);
     job2.setJobName("job2");
-    job2.setJarByClass(tfg.hadoopgenerate.Main.class);
+    job2.setJarByClass(Main.class);
 
     // Mapper and Reducer classes
     job2.setMapperClass(Job2.Map.class);

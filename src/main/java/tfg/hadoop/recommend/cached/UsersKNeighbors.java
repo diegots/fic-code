@@ -1,4 +1,4 @@
-package tfg.hadooprec.cached;
+package tfg.hadoop.recommend.cached;
 
 import tfg.common.stream.StreamIn;
 import tfg.generate.Conf;

@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/p1811002_hadoop_recomendations</output-path>
     <root id="archive" name="p1811002_hadoop-recomendations.jar">
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/src/main/java/tfg/hadooprec/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/src/main/java/tfg/hadoop/recommend/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="p1811002" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/commons/commons-collections4/4.2/commons-collections4-4.2.jar" path-in-jar="/" />

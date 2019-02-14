@@ -1,4 +1,4 @@
-package tfg.hadooprec;
+package tfg.hadoop.recommend;
 
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
@@ -10,10 +10,10 @@ import org.apache.hadoop.mapreduce.Reducer;
 import tfg.common.stream.StreamIn;
 import tfg.common.util.Utilities;
 import tfg.generate.model.FrequencyTable;
-import tfg.hadooprec.cached.UserIds;
-import tfg.hadooprec.cached.UsersKNeighbors;
-import tfg.hadooprec.model.ActiveUser;
-import tfg.hadooprec.model.PairWritable;
+import tfg.hadoop.recommend.model.ActiveUser;
+import tfg.hadoop.recommend.cached.UserIds;
+import tfg.hadoop.recommend.cached.UsersKNeighbors;
+import tfg.hadoop.recommend.model.PairWritable;
 
 import java.io.File;
 import java.io.FileInputStream;

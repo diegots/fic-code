@@ -1,4 +1,4 @@
-package tfg.hadooprec.util;
+package tfg.hadoop.recommend.util;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;

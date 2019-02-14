@@ -1,4 +1,4 @@
-package tfg.hadooprec.model;
+package tfg.hadoop.recommend.model;
 
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;

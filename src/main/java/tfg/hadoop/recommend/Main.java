@@ -1,4 +1,4 @@
-package tfg.hadooprec;
+package tfg.hadoop.recommend;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -10,9 +10,9 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-import tfg.hadooprec.model.ActiveUser;
-import tfg.hadooprec.model.PairWritable;
-import tfg.hadooprec.model.TripleWritable;
+import tfg.hadoop.recommend.model.ActiveUser;
+import tfg.hadoop.recommend.model.PairWritable;
+import tfg.hadoop.recommend.model.TripleWritable;
 
 public class Main extends Configured implements Tool {
 
@@ -63,7 +63,7 @@ public class Main extends Configured implements Tool {
 
     Job job1 = Job.getInstance(conf);
     job1.setJobName("job1");
-    job1.setJarByClass(tfg.hadooprec.Main.class);
+    job1.setJarByClass(Main.class);
 
     // Mapper and Reducer classes
     job1.setMapperClass(Job1.Map.class);
@@ -105,7 +105,7 @@ public class Main extends Configured implements Tool {
      */
     Job job2 = Job.getInstance(conf);
     job2.setJobName("job2");
-    job2.setJarByClass(tfg.hadooprec.Main.class);
+    job2.setJarByClass(Main.class);
 
     // Mapper and Reducer classes
     job2.setMapperClass(Job2.Map.class);

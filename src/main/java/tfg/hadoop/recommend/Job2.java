@@ -1,4 +1,4 @@
-package tfg.hadooprec;
+package tfg.hadoop.recommend;
 
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
@@ -7,9 +7,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import tfg.common.util.Utilities;
-import tfg.hadooprec.model.ActiveUser;
-import tfg.hadooprec.model.PairWritable;
-import tfg.hadooprec.model.TripleWritable;
+import tfg.hadoop.recommend.model.TripleWritable;
 
 import java.io.IOException;
 import java.util.HashMap;
