@@ -1,9 +1,6 @@
 package tfg.hadooprec.model;
 
-import org.apache.hadoop.io.ArrayWritable;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.io.WritableComparable;
+import org.apache.hadoop.io.*;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -13,7 +10,6 @@ public class ActiveUser implements WritableComparable<ActiveUser> {
 
   private IntWritable userId;
   private ArrayWritable nonRatedItems;
-  private Integer[] nonRatedItemsArray = null;
 
   public ActiveUser() {
     userId = new IntWritable();
@@ -36,14 +32,11 @@ public class ActiveUser implements WritableComparable<ActiveUser> {
 
   public Integer[] getNonRatedItemsArray () {
 
-    if (null == nonRatedItemsArray) {
-      String [] values = nonRatedItems.toStrings();
-      nonRatedItemsArray = new Integer[values.length];
-      for (int i=0; i<values.length; i++) {
-        nonRatedItemsArray[i] = Integer.valueOf(values[i]);
-      }
+    Integer[] result = new Integer[nonRatedItems.get().length];
+    for (int i=0; i<nonRatedItems.get().length; i++) {
+      result [i] = Integer.valueOf(nonRatedItems.get()[i].toString());
     }
-    return nonRatedItemsArray;
+    return result;
   }
 
   @Override

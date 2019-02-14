@@ -1,5 +1,6 @@
-package tfg.hadooprec.types;
+package tfg.hadooprec.model;
 
+import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.WritableComparable;
 
@@ -10,9 +11,9 @@ import java.io.IOException;
 public class PairWritable implements WritableComparable<PairWritable> {
 
   private final IntWritable first;
-  private final IntWritable second;
+  private final DoubleWritable second;
 
-  public PairWritable(IntWritable first, IntWritable second) {
+  public PairWritable(IntWritable first, DoubleWritable second) {
     this.first = first;
     this.second = second;
   }
@@ -21,8 +22,8 @@ public class PairWritable implements WritableComparable<PairWritable> {
     return new IntWritable(first.get());
   }
 
-  public IntWritable getSecond() {
-    return new IntWritable(second.get());
+  public DoubleWritable getSecond() {
+    return new DoubleWritable(second.get());
   }
 
   @Override

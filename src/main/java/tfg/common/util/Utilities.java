@@ -107,7 +107,7 @@ public class Utilities {
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     } catch (EOFException e) {
-      // This is not an exception, the input was read completelly
+      // This is not an exception, the input was readSeekable completelly
 
     } catch (IOException e) {
       e.printStackTrace();

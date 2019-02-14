@@ -73,7 +73,7 @@ public class ComputeNeighborhoodSimilarityTest {
       messages.printMessage(iterator.next());
       messages.printMessage("-");
     }
-    messages.printMessageln(counter + " items read.");
+    messages.printMessageln(counter + " items readSeekable.");
     assertEquals(671, counter);
 
   }

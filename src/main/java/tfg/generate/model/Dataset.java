@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Represents any recommendation dataset read into memory.
+ * Represents any recommendation dataset readSeekable into memory.
  */
 public interface Dataset {
 
@@ -42,7 +42,7 @@ public interface Dataset {
   class MovieLensDataset implements Dataset {
 
     /**
-     * Stores read dataset. userIds are kept ordered because the map is initialized as a LinkedMap.
+     * Stores readSeekable dataset. userIds are kept ordered because the map is initialized as a LinkedMap.
      */
     private final Map<Integer, Map<Integer, Double>> dataset;
 

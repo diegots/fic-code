@@ -30,11 +30,12 @@ public interface RowTask {
       List<Integer> result = new ArrayList<>();
       int i = 0;
       MapIterator<Integer, Integer> iterator = sortedRow.mapIterator();
+      System.err.println();
       while (iterator.hasNext() && i++ < Conf.get().getK()) {
         iterator.next();
         result.add(iterator.getKey());
-//        System.err.println("    Idx: " + iterator.getKey()
-//            + ", value: " + iterator.getValue());
+        System.err.println("    Idx: " + iterator.getKey()
+            + ", value: " + iterator.getValue());
       }
 
       // Add row delimiter
@@ -98,7 +99,7 @@ public interface RowTask {
 
       List<Integer> result = new ArrayList<>();
 
-      // Receive a fresh read row
+      // Receive a fresh readSeekable row
       LinkedMap<Integer, Integer> orderedMap = null;
       if (row instanceof LinkedMap) {
         orderedMap = (LinkedMap<Integer, Integer>) row;
@@ -108,6 +109,8 @@ public interface RowTask {
       while (iterator.hasNext()) {
         iterator.next();
         int value = iterator.getValue();
+        System.out.println("key: " + iterator.getKey() + ", value: " + iterator.getValue());
+        System.out.println("Reassigned: " + frequencyTable.encodeValue(value));
         result.add(frequencyTable.encodeValue(value));
       }
 

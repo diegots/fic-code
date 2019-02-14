@@ -14,7 +14,7 @@ public class ProccessRows {
     Conf.get().getMessages().printMessage("Start " + rowTask.getTaskName());
     final long start = System.currentTimeMillis();
 
-    // 1. read from disk
+    // 1. readSeekable from disk
     try {
       Row row = new Row(
           new FileInputStream(Conf.get().getEncodedSimMatPath()));

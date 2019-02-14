@@ -50,6 +50,7 @@ public interface NeighborhoodSimilarity {
 
         iteratorItems = userData.keySet().iterator();
         while (iteratorItems.hasNext()) {
+
           d = userData.get(iteratorItems.next());
           sum += Math.pow(d, 2);
         }
@@ -113,9 +114,9 @@ public interface NeighborhoodSimilarity {
         while (iteratorUsersJ.hasNext()) {
           userJ = iteratorUsersJ.next();
 
-          // Same user similarity is stored as 0
+          // Same user similarity stored as 1000 or 1.0
           if (userI == userJ) {
-            similarities.add(0);
+            similarities.add(1000);
             continue;
           }
 
@@ -132,7 +133,7 @@ public interface NeighborhoodSimilarity {
             } else {
               continue; // Skips current iteration
             }
-
+            System.out.println("item: " + item + ", rating I: " + itemUserI.getValue() + " - rating J: "+ ratingJ);
             sum += itemUserI.getValue() * ratingJ;
           }
 
@@ -149,6 +150,9 @@ public interface NeighborhoodSimilarity {
 
         if (neighborIds.size() >= MAX_IDS_MEMORY_STORED) {
           Utilities.writeLine(Conf.get().getEncodedUserIdsPath(), neighborIds);
+          for (int i=0; i<neighborIds.size(); i++) {
+            System.err.print(", " + neighborIds.get(i));
+          }
           neighborIds = new ArrayList<>();
         }
 
@@ -163,6 +167,9 @@ public interface NeighborhoodSimilarity {
 
       /* Turn over the last batch of userIds */
       Utilities.writeLine(Conf.get().getEncodedUserIdsPath(), neighborIds);
+      for (int i=0; i<neighborIds.size(); i++) {
+        System.err.print(", " + neighborIds.get(i));
+      }
       Conf.get().getMessages().printMessageln("done.");
 
       return System.currentTimeMillis() - start;

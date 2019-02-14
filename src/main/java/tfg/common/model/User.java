@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
-// TODO Utilize user instead of Map<Integer, Map<Integer, Double>>
 public class User implements Serializable {
   private final int userId;
   private final Map<Integer, Double> userProfile;

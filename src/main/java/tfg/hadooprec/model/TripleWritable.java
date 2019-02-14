@@ -1,5 +1,6 @@
-package tfg.hadooprec.types;
+package tfg.hadooprec.model;
 
+import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.WritableComparable;
 
@@ -11,9 +12,15 @@ public class TripleWritable implements WritableComparable<TripleWritable> {
 
   private final IntWritable first;
   private final IntWritable second;
-  private final IntWritable third;
+  private final DoubleWritable third;
 
-  public TripleWritable(IntWritable first, IntWritable second, IntWritable third) {
+  public TripleWritable() {
+    first = new IntWritable(0);
+    second = new IntWritable(0);
+    third = new DoubleWritable(0);
+  }
+
+  public TripleWritable(IntWritable first, IntWritable second, DoubleWritable third) {
     this.first = first;
     this.second = second;
     this.third = third;
@@ -27,7 +34,7 @@ public class TripleWritable implements WritableComparable<TripleWritable> {
     return second;
   }
 
-  public IntWritable getThird() {
+  public DoubleWritable getThird() {
     return third;
   }
 

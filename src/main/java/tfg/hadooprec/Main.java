@@ -4,13 +4,15 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import tfg.hadooprec.model.ActiveUser;
-import tfg.hadooprec.types.PairWritable;
+import tfg.hadooprec.model.PairWritable;
+import tfg.hadooprec.model.TripleWritable;
 
 public class Main extends Configured implements Tool {
 
@@ -60,7 +62,7 @@ public class Main extends Configured implements Tool {
     conf.setInt(SHARDS_NUMBER, Integer.valueOf(strings[2]));
 
     Job job1 = Job.getInstance(conf);
-    job1.setJobName("job0");
+    job1.setJobName("job1");
     job1.setJarByClass(tfg.hadooprec.Main.class);
 
     // Mapper and Reducer classes
@@ -92,6 +94,38 @@ public class Main extends Configured implements Tool {
     job1.setNumReduceTasks(3);
 
     // Run this job
-    return job1.waitForCompletion(true) ? 0: 1;
+    int res = job1.waitForCompletion(true) ? 0: 1;
+    if (res != 0) {
+      return res;
+    }
+
+
+    /*
+     *
+     */
+    Job job2 = Job.getInstance(conf);
+    job2.setJobName("job2");
+    job2.setJarByClass(tfg.hadooprec.Main.class);
+
+    // Mapper and Reducer classes
+    job2.setMapperClass(Job2.Map.class);
+    job2.setReducerClass(Job2.Reduce.class);
+
+    // Map output types
+    job2.setMapOutputKeyClass(IntWritable.class);
+    job2.setMapOutputValueClass(TripleWritable.class);
+
+    // Map and Reducer output types
+    job2.setOutputKeyClass(IntWritable.class);
+    job2.setOutputValueClass(Text.class);
+
+    // Input and output dirs for this job
+    FileInputFormat.addInputPath(job2, new Path(strings[1]+"j0"));
+    FileOutputFormat.setOutputPath(job2, new Path(strings[1]));
+
+    job2.setNumReduceTasks(3);
+
+    return job2.waitForCompletion(true) ? 0: 1;
+
   }
 }
