@@ -1,4 +1,4 @@
-package tfg.hadoop.generate.unique.items;
+package tfg.hadoop.recommend;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
@@ -16,29 +16,30 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Job2 {
-
+public class Job0 {
   public static class Map
       extends Mapper<LongWritable, Text, IntWritable, IntWritable> {
 
     final List<Integer> activeUsers = new ArrayList<>();
 
     @Override
-    protected void setup(Context context) throws IOException, InterruptedException {
-
-      BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(
-          new File("active-user.csv"))));
-      String line = br.readLine();
-      while (null != line) {
-        activeUsers.add(Integer.valueOf(line.trim()));
-        line = br.readLine();
+    protected void setup(Context context) throws IOException {
+      FileSystem fs = FileSystem.get(new Configuration());
+      FileStatus[] statuses = fs.listStatus(new Path(
+          context.getConfiguration().get(Main.ACTIVE_USERS_FILE_PATH)));
+      for (int i=0; i<statuses.length; i++) {
+        BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(statuses[i].getPath())));
+        String line = br.readLine();
+        while (null != line) {
+          activeUsers.add(Integer.valueOf(line.trim()));
+          line = br.readLine();
+        }
+        br.close();
       }
-      br.close();
     }
 
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-
       String [] item = value.toString().split(",");
       int userId = Integer.valueOf(item[0]);
       if (activeUsers.contains(userId)) {
@@ -56,9 +57,9 @@ public class Job2 {
     final Set<Integer> allItems = new LinkedHashSet<>();
 
     @Override
-    protected void setup(Context context) throws IOException, InterruptedException {
+    protected void setup(Context context) throws IOException {
       FileSystem fs = FileSystem.get(new Configuration());
-      FileStatus[] statuses = fs.listStatus(new Path(context.getConfiguration().get(Main.ALL_ITEMS_PATH)));
+      FileStatus[] statuses = fs.listStatus(new Path(context.getConfiguration().get(Main.UNIQUE_ITEMS_FILE_PATH)));
       for (int i=0; i<statuses.length; i++) {
         BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(statuses[i].getPath())));
         String line = br.readLine();
@@ -72,7 +73,6 @@ public class Job2 {
 
     @Override
     protected void reduce(IntWritable key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-
       Set<Integer> aux = new LinkedHashSet(allItems);
       for (IntWritable value: values) {
         aux.remove(value.get());
