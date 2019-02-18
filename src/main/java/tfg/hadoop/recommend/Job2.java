@@ -1,5 +1,6 @@
 package tfg.hadoop.recommend;
 
+import org.apache.commons.math3.util.Precision;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
@@ -61,11 +62,17 @@ public class Job2 {
 
       for (Integer activeUser: result.keySet()) {
 
-        java.util.Map<Integer, Double> m = Utilities.sortMapByValue(result.get(activeUser));
+        java.util.Map<Integer, Double> weights = Utilities.sortMapByValue(result.get(activeUser));
         StringBuilder aux = new StringBuilder();
 
-        for (Integer itemId: m.keySet()) {
-          aux.append(", " + itemId + ":" + m.get(itemId));
+        int recsNumber = context.getConfiguration().getInt(Main.RECS_NUMBER, 0);
+
+        for (Integer itemId: weights.keySet()) {
+          aux.append(", " + itemId + ":" + Precision.round(weights.get(itemId),
+              context.getConfiguration().getInt(Main.DECIMAL_PLACES, 0)));
+          if (--recsNumber <= 0) {
+            break;
+          }
         }
 
         context.write(new IntWritable(activeUser), new Text("[" + aux.substring(2, aux.length()) + "]"));

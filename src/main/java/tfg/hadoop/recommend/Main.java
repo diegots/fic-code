@@ -16,8 +16,10 @@ import tfg.hadoop.recommend.model.TripleWritable;
 
 public class Main extends Configured implements Tool {
 
-  public static final String SHARDS_NUMBER = "SHARDS_NUMBER";
   public static final String ACTIVE_USERS_FILE_PATH = "ACTIVE_USERS_FILE_PATH";
+  public static final String DECIMAL_PLACES = "DECIMAL_PLACES";
+  public static final String RECS_NUMBER = "RECS_NUMBER";
+  public static final String SHARDS_NUMBER = "SHARDS_NUMBER";
   public static final String UNIQUE_ITEMS_FILE_PATH = "UNIQUE_ITEMS_PATH";
 
   enum CachedShards {
@@ -147,6 +149,10 @@ public class Main extends Configured implements Tool {
     /* ********************* *
      * JOB 2: sums weights and sort recommendations
      * ********************* */
+    conf = getConf();
+    conf.setInt(DECIMAL_PLACES, 3);
+    conf.setInt(RECS_NUMBER, 5);
+
     Job job2 = Job.getInstance(conf);
     job2.setJobName("job2");
     job2.setJarByClass(Main.class);
