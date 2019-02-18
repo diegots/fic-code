@@ -1,9 +1,7 @@
 package tfg.hadoop.recommend.cached;
 
-import tfg.common.stream.StreamIn;
 import tfg.generate.Conf;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 

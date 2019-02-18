@@ -10,9 +10,9 @@ import org.apache.hadoop.mapreduce.Reducer;
 import tfg.common.stream.StreamIn;
 import tfg.common.util.Utilities;
 import tfg.generate.model.FrequencyTable;
-import tfg.hadoop.recommend.model.ActiveUser;
 import tfg.hadoop.recommend.cached.UserIds;
 import tfg.hadoop.recommend.cached.UsersKNeighbors;
+import tfg.hadoop.recommend.model.ActiveUser;
 import tfg.hadoop.recommend.model.PairWritable;
 
 import java.io.File;

@@ -2,6 +2,7 @@ package tfg.hadoop.generate.unique.items;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -10,7 +11,6 @@ import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-
 /**
  * Obtains n lists with the unique item Ids.
  */
@@ -18,17 +18,25 @@ public class Job0 {
   public static class Map
       extends Mapper<LongWritable, Text, IntWritable, IntWritable> {
 
+    Double numReducerTasks;
+    int step;
+
+    @Override
+    protected void setup(Context context) throws IOException, InterruptedException {
+      Double maxItemId = (double) context.getConfiguration().
+          getInt(Main.MAX_ITEMID, 0);
+      numReducerTasks = (double) context.getNumReduceTasks();
+      step = Double.valueOf(Math.ceil(maxItemId / numReducerTasks)).intValue();
+    }
+
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 
-      // context.getNumReduceTasks() * FACTOR should be greater than max itemId
-      // max item id is 163949
-      final int FACTOR = 1000 * 55;
-
       int itemId = Integer.valueOf(value.toString().split(",")[1]);
-      for (int reducerId=0; reducerId<context.getNumReduceTasks(); reducerId++) { // 0, 1, 2
-        int from = reducerId * FACTOR;
-        int to = (reducerId+1) * FACTOR -1;
+
+      for (int reducerId=0; reducerId<numReducerTasks; reducerId++) { // 0, 1, 2
+        int from = reducerId * step + 1;
+        int to = (reducerId+1) * step;
 
         if (itemId >= from && itemId <= to) {
           context.write(
@@ -40,7 +48,7 @@ public class Job0 {
   }
 
   public static class Reduce
-      extends Reducer<IntWritable, IntWritable, Text, IntWritable> {
+      extends Reducer<IntWritable, IntWritable, IntWritable, NullWritable> {
 
     @Override
     protected void reduce(IntWritable key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
@@ -51,7 +59,7 @@ public class Job0 {
       }
 
       for (Integer itemId: allItems) {
-        context.write(new Text(), new IntWritable(itemId));
+        context.write(new IntWritable(itemId), NullWritable.get());
       }
     }
   }

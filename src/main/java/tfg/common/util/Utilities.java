@@ -3,6 +3,10 @@ package tfg.common.util;
 import it.unimi.dsi.io.InputBitStream;
 import it.unimi.dsi.io.OutputBitStream;
 import org.apache.commons.collections4.map.LinkedMap;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import tfg.generate.Conf;
 
 import java.io.*;
@@ -89,7 +93,46 @@ public class Utilities {
     }
   }
 
-  public static List<Integer> readAllFile(String inFile) {
+  public static List<Integer> readFileInHDFS(FileStatus inFile) {
+    List<Integer> res = new ArrayList();
+
+    try {
+      FileSystem fs = FileSystem.get(new Configuration());
+      BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(inFile.getPath())));
+      String line = br.readLine();
+      while (line != null) {
+        res.add(Integer.valueOf(line.trim()));
+        line = br.readLine();
+      }
+      br.close();
+      fs.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+
+    return res;
+  }
+
+  public static List<Integer> readFile(File inFile) {
+    List<Integer> res = new ArrayList();
+    try {
+      BufferedReader br = new BufferedReader(new FileReader(inFile));
+      String line = br.readLine();
+      while (line != null) {
+        res.add(Integer.valueOf(line.trim()));
+        line = br.readLine();
+      }
+      br.close();
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return res;
+  }
+
+  public static List<Integer> readFileAsBitStream(String inFile) {
 
     List<Integer> res = new ArrayList();
 
@@ -114,6 +157,24 @@ public class Utilities {
     }
 
     return res;
+  }
+
+  public static List<FileStatus> getNonEmptyFilesInHDFSFolder(String path) {
+    List<FileStatus> result = new ArrayList<>();
+    try {
+      FileSystem fs = FileSystem.get(new Configuration());
+      FileStatus[] statuses = fs.listStatus(new Path(path));
+      for (FileStatus fileStatus: statuses) {
+        if (fileStatus.isFile() && fileStatus.getLen() > 0) {
+          result.add(fileStatus);
+        }
+      }
+      fs.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return result;
   }
 
   public static List<Integer> readOneRow(String inFile) {
