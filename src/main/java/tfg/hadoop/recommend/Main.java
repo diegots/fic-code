@@ -22,17 +22,7 @@ public class Main extends Configured implements Tool {
   public static final String SHARDS_NUMBER = "SHARDS_NUMBER";
   public static final String UNIQUE_ITEMS_FILE_PATH = "UNIQUE_ITEMS_PATH";
 
-  enum CachedShards {
-    shard0,
-    shard1,
-    shard2,
-  }
-
-  static final String[] cachedShards = {
-      "/cached/shard0",
-      "/cached/shard1",
-      "/cached/shard2"
-  };
+  static String[] cachedShards;
 
   enum CachedSimilarities {
     encodedUserIds,
@@ -66,8 +56,13 @@ public class Main extends Configured implements Tool {
     Configuration conf = getConf();
     conf.set(ACTIVE_USERS_FILE_PATH, strings[2]);
     conf.set(UNIQUE_ITEMS_FILE_PATH, strings[3]);
-    conf.setInt(SHARDS_NUMBER, Integer.valueOf(strings[4]));
+    Integer shardsNumber =  Integer.valueOf(strings[4]);
+    conf.setInt(SHARDS_NUMBER, shardsNumber);
 
+    cachedShards = new String[shardsNumber];
+    for (int i=0; i<shardsNumber; i++) {
+      cachedShards[i] = "/cached/shard" + i;
+    }
 
     /* ********************* *
      * JOB 0: generates a file with non rated items for every active user
@@ -128,8 +123,8 @@ public class Main extends Configured implements Tool {
     FileOutputFormat.setOutputPath(job1, new Path(strings[1]+"j1"));
 
     // Add files to Distributed Cache
-    for (CachedShards filename: CachedShards.values()) {
-      job1.addCacheFile(new Path(cachedShards[filename.ordinal()]).toUri());
+    for (String shardName: cachedShards) {
+      job1.addCacheFile(new Path(shardName).toUri());
     }
 
     for (CachedSimilarities filename: CachedSimilarities.values()) {
@@ -137,7 +132,7 @@ public class Main extends Configured implements Tool {
     }
 
     // Set number of reduce tasks
-    job1.setNumReduceTasks(3);
+    job1.setNumReduceTasks(shardsNumber);
 
     // Run this job
     res = job1.waitForCompletion(true) ? 0: 1;
@@ -173,7 +168,7 @@ public class Main extends Configured implements Tool {
     FileInputFormat.addInputPath(job2, new Path(strings[1]+"j1"));
     FileOutputFormat.setOutputPath(job2, new Path(strings[1]));
 
-    job2.setNumReduceTasks(3);
+    job2.setNumReduceTasks(shardsNumber);
 
     return job2.waitForCompletion(true) ? 0: 1;
 
