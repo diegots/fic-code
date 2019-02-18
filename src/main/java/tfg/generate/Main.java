@@ -8,7 +8,7 @@ import tfg.generate.engine.ProccessRows;
 import tfg.generate.engine.RowTask;
 import tfg.generate.model.Dataset;
 import tfg.generate.model.FrequencyTable;
-import tfg.generate.utils.Messages;
+import tfg.generate.util.Messages;
 
 import java.util.ArrayList;
 import java.util.List;

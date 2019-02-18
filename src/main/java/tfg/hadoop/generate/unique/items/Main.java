@@ -13,8 +13,8 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+import tfg.hadoop.util.MapFileUtil;
 
-import java.io.File;
 import java.util.List;
 
 public class Main extends Configured implements Tool {
@@ -74,9 +74,9 @@ public class Main extends Configured implements Tool {
      * ********************* */
     Configuration conf = getConf();
 
-    List<FileStatus> lf = tfg.common.util.Utilities.getNonEmptyFilesInHDFSFolder(strings[1]+"-maxItemId");
+    List<FileStatus> lf = MapFileUtil.getNonEmptyFilesInHDFSFolder(strings[1]+"-maxItemId");
     FileStatus actualFile = lf.get(0);
-    List<Integer> values = tfg.common.util.Utilities.readFileInHDFS(actualFile);
+    List<Integer> values = tfg.hadoop.util.MapFileUtil.readFileInHDFS(actualFile);
     conf.setInt(MAX_ITEMID, values.get(0));
     System.err.println("Read Max Item Id: " + values.get(0) + " , values read: " + values.size());
 

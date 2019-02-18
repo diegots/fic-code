@@ -7,7 +7,7 @@ import tfg.common.util.Utilities;
 import tfg.generate.cached.NeighborhoodSimilarity;
 import tfg.generate.engine.RowDelimiterException;
 import tfg.generate.model.Dataset;
-import tfg.generate.utils.Messages;
+import tfg.generate.util.Messages;
 
 import java.io.File;
 import java.util.Iterator;

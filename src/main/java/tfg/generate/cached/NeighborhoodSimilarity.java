@@ -131,7 +131,7 @@ public interface NeighborhoodSimilarity {
             } else {
               continue; // Skips current iteration
             }
-            System.out.println("item: " + item + ", rating I: " + itemUserI.getValue() + " - rating J: "+ ratingJ);
+            //System.out.println("item: " + item + ", rating I: " + itemUserI.getValue() + " - rating J: "+ ratingJ);
             sum += itemUserI.getValue() * ratingJ;
           }
 

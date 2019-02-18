@@ -1,6 +1,6 @@
 package tfg.generate;
 
-import tfg.generate.utils.Messages;
+import tfg.generate.util.Messages;
 
 public class Conf {
 

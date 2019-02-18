@@ -1,4 +1,4 @@
-package tfg.generate.utils;
+package tfg.generate.util;
 
 public interface Messages {
 
