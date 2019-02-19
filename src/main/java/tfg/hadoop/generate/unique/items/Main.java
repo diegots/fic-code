@@ -16,6 +16,8 @@ import org.apache.hadoop.util.ToolRunner;
 import tfg.hadoop.util.MapFileUtil;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Main extends Configured implements Tool {
 
@@ -29,6 +31,10 @@ public class Main extends Configured implements Tool {
 
   @Override
   public int run(String[] strings) throws Exception {
+
+    Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).setLevel(Level.WARNING);
+    Logger logger = Logger.getLogger(Main.class.getName());
+    Level level = Level.INFO;
 
     /* Expected params
      * IN  -> strings[0] -> dataset path
@@ -78,7 +84,7 @@ public class Main extends Configured implements Tool {
     FileStatus actualFile = lf.get(0);
     List<Integer> values = tfg.hadoop.util.MapFileUtil.readFileInHDFS(actualFile);
     conf.setInt(MAX_ITEMID, values.get(0));
-    System.err.println("Read Max Item Id: " + values.get(0) + " , values read: " + values.size());
+    logger.log(level, "Read Max Item Id: " + values.get(0) + " , values read: " + values.size());
 
     Job job0 = Job.getInstance(conf);
     job0.setJobName("job0");
