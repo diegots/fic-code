@@ -12,6 +12,8 @@ import tfg.hadoop.recommend.model.TripleWritable;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Job2 {
   public static class Map
@@ -29,12 +31,20 @@ public class Job2 {
               new DoubleWritable(Double.valueOf(values[2])) // weight
           )
       );
-
     }
   }
 
   public static class Reduce
       extends Reducer<IntWritable, TripleWritable, IntWritable, Text> {
+
+    private static final Logger logger = Logger.getLogger(Job2.Reduce.class.getName());
+    private static final Level level = Level.INFO;
+
+    @Override
+    protected void setup(Context context) throws IOException, InterruptedException {
+      logger.setLevel(Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).getLevel());
+    }
+
     @Override
     protected void reduce(IntWritable key, Iterable<TripleWritable> values, Context context) throws IOException, InterruptedException {
 
@@ -44,7 +54,9 @@ public class Job2 {
         int activeUserId = tw.getFirst().get();
         int itemId = tw.getSecond().get();
         double weight = tw.getThird().get();
-        System.out.println("activeUserId: " + activeUserId + " - itemId: " + itemId + " - weight: " + weight);
+
+        logger.log(level,"activeUserId: " + activeUserId + " - itemId: " + itemId + " - weight: " + weight);
+
         if (result.containsKey(activeUserId)) {
           if (result.get(activeUserId).containsKey(itemId)) {
             result.get(activeUserId).put(

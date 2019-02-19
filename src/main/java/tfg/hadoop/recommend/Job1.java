@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Job1 {
   public static class Map
@@ -43,8 +45,14 @@ public class Job1 {
     private FileInputStream similaritiesFIS;
     private StreamIn.DeltraStreamInRow similarities;
 
+    private static final Logger logger = Logger.getLogger(Reduce.class.getName());
+    private static final Level level = Level.INFO;
+
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
+
+      // Set logger level for all reducers
+      logger.setLevel(Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).getLevel());
 
       // Reads encoded.user.ids
       FileInputStream fileInputStream = new FileInputStream(
@@ -56,8 +64,9 @@ public class Job1 {
       fileInputStream = new FileInputStream(
           new File(Main.cachedSimilarities[Main.CachedSimilarities.encodedUsersKNeighbors.ordinal()]).getName());
       usersKNeighbors = new UsersKNeighbors(new StreamIn.DeltaStreamIn(fileInputStream).read());
-      System.out.println(usersKNeighbors.toString());
       fileInputStream.close();
+
+      logger.log(level, usersKNeighbors.toString());
 
       // Frequency table
       fileInputStream = new FileInputStream(
@@ -74,7 +83,7 @@ public class Job1 {
     @Override
     protected void reduce(IntWritable key, Iterable<ActiveUser> values, Context context) throws IOException, InterruptedException {
 
-      System.err.println("-> Start worker: " + key.get());
+      logger.log(level, "Start worker: " + key.get());
 
       // Access shard for reading. Shard depends on key value
       java.util.Map<Integer, java.util.Map<Integer, Double>> shard =
@@ -82,50 +91,50 @@ public class Job1 {
 
       for (ActiveUser activeUser: values) {
 
-        System.out.println("-> Active user: " + activeUser.getUserId().get()
+        logger.log(level,"Active user: " + activeUser.getUserId().get()
             + ", with index: " + userIds.findIndex(activeUser.getUserId().get()));
 
         List<Integer> neighbors = usersKNeighbors.getNeighbors(userIds.findIndex(activeUser.getUserId().get()));
-        System.out.println("Number of neighbors: " + neighbors.size());
+        logger.log(level,"Number of neighbors: " + neighbors.size());
         for (Integer neighborIndex: neighbors) {
-          System.out.println("    -> Neighbor: " + userIds.findId(neighborIndex));
+          logger.log(level,"Neighbor: " + userIds.findId(neighborIndex));
 
           if (activeUser.getUserId().get() == userIds.findId(neighborIndex)) {
-            System.out.println("        -> Skipping neighbor because it's the active user");
+            logger.log(level,"Skipping neighbor because it's the active user");
             continue;
           }
 
           if (userIds.findId(neighborIndex) %
               context.getConfiguration().getInt(Main.SHARDS_NUMBER, 0) == key.get()) {
 
-            System.out.println("        -> Neighbor in this shard!");
+            logger.log(level,"Neighbor in this shard!");
 
             // Get similarity between users
             List<Integer> l = similarities.read(userIds.findIndex(activeUser.getUserId().get()));
             if (null == l) {
-              System.out.println("        -> Similarities row null");
+              logger.log(level,"Similarities row null");
               similarities.reset();
             } else {
-              System.out.println("        -> Similarities row length: " + l.size());
+              logger.log(level,"Similarities row length: " + l.size());
 
-              System.out.print("        -> " + l.get(0) +": "+ frequencyTable.decodeValue(l.get(0)));
+              logger.log(level,l.get(0) + ": " + frequencyTable.decodeValue(l.get(0)));
               for (int i=1; i<l.size(); i++)
-                System.out.print(", " + l.get(i) +": " + frequencyTable.decodeValue(l.get(i)));
+                logger.log(level,", " + l.get(i) +": " + frequencyTable.decodeValue(l.get(i)));
             }
-            System.out.println();
+            logger.log(level,"");
 
             // Now find actual values, these are reassigned
             int a = l.get(neighborIndex);
-            System.out.println("        -> Similarity between " + activeUser.getUserId().get()
+            logger.log(level,"Similarity between " + activeUser.getUserId().get()
                 + " and " + userIds.findId(neighborIndex) + " (reassigned): " + a);
             double b = frequencyTable.decodeValue(a);
-            System.out.println("        -> Actual similarity: " + b + " and divided: " + (b/1000));
+            logger.log(level,"Actual similarity: " + b + " and divided: " + (b/1000));
 
             double similarity = b / 1000;
             for (Integer item: activeUser.getNonRatedItemsArray()) {
               Double rating = shard.get(userIds.findId(neighborIndex)).get(item);
               if (rating != null) {
-                System.out.println("            -> Rating for item '" + item + "' is: " + rating
+                logger.log(level,"Rating for item '" + item + "' is: " + rating
                     + " - weight: " + (similarity * rating));
                 context.write(
                     activeUser.getUserId(),
@@ -141,7 +150,8 @@ public class Job1 {
 //          break;
       }
 
-      System.err.println("-> End worker: " + key.get());
+      logger.log(level,"End worker: " + key.get());
+
     }
 
     @Override

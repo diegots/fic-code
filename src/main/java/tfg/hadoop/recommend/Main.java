@@ -14,6 +14,9 @@ import tfg.hadoop.recommend.model.ActiveUser;
 import tfg.hadoop.recommend.model.PairWritable;
 import tfg.hadoop.recommend.model.TripleWritable;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Main extends Configured implements Tool {
 
   public static final String ACTIVE_USERS_FILE_PATH = "ACTIVE_USERS_FILE_PATH";
@@ -46,6 +49,8 @@ public class Main extends Configured implements Tool {
 
   @Override
   public int run(String[] strings) throws Exception {
+
+    Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).setLevel(Level.WARNING);
 
     /* Expected params
      * IN  -> strings[0] -> dataset dir
@@ -144,7 +149,6 @@ public class Main extends Configured implements Tool {
     /* ********************* *
      * JOB 2: sums weights and sort recommendations
      * ********************* */
-    conf = getConf();
     conf.setInt(DECIMAL_PLACES, 3);
     conf.setInt(RECS_NUMBER, 5);
 

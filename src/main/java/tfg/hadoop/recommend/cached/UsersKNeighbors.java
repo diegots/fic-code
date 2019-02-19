@@ -4,18 +4,26 @@ import tfg.generate.Conf;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UsersKNeighbors {
+
+  private Logger logger = Logger.getLogger(UsersKNeighbors.class.getName());
+  private static final Level level = Level.INFO;
 
   private final List<Integer> usersKNeighbors;
 
   public UsersKNeighbors(List<Integer> usersKNeighbors) {
     this.usersKNeighbors = usersKNeighbors;
+    logger.setLevel(Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).getLevel());
   }
 
   public List<Integer> getNeighbors(int requestedIdx) {
+
     List<Integer> result = new ArrayList<>();
-    System.out.println("getNeighbors requested: " + requestedIdx);
+
+    logger.log(level, "getNeighbors requested: " + requestedIdx);
 
     int i=0;
     int rowIndex = 0;
