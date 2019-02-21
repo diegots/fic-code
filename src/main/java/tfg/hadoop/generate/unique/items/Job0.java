@@ -15,6 +15,10 @@ import java.util.Set;
  * Obtains n lists with the unique item Ids.
  */
 public class Job0 {
+
+  /**
+   * Sends every item to one reducer. Each reducer takes care of one interval of itemIds
+   */
   public static class Map
       extends Mapper<LongWritable, Text, IntWritable, IntWritable> {
 
@@ -32,21 +36,26 @@ public class Job0 {
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 
-      int itemId = Integer.valueOf(value.toString().split(",")[1]);
+      if (!tfg.hadoop.util.Util.containsHeader(value.toString())) {
+        int itemId = Integer.valueOf(value.toString().split(",")[1]);
 
-      for (int reducerId=0; reducerId<numReducerTasks; reducerId++) { // 0, 1, 2
-        int from = reducerId * step + 1;
-        int to = (reducerId+1) * step;
+        for (int reducerId=0; reducerId<numReducerTasks; reducerId++) { // 0, 1, 2, ...
+          int from = reducerId * step + 1;
+          int to = (reducerId+1) * step;
 
-        if (itemId >= from && itemId <= to) {
-          context.write(
+          if (itemId >= from && itemId <= to) {
+            context.write(
               new IntWritable(reducerId),
               new IntWritable(itemId));
+          }
         }
       }
     }
   }
 
+  /**
+   * Discards duplicated itemIds. Implemented using a Java set.
+   */
   public static class Reduce
       extends Reducer<IntWritable, IntWritable, IntWritable, NullWritable> {
 
