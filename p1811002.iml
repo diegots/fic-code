@@ -15,5 +15,6 @@
     <orderEntry type="library" name="junit:junit:4.12" level="project" />
     <orderEntry type="library" name="org.apache.hadoop:hadoop-client-api:3.0.3" level="project" />
     <orderEntry type="library" name="org.apache.hadoop:hadoop-client-runtime:3.0.3" level="project" />
+    <orderEntry type="library" name="org.mockito:mockito-core:2.2.7" level="project" />
   </component>
 </module>
