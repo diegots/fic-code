@@ -23,6 +23,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Job1 {
+
+  /**
+   * Distributes every active user into all reducers
+   */
   public static class Map
       extends Mapper<LongWritable, Text, IntWritable, ActiveUser> {
 
@@ -38,12 +42,14 @@ public class Job1 {
   public static class Reduce
       extends Reducer<IntWritable, ActiveUser, IntWritable, PairWritable> {
 
-    private UserIds userIds;
-    private FrequencyTable frequencyTable;
-    private UsersKNeighbors usersKNeighbors;
+    UserIds userIds;
+    UsersKNeighbors usersKNeighbors;
+    FrequencyTable frequencyTable;
+
+    java.util.Map<Integer, java.util.Map<Integer, Double>> shard;
 
     private FileInputStream similaritiesFIS;
-    private StreamIn.DeltraStreamInRow similarities;
+    StreamIn.DeltraStreamInRow similarities;
 
     private static final Logger logger = Logger.getLogger(Reduce.class.getName());
     private static final Level level = Level.INFO;
@@ -86,8 +92,10 @@ public class Job1 {
       logger.log(level, "Start worker: " + key.get());
 
       // Access shard for reading. Shard depends on key value
-      java.util.Map<Integer, java.util.Map<Integer, Double>> shard =
-          Utilities.objectFromFile(new FileInputStream(new Path(Main.cachedShards[key.get()]).getName()));
+      if (Main.cachedShards != null) {
+        java.util.Map<Integer, java.util.Map<Integer, Double>> shard =
+            Utilities.objectFromFile(new FileInputStream(new Path(Main.cachedShards[key.get()]).getName()));
+      }
 
       for (ActiveUser activeUser: values) {
 
