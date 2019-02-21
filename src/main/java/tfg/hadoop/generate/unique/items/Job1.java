@@ -24,9 +24,7 @@ public class Job1 {
 
     @Override
     protected void reduce(LongWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-      for (Text itemId: values) {
-        context.write(new Text(), itemId);
-      }
+      super.reduce(key, values, context);
     }
   }
 }
