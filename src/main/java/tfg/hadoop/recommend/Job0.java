@@ -18,14 +18,18 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Gets non rated items for every active user
+ */
 public class Job0 {
   public static class Map
       extends Mapper<LongWritable, Text, IntWritable, IntWritable> {
 
-    final List<Integer> activeUsers = new ArrayList<>();
+    List<Integer> activeUsers;
 
     @Override
     protected void setup(Context context) throws IOException {
+      activeUsers = new ArrayList<>();
       FileSystem fs = FileSystem.get(new Configuration());
       FileStatus[] statuses = fs.listStatus(new Path(
           context.getConfiguration().get(Main.ACTIVE_USERS_FILE_PATH)));
@@ -42,21 +46,27 @@ public class Job0 {
 
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-      String [] item = value.toString().split(",");
-      int userId = Integer.valueOf(item[0]);
-      if (activeUsers.contains(userId)) {
-        context.write(
-            new IntWritable(userId),
-            new IntWritable(Integer.valueOf(item[1]))
-        );
+
+      if (!tfg.hadoop.util.Util.containsHeader(value.toString())) {
+        String [] item = value.toString().split(",");
+        int userId = Integer.valueOf(item[0]);
+        if (activeUsers.contains(userId)) {
+          context.write(
+              new IntWritable(userId),
+              new IntWritable(Integer.valueOf(item[1]))
+          );
+        }
       }
     }
   }
 
+  /**
+   * Removes rated items from all items list for every active user
+   */
   public static class Reduce
       extends Reducer<IntWritable, IntWritable, IntWritable, Text> {
 
-    final Set<Integer> allItems = new LinkedHashSet<>();
+    Set<Integer> allItems = new LinkedHashSet<>();
 
     @Override
     protected void setup(Context context) throws IOException {
