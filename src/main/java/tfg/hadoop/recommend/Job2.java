@@ -50,6 +50,8 @@ public class Job2 {
 
       java.util.Map<Integer, java.util.Map<Integer, Double>> result = new HashMap<>();
 
+
+      /* Extracts TripleWritables and constructs a map with data for every user */
       for (TripleWritable tw: values) {
         int activeUserId = tw.getFirst().get();
         int itemId = tw.getSecond().get();
@@ -72,6 +74,7 @@ public class Job2 {
         }
       }
 
+      /* Buils one string for every user with his recommendations */
       for (Integer activeUser: result.keySet()) {
 
         java.util.Map<Integer, Double> weights = Utilities.sortMapByValue(result.get(activeUser));

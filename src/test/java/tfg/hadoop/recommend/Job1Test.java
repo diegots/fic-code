@@ -103,7 +103,7 @@ public class Job1Test {
         .write(
             new IntWritable(1),
             new PairWritable(
-                new IntWritable(7),new DoubleWritable(1.548)));
+                new IntWritable(7), new DoubleWritable(1.548)));
     verify(contextMock, Mockito.times(1))
         .write(
             new IntWritable(1),
