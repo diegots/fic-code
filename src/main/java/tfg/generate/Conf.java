@@ -4,11 +4,11 @@ import tfg.generate.util.Messages;
 
 public class Conf {
 
-  public final int SIMILARITY_MAX_VALUE = 1000;
-  public final int SIMILARITY_ROWS_DELIMITER = SIMILARITY_MAX_VALUE + 1;
+  public static final int SIMILARITY_MAX_VALUE = 1000;
+  public static final int SIMILARITY_ROWS_DELIMITER = SIMILARITY_MAX_VALUE + 1;
 
-  // TODO Find a safe value
-  public final int USERS_ROWS_DELIMITER = 1000000;
+  // TODO programmatically find a safe value
+  public static final int USERS_ROWS_DELIMITER = 1000000;
 
   private Messages messages;
 
