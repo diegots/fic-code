@@ -1,4 +1,4 @@
-package tfg.hadoop.generate.unique.items;
+package tfg.hadoop.recommend;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
@@ -11,7 +11,9 @@ import java.io.IOException;
 /**
  * Combines n files into on big file with all unique item Ids
  */
-public class Job1 {
+public class JoinData {
+
+
   public static class Map
       extends Mapper<LongWritable, Text, IntWritable, Text> {
     @Override
@@ -25,8 +27,9 @@ public class Job1 {
 
     @Override
     protected void reduce(IntWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-      for (Text t: values) {
-        context.write(t, new Text());
+      for (Text value: values) {
+        String [] splitted = value.toString().split("\t");
+        context.write(new Text(splitted[0]), new Text(splitted[1]));
       }
     }
   }

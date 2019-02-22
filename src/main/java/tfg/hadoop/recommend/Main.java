@@ -170,11 +170,39 @@ public class Main extends Configured implements Tool {
 
     // Input and output dirs for this job
     FileInputFormat.addInputPath(job2, new Path(strings[1]+"j1"));
-    FileOutputFormat.setOutputPath(job2, new Path(strings[1]));
+    FileOutputFormat.setOutputPath(job2, new Path(strings[1]+"j2"));
 
     job2.setNumReduceTasks(shardsNumber);
 
-    return job2.waitForCompletion(true) ? 0: 1;
+    res = job2.waitForCompletion(true) ? 0: 1;
+    if (res != 0) {
+      return res;
+    }
 
+    /* ********************* *
+     * JoinData: puts all results into one file
+     * ********************* */
+    Job joinData = Job.getInstance(conf);
+    joinData.setJobName("joindata");
+    joinData.setJarByClass(Main.class);
+
+    // Mapper and Reducer classes
+    joinData.setMapperClass(JoinData.Map.class);
+    joinData.setReducerClass(JoinData.Reduce.class);
+
+    // Map output types
+    joinData.setMapOutputKeyClass(IntWritable.class);
+    joinData.setMapOutputValueClass(Text.class);
+
+    // Map and Reducer output types
+    joinData.setOutputKeyClass(Text.class);
+    joinData.setOutputValueClass(Text.class);
+
+    FileInputFormat.addInputPath(joinData, new Path(strings[1]+"j2"));
+    FileOutputFormat.setOutputPath(joinData, new Path(strings[1]));
+
+    joinData.setNumReduceTasks(1);
+
+    return joinData.waitForCompletion(true) ? 0: 1;
   }
 }

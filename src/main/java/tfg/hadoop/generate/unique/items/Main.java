@@ -5,7 +5,6 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -63,7 +62,7 @@ public class Main extends Configured implements Tool {
 
     // Input and output dirs for this job
     FileInputFormat.addInputPath(maxItemId, new Path(strings[0]));
-    FileOutputFormat.setOutputPath(maxItemId, new Path(strings[1]+"-maxItemId"));
+    FileOutputFormat.setOutputPath(maxItemId, new Path(strings[1]+"maxItemId"));
 
     // Set number of reduce tasks
     maxItemId.setNumReduceTasks(1);
@@ -80,7 +79,7 @@ public class Main extends Configured implements Tool {
      * ********************* */
     Configuration conf = getConf();
 
-    List<FileStatus> lf = MapFileUtil.getNonEmptyFilesInHDFSFolder(strings[1]+"-maxItemId");
+    List<FileStatus> lf = MapFileUtil.getNonEmptyFilesInHDFSFolder(strings[1]+"maxItemId");
     FileStatus actualFile = lf.get(0);
     List<Integer> values = tfg.hadoop.util.MapFileUtil.readFileInHDFS(actualFile);
     conf.setInt(MAX_ITEMID, values.get(0));
@@ -104,7 +103,7 @@ public class Main extends Configured implements Tool {
 
     // Input and output dirs for this job
     FileInputFormat.addInputPath(job0, new Path(strings[0]));
-    FileOutputFormat.setOutputPath(job0, new Path(strings[1]+"-job0"));
+    FileOutputFormat.setOutputPath(job0, new Path(strings[1]+"j0"));
 
     // Set number of reduce tasks
     job0.setNumReduceTasks(Integer.valueOf(strings[2]));
@@ -132,11 +131,11 @@ public class Main extends Configured implements Tool {
     job1.setOutputValueClass(Text.class);
 
     // Map output types
-    job1.setMapOutputKeyClass(LongWritable.class);
+    job1.setMapOutputKeyClass(IntWritable.class);
     job1.setMapOutputValueClass(Text.class);
 
     // Input and output dirs for this job
-    FileInputFormat.addInputPath(job1, new Path(strings[1]+"-job0"));
+    FileInputFormat.addInputPath(job1, new Path(strings[1]+"j0"));
     FileOutputFormat.setOutputPath(job1, new Path(strings[1]));
 
     // Set number of reduce tasks

@@ -81,10 +81,10 @@ public class Job2 {
         StringBuilder aux = new StringBuilder();
 
         int recsNumber = context.getConfiguration().getInt(Main.RECS_NUMBER, 0);
+        int decimalPlaces = context.getConfiguration().getInt(Main.DECIMAL_PLACES, -1);
 
         for (Integer itemId: weights.keySet()) {
-          aux.append(", " + itemId + ":" + Precision.round(weights.get(itemId),
-              context.getConfiguration().getInt(Main.DECIMAL_PLACES, 0)));
+          aux.append(", " + itemId + ":" + Precision.round(weights.get(itemId), decimalPlaces));
           if (--recsNumber <= 0) {
             break;
           }

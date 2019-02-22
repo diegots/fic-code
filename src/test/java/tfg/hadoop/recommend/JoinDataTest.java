@@ -22,7 +22,7 @@ import java.util.Map;
 
 import static org.mockito.Mockito.*;
 
-public class Job1Test {
+public class JoinDataTest {
   @Test
   public void mapperTest_threeShards() throws IOException, InterruptedException {
     Job1.Map.Context contextMock = mock(Job1.Map.Context.class);
