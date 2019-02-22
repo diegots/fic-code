@@ -7,7 +7,6 @@ import org.apache.hadoop.io.Text;
 import org.junit.Test;
 import org.mockito.Mockito;
 import tfg.common.stream.StreamIn;
-import tfg.common.util.Utilities;
 import tfg.generate.Conf;
 import tfg.generate.model.FrequencyTable;
 import tfg.hadoop.recommend.cached.UserIds;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import static org.mockito.Mockito.*;
 
