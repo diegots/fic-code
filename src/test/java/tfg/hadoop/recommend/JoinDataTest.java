@@ -88,7 +88,7 @@ public class JoinDataTest {
     similarities.add(2, 5);
     similarities.add(3, 1);
     similarities.add(4, 4);
-    reducer.similarities = mock(StreamIn.DeltraStreamInRow.class);
+    reducer.similarities = mock(StreamIn.DeltaStreamInRow.class);
     when(reducer.similarities.read(0)).thenReturn(similarities);
     reducer.shard = prepareShard(shardId);
 

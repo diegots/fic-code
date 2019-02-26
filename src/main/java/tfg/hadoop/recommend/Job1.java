@@ -49,7 +49,7 @@ public class Job1 {
     java.util.Map<Integer, java.util.Map<Integer, Double>> shard;
 
     private FileInputStream similaritiesFIS;
-    StreamIn.DeltraStreamInRow similarities;
+    StreamIn.DeltaStreamInRow similarities;
 
     private static final Logger logger = Logger.getLogger(Reduce.class.getName());
     private static final Level level = Level.INFO;
@@ -83,7 +83,7 @@ public class Job1 {
       // Seekable similarity data
       similaritiesFIS = new FileInputStream(
           new File(Main.cachedSimilarities[Main.CachedSimilarities.encodedReassignedSimMat.ordinal()]).getName());
-      similarities = new StreamIn.DeltraStreamInRow(similaritiesFIS);
+      similarities = new StreamIn.DeltaStreamInRow(similaritiesFIS);
     }
 
     @Override

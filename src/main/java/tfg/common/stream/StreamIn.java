@@ -25,7 +25,7 @@ public interface StreamIn {
    */
   class DeltaStreamIn implements StreamIn {
 
-    InputBitStream bitStream;
+    private final InputBitStream bitStream;
 
     public DeltaStreamIn(InputStream inputStream) {
       this.bitStream  = new InputBitStream(inputStream);
@@ -50,7 +50,7 @@ public interface StreamIn {
   }
 
   class PlainStreamIn implements StreamIn {
-    InputStream inputStream;
+    private final InputStream inputStream;
 
     public PlainStreamIn(InputStream inputStream) {
       this.inputStream  = inputStream;
@@ -60,27 +60,30 @@ public interface StreamIn {
     public List<Integer> read() {
       List<Integer> res = new ArrayList<>();
 
-      try {
-        while (inputStream.available() > 0) {
-          res.add(inputStream.read());
+      int value;
+      while (true) {
+        try {
+          if ((value = inputStream.read()) == -1) {
+            break;
+          }
+          res.add(value);
+        } catch (IOException e) {
+          e.printStackTrace();
         }
-      } catch (IOException e) {
-        e.printStackTrace();
       }
       return res;
     }
   }
 
-  class DeltraStreamInRow implements StreamIn {
+  class DeltaStreamInRow implements StreamIn {
 
     private final FileInputStream fileInputStream;
     private final InputBitStream bitStream;
 
 
-    public DeltraStreamInRow(FileInputStream fileInputStream) {
+    public DeltaStreamInRow(FileInputStream fileInputStream) {
       this.fileInputStream = fileInputStream;
       this.bitStream  = new InputBitStream(fileInputStream);
-
     }
 
     public List<Integer> read(int requestedIdx) {
@@ -114,8 +117,6 @@ public interface StreamIn {
 
       return similaritiesRow;
     }
-
-
 
     @Override
     public List<Integer> read() {

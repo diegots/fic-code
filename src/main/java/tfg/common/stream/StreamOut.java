@@ -6,38 +6,55 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ *
+ */
 public interface StreamOut {
   void write(int [] a, int start, int count);
   void write(List<Integer> data);
   void close();
 
-  /** Avoids any kind of writing in case engine result is going to be kept in memory */
+  /**
+   * Avoids any kind of writing in case engine result is going to be kept in memory.
+   */
   class Memory implements StreamOut {
 
-    final private List<Integer> exportData;
-    private List<Integer> currentData;
+    private final List<Integer> data;
 
     public Memory(List<Integer> data) {
-      this.exportData = data;
+      if (data == null) {
+        this.data = new ArrayList<>();
+      }
+      else {
+        this.data = data;
+      }
     }
 
     @Override
-    public void write(int[] data, int start, int count) {}
+    public void write(int[] data, int start, int count) {
+      for (int i=start; i<=count; i++) {
+        this.data.add(data[i]);
+      }
+    }
 
     @Override
     public void write(List<Integer> data) {
-      currentData = data;
+      this.data.addAll(data);
     }
 
     @Override
     public void close() {
-      exportData.addAll(currentData);
+      data.clear();
     }
   }
 
+  /**
+   *
+   */
   class PlainStreamOut implements StreamOut {
 
     private final OutputStream outputStream;
@@ -79,6 +96,9 @@ public interface StreamOut {
     }
   }
 
+  /**
+   *
+   */
   class DeltaStreamOut implements StreamOut {
 
     private final OutputBitStream outputBitStream;
@@ -119,6 +139,11 @@ public interface StreamOut {
     }
   }
 
+  /**
+   *
+   * @param outFilePath
+   * @return
+   */
   static StreamOut createPlainStreamOut(String outFilePath) {
     StreamOut streamOut = null;
     try {
@@ -129,6 +154,11 @@ public interface StreamOut {
     return streamOut;
   }
 
+  /**
+   *
+   * @param outFilePath
+   * @return
+   */
   static StreamOut createDeltaStreamOut(String outFilePath) {
     StreamOut streamOut = null;
     try {
