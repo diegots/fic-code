@@ -1,4 +1,4 @@
 /**
- * Configuration and Main entry point classes.
+ * CCCC
  */
 package tfg.generate;
