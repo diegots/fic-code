@@ -1,4 +1,4 @@
-package tfg.generate;
+package tfg.common.util;
 
 import org.junit.Test;
 import tfg.common.util.Utilities;
@@ -47,9 +47,5 @@ public class UtilitiesTest {
     for (int i=0; i<data.size(); i++) {
       assertEquals(data.get(i), readData.get(i));
     }
-  }
-
-  @Test
-  public void objectFromFile() {
   }
 }
