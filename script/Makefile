@@ -22,10 +22,11 @@ DATASET=dataset
 INPUT=input
 RECOMM=recommendations
 UNIQUE_ITEMS=unique-items
+OUTPUT=recommendations.csv
 
 # Datasets
-#DS_FILE=test-data-25.csv
-DS_FILE=movielens-100k.csv
+DS_FILE=test-data-25.csv
+#DS_FILE=movielens-100k.csv
 #DS_FILE=movielens-20m.csv
 DS=$(LOCAL)/$(INPUT)/$(DATASET)/$(DS_FILE)
 
@@ -91,6 +92,11 @@ hadoop-recomendations:
 
 hadoop-stop: 
 	/usr/local/hadoop/sbin/stop-all.sh
+
+test-recommendation: 
+	hdfs dfs -get -f /recommendations/part-r-00000 $(OUTPUT)
+	$(LOCAL)/src/test/R/recommendationTest.R $(OUTPUT)
+	rm -v $(OUTPUT)
 
 hadoop-clean: 
 	hdfs dfs -rm -R $(HDFS)/$(CACHED) $(HDFS)/$(ACTIVE_USERS) $(HDFS)/$(DATASET)
