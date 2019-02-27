@@ -147,7 +147,7 @@ public interface NeighborhoodSimilarity {
         streamOut.write(similarities);
 
         if (neighborIds.size() >= MAX_IDS_MEMORY_STORED) {
-          Utilities.writeLine(Conf.get().getEncodedUserIdsPath(), neighborIds);
+          Utilities.writeListToFileAsDeltas(Conf.get().getEncodedUserIdsPath(), neighborIds);
           for (int i=0; i<neighborIds.size(); i++) {
             System.err.print(", " + neighborIds.get(i));
           }
@@ -164,7 +164,7 @@ public interface NeighborhoodSimilarity {
       streamOut.close();
 
       /* Turn over the last batch of userIds */
-      Utilities.writeLine(Conf.get().getEncodedUserIdsPath(), neighborIds);
+      Utilities.writeListToFileAsDeltas(Conf.get().getEncodedUserIdsPath(), neighborIds);
       for (int i=0; i<neighborIds.size(); i++) {
         System.err.print(", " + neighborIds.get(i));
       }

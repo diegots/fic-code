@@ -47,7 +47,7 @@ public class RatingMatrix {
       String shardPath = Conf.get().getRatingMatrixPath() + i;
       try {
         FileOutputStream outputStream = new FileOutputStream(shardPath);
-        Utilities.objectToFile(outputStream, shards.get(i));
+        Utilities.mapToFile(outputStream, shards.get(i));
         outputStream.close();
       } catch (FileNotFoundException e) {
         e.printStackTrace();

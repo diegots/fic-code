@@ -52,7 +52,7 @@ public class ComputeNeighborhoodSimilarityTest {
     NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.FullMatrix();
     neighborhoodSimilarity.compute(dataset);
 
-    List<Integer> readData = Utilities.readFileAsBitStream(neighborsPath);
+    List<Integer> readData = Utilities.readFileToListAsDeltas(neighborsPath);
     assertEquals(671, readData.size());
   }
 

@@ -6,6 +6,7 @@ import org.apache.commons.collections4.map.LinkedMap;
 import tfg.generate.Conf;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.*;
 
 public class Utilities {
@@ -28,10 +29,10 @@ public class Utilities {
     return result;
   }
 
-  public static void objectToFile (OutputStream stream, Object o) {
+  public static <K, V> void mapToFile(OutputStream stream, Map<K, V> map) {
     try {
       ObjectOutputStream objectStream = new ObjectOutputStream(stream);
-      objectStream.writeObject(o);
+      objectStream.writeObject(map);
       objectStream.close();
     } catch (FileNotFoundException e) {
       e.printStackTrace();
@@ -40,7 +41,7 @@ public class Utilities {
     }
   }
 
-  public static <K, V> Map<K, V> objectFromFile (InputStream stream) {
+  public static <K, V> Map<K, V> mapFromFile(InputStream stream) {
 
     Map<K, V> results = null;
 
@@ -60,19 +61,19 @@ public class Utilities {
     return results;
   }
 
-  public static void writeLine (String outFile, String line) {
-    BufferedWriter bw;
+  public static void writeLine(String outFile, String line) {
+    BufferedWriter bufferedWriter;
     try {
-      bw = new BufferedWriter(new FileWriter(outFile, true));
-      bw.append(line);
-      bw.append('\n');
-      bw.close();
+      bufferedWriter = new BufferedWriter(new FileWriter(outFile, true));
+      bufferedWriter.append(line);
+      bufferedWriter.append('\n');
+      bufferedWriter.close();
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
-  public static void writeLine (String outFile, List<Integer> line) {
+  public static void writeListToFileAsDeltas(String outFile, List<Integer> line) {
 
     Iterator<Integer> iterator = line.iterator();
     try {
@@ -89,25 +90,7 @@ public class Utilities {
     }
   }
 
-  public static List<Integer> readFile(File inFile) {
-    List<Integer> res = new ArrayList();
-    try {
-      BufferedReader br = new BufferedReader(new FileReader(inFile));
-      String line = br.readLine();
-      while (line != null) {
-        res.add(Integer.valueOf(line.trim()));
-        line = br.readLine();
-      }
-      br.close();
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return res;
-  }
-
-  public static List<Integer> readFileAsBitStream(String inFile) {
+  public static List<Integer> readFileToListAsDeltas(String inFile) {
 
     List<Integer> res = new ArrayList();
 
@@ -119,9 +102,7 @@ public class Utilities {
         int i = ibs.readDelta();
         res.add(i);
       }
-
       ibs.close();
-
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     } catch (EOFException e) {
@@ -151,6 +132,11 @@ public class Utilities {
         res.add(i);
       }
       ibs.close();
+
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (EOFException e) {
+      e.printStackTrace();
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -166,5 +152,14 @@ public class Utilities {
 
   public static long milisecondsToSeconds (long miliSeconds) {
     return miliSeconds / 1000;
+  }
+
+  public static void deleteFile(Path path) {
+    //System.out.println("toAbsolutePath: " + path.toAbsolutePath().toString());
+
+    File f = new File(path.toString());
+    if (f.exists()) {
+      f.delete();
+    }
   }
 }

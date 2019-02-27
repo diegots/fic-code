@@ -93,7 +93,7 @@ public class Job1 {
 
       // Access shard for reading. Shard depends on key value
       if (Main.cachedShards != null) {
-        shard = Utilities.objectFromFile(
+        shard = Utilities.mapFromFile(
             new FileInputStream(
                 new Path(Main.cachedShards[key.get()]).getName()));
       }
