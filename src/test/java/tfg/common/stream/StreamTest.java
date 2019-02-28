@@ -3,9 +3,12 @@ package tfg.common.stream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import tfg.common.util.Utilities;
 import tfg.generate.Conf;
 
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -190,15 +193,16 @@ public class StreamTest {
   }
 
   @Test
-  public void deltraStreamInRow() throws FileNotFoundException {
-    FileOutputStream outputStream = new FileOutputStream("deltaStreamInRow.test");
+  public void deltaStreamInRowTest() throws FileNotFoundException {
+    String destFile = "deltaStreamInRowTest";
+    FileOutputStream outputStream = new FileOutputStream(destFile);
     StreamOut.DeltaStreamOut streamOut =
         new StreamOut.DeltaStreamOut(outputStream);
     streamOut.write(expectedDelmThreeRow);
     streamOut.close();
 
     StreamIn.DeltaStreamInRow deltaStreamInRow = new StreamIn.DeltaStreamInRow(
-        new FileInputStream("deltaStreamInRow.test"));
+        new FileInputStream(destFile));
     for (int i=0; i<=2; i++) {
       List<Integer> row = deltaStreamInRow.read(i);
       assertEquals(7, row.size());
@@ -207,5 +211,7 @@ public class StreamTest {
     assertEquals(Arrays.asList(thirdRow), deltaStreamInRow.read(2));
     assertEquals(Arrays.asList(firstRow), deltaStreamInRow.read(0));
     assertEquals(Arrays.asList(secondRow), deltaStreamInRow.read(1));
+
+    Utilities.deleteFile(Paths.get(destFile));
   }
 }
