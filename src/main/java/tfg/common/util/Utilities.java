@@ -115,7 +115,7 @@ public class Utilities {
     return res;
   }
 
-  public static List<Integer> readOneRow(String inFile) {
+  public static List<Integer> readOneRowAsDelta(String inFile, int delimiter) {
     List<Integer> res = new ArrayList<>();
 
     try {
@@ -125,7 +125,7 @@ public class Utilities {
       while (ibs.available() > 0) {
         int i = ibs.readDelta();
 
-        if (Conf.get().SIMILARITY_ROWS_DELIMITER == i) {
+        if (delimiter == i) {
           break;
         }
 
@@ -136,7 +136,8 @@ public class Utilities {
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     } catch (EOFException e) {
-      e.printStackTrace();
+      // This is not an exception, the input was readSeekable completelly
+
     } catch (IOException e) {
       e.printStackTrace();
     }
