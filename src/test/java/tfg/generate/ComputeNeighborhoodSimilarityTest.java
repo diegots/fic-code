@@ -64,7 +64,7 @@ public class ComputeNeighborhoodSimilarityTest {
     NeighborhoodSimilarity neighborhoodSimilarity = new NeighborhoodSimilarity.FullMatrix();
     neighborhoodSimilarity.compute(dataset);
 
-    List<Integer> readData = Utilities.readOneRow(similaritiesPath);
+    List<Integer> readData = Utilities.readOneRowAsDelta(similaritiesPath, Conf.get().SIMILARITY_ROWS_DELIMITER);
 
     int counter = 0;
     Iterator<Integer> iterator = readData.iterator();

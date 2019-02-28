@@ -88,4 +88,35 @@ public class UtilitiesTest {
 
     Utilities.deleteFile(Paths.get(destFile));
   }
+
+  @Test
+  public void readOneRowAsDeltaTest() {
+
+    List<Integer> expected = new LinkedList<>();
+
+    int seed = 23;
+    int bound = 1000000;
+    int delimiter = bound+1;
+    int rows = 2;
+    int rowLength = 10;
+
+    Random random = new Random(seed);
+    for (int j=1; j<=rows; j++) {
+      for (int i=1; i<=rowLength; i++) {
+        expected.add(random.nextInt(bound));
+      }
+      expected.add(delimiter);
+    }
+
+    String destFile = "readOneRowAsDeltaTest.test";
+    Utilities.writeListToFileAsDeltas(destFile, expected);
+    List<Integer> actual = Utilities.readOneRowAsDelta(destFile, delimiter);
+
+    assertEquals(actual.size(), rowLength);
+    for (int i=0; i<rowLength; i++) {
+      assertEquals(expected.get(i), actual.get(i));
+    }
+
+    Utilities.deleteFile(Paths.get(destFile));
+  }
 }
