@@ -156,7 +156,6 @@ public class Utilities {
   }
 
   public static void deleteFile(Path path) {
-    //System.out.println("toAbsolutePath: " + path.toAbsolutePath().toString());
 
     File f = new File(path.toString());
     if (f.exists()) {

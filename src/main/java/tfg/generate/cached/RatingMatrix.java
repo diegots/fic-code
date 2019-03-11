@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Prepare data to be proccessed in Hadoop. Reorganizes the data according how
+ * Prepare data to be processed in Hadoop. Reorganizes the data according how
  * is going to be accessed.
  */
 public class RatingMatrix {
@@ -21,7 +21,6 @@ public class RatingMatrix {
     this.dataset = dataset;
   }
 
-  // TODO missing messages
   public void distribureUsersToShards() {
 
     // Initialize shards
@@ -43,10 +42,8 @@ public class RatingMatrix {
     }
 
     for (int i = 0; i<Conf.get().getShardsNumber(); i++) {
-
-      String shardPath = Conf.get().getRatingMatrixPath() + i;
       try {
-        FileOutputStream outputStream = new FileOutputStream(shardPath);
+        FileOutputStream outputStream = new FileOutputStream(Conf.get().getRatingMatrixPath() + i);
         Utilities.mapToFile(outputStream, shards.get(i));
         outputStream.close();
       } catch (FileNotFoundException e) {

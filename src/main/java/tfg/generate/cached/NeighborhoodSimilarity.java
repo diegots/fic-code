@@ -76,7 +76,7 @@ public interface NeighborhoodSimilarity {
       Conf.get().getMessages().printMessage("Computing similarities ("
         + this.getClass().getSimpleName() + ")");
 
-      final int MAX_USERS = 1384;
+      //final int MAX_USERS = 1384;
       final int TIMES = 1000;
       final int MAX_IDS_MEMORY_STORED = 1000;
 
@@ -148,26 +148,20 @@ public interface NeighborhoodSimilarity {
 
         if (neighborIds.size() >= MAX_IDS_MEMORY_STORED) {
           Utilities.writeListToFileAsDeltas(Conf.get().getEncodedUserIdsPath(), neighborIds);
-          for (int i=0; i<neighborIds.size(); i++) {
-            System.err.print(", " + neighborIds.get(i));
-          }
           neighborIds = new ArrayList<>();
         }
 
-        count++;
-        // Stop algorithm after MAX_USERS was reached. This is for testing purposes
-        if (count >= MAX_USERS) {
-          break;
-        }
+//        count++;
+//        // Stop algorithm after MAX_USERS was reached. This is for testing purposes
+//        if (count >= MAX_USERS) {
+//          break;
+//        }
       }
 
       streamOut.close();
 
       /* Turn over the last batch of userIds */
       Utilities.writeListToFileAsDeltas(Conf.get().getEncodedUserIdsPath(), neighborIds);
-      for (int i=0; i<neighborIds.size(); i++) {
-        System.err.print(", " + neighborIds.get(i));
-      }
       Conf.get().getMessages().printMessageln("done.");
 
       return System.currentTimeMillis() - start;
