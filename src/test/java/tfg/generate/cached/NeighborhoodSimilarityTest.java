@@ -1,11 +1,10 @@
-package tfg.generate;
+package tfg.generate.cached;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import tfg.common.util.Utilities;
-import tfg.generate.cached.NeighborhoodSimilarity;
-import tfg.generate.engine.RowDelimiterException;
+import tfg.generate.Conf;
 import tfg.generate.model.Dataset;
 import tfg.generate.util.Messages;
 
@@ -15,16 +14,16 @@ import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 
-public class ComputeNeighborhoodSimilarityTest {
+public class NeighborhoodSimilarityTest {
 
-  private final static String datasetPath = "./datasets/movielens-100k.csv";
+  private final static String datasetPath = "./input/dataset/movielens-100k.csv";
   private final static String similaritiesPath = "./out/sim.data";
   private final static String neighborsPath = "./out/neig.data";
   private Messages messages;
   private Conf conf;
 
   @Before
-  public void prepareStuff () throws RowDelimiterException {
+  public void prepareStuff () {
     //messages = new Messages.Symbol(".");
     messages = new Messages.Void();
 
