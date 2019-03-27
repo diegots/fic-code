@@ -1,0 +1,39 @@
+{% extends "cluster/cluster.html" %}
+{% block title %}{{ block.super }} :: {{ name_section }}{% endblock %}
+{% block main_content %}
+<p>
+
+{% if data|length <= 0 %}
+The are no running clusters at the moment. Try launching <a href="{% url 'cluster:launch' %}">one</a> first.
+
+{% else %}
+<p>
+Active clusters:
+<table style="width:60%">
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+    </tr>
+
+    {% for d in data %}
+    <tr>
+        <td>{{ d.id }}</td>
+        <td>{{ d.name }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+</p>
+
+
+<form action="{% url 'cluster:terminate_action' %}" method="post">
+    {% csrf_token %}
+    Cluster Id:<br>
+    <input type="text" name="cluster_id" value="">
+    <br>
+    <input type="submit" value="Stop this cluster now">
+</form>
+
+{% endif %}
+</p>
+{% endblock %}

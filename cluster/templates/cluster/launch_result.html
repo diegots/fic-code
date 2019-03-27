@@ -1,0 +1,8 @@
+{% extends "cluster/cluster.html" %}
+{% block title %}{{ block.super }} :: {{ name_section }}{% endblock %}
+{% block main_content %}
+<p>Launched cluster <b>{{ cluster_name }}</b> with <b>{{ cluster_intances_number }}</b>
+    {% if cluster_intances_number == 1 %}node{% else %}nodes{% endif %}
+    and id <b>{{ cluster_id }}</b>.
+</p>
+{% endblock %}
