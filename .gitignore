@@ -3,5 +3,7 @@
 *.sqlite3
 
 # Directories
+.idea/
 env_tfg/
+dashboard/migrations/
 
