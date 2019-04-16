@@ -18,7 +18,7 @@ dataset_path = {
     '1M': '/input-1m'
 }
 
-def base_command(cluster_id, step):
+def command_base(cluster_id, step):
     return ['aws', 'emr', 'add-steps',
            '--cluster-id', cluster_id,
            '--steps', ''.join(step)]
@@ -30,27 +30,27 @@ def step_load_data(cluster_id, path):
             'ActionOnFailure', '=', 'CANCEL_AND_WAIT', ',',
             'Type', '=', 'CUSTOM_JAR', ',',
             'Args', '=', args]
-    return subprocess.check_output(base_command(cluster_id, step))
+    return subprocess.check_output(command_base(cluster_id, step))
 
-def unique_items(cluster_id, shards_number):
+def step_unique_items(cluster_id, shards_number):
     args = '/input/dataset,/output,' + shards_number
     step = ['Name', '=', 'unique-items', ',',
             'Jar', '=', 's3://' + settings.TFG_BUCKET_NAME + '/artifacts/hadoop-unique-items.jar', ',',
             'ActionOnFailure', '=',  'CANCEL_AND_WAIT',
             'Type', '=', 'CUSTOM_JAR',
             'Args', '=', args]
-    return subprocess.check_output(base_command(cluster_id, step))
+    return subprocess.check_output(command_base(cluster_id, step))
 
-def recommendations(cluster_id, shards_number):
+def step_recommendations(cluster_id, shards_number):
     args = '/input/dataset,/output,/input/active-users/users.csv,/output/part-r-00000,' + shards_number
     step = ['Name', '=', 'recomendations', ',',
             'Jar', '=', 's3://' + settings.TFG_BUCKET_NAME + '/artifacts/hadoop-recomendations.jar', ',',
             'ActionOnFailure', '=',  'CONTINUE',
             'Type', '=', 'CUSTOM_JAR',
             'Args', '=', args,]
-    return subprocess.check_output(base_command(cluster_id, step))
+    return subprocess.check_output(command_base(cluster_id, step))
 
-def launch_cluster(name, instance_count):
+def command_launch_cluster(name, instance_count):
     command = ['aws', 'emr', 'create-cluster',
                '--name', name,
                '--log-uri', 's3://u8ns72b/logs',
@@ -61,7 +61,7 @@ def launch_cluster(name, instance_count):
                '--instance-count', instance_count]
     return subprocess.check_output(command)
 
-def terminate_cluster(id):
+def command_terminate_cluster(id):
     command = ['aws', 'emr', 'terminate-clusters',
                '--cluster-ids', id]
     return subprocess.check_output(command)
@@ -120,8 +120,8 @@ def cluster_launch_action(request):
     cluster_name = request.POST.get('cluster_name', 'unnamed')
     cluster_instances = request.POST.get('cluster_instances', '0')
 
-    action_result = launch_cluster(cluster_name, cluster_instances)
-    cluster_id = json.loads(action_result.decode())['ClusterId']
+    result = command_launch_cluster(cluster_name, cluster_instances)
+    cluster_id = json.loads(result.decode())['ClusterId']
 
     base_url = reverse('dashboard:cluster-launch-result')
     query_string = urlencode({'cluster_name': cluster_name,
@@ -155,7 +155,7 @@ def cluster_terminate(request):
 @login_required
 def cluster_terminate_action(request):
     cluster_id = request.POST.get('cluster_id', '')
-    terminate_cluster(cluster_id)
+    command_terminate_cluster(cluster_id)
     return redirect(reverse('dashboard:cluster-terminate-result'))
 
 @login_required
@@ -167,8 +167,25 @@ def recommend(request):
     return render(request, 'dashboard/recommend.html')
 
 @login_required
-def recomm_prepare_action(request):
-    return redirect(reverse('dashboard:recommend-prepare-result'))
+def recommend_load_action(request):
+    cluster_id = request.POST.get('load-cluster-id')
+    result = step_load_data(cluster_id, dataset_path[request.POST.get('load-dataset-size')])
+
+    step_id = ''.join(json.loads(result.decode())['StepIds'])
+    context = get_context_data()
+    context['step_id'] = step_id
+
+    base_url = reverse('dashboard:recommend-load-result')
+    query_string = urlencode({'step_id': step_id})
+    url = '{}?{}'.format(base_url, query_string)
+    return redirect(url)
+
+
+@login_required
+def recommend_load_result(request):
+    context = get_context_data()
+    context['step_id'] = request.GET.get('step_id')
+    return render(request, 'dashboard/recommend_load_result.html', context)
 
 @login_required
 def recomm_prepare_result(request):
@@ -190,12 +207,3 @@ def recomm_generate_users(request):
 def recomm_compute(request):
     return HttpResponse('recomm_recomm')
 
-@login_required
-def recommend_prepare_action(request):
-    cluster_id = request.POST.get('loadClusterId')
-    result = step_load_data(cluster_id, dataset_path[request.POST.get('loadDatasetSize')])
-    step_id = ''.join(json.loads(result.decode())['StepIds'])
-    context = get_context_data()
-    context['step_id'] = step_id
-    return HttpResponse('recommend_prepare_action. Running step: ' + step_id + '.')
-    # render(request, 'dashboard:recomm-prepare-result', context)

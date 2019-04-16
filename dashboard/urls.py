@@ -12,13 +12,15 @@ urlpatterns = [
     path('cluster/terminate', views.cluster_terminate, name='cluster-terminate'),
     path('cluster/terminate_action', views.cluster_terminate_action, name='cluster-terminate-action'),
     path('cluster/terminate_result', views.cluster_terminate_result, name='cluster-terminate-result'),
-    path('recommend', views.recommend, name='recommend'),
 
-    path('recommend/prepare_action', views.recommend_prepare_action, name='recomm-prepare'),
-    path('recommend/prepare_result', views.recommend_prepare_result, name='recomm-prepare-result'),
-    path('recommend/generate_shards', views.recomm_generate_shards, name='recomm-generate-shards'),
-    path('recommend/generate_users', views.recomm_generate_users, name='recomm-generate-users'),
+    path('recommend', views.recommend, name='recommend'),
+    path('recommend/load_action', views.recommend_load_action, name='recommend-load-action'),
+    path('recommend/load_result', views.recommend_load_result, name='recommend-load-result'),
+
+    path('recommend/generate_shards', views.recomm_generate_shards, name='recommend-generate-shards'),
+    path('recommend/generate_users', views.recomm_generate_users, name='recommend-generate-users'),
     path('recommend/compute', views.recomm_compute, name='recomm-compute'),
+
     path('result', views.result, name='result'),
 ]
 
