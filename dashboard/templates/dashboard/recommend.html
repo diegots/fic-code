@@ -1,0 +1,93 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!-- -->
+{% block title %} {{ block.super }} :: recommend{% endblock %}
+
+<!-- -->
+{% block header_menu_list %}
+<ul class="navbar-nav mr-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'dashboard:index' %}">Home <span class="sr-only">(current)</span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'dashboard:cluster-list' %}">Cluster</a>
+  </li>
+  <li class="nav-item active">
+    <a class="nav-link" href="{% url 'dashboard:recommend' %}">Recommend</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'dashboard:result' %}">Result</a>
+  </li>
+</ul>
+{% endblock %}
+
+<!-- -->
+{% block main_one %}
+<div class="row">
+  <div class="col-md-12 ">
+    <h1>Compute recommendations</h1>
+  </div>
+</div>
+
+<!-- load data && compute unique items -->
+<div class="row">
+  <div class="col-md-12 ">
+    <h3>First step</h3>
+    <p>First step loads needed data from storage (S3) and computes unique items. Choose dataset size.</p>
+  </div>
+  <div class="col-auto ">
+      <form action="{% url 'dashboard:recomm-prepare' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="loadDatasetSize">Movielens dataset size</label>
+          <select class="form-control" id="loadDatasetSize" name="loadDatasetSize">
+            <option>100k</option>
+            <option>1M</option>
+          </select>
+
+          <label for="loadClusterId">Cluster Id</label>
+          <input type="text" class="form-control" id="loadClusterId" name="loadClusterId" placeholder="Starts with j-" required>
+
+        </div>
+        <button type="submit" class="btn btn-primary">Prepare data</button>
+      </form>
+  </div>
+</div>
+
+<!-- generate users -->
+<div class="row">
+  <div class="col-md-12 ">
+    <h3>Active users</h3>
+    <p>Generates the list of active users to compute recommendations for.</p>
+
+    <form action="{% url 'dashboard:recomm-generate-users' %}" method="post">
+      {% csrf_token %}
+      <label for="activeUsersNumber">Number of active users</label>
+
+      <button type="submit" class="btn btn-primary">Generate users</button>
+      </form>
+  </div>
+</div>
+
+<!-- generate shards -->
+<div class="row">
+  <div class="col-md-12 ">
+    <h3>Generate shards</h3>
+    <form action="{% url 'dashboard:recomm-generate-shards' %}" method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary">Generate shards</button>
+      </form>
+  </div>
+</div>
+
+<!-- recommend -->
+<div class="row">
+  <div class="col-md-12 ">
+    <h3>Compute recommendations</h3>
+    <form action="{% url 'dashboard:recomm-compute' %}" method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary">Compute recommendations</button>
+      </form>
+  </div>
+</div>
+{% endblock %}

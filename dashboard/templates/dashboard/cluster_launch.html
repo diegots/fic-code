@@ -1,0 +1,27 @@
+{% extends "dashboard/cluster.html" %}
+
+{% block cluster_links %}
+<a class="nav-link text-center active" href="">Launch</a>
+<a class="nav-link text-center" href="{% url 'dashboard:cluster-list' %}">List</a>
+<a class="nav-link text-center" href="{% url 'dashboard:cluster-terminate' %}">Terminate</a>
+{% endblock %}
+
+{% block cluster_content %}
+<h3>Cluster Launch</h3>
+<p>Launch one cluster from this page</p>
+
+<form action="{% url 'dashboard:cluster-launch-action' %}" method="post">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="clusterName">Cluster name</label>
+    <input type="text" id="clusterName" name="cluster_name" class="form-control"  aria-describedby="clusterNameHelp" placeholder="Enter cluster name">
+    <small id="clusterNameHelp" class="form-text text-muted">Only [a-z0-9_] and dash symbol are valid.</small>
+  </div>
+  <div class="form-group">
+    <label for="clusterInstances">Number of cluster nodes</label>
+    <input type="number" name="cluster_instances" class="form-control" id="clusterInstances" placeholder="Enter number of instances">
+  </div>
+  <button type="submit" class="btn btn-primary">Launch</button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "dashboard/cluster.html" %}
+
+{% block cluster_links %}
+<a class="nav-link text-center" href="{% url 'dashboard:cluster-launch' %}">Launch</a>
+<a class="nav-link text-center active" href="">List</a>
+<a class="nav-link text-center" href="{% url 'dashboard:cluster-terminate' %}">Terminate</a>
+{% endblock %}
+
+{% block cluster_content %}
+
+{% if data|length > 0 %}
+  <h3>Cluster List</h3>
+  <p>Currently active clusters:</p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Id</th>
+        <th scope="col">Name</th>
+        <th scope="col">State</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in data %}
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ d.id }}</td>
+        <td>{{ d.name }}</td>
+        <td>{{ d.state }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>No active clusters at the moment. Try <a href="{% url 'dashboard:cluster-launch' %}">launching</a> one.</p>
+{% endif %}
+
+{% endblock %}
