@@ -1,0 +1,7 @@
+# Extensions
+*.pyc
+*.sqlite3
+
+# Directories
+env_tfg/
+
