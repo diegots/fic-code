@@ -168,6 +168,8 @@ def recommend(request):
 
 @login_required
 def recommend_load_action(request):
+
+    # First load data into cluster
     cluster_id = request.POST.get('load-cluster-id')
     result = step_load_data(cluster_id, dataset_path[request.POST.get('load-dataset-size')])
 
@@ -175,6 +177,11 @@ def recommend_load_action(request):
     context = get_context_data()
     context['step_id'] = step_id
 
+    # Then compute unique items
+    shards_number = 0
+    result = step_unique_items(cluster_id, shards_number)
+
+    # Last prepare url
     base_url = reverse('dashboard:recommend-load-result')
     query_string = urlencode({'step_id': step_id})
     url = '{}?{}'.format(base_url, query_string)
