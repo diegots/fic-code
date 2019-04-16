@@ -1,13 +1,14 @@
-import subprocess
 import json
+import subprocess
+from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.http import HttpResponse
 
-from urllib.parse import urlencode
+from .models import Cluster
 
 
 #
@@ -36,8 +37,8 @@ def step_unique_items(cluster_id, shards_number):
     args = '/input/dataset,/output,' + shards_number
     step = ['Name', '=', 'unique-items', ',',
             'Jar', '=', 's3://' + settings.TFG_BUCKET_NAME + '/artifacts/hadoop-unique-items.jar', ',',
-            'ActionOnFailure', '=',  'CANCEL_AND_WAIT',
-            'Type', '=', 'CUSTOM_JAR',
+            'ActionOnFailure', '=',  'CANCEL_AND_WAIT', ',',
+            'Type', '=', 'CUSTOM_JAR', ',',
             'Args', '=', args]
     return subprocess.check_output(command_base(cluster_id, step))
 
@@ -45,8 +46,8 @@ def step_recommendations(cluster_id, shards_number):
     args = '/input/dataset,/output,/input/active-users/users.csv,/output/part-r-00000,' + shards_number
     step = ['Name', '=', 'recomendations', ',',
             'Jar', '=', 's3://' + settings.TFG_BUCKET_NAME + '/artifacts/hadoop-recomendations.jar', ',',
-            'ActionOnFailure', '=',  'CONTINUE',
-            'Type', '=', 'CUSTOM_JAR',
+            'ActionOnFailure', '=',  'CONTINUE', ',',
+            'Type', '=', 'CUSTOM_JAR', ',',
             'Args', '=', args,]
     return subprocess.check_output(command_base(cluster_id, step))
 
@@ -123,6 +124,11 @@ def cluster_launch_action(request):
     result = command_launch_cluster(cluster_name, cluster_instances)
     cluster_id = json.loads(result.decode())['ClusterId']
 
+    # Save data into BBDD
+    c = Cluster(cluster_id=cluster_id, number_nodes=cluster_instances)
+    c.save()
+
+    # Create url
     base_url = reverse('dashboard:cluster-launch-result')
     query_string = urlencode({'cluster_name': cluster_name,
                               'cluster_instances': cluster_instances,
@@ -179,7 +185,7 @@ def recommend_load_action(request):
 
     # Then compute unique items
     shards_number = 0
-    result = step_unique_items(cluster_id, shards_number)
+    result = step_unique_items(cluster_id, str(shards_number))
 
     # Last prepare url
     base_url = reverse('dashboard:recommend-load-result')
