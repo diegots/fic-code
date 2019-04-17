@@ -4,7 +4,7 @@ from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
@@ -132,7 +132,7 @@ def cluster_launch_action(request):
     base_url = reverse('dashboard:cluster-launch-result')
     query_string = urlencode({'cluster_name': cluster_name,
                               'cluster_instances': cluster_instances,
-                              'cluster_id': cluster_id},)
+                              'cluster_id': cluster_id})
     url = '{}?{}'.format(base_url, query_string)
     return redirect(url)
 
@@ -175,24 +175,27 @@ def recommend(request):
 @login_required
 def recommend_load_action(request):
 
-    # First load data into cluster
+    # First get cluster data
     cluster_id = request.POST.get('load-cluster-id')
+    try:
+        cluster = Cluster.objects.get(cluster_id=cluster_id)
+    except Cluster.DoesNotExist:
+        return render(request, 'dashboard/recommend_load_cluster_does_not_exist.html', {'cluster_id': cluster_id})
+
+    # Then load data into cluster
     result = step_load_data(cluster_id, dataset_path[request.POST.get('load-dataset-size')])
+    step_id_load_data = ''.join(json.loads(result.decode())['StepIds'])
 
-    step_id = ''.join(json.loads(result.decode())['StepIds'])
-    context = get_context_data()
-    context['step_id'] = step_id
+    # Now compute unique items
+    result = step_unique_items(cluster_id, str(cluster.number_nodes))
+    step_id_unique_items = ''.join(json.loads(result.decode())['StepIds'])
 
-    # Then compute unique items
-    shards_number = 0
-    result = step_unique_items(cluster_id, str(shards_number))
-
-    # Last prepare url
+    # At last prepare redirect url
     base_url = reverse('dashboard:recommend-load-result')
-    query_string = urlencode({'step_id': step_id})
+    query_string = urlencode({'step_id_load_data': step_id_load_data,
+                              'step_id_unique_items': step_id_unique_items})
     url = '{}?{}'.format(base_url, query_string)
     return redirect(url)
-
 
 @login_required
 def recommend_load_result(request):

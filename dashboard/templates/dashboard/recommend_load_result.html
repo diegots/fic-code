@@ -1,6 +1,7 @@
 {% extends "dashboard/recommend.html" %}
 
-
 {% block main_one %}
-<p><b>{{ step_id }}</b> step generated. Go <a href="{% url 'dashboard:recommend' %}">back</a>.</p>
+<p>Requested steps <b>{{ step_id_load_data }}</b> and <b>{{ step_id_unique_items }}</b>.
+  Go <a href="{% url 'dashboard:recommend' %}">back</a>.
+</p>
 {% endblock %}
