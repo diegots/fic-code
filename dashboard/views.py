@@ -4,12 +4,12 @@ from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.utils import timezone
 
 from .models import Cluster
-
 
 #
 # Amazon EMR commands
@@ -161,8 +161,18 @@ def cluster_terminate(request):
 @login_required
 def cluster_terminate_action(request):
     cluster_id = request.POST.get('cluster_id', '')
-    command_terminate_cluster(cluster_id)
-    return redirect(reverse('dashboard:cluster-terminate-result'))
+
+    querySet = Cluster.objects.filter(cluster_id=cluster_id)
+    if len(querySet) < 1:
+        return render(request, 'dashboard/error_cluster_does_not_exist.html', {'cluster_id': cluster_id})
+    else:
+        if querySet[0].off_date == None:
+            querySet[0].off_date = timezone.now()
+            querySet[0].save()
+            command_terminate_cluster(cluster_id)
+            return redirect(reverse('dashboard:cluster-terminate-result'))
+        else:
+            return render(request, 'dashboard/error_cluster_not_running.html', {'cluster_id': cluster_id})
 
 @login_required
 def cluster_terminate_result(request):
@@ -180,7 +190,7 @@ def recommend_load_action(request):
     try:
         cluster = Cluster.objects.get(cluster_id=cluster_id)
     except Cluster.DoesNotExist:
-        return render(request, 'dashboard/recommend_load_cluster_does_not_exist.html', {'cluster_id': cluster_id})
+        return render(request, 'dashboard/error_cluster_does_not_exist.html', {'cluster_id': cluster_id})
 
     # Then load data into cluster
     result = step_load_data(cluster_id, dataset_path[request.POST.get('load-dataset-size')])
