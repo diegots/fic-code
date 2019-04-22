@@ -51,4 +51,15 @@
   </div>
 </div>
 
+
+<!-- generate shards -->
+<div class="row">
+  <div class="col-md-12 ">
+    <h3>Generate shards</h3>
+    <form action="{% url 'dashboard:recommend-generate-shards-action' %}" method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary">Generate shards</button>
+      </form>
+  </div>
+</div>
 {% endblock %}

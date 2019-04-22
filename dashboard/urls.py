@@ -3,6 +3,7 @@ from django.urls import path
 from . import views
 
 app_name = 'dashboard'
+
 urlpatterns = [
     path('', views.index, name='index'),
     path('cluster/launch', views.cluster_launch, name='cluster-launch'),
@@ -16,12 +17,12 @@ urlpatterns = [
     path('recommend', views.recommend, name='recommend'),
     path('recommend/load_action', views.recommend_load_action, name='recommend-load-action'),
     path('recommend/load_result', views.recommend_load_result, name='recommend-load-result'),
-
-    path('recommend/generate_shards', views.recomm_generate_shards, name='recommend-generate-shards'),
-    path('recommend/generate_users', views.recomm_generate_users, name='recommend-generate-users'),
-    path('recommend/compute', views.recomm_compute, name='recomm-compute'),
+    path('recommend/generate_shards_action',
+         views.recommend_generate_shards_action,
+         name='recommend-generate-shards-action'),
 
     path('result', views.result, name='result'),
 ]
+
 
 

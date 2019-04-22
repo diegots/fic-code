@@ -25,7 +25,7 @@ def command_base(cluster_id, step):
            '--steps', ''.join(step)]
 
 def step_load_data(cluster_id, path):
-    args = 's3-dist-cp,--src,s3://' + settings.TFG_BUCKET_NAME + path + ',--dest,' + path # /input
+    args = 's3-dist-cp,--src,s3://' + settings.TFG_BUCKET_NAME + path + ',--dest,/input'  # /input
     step = ['Name', '=', 'load_data', ',',
             'Jar', '=', 'command-runner.jar', ',' ,
             'ActionOnFailure', '=', 'CANCEL_AND_WAIT', ',',
@@ -42,6 +42,9 @@ def step_unique_items(cluster_id, shards_number):
             'Args', '=', args]
     return subprocess.check_output(command_base(cluster_id, step))
 
+def step_compute_shards(shards_number):
+    return None
+
 def step_recommendations(cluster_id, shards_number):
     args = '/input/dataset,/output,/input/active-users/users.csv,/output/part-r-00000,' + shards_number
     step = ['Name', '=', 'recomendations', ',',
@@ -52,12 +55,13 @@ def step_recommendations(cluster_id, shards_number):
     return subprocess.check_output(command_base(cluster_id, step))
 
 def command_launch_cluster(name, instance_count):
+    instance_type = 'm1.medium'
     command = ['aws', 'emr', 'create-cluster',
                '--name', name,
-               '--log-uri', 's3://u8ns72b/logs',
+               '--log-uri', 's3://' + settings.TFG_BUCKET_NAME + '/logs',
                '--service-role', 'EMR_DefaultRole',
                '--ec2-attributes', 'InstanceProfile=EMR_EC2_DefaultRole,KeyName=' + settings.SSH_KEY_NAME,
-               '--instance-type', 'm1.medium',
+               '--instance-type', instance_type,
                '--release-label', 'emr-5.21.0',
                '--instance-count', instance_count]
     return subprocess.check_output(command)
@@ -214,22 +218,19 @@ def recommend_load_result(request):
     return render(request, 'dashboard/recommend_load_result.html', context)
 
 @login_required
-def recomm_prepare_result(request):
-    return HttpResponse('recommend prepare result')
+def recommend_generate_shards_action(request):
+    # read cluster id
+    cluster_id = request.POST.get('load-cluster-id')
+
+    # launch command on that cluster id
+
+    # load result page
+    return None
+
+@login_required
+def recommend_generate_shards_result(request):
+    return None
 
 @login_required
 def result(request):
     return render(request, 'dashboard/result.html')
-
-@login_required
-def recomm_generate_shards(request):
-    return HttpResponse('recomm_generate_shards')
-
-@login_required
-def recomm_generate_users(request):
-    return HttpResponse('recomm_generate_users')
-
-@login_required
-def recomm_compute(request):
-    return HttpResponse('recomm_recomm')
-
