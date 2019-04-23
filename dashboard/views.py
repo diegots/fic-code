@@ -4,7 +4,6 @@ from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -19,10 +18,12 @@ dataset_path = {
     '1M': '/input-1m'
 }
 
+
 def command_base(cluster_id, step):
     return ['aws', 'emr', 'add-steps',
            '--cluster-id', cluster_id,
            '--steps', ''.join(step)]
+
 
 def step_load_data(cluster_id, path):
     args = 's3-dist-cp,--src,s3://' + settings.TFG_BUCKET_NAME + path + ',--dest,/input'  # /input
@@ -33,6 +34,7 @@ def step_load_data(cluster_id, path):
             'Args', '=', args]
     return subprocess.check_output(command_base(cluster_id, step))
 
+
 def step_unique_items(cluster_id, shards_number):
     args = '/input/dataset,/output,' + shards_number
     step = ['Name', '=', 'unique-items', ',',
@@ -42,8 +44,10 @@ def step_unique_items(cluster_id, shards_number):
             'Args', '=', args]
     return subprocess.check_output(command_base(cluster_id, step))
 
+
 def step_compute_shards(shards_number):
     return None
+
 
 def step_recommendations(cluster_id, shards_number):
     args = '/input/dataset,/output,/input/active-users/users.csv,/output/part-r-00000,' + shards_number
@@ -53,6 +57,7 @@ def step_recommendations(cluster_id, shards_number):
             'Type', '=', 'CUSTOM_JAR', ',',
             'Args', '=', args,]
     return subprocess.check_output(command_base(cluster_id, step))
+
 
 def command_launch_cluster(name, instance_count):
     instance_type = 'm1.medium'
@@ -65,6 +70,7 @@ def command_launch_cluster(name, instance_count):
                '--release-label', 'emr-5.21.0',
                '--instance-count', instance_count]
     return subprocess.check_output(command)
+
 
 def command_terminate_cluster(id):
     command = ['aws', 'emr', 'terminate-clusters',
@@ -82,12 +88,14 @@ def get_historic_clusters(active):
         command = ['aws', 'emr', 'list-clusters']
     return json.loads(subprocess.check_output(command))
 
+
 def cluster_state(state):
     on_states = ['STARTING', 'BOOTSTRAPPING', 'RUNNING', 'WAITING']
     if state in on_states:
         return 'On'
 
     return 'Off'
+
 
 def append_to_context(response):
     data = []
@@ -97,6 +105,7 @@ def append_to_context(response):
         state = cluster_state(cluster['Status']['State'])
         data.append({'id': id, 'name': name, 'state': state})
     return data
+
 
 def get_context_data():
     context = {
@@ -112,13 +121,16 @@ def get_context_data():
 def index(request):
     return render(request, 'dashboard/dashboard.html')
 
+
 @login_required
 def cluster(request):
     return render(request, 'dashboard/cluster.html')
 
+
 @login_required
 def cluster_launch(request):
     return render(request, 'dashboard/cluster_launch.html')
+
 
 @login_required
 def cluster_launch_action(request):
@@ -140,6 +152,7 @@ def cluster_launch_action(request):
     url = '{}?{}'.format(base_url, query_string)
     return redirect(url)
 
+
 @login_required
 def cluster_launch_result(request):
     context = get_context_data()
@@ -148,6 +161,7 @@ def cluster_launch_result(request):
     context['cluster_id'] = request.GET.get('cluster_id')
     return render(request, 'dashboard/cluster_launch_result.html', context)
 
+
 @login_required
 def cluster_list(request):
     cluster_list_response = get_historic_clusters(True)
@@ -155,12 +169,14 @@ def cluster_list(request):
     context['data'] = append_to_context(cluster_list_response)
     return render(request, 'dashboard/cluster_list.html', context)
 
+
 @login_required
 def cluster_terminate(request):
     cluster_list_response = get_historic_clusters(True)
     context = get_context_data()
     context['data'] = append_to_context(cluster_list_response)
     return render(request, 'dashboard/cluster_terminate.html', context)
+
 
 @login_required
 def cluster_terminate_action(request):
@@ -178,13 +194,16 @@ def cluster_terminate_action(request):
         else:
             return render(request, 'dashboard/error_cluster_not_running.html', {'cluster_id': cluster_id})
 
+
 @login_required
 def cluster_terminate_result(request):
     return render(request, 'dashboard/cluster_terminate_result.html')
 
+
 @login_required
 def recommend(request):
     return render(request, 'dashboard/recommend.html')
+
 
 @login_required
 def recommend_load_action(request):
@@ -211,11 +230,13 @@ def recommend_load_action(request):
     url = '{}?{}'.format(base_url, query_string)
     return redirect(url)
 
+
 @login_required
 def recommend_load_result(request):
     context = get_context_data()
     context['step_id'] = request.GET.get('step_id')
     return render(request, 'dashboard/recommend_load_result.html', context)
+
 
 @login_required
 def recommend_generate_shards_action(request):
@@ -227,9 +248,11 @@ def recommend_generate_shards_action(request):
     # load result page
     return None
 
+
 @login_required
 def recommend_generate_shards_result(request):
     return None
+
 
 @login_required
 def result(request):
