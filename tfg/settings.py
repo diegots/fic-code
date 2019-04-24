@@ -132,5 +132,5 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 TFG_BUCKET_NAME = os.environ["TFG_BUCKET_NAME"]
+TFG_SSH_KEY = os.environ["TFG_SSH_KEY"]
 
-SSH_KEY_NAME = os.environ["TFG_SSH_KEY"]

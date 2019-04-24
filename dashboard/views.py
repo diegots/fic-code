@@ -38,7 +38,7 @@ def command_launch_cluster(name, instance_count):
                '--name', name,
                '--log-uri', 's3://' + settings.TFG_BUCKET_NAME + '/logs',
                '--service-role', 'EMR_DefaultRole',
-               '--ec2-attributes', 'InstanceProfile=EMR_EC2_DefaultRole,KeyName=' + settings.SSH_KEY_NAME,
+               '--ec2-attributes', 'InstanceProfile=EMR_EC2_DefaultRole,KeyName=' + settings.TFG_SSH_KEY,
                '--instance-type', instance_type,
                '--release-label', 'emr-5.21.0',
                '--instance-count', instance_count]
