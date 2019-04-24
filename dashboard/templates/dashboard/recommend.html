@@ -33,7 +33,7 @@
     <p>First step loads needed data from storage (S3) to the cluster and computes unique items. Choose both dataset size and cluster id.</p>
   </div>
   <div class="col-auto ">
-      <form action="{% url 'dashboard:recommend-load-action' %}" method="post">
+      <form method="post">
         {% csrf_token %}
         <div class="form-group">
           <label for="load-dataset-size">Movielens dataset size</label>
@@ -45,20 +45,15 @@
           <label for="load-cluster-id">Cluster Id</label>
           <input type="text" class="form-control" id="load-cluster-id" name="load-cluster-id" placeholder="Starts with j-" required>
 
+          <label for="load-number-shards">Number shards</label>
+          <input type="text" class="form-control" id="load-number-shards" name="load-number-shards" placeholder="number of splits" required>
+
+          <label for="load-shard_prefix">Shard prefix</label>
+          <input type="text" class="form-control" id="load-shard_prefix" name="load-shard_prefix" placeholder="shard" required>
+
         </div>
-        <button type="submit" class="btn btn-primary">Prepare data</button>
-      </form>
-  </div>
-</div>
-
-
-<!-- generate shards -->
-<div class="row">
-  <div class="col-md-12 ">
-    <h3>Generate shards</h3>
-    <form action="{% url 'dashboard:recommend-generate-shards-action' %}" method="post">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-primary">Generate shards</button>
+        <button type="submit" class="btn btn-primary" formaction="{% url 'dashboard:recommend-load-action' %}">Prepare data</button>
+        <button type="submit" class="btn btn-primary" formaction="{% url 'dashboard:recommend-generate-shards-action' %}">Generate shards</button>
       </form>
   </div>
 </div>

@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import timezone
+from django.http import HttpResponse
 
 from .models import Cluster
 
@@ -23,6 +24,38 @@ def command_base(cluster_id, step):
     return ['aws', 'emr', 'add-steps',
            '--cluster-id', cluster_id,
            '--steps', ''.join(step)]
+
+
+def command_describe_cluster(id):
+    command = ['aws', 'emr', 'describe-cluster',
+               '--cluster-id', id]
+    return subprocess.check_output(command)
+
+
+def command_launch_cluster(name, instance_count):
+    instance_type = 'm1.medium'
+    command = ['aws', 'emr', 'create-cluster',
+               '--name', name,
+               '--log-uri', 's3://' + settings.TFG_BUCKET_NAME + '/logs',
+               '--service-role', 'EMR_DefaultRole',
+               '--ec2-attributes', 'InstanceProfile=EMR_EC2_DefaultRole,KeyName=' + settings.SSH_KEY_NAME,
+               '--instance-type', instance_type,
+               '--release-label', 'emr-5.21.0',
+               '--instance-count', instance_count]
+    return subprocess.check_output(command)
+
+
+def command_run_local(host, remote_command):
+    command = ['ssh', '-oStrictHostKeyChecking=no',
+               '-i', settings.TFG_SSH_KEY,
+               'ec2-user@' + host, remote_command]
+    return subprocess.check_output(command)
+
+
+def command_terminate_cluster(id):
+    command = ['aws', 'emr', 'terminate-clusters',
+               '--cluster-ids', id]
+    return subprocess.check_output(command)
 
 
 def step_load_data(cluster_id, path):
@@ -57,25 +90,6 @@ def step_recommendations(cluster_id, shards_number):
             'Type', '=', 'CUSTOM_JAR', ',',
             'Args', '=', args,]
     return subprocess.check_output(command_base(cluster_id, step))
-
-
-def command_launch_cluster(name, instance_count):
-    instance_type = 'm1.medium'
-    command = ['aws', 'emr', 'create-cluster',
-               '--name', name,
-               '--log-uri', 's3://' + settings.TFG_BUCKET_NAME + '/logs',
-               '--service-role', 'EMR_DefaultRole',
-               '--ec2-attributes', 'InstanceProfile=EMR_EC2_DefaultRole,KeyName=' + settings.SSH_KEY_NAME,
-               '--instance-type', instance_type,
-               '--release-label', 'emr-5.21.0',
-               '--instance-count', instance_count]
-    return subprocess.check_output(command)
-
-
-def command_terminate_cluster(id):
-    command = ['aws', 'emr', 'terminate-clusters',
-               '--cluster-ids', id]
-    return subprocess.check_output(command)
 
 
 #
@@ -243,10 +257,40 @@ def recommend_generate_shards_action(request):
     # read cluster id
     cluster_id = request.POST.get('load-cluster-id')
 
-    # launch command on that cluster id
+    # obtain dns name
+    result = command_describe_cluster(cluster_id)
+    dns_name = json.loads(result)['Cluster']['MasterPublicDnsName']
+
+    # copy jar
+    local_command = 'aws s3 cp s3://' + settings.TFG_BUCKET_NAME + '/artifacts/generate.jar .'
+    command_run_local(dns_name, local_command)
+
+    # copy dataset
+    local_command = 'aws s3 cp s3://' \
+                    + settings.TFG_BUCKET_NAME \
+                    + dataset_path[request.POST.get('load-dataset-size')] \
+                    + '/dataset/ratings.csv .'
+    command_run_local(dns_name, local_command)
+
+    # run shard generation
+    local_command = 'java -jar generate.jar -matrix ratings.csv' \
+                    + ' ' + request.POST.get('load-number-shards') \
+                    + ' ' + request.POST.get('load-shard_prefix')
+    command_run_local(dns_name, local_command)
+
+    # create dest dir and move splits there
+    local_command = 'rm -rf shards && mkdir shards && mv ' + request.POST.get('load-shard_prefix') + '*' + ' shards/'
+    command_run_local(dns_name, local_command)
+
+    # put shards back into S3
+    local_command = 'aws s3 mv shards s3://' \
+                    + settings.TFG_BUCKET_NAME \
+                    + dataset_path[request.POST.get('load-dataset-size')] \
+                    + '/shards --recursive'
+    command_run_local(dns_name, local_command)
 
     # load result page
-    return None
+    return HttpResponse('response')
 
 
 @login_required
