@@ -20,7 +20,7 @@ public class Main {
         /**
          * UserId máximo
          */
-        System.out.println("Calcula el userId máximo");
+        System.out.print("Calcula el userId máximo... ");
         int maxUserId = 0;
         String readLine;
         try {
@@ -31,7 +31,7 @@ public class Main {
                 }
             }
             br.close();
-
+            System.out.println(maxUserId);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.exit(1);
