@@ -67,7 +67,8 @@ public class ComputeSimilarities extends Thread {
 
                                     //System.out.println("denom " + userA + ": " + denomA);
                                     //System.out.println("denom " + userB + ": " + valuesB[valuesB.length-1]);
-                                    double sim = commonRatings / (denomA * Double.valueOf(valuesB[valuesB.length-1]));
+                                    int sim = new Double((commonRatings / (denomA * Double.valueOf(valuesB[valuesB.length-1]))) * 1000).intValue();
+
                                     //System.out.println("[" + userA +","+ userB + "]" + " common ratings: " + commonRatings + " sim: " + sim);
                                     writer.append(userA + Main.separator + userB + Main.separator + sim + "\n");
                                 }
