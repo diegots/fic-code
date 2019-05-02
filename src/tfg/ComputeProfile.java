@@ -1,9 +1,9 @@
-package com.company;
+package tfg;
 
 import java.io.*;
 
 public class ComputeProfile extends Thread {
-    private Thread t;
+
     private String threadName;
     private int startId;
     private int endId;
@@ -26,14 +26,16 @@ public class ComputeProfile extends Thread {
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader(Main.input));
-            writer = new BufferedWriter(new FileWriter(new File(threadName+Main.outFile), false));
+            writer = new BufferedWriter(new FileWriter(new File("profile"+threadName+"-"+Main.outFile), false));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        //////////////////////
+        /**
+         * Extrae profile
+         */
         String line;
         StringBuilder profile = new StringBuilder();
         Double denom = 0.0;
@@ -45,7 +47,7 @@ public class ComputeProfile extends Thread {
                 } else if (userId > endId) {
 
                     if (profile.length() > 0) { // Último usuario, volcar a disco
-                        writer.append(profile.append(Main.separator + denom).append("\n").toString());
+                        writer.append(profile.append(Main.separator + Math.sqrt(denom)).append("\n").toString());
                     }
 
                     break;
@@ -67,7 +69,7 @@ public class ComputeProfile extends Thread {
                         } else { // Distinto usuario
 
                             // Almacenar la información en fichero
-                            writer.append(profile.append(Main.separator + denom).append("\n").toString());
+                            writer.append(profile.append(Main.separator + Math.sqrt(denom)).append("\n").toString());
 
                             // Guardar nueva cadena
                             profile = new StringBuilder().append(userId);
@@ -81,7 +83,7 @@ public class ComputeProfile extends Thread {
             }
 
             if (line == null) { // Trata la última linea del fichero
-                writer.append(profile.append(Main.separator + denom).append("\n").toString());
+                writer.append(profile.append(Main.separator + Math.sqrt(denom)).append("\n").toString());
             }
 
         } catch (IOException e) {
