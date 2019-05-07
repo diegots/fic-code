@@ -5,7 +5,7 @@
 
 # Directories
 out/
-datasets/
+p1811002/input/
 
 # Extensions
 *.data
