@@ -10,7 +10,8 @@ import java.util.List;
 public class Main {
 
     static String separator = ",";
-    static int threshold = 30;
+    static int threshold = 100;
+
 
     static File input;
     static File outFile;
@@ -18,6 +19,7 @@ public class Main {
     static File outProfiles;
     static int threadsNumber;
     static int neighborhoodSize;
+    static int usersPerStep;
 
     private static int maxUserId;
     static int numberFiles;
@@ -31,6 +33,7 @@ public class Main {
         outProfiles = new File("profiles-" + args[2]);
 
         threadsNumber = Integer.valueOf(args[3]);
+        usersPerStep = Integer.valueOf(args[4]);
 
         if ("-similarities".equals(args[0])) {
             maxUserId = maxUserId();
@@ -50,7 +53,7 @@ public class Main {
         } else {
             System.out.println("Available modes:");
             System.out.println("    -similarities <input-file> <output-pattern> <number-threads>");
-            System.out.println("    -sort <input-file> <output-pattern> <number-threads> <neighborhood-size>");
+            System.out.println("    -sort <input-file> <output-pattern> <number-threads> <neighborhood-size> <users-per-step>");
         }
 
         System.out.println("Exiting main");

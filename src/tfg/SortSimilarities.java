@@ -5,7 +5,6 @@ import java.util.*;
 
 public class SortSimilarities extends Thread {
 
-        private Integer USERS_STEP = 60;
         private final String threadName;
         private final int startId;
         private final int endId;
@@ -23,6 +22,7 @@ public class SortSimilarities extends Thread {
         BufferedWriter writer = null;
         BufferedReader reader;
         String line;
+        int workCounter = 0;
 
         try {
             writer = new BufferedWriter(new FileWriter(new File("sorted"+threadName+"-"+Main.outFile), false));
@@ -30,8 +30,8 @@ public class SortSimilarities extends Thread {
             e.printStackTrace();
         }
 
-        List<Map<Integer, Integer>> usersMaps = new ArrayList<>(USERS_STEP);
-        for (int i=0; i<USERS_STEP; i++) {
+        List<Map<Integer, Integer>> usersMaps = new ArrayList<>(Main.usersPerStep);
+        for (int i=0; i<Main.usersPerStep; i++) {
             usersMaps.add(new TreeMap<>(new Comparator<Integer>() {
                 @Override
                 public int compare(Integer integer, Integer t1) {
@@ -40,16 +40,17 @@ public class SortSimilarities extends Thread {
             }));
         }
 
-        for (int userId = startId; userId<=endId; userId+=USERS_STEP) {
+        for (int userId = startId; userId<=endId; userId+=Main.usersPerStep) {
             for (int fileCounter = 0; fileCounter<Main.numberFiles; fileCounter++) {
+                System.out.println("thread: " + threadName + " : " + "file" + fileCounter);
                 try {
-                    reader = new BufferedReader(new FileReader("similarity"+fileCounter+"-"+Main.outFile));
+                    reader = new BufferedReader(new FileReader("similarity"+fileCounter+"-"+Main.outFile), 1000 * 8192);
                     while ((line = reader.readLine()) != null) {
                         String [] lineContents = line.split(Main.separator);
                         int userA = Integer.valueOf(lineContents[0]);
                         int userB = Integer.valueOf(lineContents[1]);
 
-                        for (int i=0; i+userId <= endId && i < USERS_STEP; i++) {
+                        for (int i=0; i+userId <= endId && i < Main.usersPerStep; i++) {
                             Map<Integer, Integer> map = usersMaps.get(i);
                             if (userA == i+userId) {
                                 map = addElement(map, userB, lineContents[2]);
@@ -65,7 +66,8 @@ public class SortSimilarities extends Thread {
                 }
             } // end file counter for loop
 
-            for (int i=0; i+userId <= endId && i < USERS_STEP; i++) {
+            for (int i=0; i+userId <= endId && i < Main.usersPerStep; i++) {
+                System.out.print(".");
                 Map<Integer, Integer> map = usersMaps.get(i);
                 StringBuilder sb = new StringBuilder().append(i+userId);
                 List<Integer> l = new ArrayList<>(map.keySet());
@@ -79,7 +81,6 @@ public class SortSimilarities extends Thread {
                     e.printStackTrace();
                 }
             }
-
         } // end userId for loop
 
         try {
