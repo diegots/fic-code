@@ -31,7 +31,12 @@ public class SortSimilarities extends Thread {
 
         for (int userId = startId; userId<=endId; userId++) {
 
-            Map<Integer, Integer> map = new HashMap();
+            Map<Integer, Integer> map = new TreeMap<>(new Comparator<Integer>() {
+                @Override
+                public int compare(Integer integer, Integer t1) {
+                    return (integer.compareTo(t1));
+                }
+            });
             for (int fileCounter = 0; fileCounter<Main.numberFiles; fileCounter++) {
                 try {
                     reader = new BufferedReader(new FileReader("similarity"+fileCounter+"-"+Main.outFile));
@@ -54,8 +59,9 @@ public class SortSimilarities extends Thread {
             } // end file counter for loop
 
             StringBuilder sb = new StringBuilder().append(userId);
-            for (Integer i: map.keySet()) {
-                sb.append("," + i);
+            List<Integer> l = new ArrayList<>(map.keySet());
+            for (int i=l.size()-1; i>=0; i--) {
+                sb.append(",").append(map.get(l.get(i)));
             }
 
             try {
@@ -74,11 +80,17 @@ public class SortSimilarities extends Thread {
     }
 
 
-    private Map<Integer, Integer> addElement (Map<Integer, Integer> map, int userId, String ratingStr) {
-        int rating = Integer.valueOf(ratingStr);
-        if (rating > Main.threshold) {
-            map.put(userId, Integer.valueOf(ratingStr));
-            map = sortByValue(map);
+    private Map<Integer, Integer> addElement (Map<Integer, Integer> map, int userId, String similarity) {
+
+        Integer s = Integer.valueOf(similarity);
+        if (s > Main.threshold) {
+            map.put(s, userId);
+            if (map.size() > Main.neighborhoodSize) {
+                for (Integer i: map.keySet()) {
+                    map.remove(i);
+                    break;
+                }
+            }
         }
 
         return map;
