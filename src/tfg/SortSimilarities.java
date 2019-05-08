@@ -5,7 +5,7 @@ import java.util.*;
 
 public class SortSimilarities extends Thread {
 
-        private final Integer USERS_STEP;
+        private Integer USERS_STEP = 60;
         private final String threadName;
         private final int startId;
         private final int endId;
@@ -14,7 +14,6 @@ public class SortSimilarities extends Thread {
             this.threadName = threadName;
             this.startId = startId;
             this.endId = endId;
-            USERS_STEP = (endId - startId + 1) / 2;
         }
 
     @Override
@@ -50,7 +49,7 @@ public class SortSimilarities extends Thread {
                         int userA = Integer.valueOf(lineContents[0]);
                         int userB = Integer.valueOf(lineContents[1]);
 
-                        for (int i=0; i<USERS_STEP; i++) {
+                        for (int i=0; i+userId <= endId && i < USERS_STEP; i++) {
                             Map<Integer, Integer> map = usersMaps.get(i);
                             if (userA == i+userId) {
                                 map = addElement(map, userB, lineContents[2]);
@@ -66,7 +65,7 @@ public class SortSimilarities extends Thread {
                 }
             } // end file counter for loop
 
-            for (int i=0; i<USERS_STEP; i++) {
+            for (int i=0; i+userId <= endId && i < USERS_STEP; i++) {
                 Map<Integer, Integer> map = usersMaps.get(i);
                 StringBuilder sb = new StringBuilder().append(i+userId);
                 List<Integer> l = new ArrayList<>(map.keySet());
