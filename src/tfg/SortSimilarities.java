@@ -67,7 +67,6 @@ public class SortSimilarities extends Thread {
             } // end file counter for loop
 
             for (int i=0; i+userId <= endId && i < Main.usersPerStep; i++) {
-                System.out.print(".");
                 Map<Integer, Integer> map = usersMaps.get(i);
                 StringBuilder sb = new StringBuilder().append(i+userId);
                 List<Integer> l = new ArrayList<>(map.keySet());
@@ -105,24 +104,5 @@ public class SortSimilarities extends Thread {
         }
 
         return map;
-    }
-
-
-    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
-        List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
-            @Override
-            public int compare(Map.Entry<K, V> kvEntry, Map.Entry<K, V> t1) {
-                return (t1.getValue()).compareTo(kvEntry.getValue());
-            }
-        });
-
-        Map<K, V> result = new LinkedHashMap<>();
-        for (Map.Entry<K, V> entry : list) {
-            result.put(entry.getKey(), entry.getValue());
-            if (result.size() >= Main.neighborhoodSize) { return result; }
-        }
-
-        return result;
     }
 }
