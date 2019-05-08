@@ -4,6 +4,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Este programa calcula las similaridades entre vecinos.
+ */
 public class Main {
 
     static String separator = ",";
@@ -46,8 +49,8 @@ public class Main {
 
         } else {
             System.out.println("Available modes:");
-            System.out.println("    -similarities <input file> <output pattern> <number threads>");
-            System.out.println("    -sort <input file> <output pattern> <number threads> <neighborhood size>");
+            System.out.println("    -similarities <input-file> <output-pattern> <number-threads>");
+            System.out.println("    -sort <input-file> <output-pattern> <number-threads> <neighborhood-size>");
         }
 
         System.out.println("Exiting main");
