@@ -41,8 +41,10 @@ public class SortSimilarities extends Thread {
         }
 
         for (int userId = startId; userId<=endId; userId+=Main.usersPerStep) {
+
+            System.out.println("thread: " + threadName + " - " + "startId: " + startId + " - " + "endId: " + endId);
             for (int fileCounter = 0; fileCounter<Main.numberFiles; fileCounter++) {
-                System.out.println("thread: " + threadName + " : " + "file" + fileCounter);
+                System.out.println("thread: " + threadName + " - " + "file: " + fileCounter);
                 try {
                     reader = new BufferedReader(new FileReader("similarity"+fileCounter+"-"+Main.outFile), 1000 * 8192);
                     while ((line = reader.readLine()) != null) {
@@ -50,7 +52,8 @@ public class SortSimilarities extends Thread {
                         int userA = Integer.valueOf(lineContents[0]);
                         int userB = Integer.valueOf(lineContents[1]);
 
-                        for (int i=0; i+userId <= endId && i < Main.usersPerStep; i++) {
+                        for (int i=0; (i+userId) <= endId && i < Main.usersPerStep; i++) {
+                            //System.out.println("thread: " + threadName + " - " + "userId: " + (i+userId));
                             Map<Integer, Integer> map = usersMaps.get(i);
                             if (userA == i+userId) {
                                 map = addElement(map, userB, lineContents[2]);

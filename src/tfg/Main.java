@@ -33,7 +33,6 @@ public class Main {
         outProfiles = new File("profiles-" + args[2]);
 
         threadsNumber = Integer.valueOf(args[3]);
-        usersPerStep = Integer.valueOf(args[4]);
 
         if ("-similarities".equals(args[0])) {
             maxUserId = maxUserId();
@@ -42,11 +41,13 @@ public class Main {
         } else if ("-sort".equals(args[0])) {
             maxUserId = maxUserId();
             neighborhoodSize = Integer.valueOf(args[4]);
+            usersPerStep = Integer.valueOf(args[5]);
             sortSimilarities();
 
         } else if ("-all".equals(args[0])) {
             maxUserId = maxUserId();
             neighborhoodSize = Integer.valueOf(args[4]);
+            usersPerStep = Integer.valueOf(args[5]);
             computeSimilarities();
             sortSimilarities();
 
