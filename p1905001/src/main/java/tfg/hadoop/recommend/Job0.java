@@ -7,6 +7,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 
@@ -16,25 +17,31 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class Job0 {
+
+    static void readFileHDFS (Collection<Integer> data, Path path) throws IOException {
+        FileSystem fs = FileSystem.get(new Configuration());
+        FileStatus[] statuses = fs.listStatus(path);
+        for (int i=0; i<statuses.length; i++) {
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(fs.open(statuses[i].getPath())));
+            String line = br.readLine();
+            while (null != line) {
+                data.add(Integer.valueOf(line.trim()));
+                line = br.readLine();
+            }
+            br.close();
+        }
+    }
+
     public static class Map extends Mapper<LongWritable, Text, IntWritable, IntWritable> {
 
-        List<Integer> activeUsers;
+        Collection<Integer> activeUsers;
 
         @Override
         protected void setup(Context context) throws IOException {
             activeUsers = new ArrayList<>();
-            FileSystem fs = FileSystem.get(new Configuration());
-            FileStatus[] statuses = fs.listStatus(
+            Job0.readFileHDFS(activeUsers,
                     new Path(context.getConfiguration().get(Main.ACTIVE_USERS_FILE_PATH)));
-            for (int i=0; i<statuses.length; i++) {
-                BufferedReader br = new BufferedReader(
-                  new InputStreamReader(fs.open(statuses[i].getPath())));
-                String line = br.readLine();
-                while (null != line) {
-                    activeUsers.add(Integer.valueOf(line.trim()));
-                }
-                br.close();
-            }
         }
 
         @Override
@@ -54,24 +61,13 @@ public class Job0 {
     private static class Reduce extends Reducer<IntWritable, IntWritable, IntWritable, Text> {
 
         // A set is used to get rid of duplicated elements
-        private final static Set<Integer> aux = new LinkedHashSet<>();
         final static List<Integer> allItems = new LinkedList<>();
 
         @Override
         protected void setup(Context context) throws IOException {
-            FileSystem fs = FileSystem.get(new Configuration());
-            FileStatus[] statuses = fs.listStatus(
-                    new Path(context.getConfiguration().get(Main.UNIQUE_ITEMS_FILE_PATH)));
-            for (int i=0; i<statuses.length; i++) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(statuses[i].getPath())));
-                String line = br.readLine();
-                while (null != line) {
-                    aux.add(Integer.valueOf(line.trim()));
-                }
-                br.close();
-            }
 
-            // But a list is used to allow ordering
+            Collection<Integer> aux = new LinkedHashSet<>();
+            Job0.readFileHDFS(aux, new Path(context.getConfiguration().get(Main.UNIQUE_ITEMS_FILE_PATH)));
             allItems.addAll(aux);
             Collections.sort(allItems);
         }
@@ -127,10 +123,11 @@ public class Job0 {
     /*
      * Standard reducer for computing recommendations
      */
-    public static class ReduceStd extends Reduce {
+    public static class ReduceNone extends Reduce {
         @Override
         protected void reduce(IntWritable key, Iterable<IntWritable> values, Context context)
                 throws IOException, InterruptedException {
+
             Set<Integer> aux = new LinkedHashSet<>(allItems);
             for (IntWritable value: values) {
                 aux.remove(value.get());
@@ -168,8 +165,7 @@ public class Job0 {
         @Override
         int numberItemsToRemove(Context context, List<Integer> userItems) {
             return userItems.size() *
-                    context.getConfiguration().getInt(Main.EVALUATION_RATIO, userItems.size());
-
+                    context.getConfiguration().getInt(Main.EVALUATION_N_VALUE, userItems.size());
         }
     }
 
@@ -179,7 +175,7 @@ public class Job0 {
         int numberItemsToRemove(Context context, List<Integer> userItems) {
 
             // Instead of hiding a percentage of items from user profile, hide n items.
-            return context.getConfiguration().getInt(Main.EVALUATION_N, userItems.size());
+            return context.getConfiguration().getInt(Main.EVALUATION_N_VALUE, userItems.size());
         }
     }
 
@@ -188,7 +184,7 @@ public class Job0 {
         @Override
         int numberItemsToRemove(Context context, List<Integer> userItems) {
             // In this case hide (profile size - n items) from the profile
-            return userItems.size() - context.getConfiguration().getInt(Main.EVALUATION_N, userItems.size());
+            return userItems.size() - context.getConfiguration().getInt(Main.EVALUATION_N_VALUE, userItems.size());
         }
     }
 }
