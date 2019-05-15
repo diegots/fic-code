@@ -25,7 +25,7 @@ public class SortSimilarities extends Thread {
         int workCounter = 0;
 
         try {
-            writer = new BufferedWriter(new FileWriter(new File("sorted"+threadName+"-"+Main.outputFile), false));
+            writer = new BufferedWriter(new FileWriter(new File("sorted"+threadName), false));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -46,7 +46,7 @@ public class SortSimilarities extends Thread {
             for (int fileCounter = 0; fileCounter<Main.numberFiles; fileCounter++) {
                 System.out.println("thread: " + threadName + " - " + "file: " + fileCounter);
                 try {
-                    reader = new BufferedReader(new FileReader("similarity"+fileCounter+"-"+Main.outputFile), 1000 * 8192);
+                    reader = new BufferedReader(new FileReader("similarity"+fileCounter), 1000 * 8192);
                     while ((line = reader.readLine()) != null) {
                         String [] lineContents = line.split(Main.separator);
                         int userA = Integer.valueOf(lineContents[0]);

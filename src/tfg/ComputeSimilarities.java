@@ -18,7 +18,7 @@ public class ComputeSimilarities extends Thread {
     public void run() {
         System.out.println("Running thread " + threadName + ", startId: " + startId + ", endId: " + endId);
 
-        /**
+        /*
          * Abre ficheros
          */
         BufferedWriter writer = null;
@@ -26,14 +26,14 @@ public class ComputeSimilarities extends Thread {
         BufferedReader readerB = null;
 
         try {
-            writer = new BufferedWriter(new FileWriter(new File("similarity"+threadName+"-"+Main.outputFile), false));
+            writer = new BufferedWriter(new FileWriter(new File("similarity"+threadName), false));
 
 
             /**
              *
              */
             for (int fileCounterA = 0; fileCounterA<Main.numberFiles; fileCounterA++) {
-                readerA = new BufferedReader(new FileReader("profile"+fileCounterA+"-"+Main.outputFile));
+                readerA = new BufferedReader(new FileReader("profile"+fileCounterA));
                 String lineA;
                 while ((lineA = readerA.readLine()) != null) {
 
@@ -46,7 +46,7 @@ public class ComputeSimilarities extends Thread {
                         break;
                     } else {
                         for (int fileCounterB = 0; fileCounterB<Main.numberFiles; fileCounterB++) {
-                            readerB = new BufferedReader(new FileReader("profile"+fileCounterB+"-"+Main.outputFile));
+                            readerB = new BufferedReader(new FileReader("profile"+fileCounterB));
                             String lineB;
                             while ((lineB = readerB.readLine()) != null) {
                                 String [] valuesB = lineB.split(Main.separator);

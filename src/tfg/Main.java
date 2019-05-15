@@ -13,10 +13,10 @@ public class Main {
     static int threshold = 100;
 
     static File inputFile;
-    static File outputFile;
+    //static File outputFile;
 
-    static String outProfile;
-    static File outProfileFile;
+    //static String outProfile;
+    //static File outProfileFile;
 
     static int threadsNumber;
     static int neighborhoodSize;
@@ -34,27 +34,28 @@ public class Main {
             // Branch for similarities. No need to store arguments but for avoid else branch
 
         } else if ("-sort".equals(args[0])) {
-            neighborhoodSize = Integer.valueOf(args[4]);
-            usersPerStep = Integer.valueOf(args[5]);
+            neighborhoodSize = Integer.valueOf(args[3]);
+            usersPerStep = Integer.valueOf(args[4]);
 
         } else if ("-both".equals(args[0])) {
-            neighborhoodSize = Integer.valueOf(args[4]);
-            usersPerStep = Integer.valueOf(args[5]);
+            neighborhoodSize = Integer.valueOf(args[3]);
+            usersPerStep = Integer.valueOf(args[4]);
 
         } else {
-            System.out.println("Available modes:");
-            System.out.println("    -similarities <input-file> <output-pattern> <number-threads>");
-            System.out.println("    -sort <input-file> <output-pattern> <number-threads> <neighborhood-size> <users-per-step>");
-            System.out.println("    -both <input-file> <output-pattern> <number-threads> <neighborhood-size> <users-per-step>");
+            System.err.println("Available modes:");
+            System.err.println("    -similarities <input-file> <number-threads>");
+            System.err.println("    -sort <input-file> <number-threads> <neighborhood-size> <users-per-step>");
+            System.err.println("    -both <input-file> <number-threads> <neighborhood-size> <users-per-step>");
+            System.exit(1);
         }
 
         inputFile = new File(args[1]);
-        outputFile = new File(args[2]);
+//        outputFile = new File(args[2]);
+//
+//        outProfile = args[2];
+//        outProfileFile = new File("profiles-" + args[2]);
 
-        outProfile = args[2];
-        outProfileFile = new File("profiles-" + args[2]);
-
-        threadsNumber = Integer.valueOf(args[3]);
+        threadsNumber = Integer.valueOf(args[2]);
 
         /*
          * Start computing tasks
