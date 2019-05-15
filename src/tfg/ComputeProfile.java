@@ -25,8 +25,8 @@ public class ComputeProfile extends Thread {
         BufferedWriter writer = null;
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(Main.input));
-            writer = new BufferedWriter(new FileWriter(new File("profile"+threadName+"-"+Main.outFile), false));
+            reader = new BufferedReader(new FileReader(Main.inputFile));
+            writer = new BufferedWriter(new FileWriter(new File("profile"+threadName+"-"+Main.outputFile), false));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

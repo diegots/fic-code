@@ -12,11 +12,12 @@ public class Main {
     static String separator = ",";
     static int threshold = 100;
 
+    static File inputFile;
+    static File outputFile;
 
-    static File input;
-    static File outFile;
     static String outProfile;
-    static File outProfiles;
+    static File outProfileFile;
+
     static int threadsNumber;
     static int neighborhoodSize;
     static int usersPerStep;
@@ -26,35 +27,51 @@ public class Main {
 
     public static void main(String[] args) {
 
-        input = new File(args[1]);
-        outFile = new File(args[2]);
-
-        outProfile = args[2];
-        outProfiles = new File("profiles-" + args[2]);
-
-        threadsNumber = Integer.valueOf(args[3]);
-
+        /*
+         * Manage arguments
+         */
         if ("-similarities".equals(args[0])) {
-            maxUserId = maxUserId();
-            computeSimilarities();
+            // Branch for similarities. No need to store arguments but for avoid else branch
 
         } else if ("-sort".equals(args[0])) {
-            maxUserId = maxUserId();
             neighborhoodSize = Integer.valueOf(args[4]);
             usersPerStep = Integer.valueOf(args[5]);
-            sortSimilarities();
 
-        } else if ("-all".equals(args[0])) {
-            maxUserId = maxUserId();
+        } else if ("-both".equals(args[0])) {
             neighborhoodSize = Integer.valueOf(args[4]);
             usersPerStep = Integer.valueOf(args[5]);
-            computeSimilarities();
-            sortSimilarities();
 
         } else {
             System.out.println("Available modes:");
             System.out.println("    -similarities <input-file> <output-pattern> <number-threads>");
             System.out.println("    -sort <input-file> <output-pattern> <number-threads> <neighborhood-size> <users-per-step>");
+            System.out.println("    -both <input-file> <output-pattern> <number-threads> <neighborhood-size> <users-per-step>");
+        }
+
+        inputFile = new File(args[1]);
+        outputFile = new File(args[2]);
+
+        outProfile = args[2];
+        outProfileFile = new File("profiles-" + args[2]);
+
+        threadsNumber = Integer.valueOf(args[3]);
+
+        /*
+         * Start computing tasks
+         */
+        maxUserId = maxUserId();
+
+        switch (args[0]) {
+            case "-similarities":
+                computeSimilarities();
+                break;
+            case "-sort":
+                sortSimilarities();
+                break;
+            case "-both":
+                computeSimilarities();
+                sortSimilarities();
+                break;
         }
 
         System.out.println("Exiting main");
@@ -68,7 +85,7 @@ public class Main {
         System.out.print("Calcula el userId máximo... ");
         String readLine;
         try {
-            BufferedReader br = new BufferedReader(new FileReader(input));
+            BufferedReader br = new BufferedReader(new FileReader(inputFile));
             while ((readLine = br.readLine()) != null) {
                 if (Integer.valueOf(readLine.split(separator)[0]) > maxUserId) {
                     maxUserId = Integer.valueOf(readLine.split(separator)[0]);
