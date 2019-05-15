@@ -32,7 +32,7 @@ public class ComputeSimilarities extends Thread {
             /**
              *
              */
-            for (int fileCounterA = 0; fileCounterA<Main.numberFiles; fileCounterA++) {
+            for (int fileCounterA = 0; fileCounterA<Main.numberFilesByThreads; fileCounterA++) {
                 readerA = new BufferedReader(new FileReader("profile"+fileCounterA));
                 String lineA;
                 while ((lineA = readerA.readLine()) != null) {
@@ -45,7 +45,7 @@ public class ComputeSimilarities extends Thread {
                     } else if (userA > endId) {
                         break;
                     } else {
-                        for (int fileCounterB = 0; fileCounterB<Main.numberFiles; fileCounterB++) {
+                        for (int fileCounterB = 0; fileCounterB<Main.numberFilesByThreads; fileCounterB++) {
                             readerB = new BufferedReader(new FileReader("profile"+fileCounterB));
                             String lineB;
                             while ((lineB = readerB.readLine()) != null) {

@@ -4,74 +4,72 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Este programa calcula las similaridades entre vecinos.
+/*
+ * Este programa calcula y ordena las similaridades entre vecinos.
  */
 public class Main {
 
-    static String separator = ",";
-    static int threshold = 100;
+    // Parámetros
+    final static String separator = ",";
+    final static int threshold = 100;
 
+    // Argumentos
+    private static int threadsNumber;
     static File inputFile;
-    //static File outputFile;
-
-    //static String outProfile;
-    //static File outProfileFile;
-
-    static int threadsNumber;
     static int neighborhoodSize;
     static int usersPerStep;
+    static String inputPrefix;
 
+    // Valores calculados
     private static int maxUserId;
-    static int numberFiles;
+    static int numberFilesByThreads;
 
     public static void main(String[] args) {
 
         /*
          * Manage arguments
          */
-        if ("-similarities".equals(args[0])) {
-            // Branch for similarities. No need to store arguments but for avoid else branch
-
-        } else if ("-sort".equals(args[0])) {
-            neighborhoodSize = Integer.valueOf(args[3]);
-            usersPerStep = Integer.valueOf(args[4]);
-
-        } else if ("-both".equals(args[0])) {
-            neighborhoodSize = Integer.valueOf(args[3]);
-            usersPerStep = Integer.valueOf(args[4]);
-
-        } else {
-            System.err.println("Available modes:");
-            System.err.println("    -similarities <input-file> <number-threads>");
-            System.err.println("    -sort <input-file> <number-threads> <neighborhood-size> <users-per-step>");
-            System.err.println("    -both <input-file> <number-threads> <neighborhood-size> <users-per-step>");
-            System.exit(1);
+        switch (args[0]) {
+            case "-similarities":
+            case "-index":
+                inputPrefix = args[1];
+                threadsNumber = Integer.valueOf(args[2]);
+                break;
+            case "-sort":
+            case "-both":
+                inputFile = new File(args[1]);
+                threadsNumber = Integer.valueOf(args[2]);
+                neighborhoodSize = Integer.valueOf(args[3]);
+                usersPerStep = Integer.valueOf(args[4]);
+                break;
+            default:
+                System.err.println("Available modes:");
+                System.err.println("    -similarities <input-file> <number-threads>");
+                System.err.println("    -sort <input-file> <number-threads> <neighborhood-size> <users-per-step>");
+                System.err.println("    -both <input-file> <number-threads> <neighborhood-size> <users-per-step>");
+                System.err.println("    -index <input-prefix> <number-threads>");
+                System.exit(1);
         }
-
-        inputFile = new File(args[1]);
-//        outputFile = new File(args[2]);
-//
-//        outProfile = args[2];
-//        outProfileFile = new File("profiles-" + args[2]);
-
-        threadsNumber = Integer.valueOf(args[2]);
 
         /*
          * Start computing tasks
          */
-        maxUserId = maxUserId();
-
         switch (args[0]) {
             case "-similarities":
+                maxUserId = maxUserId();
                 computeSimilarities();
                 break;
             case "-sort":
+                maxUserId = maxUserId();
                 sortSimilarities();
                 break;
             case "-both":
+                maxUserId = maxUserId();
                 computeSimilarities();
                 sortSimilarities();
+                break;
+            case "-index":
+                generateIndex();
                 break;
         }
 
@@ -79,7 +77,7 @@ public class Main {
     }
 
     private static int maxUserId() {
-        /**
+        /*
          * UserId máximo
          */
         int maxUserId = 0;
@@ -106,7 +104,7 @@ public class Main {
     }
 
     private static void computeSimilarities() {
-        /**
+        /*
          * Calcular perfiles de usuario
          */
         if (threadsNumber > maxUserId) {
@@ -147,10 +145,10 @@ public class Main {
         }
 
 
-        /**
+        /*
          * Calcular similaridades
          */
-        numberFiles = computeProfileThreads.size();
+        numberFilesByThreads = computeProfileThreads.size();
 
         for (ComputeSimilarities thread: computeSimilarityThreads) {
             thread.start();
@@ -190,7 +188,7 @@ public class Main {
 
         }
 
-        numberFiles = sortSimilaritiesThreads.size();
+        numberFilesByThreads = sortSimilaritiesThreads.size();
 
         for (SortSimilarities thread: sortSimilaritiesThreads) {
             thread.start();
@@ -203,5 +201,9 @@ public class Main {
                 e.printStackTrace();
             }
         }
+    }
+
+    private static void generateIndex() {
+        System.out.println("Calcula índices");
     }
 }

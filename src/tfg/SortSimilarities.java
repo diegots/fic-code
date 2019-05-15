@@ -43,7 +43,7 @@ public class SortSimilarities extends Thread {
         for (int userId = startId; userId<=endId; userId+=Main.usersPerStep) {
 
             System.out.println("thread: " + threadName + " - " + "startId: " + startId + " - " + "endId: " + endId);
-            for (int fileCounter = 0; fileCounter<Main.numberFiles; fileCounter++) {
+            for (int fileCounter = 0; fileCounter<Main.numberFilesByThreads; fileCounter++) {
                 System.out.println("thread: " + threadName + " - " + "file: " + fileCounter);
                 try {
                     reader = new BufferedReader(new FileReader("similarity"+fileCounter), 1000 * 8192);
