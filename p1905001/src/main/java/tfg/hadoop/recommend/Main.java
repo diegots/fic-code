@@ -15,19 +15,18 @@ public class Main extends Configured implements Tool {
 
     static final String ACTIVE_USERS_FILE_PATH = "ACTIVE_USERS_FILE_PATH";
     static final String UNIQUE_ITEMS_FILE_PATH = "UNIQUE_ITEMS_FILE_PATH";
+    static final String NUMBER_OF_SHARDS = "NUMBER_OF_SHARDS";
     private static final String EVALUATION_TYPE = "EVALUATION_TYPE";
     static final String EVALUATION_N_VALUE = "EVALUATION_N_VALUE";
     static final String EVALUATION_SEED = "EVALUATION_SEED";
+    static final String SIMILARITY_NEIGHBOR_NUMBER = "SIMILARITY_NEIGHBOR_NUMBER";
+
+    static final String SHARD_NAME_PREFIX = "/input/shards/shard";
+    static final String SIMILARITY_NEIGHBOR_PREFIX = "/input/similarities/sorted";
+    static final String SIMILARITY_NEIGHBOR_SUFFIX = "-output.csv";
+
 
     enum EvaluationType {None, Percentage, givenN, allButN}
-
-
-//    static final String ACTIVE_USERS_FILE_PATH = "ACTIVE_USERS_FILE_PATH";
-//    static final String UNIQUE_ITEMS_FILE_PATH = "UNIQUE_ITEMS_PATH";
-//    static final String SHARDS_NUMBER = "SHARDS_NUMBER";
-//    static final String EVALUATION_N_VALUE = "EVALUATION_N_VALUE";
-//    static final String EVALUATION_SEED = "EVALUATION_SEED";
-//    static final String shardNamePrefix = "/input/shards/shard";
 
     public static void main(String[] args) throws Exception {
         ToolRunner.run(new Configuration(), new Main(), args);
@@ -49,7 +48,8 @@ public class Main extends Configured implements Tool {
         String outputResults = "";
         String activeUsersFilePath = "";
         String uniqueItemsFilePath = "";
-        Integer numberOfShards;
+        Integer numberOfShards = null;
+        Integer numberOfSimilarityFiles = null;
         EvaluationType evaluationType = null;
         float evaluationNValue = 0.0f;
         int evaluationSeed = 0;
@@ -67,6 +67,8 @@ public class Main extends Configured implements Tool {
             } else if (4 == i) {
                 numberOfShards = Integer.valueOf(strings[i]);
             } else if (5 == i) {
+                numberOfSimilarityFiles = Integer.valueOf(strings[i]);
+            } else if (6 == i) {
                 if ("-none".equals(strings[i])) {
                     evaluationType = EvaluationType.None;
                 } else if ("-percentage".equals(strings[i])) {
@@ -79,7 +81,7 @@ public class Main extends Configured implements Tool {
                     evaluationType = EvaluationType.allButN;
                     evaluationNValue = Float.valueOf(strings[++i]);
                 }
-            } else if (7 == i) {
+            } else if (8 == i) {
                 evaluationSeed = Integer.valueOf(strings[i]);
             }
             i++;
@@ -138,7 +140,45 @@ public class Main extends Configured implements Tool {
         /* ********************* *
          * JOB 1: computes recommendations products part
          * ********************* */
+        Job job1 = Job.getInstance(new Configuration());
+        job1.setJobName("job1");
+        job1.setJarByClass(Main.class);
 
+        FileInputFormat.addInputPath(job1, new Path(outputResults + job0.getJobName()));
+        FileOutputFormat.setOutputPath(job1, new Path(outputResults + job1.getJobName()));
+
+        job1.getConfiguration().setInt(NUMBER_OF_SHARDS, numberOfShards);
+        job1.getConfiguration().setInt(SIMILARITY_NEIGHBOR_NUMBER, numberOfSimilarityFiles);
+
+        job1.setMapperClass(Job1.Map.class);
+        job1.setReducerClass(Job1.Reduce.class);
+
+        // Map output types
+        job1.setMapOutputKeyClass(IntWritable.class);
+        job1.setMapOutputValueClass(ActiveUser.class);
+
+        // Map and Reducer output types
+        job1.setOutputKeyClass(IntWritable.class);
+        job1.setOutputValueClass(PairWritable.class);
+
+        // Añadir shards a DistributedCache
+        for (int j=0; j<numberOfShards; j++) {
+            job1.addCacheFile(new Path(SHARD_NAME_PREFIX + j).toUri());
+        }
+
+        // Añadir vecinos a DistributedCache
+        for (int j=0; j<numberOfSimilarityFiles; j++) {
+            job1.addCacheFile(new Path(
+                    SIMILARITY_NEIGHBOR_PREFIX + j + SIMILARITY_NEIGHBOR_SUFFIX)
+                    .toUri());
+        }
+
+        job1.setNumReduceTasks(numberOfShards);
+
+        res = job1.waitForCompletion(true) ? 0: 1;
+        if (res != 0) {
+            return res;
+        }
 
         /* ********************* *
          * JOB 2: sums weights and sort recommendations
