@@ -161,15 +161,22 @@ public class Main extends Configured implements Tool {
         job1.setOutputKeyClass(IntWritable.class);
         job1.setOutputValueClass(PairWritable.class);
 
-        // Añadir shards a DistributedCache
+        // Añade shards a DistributedCache
         for (int j=0; j<numberOfShards; j++) {
             job1.addCacheFile(new Path(SHARD_NAME_PREFIX + j).toUri());
         }
 
-        // Añadir vecinos a DistributedCache
+        // Añade vecinos a DistributedCache
         for (int j=0; j<numberOfSimilarityFiles; j++) {
             job1.addCacheFile(new Path(
                     SIMILARITY_NEIGHBOR_PREFIX + j + SIMILARITY_NEIGHBOR_SUFFIX)
+                    .toUri());
+        }
+
+        // Añade similaridades a DistributedCache
+        for (int j=0; j<numberOfSimilarityFiles; j++) {
+            job1.addCacheFile(new Path(
+                    "/input/similarities/similarity" + j + "-output.csv")
                     .toUri());
         }
 
