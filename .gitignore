@@ -6,6 +6,7 @@
 # Directories
 out/
 p1811002/input/
+META-INF
 
 # Extensions
 *.data
