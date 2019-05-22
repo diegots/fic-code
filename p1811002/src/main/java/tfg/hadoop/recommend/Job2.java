@@ -74,7 +74,7 @@ public class Job2 {
         }
       }
 
-      /* Buils one string for every user with his recommendations */
+      /* Builds one string for every user together with his recommendations */
       for (Integer activeUser: result.keySet()) {
 
         java.util.Map<Integer, Double> weights = Utilities.sortMapByValue(result.get(activeUser));
