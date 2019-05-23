@@ -23,8 +23,6 @@ public class Main extends Configured implements Tool {
 
     static final String SHARD_NAME_PREFIX = "/input/shards/shard";
     static final String SIMILARITY_NEIGHBOR_PREFIX = "/input/similarities/sorted";
-    static final String SIMILARITY_NEIGHBOR_SUFFIX = "-output.csv";
-
 
     enum EvaluationType {None, Percentage, givenN, allButN}
 
@@ -42,8 +40,10 @@ public class Main extends Configured implements Tool {
          * IN  -> strings[2] -> active users file path
          * IN  -> strings[3] -> unique items file path
          * IN  -> strings[4] -> number of shards
-         * IN  -> strings[5] -> without evaluation / evaluation type
-         * IN  -> strings[6] -> seed for random generator */
+         * IN  -> strings[5] -> number of similarity files
+         * IN  -> strings[6] -> without evaluation / evaluation type
+         * IN  -> strings[7] -> evaluation-n-value
+         * IN  -> strings[8] -> seed for random generator */
         String inputPathDataset = "";
         String outputResults = "";
         String activeUsersFilePath = "";
@@ -169,14 +169,14 @@ public class Main extends Configured implements Tool {
         // Añade vecinos a DistributedCache
         for (int j=0; j<numberOfSimilarityFiles; j++) {
             job1.addCacheFile(new Path(
-                    SIMILARITY_NEIGHBOR_PREFIX + j + SIMILARITY_NEIGHBOR_SUFFIX)
+                    SIMILARITY_NEIGHBOR_PREFIX + j)
                     .toUri());
         }
 
         // Añade similaridades a DistributedCache
         for (int j=0; j<numberOfSimilarityFiles; j++) {
             job1.addCacheFile(new Path(
-                    "/input/similarities/similarity" + j + "-output.csv")
+                    "/input/similarities/similarity" + j)
                     .toUri());
         }
 
@@ -190,12 +190,36 @@ public class Main extends Configured implements Tool {
         /* ********************* *
          * JOB 2: sums weights and sort recommendations
          * ********************* */
+        Job job2 = Job.getInstance(new Configuration());
+        job2.setJobName("job2");
+        job2.setJarByClass(Main.class);
 
+        FileInputFormat.addInputPath(job2, new Path(outputResults + job1.getJobName()));
+        FileOutputFormat.setOutputPath(job2, new Path(outputResults + job2.getJobName()));
+
+        job2.getConfiguration().setInt(NUMBER_OF_SHARDS, numberOfShards);
+
+        job2.setMapperClass(Job2.Map.class);
+        job2.setReducerClass(Job2.Reduce.class);
+
+        // Mapper output types
+        job2.setMapOutputKeyClass(IntWritable.class);
+        job2.setMapOutputValueClass(TripleWritable.class);
+
+        // Mapper and Reducer output types
+        job2.setOutputKeyClass(IntWritable.class);
+        job2.setOutputValueClass(Text.class);
+
+        job2.setNumReduceTasks(numberOfShards);
+
+        res = job2.waitForCompletion(true) ? 0: 1;
+        if (res != 0) {
+            return res;
+        }
 
         /* ********************* *
          * JoinData: puts all results into one file
          * ********************* */
-
 
         return 0;
     }

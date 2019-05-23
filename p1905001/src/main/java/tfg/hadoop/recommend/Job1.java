@@ -34,7 +34,7 @@ public class Job1 {
             List<Integer> neighbors = new ArrayList<>();
             boolean found = false;
             for (int i=0; i<numberOfSimilarityFiles; i++) {
-                String fileName = Main.SIMILARITY_NEIGHBOR_PREFIX + i + Main.SIMILARITY_NEIGHBOR_SUFFIX;
+                String fileName = Main.SIMILARITY_NEIGHBOR_PREFIX + i;
 //                System.out.println("-> Filename: " + fileName);
                 BufferedReader bufferedReader = new BufferedReader(
                         new InputStreamReader(
@@ -68,7 +68,7 @@ public class Job1 {
         private Double getSimilarity(Integer userA, Integer userB) throws FileNotFoundException, IOException {
 
             for (int i=0; i<numberOfSimilarityFiles; i++) {
-                String fileName = "/input/similarities/similarity" + i + "-output.csv";
+                String fileName = "/input/similarities/similarity" + i;
 //                System.out.println("-> Filename: " + fileName);
                 BufferedReader bufferedReader = new BufferedReader(
                         new InputStreamReader(
