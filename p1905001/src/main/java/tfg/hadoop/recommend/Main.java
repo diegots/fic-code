@@ -220,7 +220,26 @@ public class Main extends Configured implements Tool {
         /* ********************* *
          * JoinData: puts all results into one file
          * ********************* */
+        Job jobJoinData = Job.getInstance(new Configuration());
+        jobJoinData.setJobName("jobJoinData");
+        jobJoinData.setJarByClass(Main.class);
 
-        return 0;
+        FileInputFormat.addInputPath(jobJoinData, new Path(outputResults + job2.getJobName()));
+        FileOutputFormat.setOutputPath(jobJoinData, new Path(outputResults));
+
+        jobJoinData.setMapperClass(JobJoinData.Map.class);
+        jobJoinData.setReducerClass(JobJoinData.Reduce.class);
+
+        // Mapper output types
+        jobJoinData.setMapOutputKeyClass(IntWritable.class);
+        jobJoinData.setMapOutputValueClass(Text.class);
+
+        // Mapper and Reducer output types
+        jobJoinData.setOutputKeyClass(Text.class);
+        jobJoinData.setOutputValueClass(Text.class);
+
+        jobJoinData.setNumReduceTasks(1);
+
+        return jobJoinData.waitForCompletion(true) ? 0: 1;
     }
 }
