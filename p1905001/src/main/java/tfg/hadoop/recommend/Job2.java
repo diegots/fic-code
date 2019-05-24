@@ -39,44 +39,6 @@ public class Job2 {
 
             java.util.Map<Integer, java.util.Map<Double, Integer>> result = new HashMap<>();
 
-//            for (TripleWritable value: values) { // traverse all values user by user
-//                int activeUserId = value.getFirst().get();
-//                int itemId = value.getSecond().get();
-//                double weight = value.getThird().get();
-//
-//                if (result.containsKey(activeUserId)) { // if
-//
-//                    if (result.get(activeUserId).containsKey(itemId)) {
-//                        result.get(activeUserId).put(
-//                                itemId,
-//                                result.get(activeUserId).get(itemId) + weight
-//                        );
-//                    } else {
-//                        result.get(activeUserId).put(itemId, weight);
-//                    }
-//
-//                } else {
-//                    java.util.Map<Integer, Double> aux = new TreeMap<>();
-//                    aux.put(itemId, weight);
-//                    result.put(activeUserId, aux);
-//                }
-//            }
-//
-//            for (Integer activeUser: result.keySet()) {
-//                StringBuilder aux = new StringBuilder();
-//                int recomsNumber = 5;
-//                int decimalPlaces = 3;
-//
-//                for (Integer itemId: result.get(activeUser).keySet()) {
-//                    aux.append(", " + itemId + ":" + Precision.round(result.get(activeUser).get(itemId), decimalPlaces));
-//                    if (--recomsNumber <= 0) {
-//                        break;
-//                    }
-//                }
-//
-//                context.write(new IntWritable(activeUser), new Text("[" + aux.substring(2, aux.length()) + "]"));
-//            }
-
             for (TripleWritable value: values) { // traverse all values user by user
                 int activeUserId = value.getFirst().get();
                 int itemId = value.getSecond().get();
@@ -114,7 +76,6 @@ public class Job2 {
                 }
             }
 
-            //
             for (Integer activeUser: result.keySet()) {
                 StringBuilder aux = new StringBuilder();
                 int recomsNumber = 5;
@@ -129,8 +90,6 @@ public class Job2 {
 
                 context.write(new IntWritable(activeUser), new Text("[" + aux.substring(2, aux.length()) + "]"));
             }
-            //
-
         }
     }
 }
