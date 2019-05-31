@@ -1,4 +1,4 @@
-package tfg.check;
+package tfg;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
