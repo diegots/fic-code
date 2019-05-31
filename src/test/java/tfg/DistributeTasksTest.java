@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
 public class DistributeTasksTest {
 
     @Test
-    public void distributeCaseWithOutWorkTest() {
+    public void distributeCaseWithOutThreadsTest() {
         DistributeTasks dt = new DistributeTasks(1500, 0);
         List<String> result = dt.getDistribution();
         assertEquals(0, result.size());
