@@ -8,12 +8,22 @@ import static org.junit.Assert.assertEquals;
 
 public class DistributeTasksTest {
 
+
     @Test
     public void distributeCaseWithOutThreadsTest() {
         DistributeTasks dt = new DistributeTasks(1500, 0);
         List<String> result = dt.getDistribution();
         assertEquals(0, result.size());
     }
+
+
+    @Test
+    public void distributeCaseWithOutTasksTest() {
+        DistributeTasks dt = new DistributeTasks(0, 123);
+        List<String> result = dt.getDistribution();
+        assertEquals(0, result.size());
+    }
+
 
     @Test
     public void distributeLessTasksThanThreadsTest() {
@@ -28,6 +38,7 @@ public class DistributeTasksTest {
         }
     }
 
+
     @Test
     public void distributeRemainderZeroTest() {
         int nTasks = 138;
@@ -40,6 +51,7 @@ public class DistributeTasksTest {
         assertEquals("47:92", result.get(1));
         assertEquals("93:138", result.get(2));
     }
+
 
     @Test
     public void distributeRemainderNotZeroTest() {
