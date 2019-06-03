@@ -69,7 +69,22 @@ public class DistributeTasksTest {
 
 
     @Test
-    public void distributeRemainderNotZeroTest() {
+    public void distributeWithRemainder1() {
+        int nTasks = 137;
+        int nThreads = 4;
+        DistributeTasks dt = new DistributeTasks(nTasks, nThreads);
+        List<String> result = dt.getDistribution();
+        assertEquals(nThreads, result.size());
+
+        assertEquals("1:35", result.get(0));
+        assertEquals("36:69", result.get(1));
+        assertEquals("70:103", result.get(2));
+        assertEquals("104:137", result.get(3));
+    }
+
+
+    @Test
+    public void distributeWithRemainder2() {
         int nTasks = 138;
         int nThreads = 4;
         DistributeTasks dt = new DistributeTasks(nTasks, nThreads);
@@ -80,5 +95,20 @@ public class DistributeTasksTest {
         assertEquals("36:70", result.get(1));
         assertEquals("71:104", result.get(2));
         assertEquals("105:138", result.get(3));
+    }
+
+
+    @Test
+    public void distributeWithRemainder3() {
+        int nTasks = 139;
+        int nThreads = 4;
+        DistributeTasks dt = new DistributeTasks(nTasks, nThreads);
+        List<String> result = dt.getDistribution();
+        assertEquals(nThreads, result.size());
+
+        assertEquals("1:35", result.get(0));
+        assertEquals("36:70", result.get(1));
+        assertEquals("71:105", result.get(2));
+        assertEquals("106:139", result.get(3));
     }
 }
