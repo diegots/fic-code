@@ -43,9 +43,7 @@ public class DistributeTasks {
         }
 
         result = new ArrayList<>();
-        if (nTasks <= nThreads) {
-            // Second case
-            // 10 tasks vs 100 threads
+        if (nTasks <= nThreads) { // Second case
             for (int thread = 0; thread < nTasks; thread++) {
 
                 int taks = thread + 1;
@@ -57,8 +55,7 @@ public class DistributeTasks {
             int times = new Double(nTasks / nThreads).intValue();
             int remainder = nTasks % nThreads;
 
-            if (remainder == 0) {
-                // Case 3.a
+            if (remainder == 0) { // Case 3.a
                 for (int thread=0; thread<nThreads; thread++) {
 
                     int min = thread*times + 1;
@@ -66,9 +63,7 @@ public class DistributeTasks {
                     result.add(min + ":" + max);
                 }
 
-            } else {
-                // Case 3.b
-
+            } else { // Case 3.b
                 int r = remainder;
                 for (int thread=0; thread<nThreads; thread++) {
 
@@ -83,10 +78,7 @@ public class DistributeTasks {
                     }
 
                     result.add(min + ":" + max);
-
-
                 }
-
             }
         }
 
