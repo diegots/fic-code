@@ -26,10 +26,12 @@ public class DistributeTasks {
     private final int nThreads;
     private List<String> distribution;
 
+
     public DistributeTasks(int nTasks, int nThreads) {
         this.nThreads = nThreads;
         this.nTasks = nTasks;
     }
+
 
     private List<String> distribute() {
 
@@ -41,33 +43,52 @@ public class DistributeTasks {
         }
 
         result = new ArrayList<>();
-        if (nTasks <= nThreads) {
-            // Second case
+        if (nTasks <= nThreads) { // Second case
+            for (int thread = 0; thread < nTasks; thread++) {
 
-
-        } else if (nTasks % nThreads == 0) {
-            // Case 3.a
-            int times = new Double(nTasks / nThreads).intValue();
-            for (int thread=0; thread<nThreads; thread++) {
-
-                int min = thread*times + 1;
-                int max = (thread+1) * times;
-                result.add(min + ":" + max);
+                int taks = thread + 1;
+                result.add(taks + ":" + taks);
             }
 
         } else {
-            // Case 3.b
 
+            int times = new Double(nTasks / nThreads).intValue();
+            int remainder = nTasks % nThreads;
+
+            if (remainder == 0) { // Case 3.a
+                for (int thread=0; thread<nThreads; thread++) {
+
+                    int min = thread*times + 1;
+                    int max = (thread+1) * times;
+                    result.add(min + ":" + max);
+                }
+
+            } else { // Case 3.b
+                int r = remainder;
+                for (int thread=0; thread<nThreads; thread++) {
+
+                    int min, max;
+                    if (r-- > 0) {
+                        min = thread * (times+1) + 1;
+                        max = (thread+1) * (times+1);
+
+                    } else {
+                        min = thread*times + remainder + 1;
+                        max = (thread+1) * times + remainder;
+                    }
+
+                    result.add(min + ":" + max);
+                }
+            }
         }
 
         return result;
-
     }
 
-    private List<String> distributeRemainder() {
-        return null;
-    }
 
+    /*
+     * Get computed distribution.
+     */
     List<String> getDistribution() {
 
         if (distribution == null) {
@@ -75,9 +96,5 @@ public class DistributeTasks {
         }
 
         return Collections.unmodifiableList(distribution);
-
     }
-
-
-
 }
