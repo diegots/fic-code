@@ -40,6 +40,21 @@ public class DistributeTasksTest {
 
 
     @Test
+    public void distributeSameTasksAndThreadsTest() {
+
+        int testValue = 45;
+
+        DistributeTasks dt = new DistributeTasks(testValue, testValue);
+        List<String> result = dt.getDistribution();
+        assertEquals(testValue, result.size());
+
+        for (int i=0; i<result.size(); i++) {
+            assertEquals((i+1)+":"+(i+1), result.get(i));
+        }
+    }
+
+
+    @Test
     public void distributeRemainderZeroTest() {
         int nTasks = 138;
         int nThreads = 3;
