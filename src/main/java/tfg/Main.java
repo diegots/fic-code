@@ -82,7 +82,7 @@ public class Main {
             System.err.println(message);
         }
 
-        System.err.println("Available modes:");
+        System.err.println("Choose one from the following available modes when calling this program:");
         System.err.println("    -help");
         System.err.println("    -similarities <input-file> <number-threads>");
         System.err.println("    -sort <input-file> <number-threads> <neighborhood-size> <users-per-step>");
