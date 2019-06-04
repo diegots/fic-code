@@ -4,8 +4,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- * Este programa calcula y ordena las similaridades entre vecinos.
+/**
+ * This algorithm computes and sorts similarities between users using multiple threads.
  */
 public class Main {
 
@@ -24,6 +24,7 @@ public class Main {
     private static int maxUserId;
     static int numberFilesByThreads;
 
+
     public static void main(String[] args) {
 
         /*
@@ -31,7 +32,6 @@ public class Main {
          */
         switch (args[0]) {
             case "-similarities":
-            case "-index":
                 inputPrefix = args[1];
                 threadsNumber = Integer.valueOf(args[2]);
                 break;
@@ -47,7 +47,6 @@ public class Main {
                 System.err.println("    -similarities <input-file> <number-threads>");
                 System.err.println("    -sort <input-file> <number-threads> <neighborhood-size> <users-per-step>");
                 System.err.println("    -both <input-file> <number-threads> <neighborhood-size> <users-per-step>");
-                System.err.println("    -index <input-prefix> <number-threads>");
                 System.exit(1);
         }
 
@@ -68,13 +67,11 @@ public class Main {
                 computeSimilarities();
                 sortSimilarities();
                 break;
-            case "-index":
-                generateIndex();
-                break;
         }
 
         System.out.println("Exiting main");
     }
+
 
     private static int maxUserId() {
         /*
@@ -102,6 +99,7 @@ public class Main {
 
         return maxUserId;
     }
+
 
     private static void computeSimilarities() {
         /*
@@ -163,6 +161,7 @@ public class Main {
         }
     }
 
+
     private static void sortSimilarities() {
 
         if (threadsNumber > maxUserId) {
@@ -201,9 +200,5 @@ public class Main {
                 e.printStackTrace();
             }
         }
-    }
-
-    private static void generateIndex() {
-        System.out.println("Calcula índices");
     }
 }
