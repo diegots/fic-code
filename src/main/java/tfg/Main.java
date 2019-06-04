@@ -42,8 +42,10 @@ public class Main {
                 neighborhoodSize = Integer.valueOf(args[3]);
                 usersPerStep = Integer.valueOf(args[4]);
                 break;
+            case "-help":
             default:
                 System.err.println("Available modes:");
+                System.err.println("    -help");
                 System.err.println("    -similarities <input-file> <number-threads>");
                 System.err.println("    -sort <input-file> <number-threads> <neighborhood-size> <users-per-step>");
                 System.err.println("    -both <input-file> <number-threads> <neighborhood-size> <users-per-step>");
