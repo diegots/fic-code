@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
 /**
  * This class was thought as a way to evenly distribute tasks to threads but it
  * just receives the number of available tasks and threads and returns the
@@ -30,6 +31,20 @@ public class DistributeTasks {
     public DistributeTasks(int nTasks, int nThreads) {
         this.nThreads = nThreads;
         this.nTasks = nTasks;
+    }
+
+
+    /**
+     * Get distribution based on #tasks and #threads
+     * @return List of strings with the distribution, one item per thread and format "min:max"
+     */
+    List<String> getDistribution() {
+
+        if (distribution == null) {
+            distribution = distribute();
+        }
+
+        return Collections.unmodifiableList(distribution);
     }
 
 
@@ -83,18 +98,5 @@ public class DistributeTasks {
         }
 
         return result;
-    }
-
-
-    /*
-     * Get computed distribution.
-     */
-    List<String> getDistribution() {
-
-        if (distribution == null) {
-            distribution = distribute();
-        }
-
-        return Collections.unmodifiableList(distribution);
     }
 }

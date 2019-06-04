@@ -4,8 +4,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- * Este programa calcula y ordena las similaridades entre vecinos.
+/**
+ * This algorithm computes and sorts similarities between users using multiple threads.
  */
 public class Main {
 
@@ -24,14 +24,19 @@ public class Main {
     private static int maxUserId;
     static int numberFilesByThreads;
 
+
     public static void main(String[] args) {
 
         /*
          * Manage arguments
          */
+        if (args.length == 0) {
+            showHelp("Operation mode argument missing!");
+            System.exit(1);
+        }
+
         switch (args[0]) {
             case "-similarities":
-            case "-index":
                 inputPrefix = args[1];
                 threadsNumber = Integer.valueOf(args[2]);
                 break;
@@ -42,13 +47,10 @@ public class Main {
                 neighborhoodSize = Integer.valueOf(args[3]);
                 usersPerStep = Integer.valueOf(args[4]);
                 break;
+            case "-help":
             default:
-                System.err.println("Available modes:");
-                System.err.println("    -similarities <input-file> <number-threads>");
-                System.err.println("    -sort <input-file> <number-threads> <neighborhood-size> <users-per-step>");
-                System.err.println("    -both <input-file> <number-threads> <neighborhood-size> <users-per-step>");
-                System.err.println("    -index <input-prefix> <number-threads>");
-                System.exit(1);
+                showHelp();
+                break;
         }
 
         /*
@@ -68,13 +70,25 @@ public class Main {
                 computeSimilarities();
                 sortSimilarities();
                 break;
-            case "-index":
-                generateIndex();
-                break;
         }
 
-        System.out.println("Exiting main");
+        System.out.println("Finishing up!");
     }
+
+
+    private static void showHelp(String ... messages) {
+
+        for (String message: messages) {
+            System.err.println(message);
+        }
+
+        System.err.println("Choose one from the following available modes when calling this program:");
+        System.err.println("    -help");
+        System.err.println("    -similarities <input-file> <number-threads>");
+        System.err.println("    -sort <input-file> <number-threads> <neighborhood-size> <users-per-step>");
+        System.err.println("    -both <input-file> <number-threads> <neighborhood-size> <users-per-step>");
+    }
+
 
     private static int maxUserId() {
         /*
@@ -102,6 +116,7 @@ public class Main {
 
         return maxUserId;
     }
+
 
     private static void computeSimilarities() {
         /*
@@ -163,6 +178,7 @@ public class Main {
         }
     }
 
+
     private static void sortSimilarities() {
 
         if (threadsNumber > maxUserId) {
@@ -201,9 +217,5 @@ public class Main {
                 e.printStackTrace();
             }
         }
-    }
-
-    private static void generateIndex() {
-        System.out.println("Calcula índices");
     }
 }
