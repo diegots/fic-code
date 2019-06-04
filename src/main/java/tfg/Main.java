@@ -30,6 +30,11 @@ public class Main {
         /*
          * Manage arguments
          */
+        if (args.length == 0) {
+            showHelp("Operation mode argument missing!");
+            System.exit(1);
+        }
+
         switch (args[0]) {
             case "-similarities":
                 inputPrefix = args[1];
@@ -44,12 +49,8 @@ public class Main {
                 break;
             case "-help":
             default:
-                System.err.println("Available modes:");
-                System.err.println("    -help");
-                System.err.println("    -similarities <input-file> <number-threads>");
-                System.err.println("    -sort <input-file> <number-threads> <neighborhood-size> <users-per-step>");
-                System.err.println("    -both <input-file> <number-threads> <neighborhood-size> <users-per-step>");
-                System.exit(1);
+                showHelp();
+                break;
         }
 
         /*
@@ -71,7 +72,21 @@ public class Main {
                 break;
         }
 
-        System.out.println("Exiting main");
+        System.out.println("Finishing up!");
+    }
+
+
+    private static void showHelp(String ... messages) {
+
+        for (String message: messages) {
+            System.err.println(message);
+        }
+
+        System.err.println("Available modes:");
+        System.err.println("    -help");
+        System.err.println("    -similarities <input-file> <number-threads>");
+        System.err.println("    -sort <input-file> <number-threads> <neighborhood-size> <users-per-step>");
+        System.err.println("    -both <input-file> <number-threads> <neighborhood-size> <users-per-step>");
     }
 
 
