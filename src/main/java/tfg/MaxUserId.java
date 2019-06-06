@@ -16,11 +16,11 @@ public class MaxUserId {
 
     Integer getMaxUserId() {
 
-        if (linesHandler.getResultsAfterFile() == null) {
+        if (linesHandler.getResults() == null) {
             Utilities.processByLine(file, linesHandler);
         }
 
-        return  linesHandler.getResultsAfterFile();
+        return  linesHandler.getResults();
     }
 
 
@@ -47,7 +47,7 @@ public class MaxUserId {
 
 
         @Override
-        public Integer getResultsAfterFile() {
+        public Integer getResults() {
             return maxUserId;
         }
     }

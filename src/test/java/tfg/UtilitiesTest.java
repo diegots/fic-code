@@ -24,7 +24,7 @@ public class UtilitiesTest {
         verify(linesHandlerMock, Mockito.times(1)).handle("2,1129,2.0,1260759185");
         verify(linesHandlerMock, Mockito.times(1)).handle("9,1172,4.0,1260759205");
 
-        verify(linesHandlerMock, Mockito.times(0)).getResultsAfterFile();
+        verify(linesHandlerMock, Mockito.times(0)).getResults();
     }
 
 }

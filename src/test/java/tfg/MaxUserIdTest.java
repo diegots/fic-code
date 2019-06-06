@@ -12,7 +12,7 @@ public class MaxUserIdTest {
     public void treatLineTest() {
 
         MaxUserId maxUserId = new MaxUserId(new File(""), ",");
-        Integer result = maxUserId.linesHandler.getResultsAfterFile();
+        Integer result = maxUserId.linesHandler.getResults();
         assertEquals(new Integer(0), result);
     }
 
@@ -23,10 +23,10 @@ public class MaxUserIdTest {
         MaxUserId maxUserId1 = new MaxUserId(new File(path), ",");
 
         Utilities.processByLine(maxUserId1.file, maxUserId1.linesHandler);
-        Integer result = maxUserId1.linesHandler.getResultsAfterFile();
+        Integer result = maxUserId1.linesHandler.getResults();
         assertEquals(new Integer(100), result);
 
-        result = maxUserId1.linesHandler.getResultsAfterFile();
+        result = maxUserId1.linesHandler.getResults();
         assertEquals(new Integer(100), result);
     }
 
