@@ -5,39 +5,39 @@ import java.io.*;
 public class MaxUserId {
 
     final File file;
-    ProcessFile processFile;
+    LinesHandler linesHandler;
 
 
-    public MaxUserId(File file, String fileDelimiter) {
+    public MaxUserId(File file, String lineContentDelimiter) {
         this.file = file;
-        processFile = new ProcessFileImpl(fileDelimiter);
+        linesHandler = new LinesHandlerImpl(lineContentDelimiter);
     }
 
 
     Integer getMaxUserId() {
 
-        if (processFile.getResultsAfterFile() == null) {
-            Utilities.processByLine(file, processFile);
+        if (linesHandler.getResultsAfterFile() == null) {
+            Utilities.processByLine(file, linesHandler);
         }
 
-        return  processFile.getResultsAfterFile();
+        return  linesHandler.getResultsAfterFile();
     }
 
 
-    class ProcessFileImpl implements ProcessFile {
+    class LinesHandlerImpl implements LinesHandler {
 
         private Integer maxUserId;
         private String delimiter;
 
 
-        public ProcessFileImpl(String delimiter) {
+        public LinesHandlerImpl(String delimiter) {
             this.delimiter = delimiter;
             maxUserId = 0;
         }
 
 
         @Override
-        public void treatLine(String line) {
+        public void handle(String line) {
 
             int currentUserId = Integer.valueOf((line.split(delimiter))[0]);
             if (currentUserId > maxUserId) {

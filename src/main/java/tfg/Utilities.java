@@ -5,19 +5,19 @@ import java.io.*;
 public class Utilities {
 
     /**
-     * Process a text file line by line. ProcessFile object is in charge of
+     * Process a text file line by line. LinesHandler object is in charge of
      * manage the line contents, store intermediate values, etc.
      * @param file to be read from.
-     * @param processFile manages read lines
+     * @param linesHandler manages read lines
      */
-    public static void processByLine(File file, ProcessFile processFile) {
+    public static void processByLine(File file, LinesHandler linesHandler) {
         try {
 
             String line;
             BufferedReader br = new BufferedReader(new FileReader(file));
 
             while ((line = br.readLine()) != null) {
-                processFile.treatLine(line);
+                linesHandler.handle(line);
             }
 
             br.close();

@@ -13,18 +13,18 @@ public class UtilitiesTest {
     @Test
     public void processByLineTest() {
 
-        ProcessFile processFileMock = mock(ProcessFile.class);
+        LinesHandler linesHandlerMock = mock(LinesHandler.class);
 
         String path = "src/test/java/resources/processByLineTestFile.txt";
-        Utilities.processByLine(new File(path), processFileMock);
+        Utilities.processByLine(new File(path), linesHandlerMock);
 
-        verify(processFileMock, Mockito.times(1)).treatLine("1,31,2.5,1260759144");
-        verify(processFileMock, Mockito.times(1)).treatLine("100,1029,3.0,1260759179");
-        verify(processFileMock, Mockito.times(1)).treatLine("20,1061,3.0,1260759182");
-        verify(processFileMock, Mockito.times(1)).treatLine("2,1129,2.0,1260759185");
-        verify(processFileMock, Mockito.times(1)).treatLine("9,1172,4.0,1260759205");
+        verify(linesHandlerMock, Mockito.times(1)).handle("1,31,2.5,1260759144");
+        verify(linesHandlerMock, Mockito.times(1)).handle("100,1029,3.0,1260759179");
+        verify(linesHandlerMock, Mockito.times(1)).handle("20,1061,3.0,1260759182");
+        verify(linesHandlerMock, Mockito.times(1)).handle("2,1129,2.0,1260759185");
+        verify(linesHandlerMock, Mockito.times(1)).handle("9,1172,4.0,1260759205");
 
-        verify(processFileMock, Mockito.times(0)).getResultsAfterFile();
+        verify(linesHandlerMock, Mockito.times(0)).getResultsAfterFile();
     }
 
 }
