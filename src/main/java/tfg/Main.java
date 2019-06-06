@@ -58,21 +58,21 @@ public class Main {
          */
         switch (args[0]) {
             case "-similarities":
-                maxUserId = maxUserId();
+                maxUserId = new MaxUserId(new File(""), ",").getMaxUserId();
                 computeSimilarities();
                 break;
             case "-sort":
-                maxUserId = maxUserId();
+                maxUserId = new MaxUserId(new File(""), ",").getMaxUserId();
                 sortSimilarities();
                 break;
             case "-both":
-                maxUserId = maxUserId();
+                maxUserId = new MaxUserId(new File(""),",").getMaxUserId();
                 computeSimilarities();
                 sortSimilarities();
                 break;
         }
 
-        System.out.println("Finishing up!");
+        System.out.println("Done");
     }
 
 
@@ -87,34 +87,6 @@ public class Main {
         System.err.println("    -similarities <input-file> <number-threads>");
         System.err.println("    -sort <input-file> <number-threads> <neighborhood-size> <users-per-step>");
         System.err.println("    -both <input-file> <number-threads> <neighborhood-size> <users-per-step>");
-    }
-
-
-    private static int maxUserId() {
-        /*
-         * UserId máximo
-         */
-        int maxUserId = 0;
-        System.out.print("Calcula el userId máximo... ");
-        String readLine;
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(inputFile));
-            while ((readLine = br.readLine()) != null) {
-                if (Integer.valueOf(readLine.split(separator)[0]) > maxUserId) {
-                    maxUserId = Integer.valueOf(readLine.split(separator)[0]);
-                }
-            }
-            br.close();
-            System.out.println(maxUserId);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            System.exit(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        return maxUserId;
     }
 
 
