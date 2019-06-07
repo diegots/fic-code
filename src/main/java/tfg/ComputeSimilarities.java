@@ -2,21 +2,15 @@ package tfg;
 
 import java.io.*;
 
-public class ComputeSimilarities extends Thread {
+public class ComputeSimilarities extends Task {
 
-    private String threadName;
-    private int startId;
-    private int endId;
-
-    public ComputeSimilarities(String threadName, int startId, int endId) {
-        this.threadName = threadName;
-        this.startId = startId;
-        this.endId = endId;
+    public ComputeSimilarities(String threadName, int max, int min) {
+        super(threadName, max, min);
     }
 
     @Override
     public void run() {
-        System.out.println("Running thread " + threadName + ", startId: " + startId + ", endId: " + endId);
+        System.out.println("Running thread " + threadName + ", startId: " + min + ", endId: " + max);
 
         /*
          * Abre ficheros
@@ -40,9 +34,9 @@ public class ComputeSimilarities extends Thread {
                     String [] valuesA = lineA.split(Main.separator);
                     int userA = Integer.valueOf(valuesA[0]);
                     double denomA = Double.valueOf(valuesA[valuesA.length-1]);
-                    if (userA < startId) {
+                    if (userA < min) {
                         continue;
-                    } else if (userA > endId) {
+                    } else if (userA > max) {
                         break;
                     } else {
                         for (int fileCounterB = 0; fileCounterB<Main.numberFilesByThreads; fileCounterB++) {

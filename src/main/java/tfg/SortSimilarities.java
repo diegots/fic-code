@@ -3,22 +3,16 @@ package tfg;
 import java.io.*;
 import java.util.*;
 
-public class SortSimilarities extends Thread {
+public class SortSimilarities extends Task {
 
-        private final String threadName;
-        private final int startId;
-        private final int endId;
-
-        public SortSimilarities(String threadName, int startId, int endId) {
-            this.threadName = threadName;
-            this.startId = startId;
-            this.endId = endId;
-        }
+    public SortSimilarities(String threadName, int max, int min) {
+        super(threadName, max, min);
+    }
 
     @Override
     public void run() {
 
-        System.out.println("Running thread " + threadName + ", startId: " + startId + ", endId: " + endId);
+        System.out.println("Running thread " + threadName + ", min: " + min + ", max: " + max);
         BufferedWriter writer = null;
         BufferedReader reader;
         String line;
@@ -40,9 +34,9 @@ public class SortSimilarities extends Thread {
             }));
         }
 
-        for (int userId = startId; userId<=endId; userId+=Main.usersPerStep) {
+        for (int userId = min; userId<=max; userId+=Main.usersPerStep) {
 
-            System.out.println("thread: " + threadName + " - " + "startId: " + startId + " - " + "endId: " + endId);
+            System.out.println("thread: " + threadName + " - " + "min: " + min + " - " + "max: " + max);
             for (int fileCounter = 0; fileCounter<Main.numberFilesByThreads; fileCounter++) {
                 System.out.println("thread: " + threadName + " - " + "file: " + fileCounter);
                 try {
@@ -52,7 +46,7 @@ public class SortSimilarities extends Thread {
                         int userA = Integer.valueOf(lineContents[0]);
                         int userB = Integer.valueOf(lineContents[1]);
 
-                        for (int i=0; (i+userId) <= endId && i < Main.usersPerStep; i++) {
+                        for (int i=0; (i+userId) <= max && i < Main.usersPerStep; i++) {
                             //System.out.println("thread: " + threadName + " - " + "userId: " + (i+userId));
                             Map<Integer, Integer> map = usersMaps.get(i);
                             if (userA == i+userId) {
@@ -69,7 +63,7 @@ public class SortSimilarities extends Thread {
                 }
             } // end file counter for loop
 
-            for (int i=0; i+userId <= endId && i < Main.usersPerStep; i++) {
+            for (int i=0; i+userId <= max && i < Main.usersPerStep; i++) {
                 Map<Integer, Integer> map = usersMaps.get(i);
                 StringBuilder sb = new StringBuilder().append(i+userId);
                 List<Integer> l = new ArrayList<>(map.keySet());

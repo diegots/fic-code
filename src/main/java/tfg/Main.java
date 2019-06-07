@@ -63,12 +63,12 @@ public class Main {
                 break;
             case "-sort":
                 maxUserId = new MaxUserId(new File(""), ",").getMaxUserId();
-                sortSimilarities();
+                sortSimilarities(maxUserId, threadsNumber);
                 break;
             case "-both":
                 maxUserId = new MaxUserId(new File(""),",").getMaxUserId();
                 computeSimilarities();
-                sortSimilarities();
+                sortSimilarities(maxUserId, threadsNumber);
                 break;
         }
 
@@ -151,43 +151,12 @@ public class Main {
     }
 
 
-    private static void sortSimilarities() {
+    private static void sortSimilarities(int nTasks, int nThreads) {
 
-        if (threadsNumber > maxUserId) {
-            System.err.println("Thread number can't be greater than userIds.");
-            System.exit(1);
-        }
+        DistributeTasks distributeTasks = new DistributeTasks(nTasks, nThreads);
+        List<String> distribution = distributeTasks.getDistribution();
 
-        List<SortSimilarities> sortSimilaritiesThreads = new ArrayList<>();
-
-        int step = maxUserId / threadsNumber;
-        System.out.println("step: " + step);
-        for (int i = 0; i<threadsNumber; i++) {
-            System.out.println("f: " + (step * i + 1) + " to: " + (step * (i+1)));
-            int from = step * i + 1;
-            int to = step * (i+1);
-            sortSimilaritiesThreads.add(new SortSimilarities(""+i, from, to));
-        }
-
-        if (maxUserId % threadsNumber != 0) {
-            System.out.println("f: " + (step * threadsNumber + 1) + " to: " + (maxUserId));
-            sortSimilaritiesThreads.add(
-                    new SortSimilarities("" + threadsNumber, (step * threadsNumber + 1), maxUserId));
-
-        }
-
-        numberFilesByThreads = sortSimilaritiesThreads.size();
-
-        for (SortSimilarities thread: sortSimilaritiesThreads) {
-            thread.start();
-        }
-
-        for (SortSimilarities thread: sortSimilaritiesThreads) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        List<Task> tasks = TaskHandler.prepareTasks(distribution, SortSimilarities.class.getName());
+        new TaskHandler().handle(tasks);
     }
 }

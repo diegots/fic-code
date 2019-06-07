@@ -2,18 +2,11 @@ package tfg;
 
 import java.io.*;
 
-public class ComputeProfile extends Thread {
+public class ComputeProfile extends Task {
 
-    private String threadName;
-    private int startId;
-    private int endId;
-
-    public ComputeProfile(String threadName, int startId, int endId) {
-        this.threadName = threadName;
-        this.startId = startId;
-        this.endId = endId;
+    public ComputeProfile(String threadName, Integer min, Integer max) {
+        super(threadName, min, max);
     }
-
 
     @Override
     public void run() {
@@ -42,9 +35,9 @@ public class ComputeProfile extends Thread {
         try {
             while ((line = reader.readLine()) != null) {
                 int userId = Integer.valueOf(line.split(Main.separator)[0]);
-                if (userId < startId) {
+                if (userId < min) {
                     continue;
-                } else if (userId > endId) {
+                } else if (userId > max) {
 
                     if (profile.length() > 0) { // Último usuario, volcar a disco
                         writer.append(profile.append(Main.separator + Math.sqrt(denom)).append("\n").toString());
