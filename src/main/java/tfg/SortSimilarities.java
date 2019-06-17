@@ -32,7 +32,7 @@ public class SortSimilarities extends Task {
         Integer numberFiles = getContext().getInteger(Context.THREADS_NUMBER, 0);
 
         String separator = getContext().getString(Context.SEPARATOR, "");
-        List<Map<Integer, Integer>> usersMaps = initListOfTreeMapWithSize(usersPerStep);
+        List<TreeMap<Integer, Integer>> usersMaps = initListOfTreeMapWithSize(usersPerStep);
 
         String line;
         for (int userId = getMin(); userId<=getMax(); userId+=usersPerStep) {
@@ -49,11 +49,11 @@ public class SortSimilarities extends Task {
 
                         for (int i=0; (i+userId) <= getMax() && i < usersPerStep; i++) {
 
-                            Map<Integer, Integer> map = usersMaps.get(i);
+                            final TreeMap<Integer, Integer> map = usersMaps.get(i);
                             if (userA == i+userId) {
-                                map = addElement(map, userB, similarity);
+                                addElement(map, userB, similarity);
                             } else if (userB == i+userId) {
-                                map = addElement(map, userA, similarity);
+                                addElement(map, userA, similarity);
                             }
                         }
                     }
@@ -71,7 +71,7 @@ public class SortSimilarities extends Task {
     }
 
 
-    Map<Integer, Integer> addElement(Map<Integer, Integer> map, int userId, Integer similarity) {
+    void addElement(TreeMap<Integer, Integer> map, Integer similarity, Integer userId) {
 
         Integer threshold = getContext().getInteger(Context.SIMILARITY_THRESHOLD, null);
         Integer neighborhoodSize = getContext().getInteger(Context.NEIGHBORHOOD_SIZE, null);
@@ -79,14 +79,9 @@ public class SortSimilarities extends Task {
         if (similarity > threshold) {
             map.put(similarity, userId);
             if (map.size() > neighborhoodSize) {
-                for (Integer i: map.keySet()) {
-                    map.remove(i);
-                    break;
-                }
+                map.remove(map.lastKey());
             }
         }
-
-        return map;
     }
 
 
@@ -100,9 +95,9 @@ public class SortSimilarities extends Task {
     }
 
 
-    static List<Map<Integer, Integer>> initListOfTreeMapWithSize(int size) {
+    static List<TreeMap<Integer, Integer>> initListOfTreeMapWithSize(int size) {
 
-        List<Map<Integer, Integer>> maps = new ArrayList<>(size);
+        List<TreeMap<Integer, Integer>> maps = new ArrayList<>(size);
         for (int i=0; i<size; i++) {
             maps.add(new TreeMap<>(new Comparator<Integer>() {
                 @Override
@@ -111,6 +106,7 @@ public class SortSimilarities extends Task {
                 }
             }));
         }
+
         return maps;
     }
 
@@ -133,7 +129,7 @@ public class SortSimilarities extends Task {
     }
 
 
-    void writeUserNeighbors (int userId, Writer writer, List<Map<Integer, Integer>> usersMaps) {
+    void writeUserNeighbors (int userId, Writer writer, List<TreeMap<Integer, Integer>> usersMaps) {
 
         for (int i=0; i+userId <= getMax() && i < usersPerStep; i++) {
             Map<Integer, Integer> map = usersMaps.get(i);
