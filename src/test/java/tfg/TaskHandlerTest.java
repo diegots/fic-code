@@ -2,7 +2,6 @@ package tfg;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -18,7 +17,9 @@ public class TaskHandlerTest {
 
         List<String> distribution = new DistributeTasks(nTasks, nThreads).getDistribution();
 
-        List<Task> tasks = TaskHandler.prepareTasks(distribution, ComputeProfile.class.getName());
+        TaskHandler taskHandler = new TaskHandler(new Context());
+        List<Task> tasks = taskHandler.prepareTasks(distribution, ComputeProfile.class.getName());
+
         assertEquals(distribution.size(), tasks.size());
 
         Task task;
@@ -26,9 +27,9 @@ public class TaskHandlerTest {
 
             String distributionItem = distribution.get(threadNmae);
             task = tasks.get(threadNmae);
-            assertEquals(threadNmae+"", task.threadName);
-            assertEquals(distributionItem.split(":")[0], task.min+"");
-            assertEquals(distributionItem.split(":")[1], task.max+"");
+            assertEquals(threadNmae+"", task.getThreadName());
+            assertEquals(distributionItem.split(":")[0], task.getMin()+"");
+            assertEquals(distributionItem.split(":")[1], task.getMax()+"");
         }
     }
 }

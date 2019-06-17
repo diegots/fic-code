@@ -11,23 +11,24 @@ public class MaxUserIdTest {
     @Test
     public void treatLineTest() {
 
-        MaxUserId maxUserId = new MaxUserId(new File(""), ",");
-        Integer result = maxUserId.linesHandler.getResults();
-        assertEquals(new Integer(0), result);
+        String path = "src/test/java/resources/processByLineTestFile.txt";
+        MaxUserId maxUserId1 = new MaxUserId(new File(path), ",");
+
+        Integer result = maxUserId1.getMaxUserId();
+        assertEquals(new Integer(100), result);
+
+        result = maxUserId1.getMaxUserId();
+        assertEquals(new Integer(100), result);
     }
 
+
     @Test
-    public void treatLineTest_2() {
+    public void getMaxUserIdTest() {
 
         String path = "src/test/java/resources/processByLineTestFile.txt";
         MaxUserId maxUserId1 = new MaxUserId(new File(path), ",");
 
-        Utilities.processByLine(maxUserId1.file, maxUserId1.linesHandler);
-        Integer result = maxUserId1.linesHandler.getResults();
-        assertEquals(new Integer(100), result);
-
-        result = maxUserId1.linesHandler.getResults();
+        Integer result = maxUserId1.getMaxUserId();
         assertEquals(new Integer(100), result);
     }
-
 }

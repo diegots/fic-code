@@ -1,11 +1,14 @@
 package tfg;
 
-import java.io.*;
+import java.io.File;
 
 public class MaxUserId {
 
-    final File file;
-    LinesHandler linesHandler;
+
+    public static final int NON_VALID_USER_ID = 0;
+
+    private final File file;
+    private LinesHandler linesHandler;
 
 
     public MaxUserId(File file, String lineContentDelimiter) {
@@ -16,7 +19,7 @@ public class MaxUserId {
 
     Integer getMaxUserId() {
 
-        if (linesHandler.getResults() == null) {
+        if (linesHandler.getResults() == NON_VALID_USER_ID) {
             Utilities.processByLine(file, linesHandler);
         }
 
@@ -32,7 +35,7 @@ public class MaxUserId {
 
         public LinesHandlerImpl(String delimiter) {
             this.delimiter = delimiter;
-            maxUserId = 0;
+            maxUserId = NON_VALID_USER_ID;
         }
 
 

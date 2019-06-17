@@ -2,14 +2,32 @@ package tfg;
 
 class Task extends Thread {
 
-    final int min;
-    final int max;
-    final String threadName;
+    private final TaskData taskData;
+    private final Context context;
 
 
-    Task(String threadName, Integer min, Integer max) {
-        this.min = min;
-        this.max = max;
-        this.threadName = threadName;
+    Task(TaskData taskData, Context context) {
+        this.taskData = taskData;
+        this.context = context;
+    }
+
+
+    public int getMin() {
+        return taskData.min;
+    }
+
+
+    public int getMax() {
+        return taskData.max;
+    }
+
+
+    public String getThreadName() {
+        return taskData.threadName;
+    }
+
+
+    public Context getContext() {
+        return context;
     }
 }

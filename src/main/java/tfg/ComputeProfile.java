@@ -4,13 +4,15 @@ import java.io.*;
 
 public class ComputeProfile extends Task {
 
-    public ComputeProfile(String threadName, Integer min, Integer max) {
-        super(threadName, min, max);
+    public ComputeProfile(TaskData taskData, Context context) {
+        super(taskData, context);
     }
 
     @Override
     public void run() {
-        System.out.println("Running thread " + threadName);
+        System.out.println("Running thread " + getThreadName());
+
+        String separator = getContext().getString(Context.SEPARATOR,"");
 
         /**
          * Abre ficheros
@@ -18,8 +20,8 @@ public class ComputeProfile extends Task {
         BufferedWriter writer = null;
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(Main.inputFile));
-            writer = new BufferedWriter(new FileWriter(new File("profile"+threadName), false));
+            reader = new BufferedReader(new FileReader(getContext().getString(Context.DATASET_PATH, "")));
+            writer = new BufferedWriter(new FileWriter(new File("profile"+getThreadName()), false));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -34,39 +36,39 @@ public class ComputeProfile extends Task {
         Double denom = 0.0;
         try {
             while ((line = reader.readLine()) != null) {
-                int userId = Integer.valueOf(line.split(Main.separator)[0]);
-                if (userId < min) {
+                int userId = Integer.valueOf(line.split(separator)[0]);
+                if (userId < getMin()) {
                     continue;
-                } else if (userId > max) {
+                } else if (userId > getMax()) {
 
                     if (profile.length() > 0) { // Último usuario, volcar a disco
-                        writer.append(profile.append(Main.separator + Math.sqrt(denom)).append("\n").toString());
+                        writer.append(profile.append(separator + Math.sqrt(denom)).append("\n").toString());
                     }
 
                     break;
                 } else {
 
-                    String itemId = line.split(Main.separator)[1];
-                    String rating = line.split(Main.separator)[2];
+                    String itemId = line.split(separator)[1];
+                    String rating = line.split(separator)[2];
 
                     if (profile.length() == 0) { // No tengo nada. Primera linea del fichero
                         profile.append(userId);
-                        profile.append(Main.separator + itemId + Main.separator + rating);
+                        profile.append(separator + itemId + separator + rating);
                         denom += Double.valueOf(rating) * Double.valueOf(rating);
 
                     } else { // Ya hay información previa
-                        if (profile.toString().split(Main.separator)[0].equals(""+userId)) { // Mismo usuario
-                            profile.append(Main.separator + itemId + Main.separator + rating);
+                        if (profile.toString().split(separator)[0].equals(""+userId)) { // Mismo usuario
+                            profile.append(separator + itemId + separator + rating);
                             denom += Double.valueOf(rating) * Double.valueOf(rating);
 
                         } else { // Distinto usuario
 
                             // Almacenar la información en fichero
-                            writer.append(profile.append(Main.separator + Math.sqrt(denom)).append("\n").toString());
+                            writer.append(profile.append(separator + Math.sqrt(denom)).append("\n").toString());
 
                             // Guardar nueva cadena
                             profile = new StringBuilder().append(userId);
-                            profile.append(Main.separator + itemId + Main.separator + rating);
+                            profile.append(separator + itemId + separator + rating);
                             denom = Double.valueOf(rating) * Double.valueOf(rating);
 
                             //System.out.printf(".");
@@ -76,7 +78,7 @@ public class ComputeProfile extends Task {
             }
 
             if (line == null) { // Trata la última linea del fichero
-                writer.append(profile.append(Main.separator + Math.sqrt(denom)).append("\n").toString());
+                writer.append(profile.append(separator + Math.sqrt(denom)).append("\n").toString());
             }
 
         } catch (IOException e) {
@@ -94,6 +96,6 @@ public class ComputeProfile extends Task {
             System.exit(1);
         }
 
-        System.out.println("Thread " + threadName + " exiting");
+        System.out.println("Thread " + getThreadName() + " exiting");
     }
 }

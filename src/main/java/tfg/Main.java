@@ -1,162 +1,67 @@
 package tfg;
 
-import java.io.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * This algorithm computes and sorts similarities between users using multiple threads.
  */
 public class Main {
 
-    // Parámetros
-    final static String separator = ",";
-    final static int threshold = 100;
-
-    // Argumentos
-    private static int threadsNumber;
-    static File inputFile;
-    static int neighborhoodSize;
-    static int usersPerStep;
-    static String inputPrefix;
-
-    // Valores calculados
-    private static int maxUserId;
-    static int numberFilesByThreads;
-
-
     public static void main(String[] args) {
 
-        /*
-         * Manage arguments
-         */
-        if (args.length == 0) {
-            showHelp("Operation mode argument missing!");
-            System.exit(1);
-        }
 
-        switch (args[0]) {
-            case "-similarities":
-                inputPrefix = args[1];
-                threadsNumber = Integer.valueOf(args[2]);
-                break;
-            case "-sort":
-            case "-both":
-                inputFile = new File(args[1]);
-                threadsNumber = Integer.valueOf(args[2]);
-                neighborhoodSize = Integer.valueOf(args[3]);
-                usersPerStep = Integer.valueOf(args[4]);
-                break;
-            case "-help":
-            default:
-                showHelp();
-                break;
-        }
+        // Manage CLI arguments and config values for the project
+        CliParse cliParse = new CliParse();
+        Context context = cliParse.getContext(args);
+        context.putString(Context.SEPARATOR, ",");
+        context.putInteger(Context.SIMILARITY_THRESHOLD, 150);
+        context.putInteger(Context.USERS_PER_STEP, 40); // TODO compute a reasonable value attending to #Threads & #Tasks
 
-        /*
-         * Start computing tasks
-         */
-        switch (args[0]) {
-            case "-similarities":
-                maxUserId = new MaxUserId(new File(""), ",").getMaxUserId();
-                computeSimilarities();
-                break;
-            case "-sort":
-                maxUserId = new MaxUserId(new File(""), ",").getMaxUserId();
-                sortSimilarities(maxUserId, threadsNumber);
-                break;
-            case "-both":
-                maxUserId = new MaxUserId(new File(""),",").getMaxUserId();
-                computeSimilarities();
-                sortSimilarities(maxUserId, threadsNumber);
-                break;
+
+        int operationModeOrdinal = context.getInteger(Context.OPERATION_MODE, -1);
+        OperationMode operationMode = OperationMode.getOperationModeFromOrdinal(operationModeOrdinal);
+
+        if (!operationMode.modeHasWorkToDo()) {
+            CliParse.showHelp();
+
+        } else {
+            // Compute the max useId
+            MaxUserId maxUserId = new MaxUserId(
+                    new File(context.getString(Context.DATASET_PATH, "")),
+                    context.getString(Context.SEPARATOR, ""));
+
+
+            // Compute distribution of userIds over threads
+            DistributeTasks distributeTasks =
+                    new DistributeTasks(maxUserId.getMaxUserId(), context.getInteger(Context.THREADS_NUMBER, 0));
+            List<String> distribution = distributeTasks.getDistribution();
+
+
+            // Select tasks to run
+            List<String> taskNames = new ArrayList<>();
+            taskNames.add(ComputeProfile.class.getName());
+            System.out.println("Adding task: " + ComputeProfile.class.getName());
+            taskNames.add(ComputeSimilarities.class.getName());
+            System.out.println("Adding task: " + ComputeSimilarities.class.getName());
+
+            if (operationModeOrdinal == OperationMode.SIMILARITIES_SORT.ordinal()) {
+                taskNames.add(SortSimilarities.class.getName());
+                System.out.println("Adding task: " + SortSimilarities.class.getName());
+
+            }
+
+
+            // Launch threads
+            TaskHandler taskHandler = new TaskHandler(context);
+            for (String taskName: taskNames) {
+                List<Task> tasks = taskHandler.prepareTasks(distribution, taskName);
+                taskHandler.handle(tasks);
+            }
         }
 
         System.out.println("Done");
-    }
-
-
-    private static void showHelp(String ... messages) {
-
-        for (String message: messages) {
-            System.err.println(message);
-        }
-
-        System.err.println("Choose one from the following available modes when calling this program:");
-        System.err.println("    -help");
-        System.err.println("    -similarities <input-file> <number-threads>");
-        System.err.println("    -sort <input-file> <number-threads> <neighborhood-size> <users-per-step>");
-        System.err.println("    -both <input-file> <number-threads> <neighborhood-size> <users-per-step>");
-    }
-
-
-    private static void computeSimilarities() {
-        /*
-         * Calcular perfiles de usuario
-         */
-        if (threadsNumber > maxUserId) {
-            System.err.println("Thread number can't be greater than userIds.");
-            System.exit(1);
-        }
-
-        List<ComputeProfile> computeProfileThreads = new ArrayList<>();
-        List<ComputeSimilarities> computeSimilarityThreads = new ArrayList<>();
-        int step = maxUserId / threadsNumber;
-        System.out.println("step: " + step);
-        for (int i = 0; i<threadsNumber; i++) {
-            System.out.println("f: " + (step * i + 1) + " to: " + (step * (i+1)));
-            int from = step * i + 1;
-            int to = step * (i+1);
-            computeProfileThreads.add(new ComputeProfile(""+i, from, to));
-            computeSimilarityThreads.add(new ComputeSimilarities(""+i, from, to));
-        }
-
-        if (maxUserId % threadsNumber != 0) {
-            System.out.println("f: " + (step * threadsNumber + 1) + " to: " + (maxUserId));
-            computeProfileThreads.add(
-                    new ComputeProfile("" + threadsNumber, (step * threadsNumber + 1), maxUserId));
-            computeSimilarityThreads.add(
-                    new ComputeSimilarities("" + threadsNumber, (step * threadsNumber + 1), maxUserId));
-        }
-
-        for (ComputeProfile thread: computeProfileThreads) {
-            thread.start();
-        }
-
-        for (ComputeProfile thread: computeProfileThreads) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-        /*
-         * Calcular similaridades
-         */
-        numberFilesByThreads = computeProfileThreads.size();
-
-        for (ComputeSimilarities thread: computeSimilarityThreads) {
-            thread.start();
-        }
-
-        for (ComputeSimilarities thread: computeSimilarityThreads) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-    private static void sortSimilarities(int nTasks, int nThreads) {
-
-        DistributeTasks distributeTasks = new DistributeTasks(nTasks, nThreads);
-        List<String> distribution = distributeTasks.getDistribution();
-
-        List<Task> tasks = TaskHandler.prepareTasks(distribution, SortSimilarities.class.getName());
-        new TaskHandler().handle(tasks);
     }
 }
