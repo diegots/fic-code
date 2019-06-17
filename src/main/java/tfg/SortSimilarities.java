@@ -3,35 +3,33 @@ package tfg;
 import java.io.*;
 import java.util.*;
 
-public class SortSimilarities extends Thread {
+public class SortSimilarities extends Task {
 
-        private final String threadName;
-        private final int startId;
-        private final int endId;
+    public SortSimilarities(TaskData taskData, Context context) {
+        super(taskData, context);
+    }
 
-        public SortSimilarities(String threadName, int startId, int endId) {
-            this.threadName = threadName;
-            this.startId = startId;
-            this.endId = endId;
-        }
 
     @Override
     public void run() {
 
-        System.out.println("Running thread " + threadName + ", startId: " + startId + ", endId: " + endId);
+        System.out.println("Running thread " + getThreadName() + ", min: " + getMin() + ", max: " + getMax());
         BufferedWriter writer = null;
         BufferedReader reader;
         String line;
-        int workCounter = 0;
+        Integer numberFiles = getContext().getInteger(Context.THREADS_NUMBER, 0);
+        int usersPerStep = getContext().getInteger(Context.USERS_PER_STEP, -1);
+        String separator = getContext().getString(Context.SEPARATOR, "");
 
         try {
-            writer = new BufferedWriter(new FileWriter(new File("sorted"+threadName), false));
+            writer = new BufferedWriter(new FileWriter(new File("sorted"+getThreadName()), false));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        List<Map<Integer, Integer>> usersMaps = new ArrayList<>(Main.usersPerStep);
-        for (int i=0; i<Main.usersPerStep; i++) {
+
+        List<Map<Integer, Integer>> usersMaps = new ArrayList<>(usersPerStep);
+        for (int i=0; i<usersPerStep; i++) {
             usersMaps.add(new TreeMap<>(new Comparator<Integer>() {
                 @Override
                 public int compare(Integer integer, Integer t1) {
@@ -40,20 +38,21 @@ public class SortSimilarities extends Thread {
             }));
         }
 
-        for (int userId = startId; userId<=endId; userId+=Main.usersPerStep) {
 
-            System.out.println("thread: " + threadName + " - " + "startId: " + startId + " - " + "endId: " + endId);
-            for (int fileCounter = 0; fileCounter<Main.numberFilesByThreads; fileCounter++) {
-                System.out.println("thread: " + threadName + " - " + "file: " + fileCounter);
+        for (int userId = getMin(); userId<=getMax(); userId+=usersPerStep) {
+
+            System.out.println("thread: " + getThreadName() + " - " + "min: " + getMin() + " - " + "max: " + getMax());
+            for (int fileCounter = 0; fileCounter<numberFiles; fileCounter++) {
+                System.out.println("thread: " + getThreadName() + " - " + "file: " + fileCounter);
                 try {
                     reader = new BufferedReader(new FileReader("similarity"+fileCounter), 1000 * 8192);
                     while ((line = reader.readLine()) != null) {
-                        String [] lineContents = line.split(Main.separator);
+                        String [] lineContents = line.split(separator);
                         int userA = Integer.valueOf(lineContents[0]);
                         int userB = Integer.valueOf(lineContents[1]);
 
-                        for (int i=0; (i+userId) <= endId && i < Main.usersPerStep; i++) {
-                            //System.out.println("thread: " + threadName + " - " + "userId: " + (i+userId));
+                        for (int i=0; (i+userId) <= getMax() && i < usersPerStep; i++) {
+                            //System.out.println("thread: " + getThreadName() + " - " + "userId: " + (i+userId));
                             Map<Integer, Integer> map = usersMaps.get(i);
                             if (userA == i+userId) {
                                 map = addElement(map, userB, lineContents[2]);
@@ -69,7 +68,7 @@ public class SortSimilarities extends Thread {
                 }
             } // end file counter for loop
 
-            for (int i=0; i+userId <= endId && i < Main.usersPerStep; i++) {
+            for (int i=0; i+userId <= getMax() && i < usersPerStep; i++) {
                 Map<Integer, Integer> map = usersMaps.get(i);
                 StringBuilder sb = new StringBuilder().append(i+userId);
                 List<Integer> l = new ArrayList<>(map.keySet());
@@ -93,12 +92,15 @@ public class SortSimilarities extends Thread {
     }
 
 
-    private Map<Integer, Integer> addElement (Map<Integer, Integer> map, int userId, String similarity) {
+    private Map<Integer, Integer> addElement(Map<Integer, Integer> map, int userId, String similarity) {
+
+        int threshold = getContext().getInteger(Context.SEPARATOR, -1);
+        int neighborhoodSize = getContext().getInteger(Context.NEIGHBORHOOD_SIZE, -1);
 
         Integer s = Integer.valueOf(similarity);
-        if (s > Main.threshold) {
+        if (s > threshold) {
             map.put(s, userId);
-            if (map.size() > Main.neighborhoodSize) {
+            if (map.size() > neighborhoodSize) {
                 for (Integer i: map.keySet()) {
                     map.remove(i);
                     break;

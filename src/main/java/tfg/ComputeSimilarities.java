@@ -2,54 +2,44 @@ package tfg;
 
 import java.io.*;
 
-public class ComputeSimilarities extends Thread {
+public class ComputeSimilarities extends Task {
 
-    private String threadName;
-    private int startId;
-    private int endId;
-
-    public ComputeSimilarities(String threadName, int startId, int endId) {
-        this.threadName = threadName;
-        this.startId = startId;
-        this.endId = endId;
+    public ComputeSimilarities(TaskData taskData, Context context) {
+        super(taskData, context);
     }
 
     @Override
     public void run() {
-        System.out.println("Running thread " + threadName + ", startId: " + startId + ", endId: " + endId);
+        System.out.println("Running thread " + getThreadName() + ", startId: " + getMin() + ", endId: " + getMax());
 
-        /*
-         * Abre ficheros
-         */
+        String separator = getContext().getString(Context.SEPARATOR, "");
+        Integer numberFiles = getContext().getInteger(Context.THREADS_NUMBER, 0);
+
         BufferedWriter writer = null;
         BufferedReader readerA = null;
         BufferedReader readerB = null;
 
         try {
-            writer = new BufferedWriter(new FileWriter(new File("similarity"+threadName), false));
+            writer = new BufferedWriter(new FileWriter(new File("similarity"+getThreadName()), false));
 
-
-            /**
-             *
-             */
-            for (int fileCounterA = 0; fileCounterA<Main.numberFilesByThreads; fileCounterA++) {
+            for (int fileCounterA = 0; fileCounterA<numberFiles; fileCounterA++) {
                 readerA = new BufferedReader(new FileReader("profile"+fileCounterA));
                 String lineA;
                 while ((lineA = readerA.readLine()) != null) {
 
-                    String [] valuesA = lineA.split(Main.separator);
+                    String [] valuesA = lineA.split(separator);
                     int userA = Integer.valueOf(valuesA[0]);
                     double denomA = Double.valueOf(valuesA[valuesA.length-1]);
-                    if (userA < startId) {
+                    if (userA < getMin()) {
                         continue;
-                    } else if (userA > endId) {
+                    } else if (userA > getMax()) {
                         break;
                     } else {
-                        for (int fileCounterB = 0; fileCounterB<Main.numberFilesByThreads; fileCounterB++) {
+                        for (int fileCounterB = 0; fileCounterB<numberFiles; fileCounterB++) {
                             readerB = new BufferedReader(new FileReader("profile"+fileCounterB));
                             String lineB;
                             while ((lineB = readerB.readLine()) != null) {
-                                String [] valuesB = lineB.split(Main.separator);
+                                String [] valuesB = lineB.split(separator);
                                 int userB = Integer.valueOf(valuesB[0]);
                                 if (userB < userA) {
                                     continue;
@@ -70,7 +60,7 @@ public class ComputeSimilarities extends Thread {
                                     int sim = new Double((commonRatings / (denomA * Double.valueOf(valuesB[valuesB.length-1]))) * 1000).intValue();
 
                                     //System.out.println("[" + userA +","+ userB + "]" + " common ratings: " + commonRatings + " sim: " + sim);
-                                    writer.append(userA + Main.separator + userB + Main.separator + sim + "\n");
+                                    writer.append(userA + separator + userB + separator + sim + "\n");
                                 }
                             }
                         }
@@ -86,6 +76,6 @@ public class ComputeSimilarities extends Thread {
             e.printStackTrace();
         }
 
-        System.out.println("Thread " + threadName + " exiting");
+        System.out.println("Thread " + getThreadName() + " exiting");
     }
 }
