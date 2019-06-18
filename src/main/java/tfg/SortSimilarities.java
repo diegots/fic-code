@@ -35,7 +35,7 @@ public class SortSimilarities extends Task {
         List<TreeMap<Integer, Integer>> usersMaps = initListOfTreeMapWithSize(usersPerStep);
 
         String line;
-        for (int userId = getMin(); userId<=getMax(); userId+=usersPerStep) {
+        for (int userIdDelta = getMin(); userIdDelta<=getMax(); userIdDelta+=usersPerStep) {
 
             for (int fileCounter = 0; fileCounter<numberFiles; fileCounter++) {
 
@@ -47,13 +47,13 @@ public class SortSimilarities extends Task {
                         int userB = Integer.valueOf(lineContents[userBPosition]);
                         int similarity = Integer.valueOf(lineContents[similarityPosition]);
 
-                        for (int i=0; (i+userId) <= getMax() && i < usersPerStep; i++) {
+                        for (int i=0; i+userIdDelta <= getMax() && i<usersPerStep; i++) {
 
                             final TreeMap<Integer, Integer> map = usersMaps.get(i);
-                            if (userA == i+userId) {
-                                addElement(map, userB, similarity);
-                            } else if (userB == i+userId) {
-                                addElement(map, userA, similarity);
+                            if (userA == i+userIdDelta) {
+                                addElement(map, similarity, userB);
+                            } else if (userB == i+userIdDelta) {
+                                addElement(map, similarity, userA);
                             }
                         }
                     }
@@ -63,7 +63,7 @@ public class SortSimilarities extends Task {
                     e.printStackTrace();
                 }
             } // end file counter for loop
-            writeUserNeighbors(userId, writer, usersMaps);
+            writeUserNeighbors(userIdDelta, writer, usersMaps);
 
         } // end userId for loop
 
@@ -129,14 +129,14 @@ public class SortSimilarities extends Task {
     }
 
 
-    void writeUserNeighbors (int userId, Writer writer, List<TreeMap<Integer, Integer>> usersMaps) {
+    void writeUserNeighbors (int userIdDelta, Writer writer, List<TreeMap<Integer, Integer>> usersMaps) {
 
-        for (int i=0; i+userId <= getMax() && i < usersPerStep; i++) {
+        for (int i=0; i+userIdDelta <= getMax() && i < usersPerStep; i++) {
             Map<Integer, Integer> map = usersMaps.get(i);
-            StringBuilder sb = new StringBuilder().append(i+userId);
-            List<Integer> l = new ArrayList<>(map.keySet());
-            for (int j=l.size()-1; j>=0; j--) {
-                sb.append(",").append(map.get(l.get(j)));
+            StringBuilder sb = new StringBuilder().append(i+userIdDelta);
+
+            for (Integer j: map.keySet()) {
+                sb.append(getContext().getString(Context.SEPARATOR, null)).append(map.get(j));
             }
 
             writeContentToFile(writer, sb.append("\n").toString());
