@@ -1,18 +1,24 @@
 package tfg;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.*;
 
 public class SortSimilaritiesTest {
 
-    Context prepareContext(int neighborhoodSize, int similarityThreshold) {
+    Context prepareContext(int neighborhoodSize, int similarityThreshold, int usersPerStep) {
         final Context context = new Context();
         context.putInteger(Context.NEIGHBORHOOD_SIZE, neighborhoodSize);
         context.putInteger(Context.SIMILARITY_THRESHOLD, similarityThreshold);
+        context.putInteger(Context.USERS_PER_STEP, usersPerStep);
+        context.putString(Context.SEPARATOR, ",");
         return context;
     }
 
@@ -88,7 +94,7 @@ public class SortSimilaritiesTest {
         final TreeMap<Integer, Integer> userTopNeighbors = prepareOneUserAsMap();
         final int dataSize = userTopNeighbors.size();
 
-        Context context = prepareContext(dataSize, 20);
+        Context context = prepareContext(dataSize, 20, 10);
 
         SortSimilarities sortSimilarities =
                 new SortSimilarities(new TaskData(0,0,""), context);
@@ -106,7 +112,7 @@ public class SortSimilaritiesTest {
         final TreeMap<Integer, Integer> userTopNeighbors = prepareOneUserAsMap();
         final int neighborhoodSize = userTopNeighbors.size();
         final int threshold = 20;
-        Context context = prepareContext(neighborhoodSize, threshold);
+        Context context = prepareContext(neighborhoodSize, threshold, 10);
 
         SortSimilarities sortSimilarities =
                 new SortSimilarities(new TaskData(0,0,""), context);
@@ -125,7 +131,7 @@ public class SortSimilaritiesTest {
         final TreeMap<Integer, Integer> userTopNeighbors = prepareOneUserAsMap();
         final int neighborhoodSize = userTopNeighbors.size();
         final int threshold = 20;
-        Context context = prepareContext(neighborhoodSize, threshold);
+        Context context = prepareContext(neighborhoodSize, threshold, 10);
 
         SortSimilarities sortSimilarities =
                 new SortSimilarities(new TaskData(0,0,""), context);
@@ -189,5 +195,66 @@ public class SortSimilaritiesTest {
                     fail();
             }
         }
+
+        sortSimilarities.addElement(userTopNeighbors, 3, 105);
+
+        counter = 0;
+        for (Map.Entry<Integer, Integer> entry: userTopNeighbors.entrySet()) {
+            switch (counter++) {
+                case 0:
+                    assertEquals(new Integer(1000), entry.getKey());
+                    assertEquals(new Integer(117), entry.getValue());
+                    break;
+                case 1:
+                    assertEquals(new Integer(999), entry.getKey());
+                    assertEquals(new Integer(118), entry.getValue());
+                    break;
+                case 2:
+                    assertEquals(new Integer(6), entry.getKey());
+                    assertEquals(new Integer(106), entry.getValue());
+                    break;
+                case 3:
+                    assertEquals(new Integer(5), entry.getKey());
+                    assertEquals(new Integer(103), entry.getValue());
+                    break;
+                case 4:
+                    assertEquals(new Integer(4), entry.getKey());
+                    assertEquals(new Integer(102), entry.getValue());
+                    break;
+                default:
+                    fail();
+            }
+        }
+    }
+
+    @Test
+    public void writeUserNeighborsTest() throws IOException {
+        final List<TreeMap<Integer, Integer>> userTopNeighbors = prepareOneUserAsList();
+        final int neighborhoodSize = userTopNeighbors.size();
+        final int threshold = 20;
+        final int usersPerStep = 10;
+        Context context = prepareContext(neighborhoodSize, threshold, usersPerStep);
+
+        SortSimilarities sortSimilarities =
+                new SortSimilarities(new TaskData(1,1,""), context);
+        Writer writerMock = mock(Writer.class);
+
+        sortSimilarities.writeUserNeighbors(1, writerMock, userTopNeighbors);
+        verify(writerMock, Mockito.times(1)).append("1,106,103,102,105,104\n");
+    }
+
+    @Test
+    public void someThingTest() {
+        //for (int i=0; (i+userIdDelta) <= getMax() && i < usersPerStep; i++) {
+
+        int usersPerStep = 6;
+
+        for (int userIdDelta = 1; userIdDelta<=10; userIdDelta+=usersPerStep) {
+            System.out.printf("%d: \n", userIdDelta);
+            for (int i=0; (i+userIdDelta) <= 10 && i<usersPerStep; i++) {
+                System.out.printf("i: %d, userId: %d\n", i, (i+userIdDelta));
+            }
+        }
+
     }
 }
