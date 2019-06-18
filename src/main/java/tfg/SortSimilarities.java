@@ -10,7 +10,7 @@ public class SortSimilarities extends Task {
     final static int userBPosition = 1;
     final static int similarityPosition = 2;
 
-    int usersPerStep = getContext().getInteger(Context.USERS_PER_STEP, -1);
+    int usersPerStep = getContext().getInteger(Context.USERS_PER_STEP, null);
 
 
     public SortSimilarities(TaskData taskData, Context context) {
@@ -29,13 +29,15 @@ public class SortSimilarities extends Task {
         }
 
         BufferedReader reader;
-        Integer numberFiles = getContext().getInteger(Context.THREADS_NUMBER, 0);
+        Integer numberFiles = getContext().getInteger(Context.THREADS_NUMBER, null);
 
-        String separator = getContext().getString(Context.SEPARATOR, "");
-        List<TreeMap<Integer, Integer>> usersMaps = initListOfTreeMapWithSize(usersPerStep);
+        String separator = getContext().getString(Context.SEPARATOR, null);
+
 
         String line;
         for (int userIdDelta = getMin(); userIdDelta<=getMax(); userIdDelta+=usersPerStep) {
+
+            List<TreeMap<Integer, Integer>> usersMaps = initListOfTreeMapWithSize(usersPerStep);
 
             for (int fileCounter = 0; fileCounter<numberFiles; fileCounter++) {
 
