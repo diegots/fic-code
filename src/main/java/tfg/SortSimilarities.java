@@ -7,8 +7,8 @@ public class SortSimilarities extends Task {
 
 
     final static int userAPosition = 0;
-    final static int userBPosition = 0;
-    final static int similarityPosition = 0;
+    final static int userBPosition = 1;
+    final static int similarityPosition = 2;
 
     int usersPerStep = getContext().getInteger(Context.USERS_PER_STEP, -1);
 
