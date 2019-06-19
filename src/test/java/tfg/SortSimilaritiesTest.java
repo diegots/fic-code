@@ -23,24 +23,25 @@ public class SortSimilaritiesTest {
     }
 
 
-    List<TreeMap<Integer, Integer>> prepareUsersAsList(int size) {
+    List<SimilaridadYVecinoTreeMap> prepareUsersAsList(int size) {
 
-        List<TreeMap<Integer, Integer>> listOfMaps = (SortSimilarities.initListOfTreeMapWithSize(size));
-        listOfMaps.get(0).put(4, 102);
-        listOfMaps.get(0).put(5, 103);
-        listOfMaps.get(0).put(1, 104);
-        listOfMaps.get(0).put(3, 105);
-        listOfMaps.get(0).put(6, 106);
+        List<SimilaridadYVecinoTreeMap> listOfMaps = (SortSimilarities.initListOfTreeMapWithSize(size));
+        listOfMaps.get(0).put(new SimilaridadYVecino(4, 102));
+        listOfMaps.get(0).put(new SimilaridadYVecino(5, 103));
+        listOfMaps.get(0).put(new SimilaridadYVecino(1, 104));
+        listOfMaps.get(0).put(new SimilaridadYVecino(3, 105));
+        listOfMaps.get(0).put(new SimilaridadYVecino(6, 106));
+
         return listOfMaps;
     }
 
 
-    List<TreeMap<Integer, Integer>> prepareOneUserAsList() {
+    List<SimilaridadYVecinoTreeMap> prepareOneUserAsList() {
         return prepareUsersAsList(1);
     }
 
 
-    TreeMap<Integer, Integer> prepareOneUserAsMap() {
+    SimilaridadYVecinoTreeMap prepareOneUserAsMap() {
         return prepareOneUserAsList().get(0);
     }
 
@@ -48,7 +49,7 @@ public class SortSimilaritiesTest {
     @Test
     public void initializeUsersMapsSizeTest() {
 
-        List<TreeMap<Integer, Integer>> initializedResult = SortSimilarities.initListOfTreeMapWithSize(10);
+        List<SimilaridadYVecinoTreeMap> initializedResult = SortSimilarities.initListOfTreeMapWithSize(10);
         assertEquals(10, initializedResult.size());
     }
 
@@ -56,30 +57,30 @@ public class SortSimilaritiesTest {
     @Test
     public void initializeUsersMapsContentsTest() {
 
-        Map<Integer, Integer> userData = prepareOneUserAsMap();
+        SimilaridadYVecinoTreeMap userData = prepareOneUserAsMap();
 
         int counter = 0;
-        for (Map.Entry<Integer, Integer> entry: userData.entrySet()) {
+        for (SimilaridadYVecino entry: userData.keySet()) {
             switch (counter++) {
                 case 0:
-                    assertEquals(new Integer(6), entry.getKey());
-                    assertEquals(new Integer(106), entry.getValue());
+                    assertEquals(6, entry.getSimilarity());
+                    assertEquals(106, entry.getUserId());
                     break;
                 case 1:
-                    assertEquals(new Integer(5), entry.getKey());
-                    assertEquals(new Integer(103), entry.getValue());
+                    assertEquals(5, entry.getSimilarity());
+                    assertEquals(103, entry.getUserId());
                     break;
                 case 2:
-                    assertEquals(new Integer(4), entry.getKey());
-                    assertEquals(new Integer(102), entry.getValue());
+                    assertEquals(4, entry.getSimilarity());
+                    assertEquals(102, entry.getUserId());
                     break;
                 case 3:
-                    assertEquals(new Integer(3), entry.getKey());
-                    assertEquals(new Integer(105), entry.getValue());
+                    assertEquals(3, entry.getSimilarity());
+                    assertEquals(105, entry.getUserId());
                     break;
                 case 4:
-                    assertEquals(new Integer(1), entry.getKey());
-                    assertEquals(new Integer(104), entry.getValue());
+                    assertEquals(1, entry.getSimilarity());
+                    assertEquals(104, entry.getUserId());
                     break;
                 default:
                     fail();
@@ -91,7 +92,7 @@ public class SortSimilaritiesTest {
     @Test
     public void addElementSizeUnderThresholdTest() {
 
-        final TreeMap<Integer, Integer> userTopNeighbors = prepareOneUserAsMap();
+        final SimilaridadYVecinoTreeMap userTopNeighbors = prepareOneUserAsMap();
         final int dataSize = userTopNeighbors.size();
 
         Context context = prepareContext(dataSize, 20, 10);
@@ -109,7 +110,7 @@ public class SortSimilaritiesTest {
 
     @Test
     public void addElementSizeOverThresholdTest() {
-        final TreeMap<Integer, Integer> userTopNeighbors = prepareOneUserAsMap();
+        final SimilaridadYVecinoTreeMap userTopNeighbors = prepareOneUserAsMap();
         final int neighborhoodSize = userTopNeighbors.size();
         final int threshold = 20;
         Context context = prepareContext(neighborhoodSize, threshold, 10);
@@ -128,7 +129,7 @@ public class SortSimilaritiesTest {
 
     @Test
     public void addElementTest() {
-        final TreeMap<Integer, Integer> userTopNeighbors = prepareOneUserAsMap();
+        final SimilaridadYVecinoTreeMap userTopNeighbors = prepareOneUserAsMap();
         final int neighborhoodSize = userTopNeighbors.size();
         final int threshold = 20;
         Context context = prepareContext(neighborhoodSize, threshold, 10);
@@ -139,27 +140,28 @@ public class SortSimilaritiesTest {
         sortSimilarities.addElement(userTopNeighbors, 1000, 117);
 
         int counter = 0;
-        for (Map.Entry<Integer, Integer> entry: userTopNeighbors.entrySet()) {
+        for (Map.Entry<SimilaridadYVecino, Integer> entry: userTopNeighbors.entrySet()) {
+        //for (Map.Entry<Integer, Integer> entry: userTopNeighbors.entrySet()) {
             switch (counter++) {
                 case 0:
-                    assertEquals(new Integer(1000), entry.getKey());
-                    assertEquals(new Integer(117), entry.getValue());
+                    assertEquals(1000, entry.getKey().getSimilarity());
+                    assertEquals(117, entry.getKey().getUserId());
                     break;
                 case 1:
-                    assertEquals(new Integer(6), entry.getKey());
-                    assertEquals(new Integer(106), entry.getValue());
+                    assertEquals(6, entry.getKey().getSimilarity());
+                    assertEquals(106, entry.getKey().getUserId());
                     break;
                 case 2:
-                    assertEquals(new Integer(5), entry.getKey());
-                    assertEquals(new Integer(103), entry.getValue());
+                    assertEquals(5, entry.getKey().getSimilarity());
+                    assertEquals(103, entry.getKey().getUserId());
                     break;
                 case 3:
-                    assertEquals(new Integer(4), entry.getKey());
-                    assertEquals(new Integer(102), entry.getValue());
+                    assertEquals(4, entry.getKey().getSimilarity());
+                    assertEquals(102, entry.getKey().getUserId());
                     break;
                 case 4:
-                    assertEquals(new Integer(3), entry.getKey());
-                    assertEquals(new Integer(105), entry.getValue());
+                    assertEquals(3, entry.getKey().getSimilarity());
+                    assertEquals(105, entry.getKey().getUserId());
                     break;
                 default:
                     fail();
@@ -169,27 +171,27 @@ public class SortSimilaritiesTest {
         sortSimilarities.addElement(userTopNeighbors, 999, 118);
 
         counter = 0;
-        for (Map.Entry<Integer, Integer> entry: userTopNeighbors.entrySet()) {
+        for (Map.Entry<SimilaridadYVecino, Integer> entry: userTopNeighbors.entrySet()) {
             switch (counter++) {
                 case 0:
-                    assertEquals(new Integer(1000), entry.getKey());
-                    assertEquals(new Integer(117), entry.getValue());
+                    assertEquals(1000, entry.getKey().getSimilarity());
+                    assertEquals(117, entry.getKey().getUserId());
                     break;
                 case 1:
-                    assertEquals(new Integer(999), entry.getKey());
-                    assertEquals(new Integer(118), entry.getValue());
+                    assertEquals(999, entry.getKey().getSimilarity());
+                    assertEquals(118, entry.getKey().getUserId());
                     break;
                 case 2:
-                    assertEquals(new Integer(6), entry.getKey());
-                    assertEquals(new Integer(106), entry.getValue());
+                    assertEquals(6, entry.getKey().getSimilarity());
+                    assertEquals(106, entry.getKey().getUserId());
                     break;
                 case 3:
-                    assertEquals(new Integer(5), entry.getKey());
-                    assertEquals(new Integer(103), entry.getValue());
+                    assertEquals(5, entry.getKey().getSimilarity());
+                    assertEquals(103, entry.getKey().getUserId());
                     break;
                 case 4:
-                    assertEquals(new Integer(4), entry.getKey());
-                    assertEquals(new Integer(102), entry.getValue());
+                    assertEquals(4, entry.getKey().getSimilarity());
+                    assertEquals(102, entry.getKey().getUserId());
                     break;
                 default:
                     fail();
@@ -199,27 +201,27 @@ public class SortSimilaritiesTest {
         sortSimilarities.addElement(userTopNeighbors, 3, 105);
 
         counter = 0;
-        for (Map.Entry<Integer, Integer> entry: userTopNeighbors.entrySet()) {
+        for (Map.Entry<SimilaridadYVecino, Integer> entry: userTopNeighbors.entrySet()) {
             switch (counter++) {
                 case 0:
-                    assertEquals(new Integer(1000), entry.getKey());
-                    assertEquals(new Integer(117), entry.getValue());
+                    assertEquals(1000, entry.getKey().getSimilarity());
+                    assertEquals(117, entry.getKey().getUserId());
                     break;
                 case 1:
-                    assertEquals(new Integer(999), entry.getKey());
-                    assertEquals(new Integer(118), entry.getValue());
+                    assertEquals(999, entry.getKey().getSimilarity());
+                    assertEquals(118, entry.getKey().getUserId());
                     break;
                 case 2:
-                    assertEquals(new Integer(6), entry.getKey());
-                    assertEquals(new Integer(106), entry.getValue());
+                    assertEquals(6, entry.getKey().getSimilarity());
+                    assertEquals(106, entry.getKey().getUserId());
                     break;
                 case 3:
-                    assertEquals(new Integer(5), entry.getKey());
-                    assertEquals(new Integer(103), entry.getValue());
+                    assertEquals(5, entry.getKey().getSimilarity());
+                    assertEquals(103, entry.getKey().getUserId());
                     break;
                 case 4:
-                    assertEquals(new Integer(4), entry.getKey());
-                    assertEquals(new Integer(102), entry.getValue());
+                    assertEquals(4, entry.getKey().getSimilarity());
+                    assertEquals(102, entry.getKey().getUserId());
                     break;
                 default:
                     fail();
@@ -229,7 +231,7 @@ public class SortSimilaritiesTest {
 
     @Test
     public void writeUserNeighborsTest() throws IOException {
-        final List<TreeMap<Integer, Integer>> userTopNeighbors = prepareOneUserAsList();
+        final List<SimilaridadYVecinoTreeMap> userTopNeighbors = prepareOneUserAsList();
         final int neighborhoodSize = userTopNeighbors.size();
         final int threshold = 20;
         final int usersPerStep = 10;
@@ -241,20 +243,5 @@ public class SortSimilaritiesTest {
 
         sortSimilarities.writeUserNeighbors(1, writerMock, userTopNeighbors);
         verify(writerMock, Mockito.times(1)).append("1,106,103,102,105,104\n");
-    }
-
-    @Test
-    public void someThingTest() {
-        //for (int i=0; (i+userIdDelta) <= getMax() && i < usersPerStep; i++) {
-
-        int usersPerStep = 6;
-
-        for (int userIdDelta = 1; userIdDelta<=10; userIdDelta+=usersPerStep) {
-            System.out.printf("%d: \n", userIdDelta);
-            for (int i=0; (i+userIdDelta) <= 10 && i<usersPerStep; i++) {
-                System.out.printf("i: %d, userId: %d\n", i, (i+userIdDelta));
-            }
-        }
-
     }
 }
