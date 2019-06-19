@@ -51,16 +51,10 @@ public class SortSimilarities extends Task {
 
                         for (int i=0; i+userIdDelta <= getMax() && i<usersPerStep; i++) {
 
-                            if (i+userIdDelta != 671) {
-                                continue;
-                            }
-
                             final SimilaridadYVecinoTreeMap map = usersMaps.get(i);
                             if (userA == i+userIdDelta) {
-                                System.out.printf("userId: %d\n",i+userIdDelta);
                                 addElement(map, similarity, userB);
                             } else if (userB == i+userIdDelta) {
-                                System.out.printf("userId: %d\n",i+userIdDelta);
                                 addElement(map, similarity, userA);
                             }
                         }
@@ -85,20 +79,11 @@ public class SortSimilarities extends Task {
         Integer neighborhoodSize = getContext().getInteger(Context.NEIGHBORHOOD_SIZE, null);
 
         if (similarity > threshold) {
-            System.out.printf("addElement pub s[%d] u[%d]\n", similarity, userId);
             map.put(new SimilaridadYVecino(similarity, userId));
             if (map.size() > neighborhoodSize) {
-                System.out.printf("addElement remove s[%d] u[%d]\n", map.lastKey().getSimilarity(), map.lastKey().getUserId());
                 map.remove(map.lastKey());
 
             }
-
-            if (similarity == 268 && userId == 13) {
-                for (SimilaridadYVecino entry: map.keySet()) {
-                    System.out.printf("s[%d], u[%d]\n", entry.getSimilarity(), entry.getUserId());
-                }
-            }
-            System.out.println();
         }
     }
 
