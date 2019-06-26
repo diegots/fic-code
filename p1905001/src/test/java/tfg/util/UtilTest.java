@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 public class UtilTest {
 
     @Test
-    public void removeNRandomIndexesNonRepeatedValuesTestSize() {
+    public void removeNRandomIndexesWithNonRepeatedRandomValuesTest() {
 
         final List<Integer> actual = new ArrayList<>();
         for (Integer value: new int[]{5, 72, 18, 34, 23, 67, 45, 2, 7, 8}) {
@@ -34,8 +34,9 @@ public class UtilTest {
         assertEquals(expected, actual);
     }
 
+
     @Test
-    public void removeNRandomIndexesRepeatedValuesTest() {
+    public void removeNRandomIndexesWithRepeatedRandomValuesTest() {
 
         final List<Integer> actual = new ArrayList<>();
         for (Integer value: new int[]{5, 72, 18, 34, 23, 67, 45, 2, 7, 8}) {
