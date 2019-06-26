@@ -4,10 +4,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class Util {
-    public static <K, V> Map<K, V> mapFromFile(InputStream stream) {
+    static <K, V> Map<K, V> mapFromFile(InputStream stream) {
 
         Map<K, V> results = null;
 
@@ -25,5 +27,15 @@ public class Util {
         }
 
         return results;
+    }
+
+
+    public static void selectNIndexFromList(Random generator, int nItems, List<Integer> items) {
+
+        int[] indexes = generator.ints(nItems, 0, items.size()-1).toArray();
+
+        for (Integer i: indexes) {
+            items.remove(i);
+        }
     }
 }
