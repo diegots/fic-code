@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -33,11 +34,23 @@ public class Util {
 
     public static void removeNRandomIndexes(Random generator, int nItems, List<Integer> items) {
 
-        int[] indexes = generator.ints(nItems, 0, items.size()-1).toArray();
+        final int NON_VALID_ITEM_ID = -1;
 
-        for (Integer i: indexes) {
-            items.remove(i);
+        int[] indexes = generator.ints(nItems, 0, items.size()).toArray();
+
+        for (Integer index: indexes) {
+            items.set(index, NON_VALID_ITEM_ID);
         }
+
+        List<Integer> tmp = new ArrayList<>(items.size()-nItems);
+        for (Integer item: items) {
+            if (item != NON_VALID_ITEM_ID) {
+                tmp.add(item);
+            }
+        }
+
+        items.clear();
+        items.addAll(tmp);
     }
 
 
