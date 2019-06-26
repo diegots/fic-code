@@ -4,10 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.IntStream;
 
 public class Util {
 
@@ -36,7 +34,11 @@ public class Util {
 
         final int NON_VALID_ITEM_ID = -1;
 
-        int[] indexes = generator.ints(nItems, 0, items.size()).toArray();
+        Set<Integer> indexes = new LinkedHashSet<>();
+        while (indexes.size() < nItems) {
+            int index = generator.ints(1, 0, items.size()).toArray()[0];
+            indexes.add(index);
+        }
 
         for (Integer index: indexes) {
             items.set(index, NON_VALID_ITEM_ID);
