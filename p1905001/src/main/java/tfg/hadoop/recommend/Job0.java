@@ -7,9 +7,9 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
+import tfg.util.Util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,9 +33,11 @@ public class Job0 {
         }
     }
 
-    public static class Map extends Mapper<LongWritable, Text, IntWritable, IntWritable> {
+
+    static class Map extends Mapper<LongWritable, Text, IntWritable, IntWritable> {
 
         Collection<Integer> activeUsers;
+
 
         @Override
         protected void setup(Context context) throws IOException {
@@ -43,6 +45,7 @@ public class Job0 {
             Job0.readFileHDFS(activeUsers,
                     new Path(context.getConfiguration().get(Main.ACTIVE_USERS_FILE_PATH)));
         }
+
 
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
@@ -58,10 +61,11 @@ public class Job0 {
     }
 
 
-    private static class Reduce extends Reducer<IntWritable, IntWritable, IntWritable, Text> {
+    public static class Reduce extends Reducer<IntWritable, IntWritable, IntWritable, Text> {
 
         // A set is used to get rid of duplicated elements
         final static List<Integer> allItems = new LinkedList<>();
+
 
         @Override
         protected void setup(Context context) throws IOException {
@@ -71,6 +75,7 @@ public class Job0 {
             allItems.addAll(aux);
             Collections.sort(allItems);
         }
+
 
         // Helper method to compose final results
         String composeString(Collection<Integer> c) {
@@ -88,6 +93,7 @@ public class Job0 {
             return sb.toString();
         }
 
+
         List<Integer> prepareUserProfile (Iterable<IntWritable> values) {
             List<Integer> aux = new LinkedList<>();
 
@@ -98,16 +104,6 @@ public class Job0 {
             return aux;
         }
 
-        List<Integer> prepareItemsToHide (Random generator, int nItemsToRemove, List<Integer> userItems) {
-
-            int[] indexes = generator.ints(nItemsToRemove, 0, userItems.size()-1).toArray();
-
-            for (Integer i: indexes) {
-                userItems.remove(i);
-            }
-
-            return userItems;
-        }
 
         List<Integer> hideItems (List<Integer> items) {
             List<Integer> aux = new LinkedList<>(allItems);
@@ -120,10 +116,12 @@ public class Job0 {
         }
     }
 
+
     /*
      * Standard reducer for computing recommendations
      */
     public static class ReduceNone extends Reduce {
+
         @Override
         protected void reduce(IntWritable key, Iterable<IntWritable> values, Context context)
                 throws IOException, InterruptedException {
@@ -137,16 +135,20 @@ public class Job0 {
         }
     }
 
-    public abstract static class ReduceEvaluation extends Reduce {
-        Random generator;
+
+    abstract static class ReduceEvaluation extends Reduce {
+        Random randomGenerator;
 
         abstract int numberItemsToRemove (Context context, List<Integer> userItems);
+
 
         @Override
         protected void setup(Context context) throws IOException {
             super.setup(context); // Initialize common part
-            generator = new Random(context.getConfiguration().getInt(Main.EVALUATION_SEED, 0));
+            int seed = context.getConfiguration().getInt(Main.EVALUATION_SEED, 0);
+            randomGenerator = Util.getRandomGenerator(seed);
         }
+
 
         @Override
         protected void reduce(IntWritable key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
@@ -155,10 +157,11 @@ public class Job0 {
             // Instead of hiding a percentage of items from user profile, hide n items.
             int nItemsToRemove = numberItemsToRemove(context, userItems);
 
-            userItems = prepareItemsToHide(generator, nItemsToRemove, userItems);
+            Util.removeNRandomIndexes(randomGenerator, nItemsToRemove, userItems);
             context.write(key, new Text(composeString(hideItems(userItems))));
         }
     }
+
 
     public static class ReducePercentage extends ReduceEvaluation {
 
@@ -169,6 +172,7 @@ public class Job0 {
         }
     }
 
+
     public static class ReduceAllButN extends ReduceEvaluation {
 
         @Override
@@ -178,6 +182,7 @@ public class Job0 {
             return context.getConfiguration().getInt(Main.EVALUATION_N_VALUE, userItems.size());
         }
     }
+
 
     public static class ReduceGivenN extends ReduceEvaluation {
 
