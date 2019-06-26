@@ -1,4 +1,4 @@
-package tfg.hadoop.recommend;
+package tfg.util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,7 +9,8 @@ import java.util.Map;
 import java.util.Random;
 
 public class Util {
-    static <K, V> Map<K, V> mapFromFile(InputStream stream) {
+
+    public static <K, V> Map<K, V> mapFromFile(InputStream stream) {
 
         Map<K, V> results = null;
 
@@ -30,7 +31,7 @@ public class Util {
     }
 
 
-    public static void selectNIndexFromList(Random generator, int nItems, List<Integer> items) {
+    public static void removeNRandomIndexes(Random generator, int nItems, List<Integer> items) {
 
         int[] indexes = generator.ints(nItems, 0, items.size()-1).toArray();
 
@@ -38,4 +39,10 @@ public class Util {
             items.remove(i);
         }
     }
+
+
+    public static Random getRandomGenerator(int seed) {
+        return new Random(seed);
+    }
+
 }
