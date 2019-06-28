@@ -1,6 +1,6 @@
 package tfg.evaluation;
 
-public enum Arg {
+public enum Argument {
 
     PRECISION, RECALL, HELP, SEED;
 
@@ -10,11 +10,10 @@ public enum Arg {
 
     static void showHelp() {
         System.out.println("This program.....");
-        System.out.println("This program.....");
-        System.out.println(Arg.HELP.shortForm() + " or " + Arg.HELP.longForm());
-        System.out.println(Arg.PRECISION.shortForm()  + " <value> or " + Arg.PRECISION.longForm() + " <value>");
-        System.out.println(Arg.RECALL.shortForm()  + " <value> or " + Arg.RECALL.longForm() + " <value>");
-        System.out.println(Arg.SEED.shortForm()  + " <value> or " + Arg.SEED.longForm() + " <value>");
+        System.out.println(Argument.HELP.shortForm() + " or " + Argument.HELP.longForm());
+        System.out.println(Argument.PRECISION.shortForm()  + " <value> or " + Argument.PRECISION.longForm() + " <value>");
+        System.out.println(Argument.RECALL.shortForm()  + " <value> or " + Argument.RECALL.longForm() + " <value>");
+        System.out.println(Argument.SEED.shortForm()  + " <value> or " + Argument.SEED.longForm() + " <value>");
     }
 
 
