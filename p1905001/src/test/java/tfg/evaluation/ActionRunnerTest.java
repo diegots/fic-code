@@ -19,8 +19,10 @@ public class ActionRunnerTest {
         assertFalse(result);
     }
 
+
     @Test
     public void isHelpActionArgumentPresentTest() {
+
         boolean result = new ActionRunner().isHelpActionArgumentPresent(
                 new ArrayList<Action>(){{add(new Action.ActionRecall(1));}});
         assertFalse(result);
