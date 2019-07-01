@@ -9,7 +9,6 @@ abstract class Action {
 
         @Override
         void doIt() {
-            System.out.println("doIt from ActionHelp");
             Argument.showHelp();
         }
     }
