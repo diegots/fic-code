@@ -6,49 +6,24 @@ import java.util.List;
 
 public class Main {
 
-    private final static int DEFAULT_SEED_VALUE = 0;
-
 
     public static void main(String[] args) {
 
-        // TODO obtain data from file
-        List<Integer> data = new ArrayList();
-        for (Integer value: new int[] {1, 4, 7, 24, 76, 35, 12, 45}) {
-            data.add(value);
-        }
 
-        List<Arg> readArgs = new CLIArguments().getInputArgRead(args);
-        getConditionsChecked(readArgs);
-        getArgsDone(readArgs);
+        /*
+         * TODO process all users in the input (recommendations) file
+         *  1. Read file
+         *  2. Extract file data
+         */
+        List<Integer> data = new ArrayList<Integer>(){{
+            add(1); add(4); add(7); add(24); add(76); add(35); add(12); add(45);}};
+
+        Conf conf = CommandLineArgumentReader.readInput(args);
+        List<Action> actions = new ArrayList<>(conf.getActions());
+
+        ActionRunner actionRunner = new ActionRunner();
+        actionRunner.validateAndRunActions(actions);
     }
-
-
-    static void getArgsDone(List<Arg> args) {
-
-        //        int seed = 30;
-        //        int numberItemsRemove = 3;
-        //        Random randomGenerator = Util.getRandomGenerator(seed);
-        //        Util.removeNRandomIndexes(randomGenerator, numberItemsRemove, data);
-
-        int seed = getSeed(args);
-
-        for (Arg arg: args) {
-            if (Arg.RECALL.equals(arg)) {
-                System.out.println("Recall at: "  + arg.getValue() + " with seed: " + seed);
-            }
-
-            if (Arg.PRECISION.equals(arg)) {
-                System.out.println("Precision at: " + arg.getValue() + " with seed: " + seed);
-            }
-        }
-    }
-
-
-    /*
-     * TODO process all users in the input (recommendations) file
-     *  1. Read file
-     *  2. Extract file data
-     */
 
 
     /*
@@ -77,85 +52,4 @@ public class Main {
      *  When done,
      *      Write metrics to stdout
      */
-
-
-
-    static int getSeed(List<Arg> args) {
-
-        for (Arg arg: args) {
-            if (Arg.SEED.equals(arg)) {
-                return arg.getValue();
-            }
-        }
-
-        return DEFAULT_SEED_VALUE;
-    }
-
-
-    static class CLIArguments {
-
-        List<Arg> getInputArgRead(String[] args) {
-
-            List<Arg> readArgs = new ArrayList<>();
-            for (int argIndex=0; argIndex<args.length; argIndex++) {
-
-                if (Arg.PRECISION.equalsForm(args[argIndex])) {
-                    argIndex++;
-                    Arg arg = Arg.PRECISION;
-                    arg.setValue(Integer.valueOf(args[argIndex]));
-                    readArgs.add(arg);
-
-                } else if (Arg.RECALL.equalsForm(args[argIndex])) {
-                    argIndex++;
-                    Arg arg = Arg.RECALL;
-                    arg.setValue(Integer.valueOf(args[argIndex]));
-                    readArgs.add(arg);
-
-                } else if (Arg.SEED.equalsForm(args[argIndex])) {
-                    argIndex++;
-                    Arg arg = Arg.SEED;
-                    arg.setValue(Integer.valueOf(args[argIndex]));
-                    readArgs.add(arg);
-
-                } else if (Arg.HELP.equalsForm(args[argIndex])) {
-                    readArgs.add(Arg.HELP);
-                }
-            }
-
-            return readArgs;
-        }
-    }
-
-
-    static void getConditionsChecked(List<Arg> args) {
-
-        if (isEmptyArg(args)
-                || isHelpContained(args)) {
-
-            Arg.showHelp();
-            args.clear();
-        }
-    }
-
-
-    static boolean isEmptyArg(List<Arg> args) {
-
-        if (0 == args.size()) {
-            return true;
-        }
-
-        return false;
-    }
-
-
-    static boolean isHelpContained(List<Arg> args) {
-
-        for (Arg arg: args) {
-            if (Arg.HELP.equals(arg)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }
