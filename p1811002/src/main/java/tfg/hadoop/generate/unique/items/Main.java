@@ -31,6 +31,8 @@ public class Main extends Configured implements Tool {
   @Override
   public int run(String[] strings) throws Exception {
 
+    showHelp();
+
     Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).setLevel(Level.WARNING);
     Logger logger = Logger.getLogger(Main.class.getName());
     Level level = Level.INFO;
@@ -142,5 +144,18 @@ public class Main extends Configured implements Tool {
     job1.setNumReduceTasks(1);
 
     return job1.waitForCompletion(true) ? 0: 1;
+  }
+
+
+  void showHelp() {
+    System.out.println
+            ( "* ************************************ *\n"
+            + "*                                      *\n"
+            + "* This is a HADOOP program that        *\n"
+            + "* that COMPUTES a list of UNIQUE ITEMS *\n"
+            + "* and the MAX USER ID                  *\n"
+            + "* within a recommendation dataset      *\n"
+            + "*                                      *\n"
+            + "* ************************************ *");
   }
 }
