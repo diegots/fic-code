@@ -76,9 +76,22 @@ class CliParse {
             System.err.println(message);
         }
 
-        System.err.println("Choose one from the following available modes when calling this program:");
-        System.err.println("    -help");
-        System.err.println("    -similarities <input-file> <number-threads>");
-        System.err.println("    -similarities-sort <input-file> <number-threads> <neighborhood-size> <users-per-step>");
+        System.err.println
+                ( "* **************************************************************** *\n"
+                + "*                                                                  *\n"
+                + "* This program COMPUTES and SORTS similarities for a kNN algorithm *\n"
+                + "*                                                                  *\n"
+                + "* **************************************************************** *\n"
+                + "\n"
+                + "   Usage / Valid command line options:\n"
+                + "   -----------------------------------\n"
+                + "    -help\n"
+                + "    -similarities <input-file> <number-threads>\n"
+                + "    -similarities-sort\n"
+                + "        <input-file>\n"
+                + "        <number-threads>\n"
+                + "        <neighborhood-size>\n"
+                + "        <users-per-step>\n"
+                + "* *************************************************************** *\n");
     }
 }
