@@ -6,12 +6,21 @@ public enum Argument {
 
 
     static void showHelp() {
-        System.out.println("This program.....");
-        System.out.println(Argument.DATA_PATH.shortForm()  + " <value> or " + Argument.DATA_PATH.longForm() + " <value>");
-        System.out.println(Argument.HELP.shortForm() + " or " + Argument.HELP.longForm());
-        System.out.println(Argument.PRECISION.shortForm()  + " <value> or " + Argument.PRECISION.longForm() + " <value>");
-        System.out.println(Argument.RECALL.shortForm()  + " <value> or " + Argument.RECALL.longForm() + " <value>");
-        System.out.println(Argument.SEED.shortForm()  + " <value> or " + Argument.SEED.longForm() + " <value>");
+        System.out.println
+                ( "* ******************************************************************** *\n"
+                        + "*                                                                      *\n"
+                        + "* This program EVALUATES a kNN algorithm with Precision/Recall metrics *\n"
+                        + "*                                                                      *\n"
+                        + "* ******************************************************************** *\n"
+                        + "\n"
+                        + "   Usage / Valid command line options:\n"
+                        + "   -----------------------------------\n"
+                        + "    Recommendation data:     -d <path>  or --datapath <path>\n"
+                        + "    Show this help:          -h         or --help: shows this help\n"
+                        + "    Use Precision metric:    -p <value> or --precision <value>\n"
+                        + "    Use Recall metric:       -r <value> or --recall <value>\n"
+                        + "    Seed value:              -s <value> or --seed <value>\n"
+                        + "* ******************************************************************** *\n");
     }
 
 
