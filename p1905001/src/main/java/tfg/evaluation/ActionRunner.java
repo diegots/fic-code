@@ -12,7 +12,7 @@ public class ActionRunner {
     boolean isHelpActionArgumentPresent(List<Action> actions) {
 
         for (Action action: actions) {
-            if (new Action.ActionHelp().equals(action)) {
+            if (action.getClass().getName().equals(Action.ActionHelp.class.getName())) {
                 return true;
             }
         }
@@ -21,9 +21,11 @@ public class ActionRunner {
     }
 
 
-    private void getValidationDone(List<Action> actions) {
+    void getValidationDone(List<Action> actions) {
+
         if (isEmptyActionArgument(actions)) {
             actions.add(new Action.ActionEmpty("Ups! no actions requested. Try with -h."));
+
         } else if (isHelpActionArgumentPresent(actions)) {
             actions.clear();
             actions.add(new Action.ActionHelp());
