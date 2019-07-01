@@ -4,15 +4,9 @@ import java.util.*;
 
 public class Conf {
 
-    enum ConfParams {SEED, RECOMMENDATION_PATH, PRECISION_AT, RECALL_AT}
-
-
-    enum ConfAction {PRECISION, RECALL, HELP}
-
-
-    private final Map<ConfParams, Integer> integerValues;
-    private final Map<ConfParams, String> textValues;
-    private final List<ConfAction> actionList;
+    private final Map<Argument, Integer> integerValues;
+    private final Map<Argument, String> textValues;
+    private final List<Action> actionList;
 
 
     Conf() {
@@ -22,7 +16,7 @@ public class Conf {
     }
 
 
-    Integer getInteger(ConfParams key) {
+    Integer getInteger(Argument key) {
 
         Integer result = integerValues.getOrDefault(key, null);
 
@@ -34,7 +28,7 @@ public class Conf {
     }
 
 
-    String getText(ConfParams key) {
+    String getText(Argument key) {
 
         String result = textValues.getOrDefault(key, null);
 
@@ -46,22 +40,22 @@ public class Conf {
     }
 
 
-    List<ConfAction> getActions() {
+    List<Action> getActions() {
         return Collections.unmodifiableList(actionList);
     }
 
 
-    void putTextParam(ConfParams confParams, String text) {
-        textValues.put(confParams, text);
+    void putAction(Action action) {
+        actionList.add(action);
     }
 
 
-    void putAction(ConfAction confAction) {
-        actionList.add(confAction);
+    void putTextParam(Argument key, String text) {
+        textValues.put(key, text);
     }
 
 
-    void putIntegerParam(ConfParams confParams, Integer integer) {
-        integerValues.put(confParams, integer);
+    void putIntegerParam(Argument key, Integer integer) {
+        integerValues.put(key, integer);
     }
 }

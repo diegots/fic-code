@@ -2,24 +2,17 @@ package tfg.evaluation;
 
 abstract class Action {
 
-    final private Conf conf;
-
-
-    private Action() {
-        conf = new Conf();
-    }
-
-
-    private Action(Conf conf) {
-        this.conf = conf;
-    }
-
-
-    public Conf getConf() {
-        return conf;
-    }
-
     abstract void doIt();
+
+
+    static class ActionHelp extends Action {
+
+        @Override
+        void doIt() {
+            System.out.println("doIt from ActionHelp");
+            Argument.showHelp();
+        }
+    }
 
 
     static class ActionEmpty extends Action {
@@ -34,71 +27,51 @@ abstract class Action {
 
         @Override
         void doIt() {
-            System.out.println("doIt from ActionEmpty");
+            System.out.println("doIt from ActionEmpty: " + message);
         }
     }
 
 
-    static class ActionHelp extends Action {
+    private abstract static class ActionAlgorithm extends Action {
 
-        ActionHelp() {}
+        Integer at;
+
+
+        public ActionAlgorithm(Integer at) {
+            this.at = at;
+        }
+
+
+        public Integer getAt() {
+            return at;
+        }
+    }
+
+
+    static class ActionRecall extends ActionAlgorithm {
+
+        public ActionRecall(Integer at) {
+            super(at);
+        }
 
 
         @Override
         void doIt() {
-            System.out.println("doIt from ActionHelp");
-            Argument.showHelp();
-        }
-    }
-
-
-    private static abstract class ActionAlgorithm extends Action {
-
-        public ActionAlgorithm(Conf conf) {
-            super(conf);
-        }
-
-
-        Integer getSeed() {
-            return getConf().getInteger(Conf.ConfParams.SEED);
+            System.out.println("doIt from ActionRecall with at: " + getAt());
         }
     }
 
 
     static class ActionPrecision extends ActionAlgorithm {
 
-        ActionPrecision(Conf conf) {
-            super(conf);
-        }
-
-
-        Integer getPrecisionAt() {
-            return getConf().getInteger(Conf.ConfParams.PRECISION_AT);
+        public ActionPrecision(Integer at) {
+            super(at);
         }
 
 
         @Override
         void doIt() {
-            System.out.println("doIt from ActionPrecision");
-        }
-    }
-
-
-    static class ActionRecall extends Action {
-
-        ActionRecall(Conf conf) {
-            super(conf);
-        }
-
-
-        Integer getRecallAt() {
-            return getConf().getInteger(Conf.ConfParams.RECALL_AT);
-        }
-
-
-        @Override
-        void doIt() {
-            System.out.println("doIt from ActionRecall");
+            System.out.println("doIt from ActionPrecision with at: " + getAt());
         }
     }
 }

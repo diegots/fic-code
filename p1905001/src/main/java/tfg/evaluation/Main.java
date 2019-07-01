@@ -18,21 +18,12 @@ public class Main {
         List<Integer> data = new ArrayList<Integer>(){{
             add(1); add(4); add(7); add(24); add(76); add(35); add(12); add(45);}};
 
-        Conf conf = CLIArgument.getInputArgRead(args);
-        ActionBuilder actionBuilder = new ActionBuilder();
-        List<Action> actions =  actionBuilder.buildActions(conf);
-        Main.getActionDone(actions);
+        Conf conf = CommandLineArgumentReader.readInput(args);
+        List<Action> actions = new ArrayList<>(conf.getActions());
+
+        ActionRunner actionRunner = new ActionRunner();
+        actionRunner.validateAndRunActions(actions);
     }
-
-
-    static void getActionDone(List<Action> actions) {
-
-        for (Action action: actions) {
-            action.doIt();
-        }
-    }
-
-
 
 
     /*
