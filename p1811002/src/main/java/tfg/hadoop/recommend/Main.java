@@ -55,6 +55,8 @@ public class Main extends Configured implements Tool {
   @Override
   public int run(String[] strings) throws Exception {
 
+    showHelp();
+
     Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).setLevel(Level.WARNING);
 
     /* Expected params
@@ -205,5 +207,18 @@ public class Main extends Configured implements Tool {
     joinData.setNumReduceTasks(1);
 
     return joinData.waitForCompletion(true) ? 0: 1;
+  }
+
+
+  void showHelp() {
+
+    System.out.println
+            ( "* ************************************ *\n"
+            + "*                                      *\n"
+            + "* This is a HADOOP program that        *\n"
+            + "* that COMPUTES RECOMMENDATIONS        *\n"
+            + "* from a list of ACTIVE USERS          *\n"
+            + "*                                      *\n"
+            + "* ************************************ *");
   }
 }
