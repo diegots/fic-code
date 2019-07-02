@@ -33,6 +33,8 @@ public class Main extends Configured implements Tool {
     @Override
     public int run(String[] strings) throws Exception {
 
+        showHelp();
+
         /* Parameters extraction:
          *
          * IN  -> strings[0] -> <input-path-dataset>
@@ -241,5 +243,19 @@ public class Main extends Configured implements Tool {
         jobJoinData.setNumReduceTasks(1);
 
         return jobJoinData.waitForCompletion(true) ? 0: 1;
+    }
+
+
+    void showHelp() {
+
+        System.out.println
+                ( "* *************************************** *\n"
+                + "*                                         *\n"
+                + "* This is a HADOOP program that           *\n"
+                + "* that COMPUTES a list of RECOMMENDATIONS *\n"
+                + "* from a list of ACTIVE USERS             *\n"
+                + "* and a EVALUATION MODEL                  *\n"
+                + "*                                         *\n"
+                + "* *************************************** *");
     }
 }

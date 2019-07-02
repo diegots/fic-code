@@ -105,27 +105,33 @@ class Job {
   }
 
   private void help () {
-    System.out.println("This program computes either a Neighborhood Similarity matrix"
-        + " or the grouped Rating Matrix according to the requested number of shards.");
-    System.out.println("");
-    System.out.println("Usage:");
-    System.out.println("        java -jar JAR_NAME [-v] -<mode> <dataset path> +mode-specific-params");
-    System.out.println("");
-    System.out.println("Mode is one of: '-h', '-help', '-matrix' or '-neighborhood',");
-    System.out.println("");
-    System.out.println("    '" + HELP_LONG_MODE + "' or '" + HELP_SHORT_MODE + "': show this help.");
-    System.out.println("");
-    System.out.println("    '" + RATING_MATRIX_MODE + "' mode specific params:");
-    System.out.println("        <INPUT : number of shards>");
-    System.out.println("        <OUTPUT: rating matrix filename prefix (encoded)>");
-    System.out.println("");
-    System.out.println("    '" + NEIGHBORHOOD_MODE + "' mode specific params:");
-    System.out.println("        <INPUT : k value>");
-    System.out.println("        <OUTPUT: similarity matrix filename (encoded)>");
-    System.out.println("        <OUTPUT: users Ids filename (encoded)>");
-    System.out.println("        <OUTPUT: user's k neigborhoods filename (encoded)>");
-    System.out.println("        <OUTPUT: frecuency table filename (plain)>");
-    System.out.println("        <OUTPUT: similarity matrix filename (encoded, reassigned)>");
+
+    System.out.println
+            ( "* ********************************************************************* *\n"
+            + "*                                                                       *\n"
+            + "* This program COMPUTES the Neighborhood Similarity Matrix and          *\n"
+            + "* the Rating Matrix SHARDS for using in a distributed environment       *\n"
+            + "*                                                                       *\n"
+            + "* ********************************************************************* *\n"
+            + "                                                                         \n"
+            + "   Usage / Valid command line options:                                   \n"
+            + "   -----------------------------------                                   \n"
+            + "   java -jar JAR_NAME [-v] -<mode> <dataset path> +mode-specific-params  \n"
+            + "                                                                         \n"
+            + "   <mode> is one of: '-h', '-help', '-matrix', '-neighborhood'           \n"
+            + "                                                                         \n"
+            + "   '-matrix' specific params:                                            \n"
+            + "             <INPUT : number of shards>                                  \n"
+            + "             <OUTPUT: rating matrix filename prefix (encoded)>           \n"
+            + "                                                                         \n"
+            + "   '-neighborhood' specific params:                                      \n"
+            + "             <INPUT : k value>                                           \n"
+            + "             <OUTPUT: similarity matrix filename (encoded)>              \n"
+            + "             <OUTPUT: users Ids filename (encoded)>                      \n"
+            + "             <OUTPUT: user's k neighborhoods filename (encoded)>          \n"
+            + "             <OUTPUT: frequency table filename (plain)>                  \n"
+            + "             <OUTPUT: similarity matrix filename (encoded, reassigned)>  \n"
+            + "* ********************************************************************* *\n");
   }
 
   private void ratingMatrixComputing (Dataset dataset) {

@@ -6,21 +6,22 @@ public enum Argument {
 
 
     static void showHelp() {
+
         System.out.println
                 ( "* ******************************************************************** *\n"
-                        + "*                                                                      *\n"
-                        + "* This program EVALUATES a kNN algorithm with Precision/Recall metrics *\n"
-                        + "*                                                                      *\n"
-                        + "* ******************************************************************** *\n"
-                        + "\n"
-                        + "   Usage / Valid command line options:\n"
-                        + "   -----------------------------------\n"
-                        + "    Recommendation data:     -d <path>  or --datapath <path>\n"
-                        + "    Show this help:          -h         or --help: shows this help\n"
-                        + "    Use Precision metric:    -p <value> or --precision <value>\n"
-                        + "    Use Recall metric:       -r <value> or --recall <value>\n"
-                        + "    Seed value:              -s <value> or --seed <value>\n"
-                        + "* ******************************************************************** *\n");
+                + "*                                                                      *\n"
+                + "* This program EVALUATES a kNN algorithm with Precision/Recall metrics *\n"
+                + "*                                                                      *\n"
+                + "* ******************************************************************** *\n"
+                + "                                                                        \n"
+                + "   Usage / Valid command line options:                                  \n"
+                + "   -----------------------------------                                  \n"
+                + "    Recommendation data:     -d <path>  or --datapath <path>            \n"
+                + "    Show this help:          -h         or --help: shows this help      \n"
+                + "    Use Precision metric:    -p <value> or --precision <value>          \n"
+                + "    Use Recall metric:       -r <value> or --recall <value>             \n"
+                + "    Seed value:              -s <value> or --seed <value>               \n"
+                + "* ******************************************************************** *\n");
     }
 
 
