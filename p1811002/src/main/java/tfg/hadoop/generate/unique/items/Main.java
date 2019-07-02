@@ -148,6 +148,7 @@ public class Main extends Configured implements Tool {
 
 
   void showHelp() {
+
     System.out.println
             ( "* ************************************ *\n"
             + "*                                      *\n"
