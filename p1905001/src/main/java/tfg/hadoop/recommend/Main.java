@@ -35,17 +35,6 @@ public class Main extends Configured implements Tool {
 
         showHelp();
 
-        /* Parameters extraction:
-         *
-         * IN  -> strings[0] -> <input-path-dataset>
-         * OUT -> strings[1] -> <output-results>
-         * IN  -> strings[2] -> active users file path
-         * IN  -> strings[3] -> unique items file path
-         * IN  -> strings[4] -> number of shards
-         * IN  -> strings[5] -> number of similarity files
-         * IN  -> strings[6] -> without evaluation / evaluation type
-         * IN  -> strings[7] -> evaluation-n-value
-         * IN  -> strings[8] -> seed for random generator */
         String inputPathDataset = "";
         String outputResults = "";
         String activeUsersFilePath = "";
@@ -247,7 +236,6 @@ public class Main extends Configured implements Tool {
 
 
     void showHelp() {
-
         System.out.println
                 ( "* *************************************** *\n"
                 + "*                                         *\n"
@@ -256,6 +244,19 @@ public class Main extends Configured implements Tool {
                 + "* from a list of ACTIVE USERS             *\n"
                 + "* and a EVALUATION MODEL                  *\n"
                 + "*                                         *\n"
-                + "* *************************************** *");
+                + "* *************************************** *\n"
+                + "                                           \n"
+                + "   Usage / Valid command line options:     \n"
+                + "   -----------------------------------     \n"
+                + "   [0] (as input): dataset path            \n"
+                + "   [1] (as output): results dir            \n"
+                + "   [2] (as input) active users path        \n"
+                + "   [3] (as input) unique items path        \n"
+                + "   [4] (as input) no. of shards            \n"
+                + "   [5] (as input) no. of similarity files  \n"
+                + "   [6] (as input) evaluation type          \n"
+                + "   [7] (as input) evaluation n value       \n"
+                + "   [8] (as input) seed random generator    \n"
+                + "* *************************************** *\n");
     }
 }

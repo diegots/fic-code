@@ -128,7 +128,7 @@ class Job {
             + "             <INPUT : k value>                                           \n"
             + "             <OUTPUT: similarity matrix filename (encoded)>              \n"
             + "             <OUTPUT: users Ids filename (encoded)>                      \n"
-            + "             <OUTPUT: user's k neighborhoods filename (encoded)>          \n"
+            + "             <OUTPUT: user's k neighborhoods filename (encoded)>         \n"
             + "             <OUTPUT: frequency table filename (plain)>                  \n"
             + "             <OUTPUT: similarity matrix filename (encoded, reassigned)>  \n"
             + "* ********************************************************************* *\n");
