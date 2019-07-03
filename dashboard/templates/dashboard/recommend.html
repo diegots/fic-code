@@ -40,6 +40,8 @@
           <select class="form-control" id="load-dataset-size" name="load-dataset-size">
             <option>100k</option>
             <option>1M</option>
+            <option>10M</option>
+            <option>20M</option>
           </select>
 
           <label for="load-cluster-id">Cluster Id</label>
@@ -51,9 +53,21 @@
           <label for="load-shard_prefix">Shard prefix</label>
           <input type="text" class="form-control" id="load-shard_prefix" name="load-shard_prefix" placeholder="shard" required>
 
+          <label for="active-users-number">Number of active users</label>
+          <input type="text" class="form-control" id="active-users-number" name="active-users-number" placeholder="10" required>
+
+          <label for="active-users-technique">Active users technique</label>
+          <select class="form-control" id="active-users-technique" name="active-users-technique">
+            <option>Given-n</option>
+            <option>N-fold</option>
+            <option>Number</option>
+            <option>Percentage</option>
+          </select>
         </div>
         <button type="submit" class="btn btn-primary" formaction="{% url 'dashboard:recommend-load-action' %}">Prepare data</button>
         <button type="submit" class="btn btn-primary" formaction="{% url 'dashboard:recommend-generate-shards-action' %}">Generate shards</button>
+        <button type="submit" class="btn btn-primary" formaction="{% url 'dashboard:recommend-generate-active-users' %}">Generate active users</button>
+        <button type="submit" class="btn btn-primary" formaction="{% url 'dashboard:recommend-compute-action' %}">Recommend</button>
       </form>
   </div>
 </div>

@@ -20,6 +20,10 @@ urlpatterns = [
     path('recommend/generate_shards_action',
          views.recommend_generate_shards_action,
          name='recommend-generate-shards-action'),
+    path('recommend/generate_active_users',
+         views.recommend_generate_active_users_action,
+         name='recommend-generate-active-users'),
+    path('recommend/compute', views.recommend_compute_action, name='recommend-compute-action'),
 
     path('result', views.result, name='result'),
 ]

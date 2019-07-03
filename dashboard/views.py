@@ -11,51 +11,18 @@ from django.http import HttpResponse
 
 from .models import Cluster
 
-#
-# Amazon EMR commands
-#
+# Actual base paths on S3 where input data is kept. One entry for every size
 dataset_path = {
     '100k': '/input-100k',
     '1M': '/input-1m'
 }
 
 
+# EMR steps used to compute recommendations
 def command_base(cluster_id, step):
     return ['aws', 'emr', 'add-steps',
            '--cluster-id', cluster_id,
            '--steps', ''.join(step)]
-
-
-def command_describe_cluster(id):
-    command = ['aws', 'emr', 'describe-cluster',
-               '--cluster-id', id]
-    return subprocess.check_output(command)
-
-
-def command_launch_cluster(name, instance_count):
-    instance_type = 'm1.medium'
-    command = ['aws', 'emr', 'create-cluster',
-               '--name', name,
-               '--log-uri', 's3://' + settings.TFG_BUCKET_NAME + '/logs',
-               '--service-role', 'EMR_DefaultRole',
-               '--ec2-attributes', 'InstanceProfile=EMR_EC2_DefaultRole,KeyName=' + settings.TFG_SSH_KEY,
-               '--instance-type', instance_type,
-               '--release-label', 'emr-5.21.0',
-               '--instance-count', instance_count]
-    return subprocess.check_output(command)
-
-
-def command_run_local(host, remote_command):
-    command = ['ssh', '-oStrictHostKeyChecking=no',
-               '-i', settings.TFG_SSH_KEY,
-               'ec2-user@' + host, remote_command]
-    return subprocess.check_output(command)
-
-
-def command_terminate_cluster(id):
-    command = ['aws', 'emr', 'terminate-clusters',
-               '--cluster-ids', id]
-    return subprocess.check_output(command)
 
 
 def step_load_data(cluster_id, path):
@@ -78,10 +45,6 @@ def step_unique_items(cluster_id, shards_number):
     return subprocess.check_output(command_base(cluster_id, step))
 
 
-def step_compute_shards(shards_number):
-    return None
-
-
 def step_recommendations(cluster_id, shards_number):
     args = '/input/dataset,/output,/input/active-users/users.csv,/output/part-r-00000,' + shards_number
     step = ['Name', '=', 'recomendations', ',',
@@ -92,10 +55,27 @@ def step_recommendations(cluster_id, shards_number):
     return subprocess.check_output(command_base(cluster_id, step))
 
 
-#
-# Get historic data on clusters
-#
-def get_historic_clusters(active):
+# Commands to manipulate Emr clusters
+def command_describe_cluster(id):
+    command = ['aws', 'emr', 'describe-cluster',
+               '--cluster-id', id]
+    return subprocess.check_output(command)
+
+
+def command_launch_cluster(name, instance_count):
+    instance_type = 'm1.medium'
+    command = ['aws', 'emr', 'create-cluster',
+               '--name', name,
+               '--log-uri', 's3://' + settings.TFG_BUCKET_NAME + '/logs',
+               '--service-role', 'EMR_DefaultRole',
+               '--ec2-attributes', 'InstanceProfile=EMR_EC2_DefaultRole,KeyName=' + settings.TFG_SSH_KEY,
+               '--instance-type', instance_type,
+               '--release-label', 'emr-5.21.0',
+               '--instance-count', instance_count]
+    return subprocess.check_output(command)
+
+
+def command_list_cluster(active):
     if active is True:
         command = ['aws', 'emr', 'list-clusters', '--active']
     else:
@@ -103,6 +83,21 @@ def get_historic_clusters(active):
     return json.loads(subprocess.check_output(command))
 
 
+def command_terminate_cluster(id):
+    command = ['aws', 'emr', 'terminate-clusters',
+               '--cluster-ids', id]
+    return subprocess.check_output(command)
+
+
+# Compute locally on the master node
+def command_run_local(host, remote_command):
+    command = ['ssh', '-oStrictHostKeyChecking=no',
+               '-i', settings.TFG_SSH_KEY,
+               'ec2-user@' + host, remote_command]
+    return subprocess.check_output(command)
+
+
+# Helper functions
 def cluster_state(state):
     on_states = ['STARTING', 'BOOTSTRAPPING', 'RUNNING', 'WAITING']
     if state in on_states:
@@ -128,9 +123,7 @@ def get_context_data():
     return context
 
 
-#
 # Views
-#
 @login_required
 def index(request):
     return render(request, 'dashboard/dashboard.html')
@@ -178,7 +171,7 @@ def cluster_launch_result(request):
 
 @login_required
 def cluster_list(request):
-    cluster_list_response = get_historic_clusters(True)
+    cluster_list_response = command_list_cluster(True)
     context = get_context_data()
     context['data'] = append_to_context(cluster_list_response)
     return render(request, 'dashboard/cluster_list.html', context)
@@ -186,7 +179,7 @@ def cluster_list(request):
 
 @login_required
 def cluster_terminate(request):
-    cluster_list_response = get_historic_clusters(True)
+    cluster_list_response = command_list_cluster(True)
     context = get_context_data()
     context['data'] = append_to_context(cluster_list_response)
     return render(request, 'dashboard/cluster_terminate.html', context)
@@ -196,13 +189,13 @@ def cluster_terminate(request):
 def cluster_terminate_action(request):
     cluster_id = request.POST.get('cluster_id', '')
 
-    querySet = Cluster.objects.filter(cluster_id=cluster_id)
-    if len(querySet) < 1:
+    query_set = Cluster.objects.filter(cluster_id=cluster_id)
+    if len(query_set) < 1:
         return render(request, 'dashboard/error_cluster_does_not_exist.html', {'cluster_id': cluster_id})
     else:
-        if querySet[0].off_date == None:
-            querySet[0].off_date = timezone.now()
-            querySet[0].save()
+        if query_set[0].off_date is None:
+            query_set[0].off_date = timezone.now()
+            query_set[0].save()
             command_terminate_cluster(cluster_id)
             return redirect(reverse('dashboard:cluster-terminate-result'))
         else:
@@ -217,6 +210,12 @@ def cluster_terminate_result(request):
 @login_required
 def recommend(request):
     return render(request, 'dashboard/recommend.html')
+
+
+@login_required
+def recommend_compute_action(request):
+
+    return HttpResponse('recommend_compute_action')
 
 
 @login_required
@@ -250,6 +249,11 @@ def recommend_load_result(request):
     context = get_context_data()
     context['step_id'] = request.GET.get('step_id')
     return render(request, 'dashboard/recommend_load_result.html', context)
+
+
+@login_required
+def recommend_generate_active_users_action(request):
+    return None
 
 
 @login_required
