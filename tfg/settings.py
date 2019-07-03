@@ -133,5 +133,5 @@ LOGOUT_REDIRECT_URL = '/accounts/login/'
 TFG_BUCKET_NAME = os.environ["TFG_BUCKET_NAME"]
 
 # Ssh key is currently loaded by ssh-agent during login
-# TFG_SSH_KEY = os.environ["TFG_SSH_KEY"]
+TFG_SSH_KEY = os.environ["TFG_SSH_KEY"]
 
