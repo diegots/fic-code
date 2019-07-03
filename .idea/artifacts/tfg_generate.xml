@@ -1,7 +1,7 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="tfg-generate">
     <output-path>$PROJECT_DIR$/out/artifacts/tfg_generate</output-path>
-    <root id="archive" name="tfg-java-repo.jar">
+    <root id="archive" name="tfg-generate.jar">
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/p1811002/src/main/java/tfg/generate/META-INF/MANIFEST.MF" />
       </element>
