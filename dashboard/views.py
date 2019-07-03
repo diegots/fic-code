@@ -52,7 +52,7 @@ def step_unique_items(cluster_id, shards_number):
 
 def step_recommendations(cluster_id, shards_number):
     args = '/input/dataset,/output,/input/active-users/users.csv,/output/part-r-00000,' + shards_number
-    step = ['Name', '=', 'recomendations', ',',
+    step = ['Name', '=', 'recommendations', ',',
             'Jar', '=', 's3://' + settings.TFG_BUCKET_NAME + '/artifacts/tfg-hadoop-recommend-with-eval.jar', ',',
             'ActionOnFailure', '=',  'CONTINUE', ',',
             'Type', '=', 'CUSTOM_JAR', ',',
