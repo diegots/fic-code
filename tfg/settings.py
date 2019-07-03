@@ -26,7 +26,6 @@ SECRET_KEY = os.environ["TFG_SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("TFG_DEBUG") == "1"
 
-#ALLOWED_HOSTS = ['192.168.123.136']
 ALLOWED_HOSTS = os.environ \
   .get("TFG_ALLOWED_HOSTS", "localhost") \
   .split(",")
@@ -132,5 +131,7 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 TFG_BUCKET_NAME = os.environ["TFG_BUCKET_NAME"]
-TFG_SSH_KEY = os.environ["TFG_SSH_KEY"]
+
+# Ssh key is currently loaded by ssh-agent during login
+# TFG_SSH_KEY = os.environ["TFG_SSH_KEY"]
 
