@@ -37,12 +37,6 @@ public class Main extends Configured implements Tool {
     Logger logger = Logger.getLogger(Main.class.getName());
     Level level = Level.INFO;
 
-    /* Expected params
-     * IN  -> strings[0] -> dataset path
-     * OUT -> strings[1] -> output path
-     * IN  -> strings[2] -> number of splits */
-
-
     /* ********************* *
      * MaxItemId
      * ********************* */
@@ -157,6 +151,13 @@ public class Main extends Configured implements Tool {
             + "* and the MAX USER ID                  *\n"
             + "* within a recommendation dataset      *\n"
             + "*                                      *\n"
-            + "* ************************************ *");
+            + "* ************************************ *\n"
+            + "                                        \n"
+            + "   Usage / Valid command line options:  \n"
+            + "   -----------------------------------  \n"
+            + "   [0] (as input): dataset path         \n"
+            + "   [1] (as output): results dir         \n"
+            + "   [2] (as input) number of reducers    \n"
+            + "* ************************************ *\n");
   }
 }
