@@ -11,18 +11,23 @@ from django.http import HttpResponse
 
 from .models import Cluster
 
-# Actual base paths on S3 where input data is kept. One entry for every size
+#
+# Actual base paths on S3 where input data is kept. One entry for every
+# dataset size
+#
 dataset_path = {
     '100k': '/input-100k',
     '1M': '/input-1m'
 }
 
 
-# EMR steps used to compute recommendations
+#
+# EMR steps utilized to perform all operations
+#
 def command_base(cluster_id, step):
     return ['aws', 'emr', 'add-steps',
-           '--cluster-id', cluster_id,
-           '--steps', ''.join(step)]
+            '--cluster-id', cluster_id,
+            '--steps', ''.join(step)]
 
 
 def step_load_data(cluster_id, path):
@@ -38,7 +43,7 @@ def step_load_data(cluster_id, path):
 def step_unique_items(cluster_id, shards_number):
     args = '/input/dataset,/output,' + shards_number
     step = ['Name', '=', 'unique-items', ',',
-            'Jar', '=', 's3://' + settings.TFG_BUCKET_NAME + '/artifacts/hadoop-unique-items.jar', ',',
+            'Jar', '=', 's3://' + settings.TFG_BUCKET_NAME + '/artifacts/tfg-hadoop-generate-unique-items.jar', ',',
             'ActionOnFailure', '=',  'CANCEL_AND_WAIT', ',',
             'Type', '=', 'CUSTOM_JAR', ',',
             'Args', '=', args]
@@ -48,17 +53,19 @@ def step_unique_items(cluster_id, shards_number):
 def step_recommendations(cluster_id, shards_number):
     args = '/input/dataset,/output,/input/active-users/users.csv,/output/part-r-00000,' + shards_number
     step = ['Name', '=', 'recomendations', ',',
-            'Jar', '=', 's3://' + settings.TFG_BUCKET_NAME + '/artifacts/hadoop-recomendations.jar', ',',
+            'Jar', '=', 's3://' + settings.TFG_BUCKET_NAME + '/artifacts/tfg-hadoop-recommend-with-eval.jar', ',',
             'ActionOnFailure', '=',  'CONTINUE', ',',
             'Type', '=', 'CUSTOM_JAR', ',',
             'Args', '=', args,]
     return subprocess.check_output(command_base(cluster_id, step))
 
 
-# Commands to manipulate Emr clusters
-def command_describe_cluster(id):
+#
+# Commands to manipulate EMR clusters
+#
+def command_describe_cluster(cluster_id):
     command = ['aws', 'emr', 'describe-cluster',
-               '--cluster-id', id]
+               '--cluster-id', cluster_id]
     return subprocess.check_output(command)
 
 
@@ -83,9 +90,9 @@ def command_list_cluster(active):
     return json.loads(subprocess.check_output(command))
 
 
-def command_terminate_cluster(id):
+def command_terminate_cluster(cluster_id):
     command = ['aws', 'emr', 'terminate-clusters',
-               '--cluster-ids', id]
+               '--cluster-ids', cluster_id]
     return subprocess.check_output(command)
 
 
@@ -97,7 +104,9 @@ def command_run_local(host, remote_command):
     return subprocess.check_output(command)
 
 
+#
 # Helper functions
+#
 def cluster_state(state):
     on_states = ['STARTING', 'BOOTSTRAPPING', 'RUNNING', 'WAITING']
     if state in on_states:
@@ -109,10 +118,10 @@ def cluster_state(state):
 def append_to_context(response):
     data = []
     for cluster in response['Clusters']:
-        id = cluster['Id']
+        cluster_id = cluster['Id']
         name = cluster['Name']
         state = cluster_state(cluster['Status']['State'])
-        data.append({'id': id, 'name': name, 'state': state})
+        data.append({'id': cluster_id, 'name': name, 'state': state})
     return data
 
 
@@ -123,7 +132,9 @@ def get_context_data():
     return context
 
 
+#
 # Views
+#
 @login_required
 def index(request):
     return render(request, 'dashboard/dashboard.html')
