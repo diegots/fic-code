@@ -15,7 +15,7 @@ from .models import Cluster
 # Actual base paths on S3 where input data is kept. One entry for every
 # dataset size
 #
-dataset_path = {
+input_data_path = {
     '100k': '/input-100k',
     '1M': '/input-1m'
 }
@@ -50,13 +50,35 @@ def step_unique_items(cluster_id, shards_number):
     return subprocess.check_output(command_base(cluster_id, step))
 
 
-def step_recommendations(cluster_id, shards_number):
-    args = '/input/dataset,/output,/input/active-users/users.csv,/output/part-r-00000,' + shards_number
+def step_recommendations(cluster_id, no_of_shards):
+
+    dataset_path = '/input/dataset'
+    results_dir = '/output'
+    active_users_path = '/input/active-users/users.csv'
+    unique_items_path = '/output/part-r-00000'
+    no_of_similarity_files = ''
+    evaluation_type = ''
+    evaluation_n_value = ''
+    seed_random_generator = ''
+    args = dataset_path \
+        + ',' + results_dir \
+        + ',' + active_users_path \
+        + ',' + unique_items_path \
+        + ',' + no_of_shards \
+        + ',' + no_of_similarity_files \
+        + ',' + evaluation_type \
+        + ',' + evaluation_n_value \
+        + ',' + seed_random_generator
+
+    artifact_path = 's3://' + settings.TFG_BUCKET_NAME \
+                    + '/artifacts/tfg-hadoop-recommend-with-eval.jar'
+
     step = ['Name', '=', 'recommendations', ',',
-            'Jar', '=', 's3://' + settings.TFG_BUCKET_NAME + '/artifacts/tfg-hadoop-recommend-with-eval.jar', ',',
+            'Jar', '=', artifact_path, ',',
             'ActionOnFailure', '=',  'CONTINUE', ',',
             'Type', '=', 'CUSTOM_JAR', ',',
-            'Args', '=', args,]
+            'Args', '=', args, ]
+
     return subprocess.check_output(command_base(cluster_id, step))
 
 
@@ -240,7 +262,7 @@ def recommend_load_action(request):
         return render(request, 'dashboard/error_cluster_does_not_exist.html', {'cluster_id': cluster_id})
 
     # Then load data into cluster
-    result = step_load_data(cluster_id, dataset_path[request.POST.get('load-dataset-size')])
+    result = step_load_data(cluster_id, input_data_path[request.POST.get('load-dataset-size')])
     step_id_load_data = ''.join(json.loads(result.decode())['StepIds'])
 
     # Now compute unique items
@@ -283,7 +305,7 @@ def recommend_generate_shards_action(request):
     # copy dataset
     local_command = 'aws s3 cp s3://' \
                     + settings.TFG_BUCKET_NAME \
-                    + dataset_path[request.POST.get('load-dataset-size')] \
+                    + input_data_path[request.POST.get('load-dataset-size')] \
                     + '/dataset/ratings.csv .'
     command_run_local(dns_name, local_command)
 
@@ -300,7 +322,7 @@ def recommend_generate_shards_action(request):
     # put shards back into S3
     local_command = 'aws s3 mv shards s3://' \
                     + settings.TFG_BUCKET_NAME \
-                    + dataset_path[request.POST.get('load-dataset-size')] \
+                    + input_data_path[request.POST.get('load-dataset-size')] \
                     + '/shards --recursive'
     command_run_local(dns_name, local_command)
 
