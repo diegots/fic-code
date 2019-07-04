@@ -33,7 +33,7 @@ def command_base(cluster_id, step):
 def step_load_data(cluster_id, path):
     args = 's3-dist-cp,--src,s3://' + settings.TFG_BUCKET_NAME + path + ',--dest,/input'  # /input
     step = ['Name', '=', 'load_data', ',',
-            'Jar', '=', 'command-runner.jar', ',' ,
+            'Jar', '=', 'command-runner.jar', ',',
             'ActionOnFailure', '=', 'CANCEL_AND_WAIT', ',',
             'Type', '=', 'CUSTOM_JAR', ',',
             'Args', '=', args]
@@ -139,11 +139,12 @@ def cluster_state(state):
 
 def append_to_context(response):
     data = []
-    for cluster in response['Clusters']:
-        cluster_id = cluster['Id']
-        name = cluster['Name']
-        state = cluster_state(cluster['Status']['State'])
+    for i in response['Clusters']:
+        cluster_id = i['Id']
+        name = i['Name']
+        state = cluster_state(i['Status']['State'])
         data.append({'id': cluster_id, 'name': name, 'state': state})
+
     return data
 
 
@@ -177,8 +178,8 @@ def cluster_launch_action(request):
     cluster_name = request.POST.get('cluster_name', 'unnamed')
     cluster_instances = request.POST.get('cluster_instances', '0')
 
-    result = command_launch_cluster(cluster_name, cluster_instances)
-    cluster_id = json.loads(result.decode())['ClusterId']
+    res = command_launch_cluster(cluster_name, cluster_instances)
+    cluster_id = json.loads(res.decode())['ClusterId']
 
     # Save data into BBDD
     c = Cluster(cluster_id=cluster_id, number_nodes=cluster_instances)
@@ -257,17 +258,17 @@ def recommend_load_action(request):
     # First get cluster data
     cluster_id = request.POST.get('load-cluster-id')
     try:
-        cluster = Cluster.objects.get(cluster_id=cluster_id)
+        current_cluster = Cluster.objects.get(cluster_id=cluster_id)
     except Cluster.DoesNotExist:
         return render(request, 'dashboard/error_cluster_does_not_exist.html', {'cluster_id': cluster_id})
 
     # Then load data into cluster
-    result = step_load_data(cluster_id, input_data_path[request.POST.get('load-dataset-size')])
-    step_id_load_data = ''.join(json.loads(result.decode())['StepIds'])
+    step_load_data_result = step_load_data(cluster_id, input_data_path[request.POST.get('load-dataset-size')])
+    step_id_load_data = ''.join(json.loads(step_load_data_result.decode())['StepIds'])
 
     # Now compute unique items
-    result = step_unique_items(cluster_id, str(cluster.number_nodes))
-    step_id_unique_items = ''.join(json.loads(result.decode())['StepIds'])
+    step_unique_items_result = step_unique_items(cluster_id, str(current_cluster.number_nodes))
+    step_id_unique_items = ''.join(json.loads(step_unique_items_result.decode())['StepIds'])
 
     # At last prepare redirect url
     base_url = reverse('dashboard:recommend-load-result')
@@ -295,8 +296,8 @@ def recommend_generate_shards_action(request):
     cluster_id = request.POST.get('load-cluster-id')
 
     # obtain dns name
-    result = command_describe_cluster(cluster_id)
-    dns_name = json.loads(result)['Cluster']['MasterPublicDnsName']
+    res = command_describe_cluster(cluster_id)
+    dns_name = json.loads(res)['Cluster']['MasterPublicDnsName']
 
     # copy jar
     local_command = 'aws s3 cp s3://' + settings.TFG_BUCKET_NAME + '/artifacts/generate.jar .'

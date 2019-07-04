@@ -1,7 +1,8 @@
 from django.db import models
 
+
 class Cluster(models.Model):
-    cluster_id = models.CharField(max_length=30) # cluster id example: j-1LE1XBWJF3OCF
+    cluster_id = models.CharField(max_length=30)  # cluster id example: j-1LE1XBWJF3OCF
     number_nodes = models.IntegerField()
     off_date = models.DateTimeField(null=True)
 
