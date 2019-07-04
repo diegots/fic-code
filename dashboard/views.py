@@ -110,7 +110,8 @@ def command_launch_cluster(name, instance_count):
                '--ec2-attributes', 'InstanceProfile=EMR_EC2_DefaultRole,KeyName=' + settings.TFG_SSH_KEY,
                '--instance-type', instance_type,
                '--release-label', 'emr-5.21.0',
-               '--instance-count', instance_count]
+               '--instance-count', instance_count,
+               '--applications', 'Name=Hadoop,Name=Ganglia']
     return subprocess.check_output(command)
 
 
