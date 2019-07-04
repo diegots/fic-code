@@ -2,6 +2,9 @@
 *.pyc
 *.sqlite3
 
+# Files
+global-vars.sh
+
 # Directories
 .idea/
 env_tfg/

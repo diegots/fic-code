@@ -1,5 +1,0 @@
-export TFG_SECRET_KEY="437n29c384xdz8t4z53itgukwszrenhtvgcukzsejhrdgn"
-export TFG_DEBUG="1"
-export TFG_ALLOWED_HOSTS="127.0.0.1"
-export TFG_BUCKET_NAME="fic-tfg-data-rbd7yz"
-export TFG_SSH_KEY="aws-amazon"
