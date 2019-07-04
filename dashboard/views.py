@@ -56,10 +56,10 @@ def step_recommendations(cluster_id, no_of_shards):
     results_dir = '/output'
     active_users_path = '/input/active-users/users.csv'
     unique_items_path = '/output/part-r-00000'
-    no_of_similarity_files = ''
-    evaluation_type = ''
-    evaluation_n_value = ''
-    seed_random_generator = ''
+    no_of_similarity_files = 'a'
+    evaluation_type = 'b'
+    evaluation_n_value = 'c'
+    seed_random_generator = 'd'
     args = dataset_path \
         + ',' + results_dir \
         + ',' + active_users_path \
@@ -73,11 +73,11 @@ def step_recommendations(cluster_id, no_of_shards):
     artifact_path = 's3://' + settings.TFG_BUCKET_NAME \
                     + '/artifacts/tfg-hadoop-recommend-with-eval.jar'
 
-    step = ['Name', '=', 'recommendations', ',',
+    step = ['Name', '=', 'recommend', ',',
             'Jar', '=', artifact_path, ',',
             'ActionOnFailure', '=',  'CONTINUE', ',',
             'Type', '=', 'CUSTOM_JAR', ',',
-            'Args', '=', args, ]
+            'Args', '=', args]
 
     return subprocess.check_output(command_base(cluster_id, step))
 
@@ -248,7 +248,14 @@ def recommend(request):
 
 @login_required
 def recommend_compute_action(request):
+    # get data from request
+    cluster_id = request.POST.get('load-cluster-id')
+    no_of_shards = request.POST.get('load-number-shards')
 
+    # generate step / compute stuff
+    step_recommend_result = step_recommendations(cluster_id, no_of_shards)
+
+    # At last prepare redirect url
     return HttpResponse('recommend_compute_action')
 
 
