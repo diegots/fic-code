@@ -24,33 +24,49 @@ input_data_path = {
 #
 # EMR steps utilized to perform all operations
 #
-def command_base(cluster_id, step):
+def get_step_command(cluster_id, step):
     return ['aws', 'emr', 'add-steps',
             '--cluster-id', cluster_id,
             '--steps', ''.join(step)]
 
 
-def step_load_data(cluster_id, path):
-    args = 's3-dist-cp,--src,s3://' + settings.TFG_BUCKET_NAME + path + ',--dest,/input'  # /input
-    step = ['Name', '=', 'load_data', ',',
-            'Jar', '=', 'command-runner.jar', ',',
+def run_step(step_name, args, cluster_id, artifact_path):
+    step = ['Name', '=', step_name, ',',
+            'Jar', '=', artifact_path, ',',
             'ActionOnFailure', '=', 'CANCEL_AND_WAIT', ',',
             'Type', '=', 'CUSTOM_JAR', ',',
             'Args', '=', args]
-    return subprocess.check_output(command_base(cluster_id, step))
+    return subprocess.check_output(get_step_command(cluster_id, step))
+
+
+def get_artifact_path_from_s3(artifact_name):
+    return 's3://' + settings.TFG_BUCKET_NAME + '/artifacts/' + artifact_name
+
+
+def step_load_data(cluster_id, path):
+    step_name = 'load_data'
+
+    args = 's3-dist-cp,--src,s3://' \
+           + settings.TFG_BUCKET_NAME \
+           + path \
+           + ',--dest,/input'  # /input
+
+    artifact_name = 'command-runner.jar'
+
+    return run_step(step_name, args, cluster_id, artifact_name)
 
 
 def step_unique_items(cluster_id, shards_number):
+    step_name = 'unique_items'
     args = '/input/dataset,/output,' + shards_number
-    step = ['Name', '=', 'unique-items', ',',
-            'Jar', '=', 's3://' + settings.TFG_BUCKET_NAME + '/artifacts/tfg-hadoop-generate-unique-items.jar', ',',
-            'ActionOnFailure', '=',  'CANCEL_AND_WAIT', ',',
-            'Type', '=', 'CUSTOM_JAR', ',',
-            'Args', '=', args]
-    return subprocess.check_output(command_base(cluster_id, step))
+    artifact_name = 'tfg-hadoop-generate-unique-items.jar'
+    artifact_path = get_artifact_path_from_s3(artifact_name)
+
+    return run_step(step_name, args, cluster_id, artifact_path)
 
 
-def step_recommendations(cluster_id, no_of_shards):
+def step_recommend(cluster_id, no_of_shards):
+    step_name = 'recommend'
 
     dataset_path = '/input/dataset'
     results_dir = '/output'
@@ -70,16 +86,10 @@ def step_recommendations(cluster_id, no_of_shards):
         + ',' + evaluation_n_value \
         + ',' + seed_random_generator
 
-    artifact_path = 's3://' + settings.TFG_BUCKET_NAME \
-                    + '/artifacts/tfg-hadoop-recommend-with-eval.jar'
+    artifact_name = 'tfg-hadoop-recommend-with-eval.jar'
+    artifact_path = get_artifact_path_from_s3(artifact_name)
 
-    step = ['Name', '=', 'recommend', ',',
-            'Jar', '=', artifact_path, ',',
-            'ActionOnFailure', '=',  'CONTINUE', ',',
-            'Type', '=', 'CUSTOM_JAR', ',',
-            'Args', '=', args]
-
-    return subprocess.check_output(command_base(cluster_id, step))
+    return run_step(step_name, args, cluster_id, artifact_path)
 
 
 #
@@ -253,7 +263,7 @@ def recommend_compute_action(request):
     no_of_shards = request.POST.get('load-number-shards')
 
     # generate step / compute stuff
-    step_recommend_result = step_recommendations(cluster_id, no_of_shards)
+    step_recommend_result = step_recommend(cluster_id, no_of_shards)
 
     # At last prepare redirect url
     return HttpResponse('recommend_compute_action')
