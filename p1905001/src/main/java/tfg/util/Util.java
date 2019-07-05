@@ -1,9 +1,6 @@
 package tfg.util;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.util.*;
 
 public class Util {
@@ -59,4 +56,49 @@ public class Util {
         return new Random(seed);
     }
 
+
+    public static void readLines(File file, ReadFileInterface readFile) {
+        try {
+
+            String line;
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            while ((line = br.readLine()) != null) {
+                readFile.doSomething(line);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static List<Integer> generateNRandomValues(Random generator, Integer min, Integer max, Integer amount) {
+
+        Integer actualMax = max - 1;
+        if (amount > actualMax-min+1) {
+            throw new IllegalArgumentException("Available values must be greater than the amount requested");
+        }
+
+        Set<Integer> values = new LinkedHashSet<>();
+        Iterator<Integer> iterator = generator.ints(min, actualMax).iterator();
+        while (values.size() < amount) {
+            values.add(iterator.next());
+        }
+
+        return new ArrayList<>(values);
+    }
+
+
+    public static void writeLine(String outFile, String line) {
+        BufferedWriter bufferedWriter;
+        try {
+            bufferedWriter = new BufferedWriter(new FileWriter(outFile, true));
+            bufferedWriter.append(line);
+            bufferedWriter.append('\n');
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
