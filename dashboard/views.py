@@ -1,14 +1,13 @@
-import json
-import subprocess
 from urllib.parse import urlencode
 
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.http import HttpResponse
 
+from .emr import *
+from .helper import *
 from .models import Cluster
 
 #
@@ -21,159 +20,16 @@ input_data_path = {
 }
 
 
-#
-# EMR steps utilized to perform all operations
-#
-def get_step_command(cluster_id, step):
-    return ['aws', 'emr', 'add-steps',
-            '--cluster-id', cluster_id,
-            '--steps', ''.join(step)]
-
-
-def run_step(step_name, args, cluster_id, artifact_path):
-    step = ['Name', '=', step_name, ',',
-            'Jar', '=', artifact_path, ',',
-            'ActionOnFailure', '=', 'CANCEL_AND_WAIT', ',',
-            'Type', '=', 'CUSTOM_JAR', ',',
-            'Args', '=', args]
-    return subprocess.check_output(get_step_command(cluster_id, step))
-
-
-def get_artifact_path_from_s3(artifact_name):
-    return 's3://' + settings.TFG_BUCKET_NAME + '/artifacts/' + artifact_name
-
-
-def step_load_data(cluster_id, path):
-    step_name = 'load_data'
-
-    args = 's3-dist-cp,--src,s3://' \
-           + settings.TFG_BUCKET_NAME \
-           + path \
-           + ',--dest,/input'  # /input
-
-    artifact_name = 'command-runner.jar'
-
-    return run_step(step_name, args, cluster_id, artifact_name)
-
-
-def step_unique_items(cluster_id, shards_number):
-    step_name = 'unique_items'
-    args = '/input/dataset,/output,' + shards_number
-    artifact_name = 'tfg-hadoop-generate-unique-items.jar'
-    artifact_path = get_artifact_path_from_s3(artifact_name)
-
-    return run_step(step_name, args, cluster_id, artifact_path)
-
-
-def step_recommend(cluster_id, no_of_shards):
-    step_name = 'recommend'
-
-    dataset_path = '/input/dataset'
-    results_dir = '/output'
-    active_users_path = '/input/active-users/users.csv'
-    unique_items_path = '/output/part-r-00000'
-    no_of_similarity_files = 'a'
-    evaluation_type = 'b'
-    evaluation_n_value = 'c'
-    seed_random_generator = 'd'
-    args = dataset_path \
-        + ',' + results_dir \
-        + ',' + active_users_path \
-        + ',' + unique_items_path \
-        + ',' + no_of_shards \
-        + ',' + no_of_similarity_files \
-        + ',' + evaluation_type \
-        + ',' + evaluation_n_value \
-        + ',' + seed_random_generator
-
-    artifact_name = 'tfg-hadoop-recommend-with-eval.jar'
-    artifact_path = get_artifact_path_from_s3(artifact_name)
-
-    return run_step(step_name, args, cluster_id, artifact_path)
-
-
-#
-# Commands to manipulate EMR clusters
-#
-def command_describe_cluster(cluster_id):
-    command = ['aws', 'emr', 'describe-cluster',
-               '--cluster-id', cluster_id]
-    return subprocess.check_output(command)
-
-
-def command_launch_cluster(name, instance_count):
-    instance_type = 'm1.medium'
-    command = ['aws', 'emr', 'create-cluster',
-               '--name', name,
-               '--log-uri', 's3://' + settings.TFG_BUCKET_NAME + '/logs',
-               '--service-role', 'EMR_DefaultRole',
-               '--ec2-attributes', 'InstanceProfile=EMR_EC2_DefaultRole,KeyName=' + settings.TFG_SSH_KEY,
-               '--instance-type', instance_type,
-               '--release-label', 'emr-5.21.0',
-               '--instance-count', instance_count,
-               '--applications', 'Name=Hadoop,Name=Ganglia']
-    return subprocess.check_output(command)
-
-
-def command_list_cluster(active):
-    if active is True:
-        command = ['aws', 'emr', 'list-clusters', '--active']
-    else:
-        command = ['aws', 'emr', 'list-clusters']
-    return json.loads(subprocess.check_output(command))
-
-
-def command_terminate_cluster(cluster_id):
-    command = ['aws', 'emr', 'terminate-clusters',
-               '--cluster-ids', cluster_id]
-    return subprocess.check_output(command)
-
-
-# Compute locally on the master node
-def command_run_local(host, remote_command):
-    command = ['ssh', '-oStrictHostKeyChecking=no',
-               '-i', settings.TFG_SSH_KEY,
-               'ec2-user@' + host, remote_command]
-    return subprocess.check_output(command)
-
-
-#
-# Helper functions
-#
-def cluster_state(state):
-    on_states = ['STARTING', 'BOOTSTRAPPING', 'RUNNING', 'WAITING']
-    if state in on_states:
-        return 'On'
-
-    return 'Off'
-
-
-def append_to_context(response):
-    data = []
-    for i in response['Clusters']:
-        cluster_id = i['Id']
-        name = i['Name']
-        state = cluster_state(i['Status']['State'])
-        data.append({'id': cluster_id, 'name': name, 'state': state})
-
-    return data
-
-
-def get_context_data():
-    context = {
-        'name_app': 'cluster'
-    }
-    return context
-
-
-#
-# Views
-#
+# ##### #
+# Views #
+# ##### #
 @login_required
 def index(request):
     return render(request, 'dashboard/dashboard.html')
 
-
+#
+# Cluster section
+#
 @login_required
 def cluster(request):
     return render(request, 'dashboard/cluster.html')
@@ -192,7 +48,7 @@ def cluster_launch_action(request):
     res = command_launch_cluster(cluster_name, cluster_instances)
     cluster_id = json.loads(res.decode())['ClusterId']
 
-    # Save data into BBDD
+    # Save data into database
     c = Cluster(cluster_id=cluster_id, number_nodes=cluster_instances)
     c.save()
 
@@ -211,6 +67,7 @@ def cluster_launch_result(request):
     context['cluster_name'] = request.GET.get('cluster_name')
     context['cluster_instances'] = int(request.GET.get('cluster_instances'))
     context['cluster_id'] = request.GET.get('cluster_id')
+
     return render(request, 'dashboard/cluster_launch_result.html', context)
 
 
@@ -236,7 +93,9 @@ def cluster_terminate_action(request):
 
     query_set = Cluster.objects.filter(cluster_id=cluster_id)
     if len(query_set) < 1:
-        return render(request, 'dashboard/error_cluster_does_not_exist.html', {'cluster_id': cluster_id})
+        return render(request,
+                      'dashboard/error_cluster_does_not_exist.html',
+                      {'cluster_id': cluster_id})
     else:
         if query_set[0].off_date is None:
             query_set[0].off_date = timezone.now()
@@ -244,7 +103,9 @@ def cluster_terminate_action(request):
             command_terminate_cluster(cluster_id)
             return redirect(reverse('dashboard:cluster-terminate-result'))
         else:
-            return render(request, 'dashboard/error_cluster_not_running.html', {'cluster_id': cluster_id})
+            return render(request,
+                          'dashboard/error_cluster_not_running.html',
+                          {'cluster_id': cluster_id})
 
 
 @login_required
@@ -252,6 +113,9 @@ def cluster_terminate_result(request):
     return render(request, 'dashboard/cluster_terminate_result.html')
 
 
+#
+# Recommendation section
+#
 @login_required
 def recommend(request):
     return render(request, 'dashboard/recommend.html')
@@ -263,11 +127,13 @@ def recommend_compute_action(request):
     cluster_id = request.POST.get('load-cluster-id')
     no_of_shards = request.POST.get('load-number-shards')
 
+    # TODO missing parameters for recommend action
+
     # generate step / compute stuff
     step_recommend_result = step_recommend(cluster_id, no_of_shards)
 
     # At last prepare redirect url
-    return HttpResponse('recommend_compute_action')
+    return HttpResponse('recommend_compute_action' + step_recommend_result)
 
 
 @login_required
@@ -275,23 +141,26 @@ def recommend_load_action(request):
 
     # First get cluster data
     cluster_id = request.POST.get('load-cluster-id')
-    try:
-        current_cluster = Cluster.objects.get(cluster_id=cluster_id)
-    except Cluster.DoesNotExist:
-        return render(request, 'dashboard/error_cluster_does_not_exist.html', {'cluster_id': cluster_id})
+
+    current_cluster = get_cluster_db(cluster_id)
+
+    if current_cluster is None:
+        return render(
+            request,
+            'dashboard/error_cluster_does_not_exist.html',
+            {'cluster_id': cluster_id})
 
     # Then load data into cluster
-    step_load_data_result = step_load_data(cluster_id, input_data_path[request.POST.get('load-dataset-size')])
-    step_id_load_data = ''.join(json.loads(step_load_data_result.decode())['StepIds'])
+    step_load_data_result = step_load_data(
+        cluster_id,
+        input_data_path[request.POST.get('load-dataset-size')])
 
-    # Now compute unique items
-    step_unique_items_result = step_unique_items(cluster_id, str(current_cluster.number_nodes))
-    step_id_unique_items = ''.join(json.loads(step_unique_items_result.decode())['StepIds'])
+    step_id_load_data = ''.join(
+        json.loads(step_load_data_result.decode())['StepIds'])
 
     # At last prepare redirect url
     base_url = reverse('dashboard:recommend-load-result')
-    query_string = urlencode({'step_id_load_data': step_id_load_data,
-                              'step_id_unique_items': step_id_unique_items})
+    query_string = urlencode({'step_id_load_data': step_id_load_data})
     url = '{}?{}'.format(base_url, query_string)
     return redirect(url)
 
@@ -304,8 +173,24 @@ def recommend_load_result(request):
 
 
 @login_required
+def recommend_unique_items_action(request):
+
+    cluster_id = get_value_from_request(request, 'cluster_id')
+
+    # Now compute unique items
+    step_unique_items_result = \
+        step_unique_items(cluster_id, str(current_cluster.number_nodes))
+
+    step_id_unique_items = ''.join(json.loads(
+        step_unique_items_result.decode())['StepIds'])
+
+    # TODO prepare redirect URL
+    return HttpResponse('recommend_unique_items_action' + step_id_unique_items)
+
+
+@login_required
 def recommend_generate_active_users_action(request):
-    return None
+    return HttpResponse('recommend_generate_active_users_action')
 
 
 @login_required
@@ -318,7 +203,9 @@ def recommend_generate_shards_action(request):
     dns_name = json.loads(res)['Cluster']['MasterPublicDnsName']
 
     # copy jar
-    local_command = 'aws s3 cp s3://' + settings.TFG_BUCKET_NAME + '/artifacts/generate.jar .'
+    local_command = 'aws s3 cp s3://' \
+                    + settings.TFG_BUCKET_NAME \
+                    + '/artifacts/generate.jar .'
     command_run_local(dns_name, local_command)
 
     # copy dataset
@@ -335,7 +222,9 @@ def recommend_generate_shards_action(request):
     command_run_local(dns_name, local_command)
 
     # create dest dir and move splits there
-    local_command = 'rm -rf shards && mkdir shards && mv ' + request.POST.get('load-shard_prefix') + '*' + ' shards/'
+    local_command = 'rm -rf shards && mkdir shards && mv ' \
+                    + request.POST.get('load-shard_prefix') + '*' \
+                    + ' shards/'
     command_run_local(dns_name, local_command)
 
     # put shards back into S3
@@ -346,7 +235,7 @@ def recommend_generate_shards_action(request):
     command_run_local(dns_name, local_command)
 
     # load result page
-    return HttpResponse('response')
+    return HttpResponse('recommend_generate_shards_action')
 
 
 @login_required
@@ -354,6 +243,9 @@ def recommend_generate_shards_result(request):
     return None
 
 
+#
+# Results section
+#
 @login_required
 def result(request):
     return render(request, 'dashboard/result.html')
