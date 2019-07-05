@@ -21,12 +21,61 @@
 
 {% block main_one %}
 <div class="row">
-  <div class="col-md-12 ">
-    <h1>Compute recommendations</h1>
+    <div class="col-md-12 ">
+    <h3>First step</h3>
+    <p>First step loads needed data from storage (S3) to the cluster and computes unique items. Choose both dataset size and cluster id.</p>
+  </div>
+  <div class="col-md-12">
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-load-tab" data-toggle="tab" href="#nav-load" role="tab" aria-controls="nav-home" aria-selected="true">Load data</a>
+        <a class="nav-item nav-link" id="nav-unique-items-tab" data-toggle="tab" href="#nav-unique-items" role="tab" aria-controls="nav-profile" aria-selected="false">Unique items</a>
+        <a class="nav-item nav-link" id="nav-active-users-tab" data-toggle="tab" href="#nav-active-users" role="tab" aria-controls="nav-contact" aria-selected="false">Active users</a>
+        <a class="nav-item nav-link" id="nav-shards-tab" data-toggle="tab" href="#nav-shards" role="tab" aria-controls="nav-contact" aria-selected="false">Generate shards</a>
+        <a class="nav-item nav-link" id="nav-similarity-tab" data-toggle="tab" href="#nav-similarity" role="tab" aria-controls="nav-contact" aria-selected="false">Compute similarity</a>
+        <a class="nav-item nav-link" id="nav-recommend-tab" data-toggle="tab" href="#nav-recommend" role="tab" aria-controls="nav-contact" aria-selected="false">Recommend</a>
+      </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="nav-load" role="tabpanel" aria-labelledby="nav-load-tab">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="load-dataset-size">Movielens dataset size</label>
+                <select class="form-control" id="load-dataset-size" name="load-dataset-size">
+                    <option>100k</option>
+                    <option>1M</option>
+                    <option>10M</option>
+                    <option>20M</option>
+                </select>
+
+                <label for="load-cluster-id">Cluster Id</label>
+                <input type="text" class="form-control" id="load-cluster-id" name="load-cluster-id" placeholder="Starts with j-" required>
+            </div>
+            <button type="submit" class="btn btn-primary" formaction="{% url 'dashboard:recommend-load-action' %}">Prepare data</button>
+        </form>
+      </div>
+      <div class="tab-pane fade" id="nav-unique-items" role="tabpanel" aria-labelledby="nav-unique-items-tab">
+        Compute unique items
+      </div>
+      <div class="tab-pane fade" id="nav-active-users" role="tabpanel" aria-labelledby="nav-active-users-tab">
+        Generate active users
+      </div>
+      <div class="tab-pane fade" id="nav-shards" role="tabpanel" aria-labelledby="nav-shards-tab">
+        Generate shards
+      </div>
+      <div class="tab-pane fade" id="nav-similarity" role="tabpanel" aria-labelledby="nav-similarity-tab">
+        Compute neighborhood similarities
+      </div>
+      <div class="tab-pane fade" id="nav-recommend" role="tabpanel" aria-labelledby="nav-recommend-tab">
+        Compute recommendations
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- load data && compute unique items -->
+<!--
 <div class="row">
   <div class="col-md-12 ">
     <h3>First step</h3>
@@ -71,4 +120,5 @@
       </form>
   </div>
 </div>
+-->
 {% endblock %}
