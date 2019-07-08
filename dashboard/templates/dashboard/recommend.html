@@ -1,6 +1,6 @@
 {% extends "dashboard/dashboard.html" %}
 
-{% block title %} {{ block.super }} :: recommend{% endblock %}
+{% block title %} {{ block.super }} :: recommendations{% endblock %}
 
 {% block header_menu_list %}
 <ul class="navbar-nav mr-auto">
@@ -8,13 +8,13 @@
     <a class="nav-link" href="{% url 'dashboard:index' %}">Home <span class="sr-only">(current)</span></a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="{% url 'dashboard:cluster-list' %}">Cluster</a>
+    <a class="nav-link" href="{% url 'dashboard:cluster-list' %}">Clusters</a>
   </li>
   <li class="nav-item active">
-    <a class="nav-link" href="{% url 'dashboard:recommend' %}">Recommend</a>
+    <a class="nav-link" href="{% url 'dashboard:recommend' %}">Recommendations</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="{% url 'dashboard:result' %}">Result</a>
+    <a class="nav-link" href="{% url 'dashboard:result' %}">Results</a>
   </li>
 </ul>
 {% endblock %}
@@ -22,8 +22,8 @@
 {% block main_one %}
 <div class="row">
     <div class="col-md-12 ">
-    <h3>First step</h3>
-    <p>First step loads needed data from storage (S3) to the cluster and computes unique items. Choose both dataset size and cluster id.</p>
+    <h3>Tasks</h3>
+    <p>This page shows the tasks that can be performed to compute recommendations</p>
   </div>
   <div class="col-md-12">
     <nav>
@@ -37,6 +37,7 @@
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
+      <!-- Load data tab content -->
       <div class="tab-pane fade show active" id="nav-load" role="tabpanel" aria-labelledby="nav-load-tab">
         <form method="post">
             {% csrf_token %}
@@ -48,25 +49,34 @@
                     <option>10M</option>
                     <option>20M</option>
                 </select>
-
                 <label for="load-cluster-id">Cluster Id</label>
                 <input type="text" class="form-control" id="load-cluster-id" name="load-cluster-id" placeholder="Starts with j-" required>
             </div>
             <button type="submit" class="btn btn-primary" formaction="{% url 'dashboard:recommend-load-action' %}">Prepare data</button>
         </form>
       </div>
+
+      <!-- Unique items content -->
       <div class="tab-pane fade" id="nav-unique-items" role="tabpanel" aria-labelledby="nav-unique-items-tab">
         Compute unique items
       </div>
+
+      <!-- Active users content-->
       <div class="tab-pane fade" id="nav-active-users" role="tabpanel" aria-labelledby="nav-active-users-tab">
         Generate active users
       </div>
+
+      <!-- Active users content-->
       <div class="tab-pane fade" id="nav-shards" role="tabpanel" aria-labelledby="nav-shards-tab">
         Generate shards
       </div>
+
+      <!-- Compute similarities content-->
       <div class="tab-pane fade" id="nav-similarity" role="tabpanel" aria-labelledby="nav-similarity-tab">
         Compute neighborhood similarities
       </div>
+
+      <!-- Compute recommendations content-->
       <div class="tab-pane fade" id="nav-recommend" role="tabpanel" aria-labelledby="nav-recommend-tab">
         Compute recommendations
       </div>
