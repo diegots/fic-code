@@ -1,3 +1,5 @@
+from django.shortcuts import render
+
 from .models import Cluster
 
 
@@ -14,6 +16,13 @@ def get_cluster_db(cluster_id):
         return Cluster.objects.get(cluster_id=cluster_id)
     except Cluster.DoesNotExist:
         return None
+
+
+def render_cluster_doesnt_exist(request, cluster_id):
+    return render(
+        request,
+        'dashboard/error_cluster_does_not_exist.html',
+        {'cluster_id': cluster_id})
 
 
 def get_value_from_request(request, key, default):

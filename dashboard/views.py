@@ -141,14 +141,10 @@ def recommend_load_action(request):
 
     # First get cluster data
     cluster_id = request.POST.get('load-cluster-id')
-
     current_cluster = get_cluster_db(cluster_id)
 
     if current_cluster is None:
-        return render(
-            request,
-            'dashboard/error_cluster_does_not_exist.html',
-            {'cluster_id': cluster_id})
+        return render_cluster_doesnt_exist(request, cluster_id)
 
     # Then load data into cluster
     step_load_data_result = step_load_data(
@@ -176,6 +172,10 @@ def recommend_load_result(request):
 def recommend_unique_items_action(request):
 
     cluster_id = get_value_from_request(request, 'cluster_id')
+    current_cluster = get_cluster_db(cluster_id)
+
+    if current_cluster is None:
+        return render_cluster_doesnt_exist(request, cluster_id)
 
     # Now compute unique items
     step_unique_items_result = \
