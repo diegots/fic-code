@@ -96,9 +96,8 @@ def command_launch_cluster(name, instance_count):
                '--service-role', 'EMR_DefaultRole',
                '--ec2-attributes', instance_profile,
                '--instance-type', instance_type,
-               '--release-label', 'emr-5.21.0',
-               '--instance-count', instance_count,
-               '--applications', 'Name=Hadoop,Name=Ganglia']
+               '--release-label', 'emr-5.24.1',
+               '--instance-count', instance_count,]
 
     return subprocess.check_output(command)
 
