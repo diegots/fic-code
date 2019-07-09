@@ -37,6 +37,7 @@
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
+
       <!-- Load data tab content -->
       <div class="tab-pane fade show active" id="nav-load" role="tabpanel" aria-labelledby="nav-load-tab">
         <form method="post">
@@ -59,24 +60,39 @@
       <!-- Unique items content -->
       <div class="tab-pane fade" id="nav-unique-items" role="tabpanel" aria-labelledby="nav-unique-items-tab">
         Compute unique items
+        <form method="post">
+        {% csrf_token %}
+          <div class="form-group">
+            <label for="load-dataset-size">Movielens dataset size</label>
+            <select class="form-control" id="unique-it ems-dataset-size" name="unique-items-dataset-size">
+              <option>100k</option>
+              <option>1M</option>
+              <option>10M</option>
+              <option>20M</option>
+            </select>
+            <label for="load-cluster-id">Cluster Id</label>
+            <input type="text" class="form-control" id="unique-items-id" name="unique-items-id" placeholder="Starts with j-" required>
+          </div>
+          <button type="submit" class="btn btn-primary" formaction="{% url 'dashboard:recommend-unique-items-action' %}">Unique items</button>
+        </form>
       </div>
 
-      <!-- Active users content-->
+      <!-- Active users content -->
       <div class="tab-pane fade" id="nav-active-users" role="tabpanel" aria-labelledby="nav-active-users-tab">
         Generate active users
       </div>
 
-      <!-- Active users content-->
+      <!-- Shards content -->
       <div class="tab-pane fade" id="nav-shards" role="tabpanel" aria-labelledby="nav-shards-tab">
         Generate shards
       </div>
 
-      <!-- Compute similarities content-->
+      <!-- Compute similarities content -->
       <div class="tab-pane fade" id="nav-similarity" role="tabpanel" aria-labelledby="nav-similarity-tab">
         Compute neighborhood similarities
       </div>
 
-      <!-- Compute recommendations content-->
+      <!-- Compute recommendations content -->
       <div class="tab-pane fade" id="nav-recommend" role="tabpanel" aria-labelledby="nav-recommend-tab">
         Compute recommendations
       </div>

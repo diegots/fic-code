@@ -14,9 +14,11 @@ from .models import Cluster
 # Actual base paths on S3 where input data is kept. One entry for every
 # dataset size
 #
-input_data_path = {
+input_dataset_path = {
     '100k': '/input-100k',
-    '1M': '/input-1m'
+    '1M': '/input-1m',
+    '10M': '/input-10m',
+    '20M': '/input-20m',
 }
 
 
@@ -122,21 +124,6 @@ def recommend(request):
 
 
 @login_required
-def recommend_compute_action(request):
-    # get data from request
-    cluster_id = request.POST.get('load-cluster-id')
-    no_of_shards = request.POST.get('load-number-shards')
-
-    # TODO missing parameters for recommend action
-
-    # generate step / compute stuff
-    step_recommend_result = step_recommend(cluster_id, no_of_shards)
-
-    # At last prepare redirect url
-    return HttpResponse('recommend_compute_action' + step_recommend_result)
-
-
-@login_required
 def recommend_load_action(request):
 
     # First get cluster data
@@ -149,7 +136,7 @@ def recommend_load_action(request):
     # Then load data into cluster
     step_load_data_result = step_load_data(
         cluster_id,
-        input_data_path[request.POST.get('load-dataset-size')])
+        input_dataset_path[request.POST.get('load-dataset-size')])
 
     step_id_load_data = ''.join(
         json.loads(step_load_data_result.decode())['StepIds'])
@@ -211,7 +198,7 @@ def recommend_generate_shards_action(request):
     # copy dataset
     local_command = 'aws s3 cp s3://' \
                     + settings.TFG_BUCKET_NAME \
-                    + input_data_path[request.POST.get('load-dataset-size')] \
+                    + input_dataset_path[request.POST.get('load-dataset-size')] \
                     + '/dataset/ratings.csv .'
     command_run_local(dns_name, local_command)
 
@@ -230,7 +217,7 @@ def recommend_generate_shards_action(request):
     # put shards back into S3
     local_command = 'aws s3 mv shards s3://' \
                     + settings.TFG_BUCKET_NAME \
-                    + input_data_path[request.POST.get('load-dataset-size')] \
+                    + input_dataset_path[request.POST.get('load-dataset-size')] \
                     + '/shards --recursive'
     command_run_local(dns_name, local_command)
 
@@ -241,6 +228,24 @@ def recommend_generate_shards_action(request):
 @login_required
 def recommend_generate_shards_result(request):
     return None
+
+
+# TODO recommend_similarities
+
+
+@login_required
+def recommend_compute_action(request):
+    # get data from request
+    cluster_id = request.POST.get('load-cluster-id')
+    no_of_shards = request.POST.get('load-number-shards')
+
+    # TODO missing parameters for recommend action
+
+    # generate step / compute stuff
+    step_recommend_result = step_recommend(cluster_id, no_of_shards)
+
+    # At last prepare redirect url
+    return HttpResponse('recommend_compute_action' + step_recommend_result)
 
 
 #
