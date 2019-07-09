@@ -40,9 +40,12 @@
 
       <!-- Load data tab content -->
       <div class="tab-pane fade show active" id="nav-load" role="tabpanel" aria-labelledby="nav-load-tab">
+        <p>Choose both a dataset size and an active cluster to load data from S3 to HDFS.</p>
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
+                <!-- if the user clicks on the text within the <label> element, it toggles the control
+                     https://www.w3schools.com/tags/tag_label.asp -->
                 <label for="load-dataset-size">Movielens dataset size</label>
                 <select class="form-control" id="load-dataset-size" name="load-dataset-size">
                     <option>100k</option>
@@ -50,16 +53,16 @@
                     <option>10M</option>
                     <option>20M</option>
                 </select>
-                <label for="load-cluster-id">Cluster Id</label>
+                <label for="load-cluster-id">Active cluster Id</label>
                 <input type="text" class="form-control" id="load-cluster-id" name="load-cluster-id" placeholder="Starts with j-" required>
             </div>
-            <button type="submit" class="btn btn-primary" formaction="{% url 'dashboard:recommend-load-action' %}">Prepare data</button>
+            <button type="submit" class="btn btn-primary" formaction="{% url 'dashboard:recommend-load-action' %}">Load</button>
         </form>
       </div>
 
       <!-- Unique items content -->
       <div class="tab-pane fade" id="nav-unique-items" role="tabpanel" aria-labelledby="nav-unique-items-tab">
-        Compute unique items
+        <p>Launch a Hadoop job to compute both the list of unique items and the max item Id. A dataset size and cluster Id is needed.</p>
         <form method="post">
         {% csrf_token %}
           <div class="form-group">
@@ -73,7 +76,7 @@
             <label for="load-cluster-id">Cluster Id</label>
             <input type="text" class="form-control" id="unique-items-id" name="unique-items-id" placeholder="Starts with j-" required>
           </div>
-          <button type="submit" class="btn btn-primary" formaction="{% url 'dashboard:recommend-unique-items-action' %}">Unique items</button>
+          <button type="submit" class="btn btn-primary" formaction="{% url 'dashboard:recommend-unique-items-action' %}">Compute unique items</button>
         </form>
       </div>
 
