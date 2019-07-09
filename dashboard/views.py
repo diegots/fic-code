@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.http import HttpResponse
 
-from .emr import *
+from .commands import *
 from .helper import *
 from .models import Cluster
 
@@ -159,7 +159,6 @@ def recommend_load_result(request):
 def recommend_unique_items_action(request):
 
     cluster_id = get_value_from_request(request, 'unique-items-cluster-id')
-    print("cluster_id: " + cluster_id)
     current_cluster = get_cluster_db(cluster_id)
 
     if current_cluster is None:
@@ -188,6 +187,21 @@ def recommend_unique_items_result(request):
 
 @login_required
 def recommend_generate_active_users_action(request):
+    dataset_size = \
+        input_dataset_path[request.POST.get('active-users-dataset-size')]
+    active_users_output_file = \
+        request.POST.get('active-users-output-file')
+    active_users_n_active_users = \
+        request.POST.get('active-users-n-active-users')
+    active_users_seed = \
+        request.POST.get('active-users-seed')
+
+    # run command
+
+    # upload files
+
+    # delete local generated files
+
     return HttpResponse('recommend_generate_active_users_action')
 
 

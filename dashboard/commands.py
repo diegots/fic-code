@@ -123,3 +123,15 @@ def command_run_local(host, remote_command):
                '-i', settings.TFG_SSH_KEY,
                'ec2-user@' + host, remote_command]
     return subprocess.check_output(command)
+
+
+def command_active_users(dataset_path, active_users, n_active_users, seed):
+    base_dir = "/home/diego/1.workspace"
+    script = 'fic-tfg-scripts/generate-active-users.sh'
+
+    command = [base_dir+'/'+script,
+               dataset_path,
+               active_users,
+               n_active_users,
+               seed]
+    return subprocess.check_output(command)

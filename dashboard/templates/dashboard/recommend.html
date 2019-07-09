@@ -100,7 +100,39 @@
 
       <!-- Active users content -->
       <div class="tab-pane fade" id="nav-active-users" role="tabpanel" aria-labelledby="nav-active-users-tab">
-        Generate active users
+        <p>Generate a list of active users, then upload it to HDFS for further processing.</p>
+        <form method="post">
+        {% csrf_token %}
+          <div class="form-group">
+            <label for="active-users-dataset-size">Movielens dataset size</label>
+            <select class="form-control" id="active-users-dataset-size" name="active-users-dataset-size">
+              <option>100k</option>
+              <option>1M</option>
+              <option>10M</option>
+              <option>20M</option>
+            </select>
+            <input type="hidden"
+                   id="active-users-output-file"
+                   name="active-users-output-file"
+                   value="active-users.csv">
+            <label for="active-users-n-active-users">Number of active users</label>
+            <input type="number"
+                   class="form-control"
+                   id="active-users-n-active-users"
+                   name="active-users-n-active-users"
+                   placeholder="15" required>
+            <label for="active-users-seed">Seed for the random generator</label>
+            <input type="number"
+                   class="form-control"
+                   id="active-users-seed"
+                   name="active-users-seed"
+                   placeholder="0" required>
+          </div>
+          <button
+                  type="submit"
+                  class="btn btn-primary"
+                  formaction="{% url 'dashboard:recommend-generate-active-users' %}">Generate active users</button>
+        </form>
       </div>
 
       <!-- Shards content -->
