@@ -115,7 +115,30 @@
 
       <!-- Compute recommendations content -->
       <div class="tab-pane fade" id="nav-recommend" role="tabpanel" aria-labelledby="nav-recommend-tab">
-        Compute recommendations
+        <p>Launch a Hadoop job to compute recommendations</p>
+        <form method="post">
+        {% csrf_token %}
+          <div class="form-group">
+            <label for="recommend-cluster-id">Cluster Id</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="recommend-cluster-id"
+                    name="recommend-cluster-id"
+                    placeholder="Starts with j-" required>
+            <label for="recommend-no-of-shards">Number of shards</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="recommend-no-of-shards"
+                    name="recommend-no-of-shards"
+                    placeholder="1" required>
+          </div>
+          <button
+                  type="submit"
+                  class="btn btn-primary"
+                  formaction="{% url 'dashboard:recommend-compute-action' %}">Compute unique items</button>
+        </form>
       </div>
     </div>
   </div>

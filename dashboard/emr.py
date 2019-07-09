@@ -20,6 +20,7 @@ def run_step(step_name, args, cluster_id, artifact_path):
             'ActionOnFailure', '=', 'CANCEL_AND_WAIT', ',',
             'Type', '=', 'CUSTOM_JAR', ',',
             'Args', '=', args]
+
     return subprocess.check_output(get_step_command(cluster_id, step))
 
 
@@ -59,7 +60,7 @@ def step_recommend(cluster_id, no_of_shards):
     no_of_similarity_files = 'a'
     evaluation_type = 'b'
     evaluation_n_value = 'c'
-    seed_random_generator = 'd'
+    seed_random_generator = '0'
     args = dataset_path \
         + ',' + results_dir \
         + ',' + active_users_path \

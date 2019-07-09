@@ -66,9 +66,13 @@ urlpatterns = [
          views.recommend_generate_shards_action,
          name='recommend-generate-shards-action'),
 
-    path('recommend/compute',
+    path('recommend/compute_action',
          views.recommend_compute_action,
          name='recommend-compute-action'),
+
+    path('recommend/recommend_compute_action_result',
+         views.recommend_compute_action_result,
+         name='recommend-compute-action-result'),
 
     path('result', views.result, name='result'),
 ]

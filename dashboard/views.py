@@ -247,17 +247,27 @@ def recommend_generate_shards_result(request):
 @login_required
 def recommend_compute_action(request):
     # get data from request
-    cluster_id = request.POST.get('load-cluster-id')
-    no_of_shards = request.POST.get('load-number-shards')
+    cluster_id = request.POST.get('recommend-cluster-id')
+    no_of_shards = request.POST.get('recommend-no-of-shards')
 
     # TODO missing parameters for recommend action
-
-    # generate step / compute stuff
     step_recommend_result = step_recommend(cluster_id, no_of_shards)
 
-    # At last prepare redirect url
-    return HttpResponse('recommend_compute_action' + step_recommend_result)
+    step_id_recommend = ''.join(json.loads(
+        step_recommend_result.decode())['StepIds'])
 
+    # At last prepare redirect url
+    base_url = reverse('dashboard:recommend-compute-action-result')
+    query_string = urlencode({'step_id_compute': step_id_recommend})
+    url = '{}?{}'.format(base_url, query_string)
+    return redirect(url)
+
+
+@login_required
+def recommend_compute_action_result(request):
+    context = get_context_data()
+    context['step_id'] = request.GET.get('step_id_compute')
+    return render(request, 'dashboard/recommend_step_result.html', context)
 
 #
 # Results section
