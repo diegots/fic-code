@@ -4,6 +4,7 @@
 
 # Files
 global-vars.sh
+manage.py
 
 # Directories
 .idea/
