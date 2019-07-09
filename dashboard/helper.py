@@ -25,11 +25,8 @@ def render_cluster_doesnt_exist(request, cluster_id):
         {'cluster_id': cluster_id})
 
 
-def get_value_from_request(request, key, default):
-    if default is not None:
-        return request.POST.get(key, default)
-    else:
-        return request.POST.get(key)
+def get_value_from_request(request, key):
+    return request.POST.get(key)
 
 
 def append_to_context(response):

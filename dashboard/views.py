@@ -151,14 +151,15 @@ def recommend_load_action(request):
 @login_required
 def recommend_load_result(request):
     context = get_context_data()
-    context['step_id'] = request.GET.get('step_id')
-    return render(request, 'dashboard/recommend_load_result.html', context)
+    context['step_id'] = request.GET.get('step_id_load_data')
+    return render(request, 'dashboard/recommend_step_result.html', context)
 
 
 @login_required
 def recommend_unique_items_action(request):
 
-    cluster_id = get_value_from_request(request, 'cluster_id')
+    cluster_id = get_value_from_request(request, 'unique-items-cluster-id')
+    print("cluster_id: " + cluster_id)
     current_cluster = get_cluster_db(cluster_id)
 
     if current_cluster is None:
@@ -171,8 +172,18 @@ def recommend_unique_items_action(request):
     step_id_unique_items = ''.join(json.loads(
         step_unique_items_result.decode())['StepIds'])
 
-    # TODO prepare redirect URL
-    return HttpResponse('recommend_unique_items_action' + step_id_unique_items)
+    # At last prepare redirect url
+    base_url = reverse('dashboard:recommend-unique-items-result')
+    query_string = urlencode({'step_id_unique_items': step_id_unique_items})
+    url = '{}?{}'.format(base_url, query_string)
+    return redirect(url)
+
+
+@login_required
+def recommend_unique_items_result(request):
+    context = get_context_data()
+    context['step_id'] = request.GET.get('step_id_unique_items')
+    return render(request, 'dashboard/recommend_step_result.html', context)
 
 
 @login_required

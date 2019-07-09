@@ -54,6 +54,10 @@ urlpatterns = [
          views.recommend_unique_items_action,
          name='recommend-unique-items-action'),
 
+    path('recommend/unique_items_result',
+         views.recommend_unique_items_result,
+         name='recommend-unique-items-result'),
+
     path('recommend/generate_active_users',
          views.recommend_generate_active_users_action,
          name='recommend-generate-active-users'),
