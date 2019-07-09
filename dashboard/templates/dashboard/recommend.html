@@ -54,9 +54,19 @@
                     <option>20M</option>
                 </select>
                 <label for="load-cluster-id">Active cluster Id</label>
-                <input type="text" class="form-control" id="load-cluster-id" name="load-cluster-id" placeholder="Starts with j-" required>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="load-cluster-id"
+                        name="load-cluster-id"
+                        placeholder="Starts with j-"
+                        required>
             </div>
-            <button type="submit" class="btn btn-primary" formaction="{% url 'dashboard:recommend-load-action' %}">Load</button>
+            <button
+                    type="submit"
+                    class="btn btn-primary"
+                    formaction="{% url 'dashboard:recommend-load-action' %}">Load
+            </button>
         </form>
       </div>
 
@@ -66,17 +76,25 @@
         <form method="post">
         {% csrf_token %}
           <div class="form-group">
-            <label for="load-dataset-size">Movielens dataset size</label>
-            <select class="form-control" id="unique-it ems-dataset-size" name="unique-items-dataset-size">
+            <label for="unique-items-dataset-size">Movielens dataset size</label>
+            <select class="form-control" id="unique-items-dataset-size" name="unique-items-dataset-size">
               <option>100k</option>
               <option>1M</option>
               <option>10M</option>
               <option>20M</option>
             </select>
-            <label for="load-cluster-id">Cluster Id</label>
-            <input type="text" class="form-control" id="unique-items-id" name="unique-items-id" placeholder="Starts with j-" required>
+            <label for="unique-items-cluster-id">Cluster Id</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="unique-items-cluster-id"
+                    name="unique-items-cluster-id"
+                    placeholder="Starts with j-" required>
           </div>
-          <button type="submit" class="btn btn-primary" formaction="{% url 'dashboard:recommend-unique-items-action' %}">Compute unique items</button>
+          <button
+                  type="submit"
+                  class="btn btn-primary"
+                  formaction="{% url 'dashboard:recommend-unique-items-action' %}">Compute unique items</button>
         </form>
       </div>
 
