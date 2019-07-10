@@ -5,8 +5,6 @@
 import subprocess
 import json
 
-from django.conf import settings
-
 from .paths import *
 
 
@@ -32,16 +30,16 @@ def step_load_data(cluster_id, path):
     args = 's3-dist-cp,--src,s3://' \
            + settings.TFG_BUCKET_NAME \
            + path \
-           + ',--dest,/input'  # /input
+           + ',--dest,' + path  # HDFS path
 
     artifact_name = 'command-runner.jar'
 
     return run_step(step_name, args, cluster_id, artifact_name)
 
 
-def step_unique_items(cluster_id, shards_number):
+def step_unique_items(cluster_id, shards_number, size):
     step_name = 'unique_items'
-    args = '/input/dataset,/output,' + shards_number
+    args = get_dataset_path_s3(size) + '/dataset,/output,' + shards_number
     artifact_name = 'tfg-hadoop-generate-unique-items.jar'
     artifact_path = get_artifact_from_s3(artifact_name)
 

@@ -148,6 +148,7 @@ def recommend_load_result(request):
 @login_required
 def recommend_unique_items_action(request):
     cluster_id = get_value_from_request(request, 'unique-items-cluster-id')
+    dataset_size = get_value_from_request(request, 'unique-items-dataset-size')
     current_cluster = get_cluster_db(cluster_id)
 
     if current_cluster is None:
@@ -155,7 +156,9 @@ def recommend_unique_items_action(request):
 
     # Now compute unique items
     step_unique_items_result = \
-        step_unique_items(cluster_id, str(current_cluster.number_nodes))
+        step_unique_items(cluster_id,
+                          str(current_cluster.number_nodes),
+                          dataset_size)
 
     step_id_unique_items = ''.join(json.loads(
         step_unique_items_result.decode())['StepIds'])
