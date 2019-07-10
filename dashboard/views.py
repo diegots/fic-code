@@ -1,25 +1,15 @@
 from urllib.parse import urlencode
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.http import HttpResponse
 
 from .commands import *
+from .paths import *
 from .helper import *
 from .models import Cluster
-
-#
-# Actual base paths on S3 where input data is kept. One entry for every
-# dataset size
-#
-input_dataset_path = {
-    '100k': '/input-100k',
-    '1M': '/input-1m',
-    '10M': '/input-10m',
-    '20M': '/input-20m',
-}
 
 
 # ##### #
@@ -136,7 +126,7 @@ def recommend_load_action(request):
     # Then load data into cluster
     step_load_data_result = step_load_data(
         cluster_id,
-        input_dataset_path[request.POST.get('load-dataset-size')])
+        get_dataset_path_s3(request.POST.get('load-dataset-size')))
 
     step_id_load_data = ''.join(
         json.loads(step_load_data_result.decode())['StepIds'])
@@ -187,8 +177,9 @@ def recommend_unique_items_result(request):
 
 @login_required
 def recommend_generate_active_users_action(request):
+
     dataset_size = \
-        input_dataset_path[request.POST.get('active-users-dataset-size')]
+        get_dataset_path_s3(request.POST.get('active-users-dataset-size'))
     active_users_output_file = \
         request.POST.get('active-users-output-file')
     active_users_n_active_users = \
@@ -197,6 +188,7 @@ def recommend_generate_active_users_action(request):
         request.POST.get('active-users-seed')
 
     # run command
+    # command_active_users('dataset_path', active_users_n_active_users,)
 
     # upload files
 
@@ -223,7 +215,7 @@ def recommend_generate_shards_action(request):
     # copy dataset
     local_command = 'aws s3 cp s3://' \
                     + settings.TFG_BUCKET_NAME \
-                    + input_dataset_path[request.POST.get('load-dataset-size')] \
+                    + get_dataset_path_s3(request.POST.get('load-dataset-size')) \
                     + '/dataset/ratings.csv .'
     command_run_local(dns_name, local_command)
 
@@ -242,7 +234,7 @@ def recommend_generate_shards_action(request):
     # put shards back into S3
     local_command = 'aws s3 mv shards s3://' \
                     + settings.TFG_BUCKET_NAME \
-                    + input_dataset_path[request.POST.get('load-dataset-size')] \
+                    + get_dataset_path_s3(request.POST.get('load-dataset-size')) \
                     + '/shards --recursive'
     command_run_local(dns_name, local_command)
 

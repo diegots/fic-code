@@ -7,6 +7,8 @@ import json
 
 from django.conf import settings
 
+from .paths import *
+
 
 def get_step_command(cluster_id, step):
     return ['aws', 'emr', 'add-steps',
@@ -125,13 +127,13 @@ def command_run_local(host, remote_command):
     return subprocess.check_output(command)
 
 
-def command_active_users(dataset_path, active_users, n_active_users, seed):
-    base_dir = "/home/diego/1.workspace"
-    script = 'fic-tfg-scripts/generate-active-users.sh'
+def command_active_users(dataset_size, output_file, n_active_users, seed):
 
-    command = [base_dir+'/'+script,
-               dataset_path,
-               active_users,
+    script_path = projects_base_dir + scripts_dir + 'generate-active-users.sh'
+
+    command = [script_path,
+               get_dataset_path_local(dataset_size),
+               output_file,
                n_active_users,
                seed]
     return subprocess.check_output(command)
