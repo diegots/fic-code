@@ -19,6 +19,7 @@ from .models import Cluster
 def index(request):
     return render(request, 'dashboard/dashboard.html')
 
+
 #
 # Cluster section
 #
@@ -115,7 +116,6 @@ def recommend(request):
 
 @login_required
 def recommend_load_action(request):
-
     # First get cluster data
     cluster_id = request.POST.get('load-cluster-id')
     current_cluster = get_cluster_db(cluster_id)
@@ -147,7 +147,6 @@ def recommend_load_result(request):
 
 @login_required
 def recommend_unique_items_action(request):
-
     cluster_id = get_value_from_request(request, 'unique-items-cluster-id')
     current_cluster = get_cluster_db(cluster_id)
 
@@ -177,22 +176,29 @@ def recommend_unique_items_result(request):
 
 @login_required
 def recommend_generate_active_users_action(request):
+    dataset_size = request.POST.get('active-users-dataset-size')
+    output_file = request.POST.get('active-users-output-file')
+    n_active_users = request.POST.get('active-users-n-active-users')
+    seed = request.POST.get('active-users-seed')
 
-    dataset_size = \
-        get_dataset_path_s3(request.POST.get('active-users-dataset-size'))
-    active_users_output_file = \
-        request.POST.get('active-users-output-file')
-    active_users_n_active_users = \
-        request.POST.get('active-users-n-active-users')
-    active_users_seed = \
-        request.POST.get('active-users-seed')
+    print('dataset_size: ' + dataset_size
+          + ', output_file: ' + output_file
+          + ', n_active_users: ' + n_active_users
+          + ', seed: ' + seed)
 
     # run command
-    # command_active_users('dataset_path', active_users_n_active_users,)
+    command_active_users_result = command_generate_active_users(dataset_size,
+                                                                output_file,
+                                                                n_active_users,
+                                                                seed)
 
-    # upload files
+    # print('command_active_users_result: \n'
+    #       + command_active_users_result.decode("utf-8"))
 
-    # delete local generated files
+    # upload file to S3
+    command_move_file_bucket(output_file,
+                             get_data_dir() + '/' + active_users_dir)
+    command_sync_bucket()
 
     return HttpResponse('recommend_generate_active_users_action')
 
@@ -215,7 +221,8 @@ def recommend_generate_shards_action(request):
     # copy dataset
     local_command = 'aws s3 cp s3://' \
                     + settings.TFG_BUCKET_NAME \
-                    + get_dataset_path_s3(request.POST.get('load-dataset-size')) \
+                    + get_dataset_path_s3(
+        request.POST.get('load-dataset-size')) \
                     + '/dataset/ratings.csv .'
     command_run_local(dns_name, local_command)
 
@@ -274,6 +281,7 @@ def recommend_compute_action_result(request):
     context = get_context_data()
     context['step_id'] = request.GET.get('step_id_compute')
     return render(request, 'dashboard/recommend_step_result.html', context)
+
 
 #
 # Results section

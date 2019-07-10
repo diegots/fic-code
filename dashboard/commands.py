@@ -26,10 +26,6 @@ def run_step(step_name, args, cluster_id, artifact_path):
     return subprocess.check_output(get_step_command(cluster_id, step))
 
 
-def get_artifact_path_from_s3(artifact_name):
-    return 's3://' + settings.TFG_BUCKET_NAME + '/artifacts/' + artifact_name
-
-
 def step_load_data(cluster_id, path):
     step_name = 'load_data'
 
@@ -47,7 +43,7 @@ def step_unique_items(cluster_id, shards_number):
     step_name = 'unique_items'
     args = '/input/dataset,/output,' + shards_number
     artifact_name = 'tfg-hadoop-generate-unique-items.jar'
-    artifact_path = get_artifact_path_from_s3(artifact_name)
+    artifact_path = get_artifact_from_s3(artifact_name)
 
     return run_step(step_name, args, cluster_id, artifact_path)
 
@@ -74,7 +70,7 @@ def step_recommend(cluster_id, no_of_shards):
         + ',' + seed_random_generator
 
     artifact_name = 'tfg-hadoop-recommend-with-eval.jar'
-    artifact_path = get_artifact_path_from_s3(artifact_name)
+    artifact_path = get_artifact_from_s3(artifact_name)
 
     return run_step(step_name, args, cluster_id, artifact_path)
 
@@ -127,13 +123,23 @@ def command_run_local(host, remote_command):
     return subprocess.check_output(command)
 
 
-def command_active_users(dataset_size, output_file, n_active_users, seed):
-
-    script_path = projects_base_dir + scripts_dir + 'generate-active-users.sh'
-
-    command = [script_path,
+def command_generate_active_users(dataset_size, output_file, n_active_users, seed):
+    command = [get_script_active_users(),
                get_dataset_path_local(dataset_size),
                output_file,
                n_active_users,
                seed]
+    return subprocess.check_output(command)
+
+
+def command_move_file_bucket(file_path, dest):
+    command = ['mv', '-v', file_path, dest]
+    return subprocess.check_output(command)
+
+
+def command_sync_bucket():
+    command = ['aws', 's3', 'sync',
+               get_data_dir(),
+               get_bucket_dir(),
+               '--delete']
     return subprocess.check_output(command)
