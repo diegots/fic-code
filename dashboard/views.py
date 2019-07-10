@@ -195,12 +195,11 @@ def recommend_generate_active_users_action(request):
     # print('command_active_users_result: \n'
     #       + command_active_users_result.decode("utf-8"))
 
-    # upload file to S3
     command_move_file_bucket(output_file,
                              get_data_dir() + '/' + active_users_dir)
     command_sync_bucket()
 
-    return HttpResponse('recommend_generate_active_users_action')
+    return render(request, 'dashboard/recommend_active_users_result.html')
 
 
 @login_required
