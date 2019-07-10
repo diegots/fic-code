@@ -51,9 +51,9 @@ def step_unique_items(cluster_id, shards_number):
 def step_recommend(cluster_id, no_of_shards):
     step_name = 'recommend'
 
-    dataset_path = '/input/dataset'
+    dataset_path = '/input/dataset'  # TODO fix input path
     results_dir = '/output'
-    active_users_path = '/input/active-users/users.csv'
+    active_users_path = '/input/active-users/active-users.csv'
     unique_items_path = '/output/part-r-00000'
     no_of_similarity_files = 'a'
     evaluation_type = 'b'
