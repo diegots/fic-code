@@ -3,7 +3,6 @@
 *.sqlite3
 
 # Files
-manage.py
 
 # Directories
 .idea/
