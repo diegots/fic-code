@@ -5,6 +5,11 @@
 
 # Root dir for the application, e.g:
 # DJANGO_ROOT_DIR="$HOME/path_to_repo"
+DJANGO_ROOT_DIR=""
+
+# Virtualenv directory name
+# This is the name given to the virtualenv folder.
+VIRTUALENV_DIR_NAME=''
 
 # With the global variables set up, this script is meant to be manually run with
 # 'source'  command like:
@@ -19,7 +24,7 @@
 export DJANGO_ROOT_DIR
 
 # Start python virtualenv
-source $DJANGO_ROOT_DIR/env-tfg/bin/activate
+source $DJANGO_ROOT_DIR/$VIRTUALENV_DIR_NAME/bin/activate
 
 # Activate Django global parameters
 source $DJANGO_ROOT_DIR/scripts/global-vars.sh
