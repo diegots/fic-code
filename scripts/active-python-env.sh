@@ -5,7 +5,6 @@
 
 # Root dir for the application, e.g:
 # DJANGO_ROOT_DIR="$HOME/path_to_repo"
-DJANGO_ROOT_DIR="$HOME/1.workspace/fic-tfg-django-web"
 
 # With the global variables set up, this script is meant to be manually run with
 # 'source'  command like:
