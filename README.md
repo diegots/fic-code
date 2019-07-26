@@ -40,7 +40,15 @@ La creación y configuración de la base de datos se realiza con dos comandos:
 1. ```source scripts/active-python-env.sh```
 2. ```python manage.py migrate```
 
-El primero activa el entorno virtual recién creado y el segundo genera la BD. Para finalizar el entorno virtual se puede cerrar la consola o bien usar ```deactivate```. Con este paso se finaliza la instalación.
+El primero activa el entorno virtual recién creado y el segundo genera la BD.
+
+## Crear un usuario administrador
+Para crear un primer usuario, se utiliza ```manage.py```: 
+```python manage.py createsuperuser --username=joe --email=joe@example.com```
+
+A partir de ahí la consola de administración de Django está accesible en <http://127.0.0.1:8000/admin/>
+
+Para finalizar el entorno virtual se puede cerrar la consola o bien usar ```deactivate```. Con este paso se finaliza la instalación.
 
 # Inicio normal del servicio
 Para iniciar el servicio hechos los pasos anteriorres, basta con ejecutar:
