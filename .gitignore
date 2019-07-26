@@ -3,7 +3,6 @@
 *.sqlite3
 
 # Files
-global-vars.sh
 manage.py
 
 # Directories
