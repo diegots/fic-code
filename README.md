@@ -11,6 +11,7 @@
 - Ubuntu 18.04
 - Python 3.6.7
 - Django 2.2
+- Bootstrap 4.1.3
 
 ## Descarga del software
 1. Instalar ```pip3```: ```sudo apt-get install python3-pip```.
@@ -21,7 +22,7 @@
 6. Instalar Django 2.2: ```pip3 install 'django==2.2'```.
 7. (Opcional) Para comprobar que Django está correctamente instalado se puede ejecutar: ```python -m django --version```, lo cual deberá mostrar el número de versión instalado o un error en caso de que algo haya salido mal.
 
-Ya se puede desactivar el entorno virtual: ```deactivate```.
+Bootstrap y sus dependencias ya están incluidos en las rutas ```static/css``` y ```static/js```, por lo cual no es necesario instalarlos. Ahora ya se puede desactivar el entorno virtual: ```deactivate```.
 
 ## Configuración
 Es necesario configurar varios parámetros para la correcta ejecución de la aplicación. Los ficheros a editar son:
