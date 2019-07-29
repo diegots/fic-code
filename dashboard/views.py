@@ -36,19 +36,19 @@ def cluster_launch(request):
 @login_required
 def cluster_launch_action(request):
     cluster_name = request.POST.get('cluster_name', 'unnamed')
-    cluster_instances = request.POST.get('cluster_instances', '0')
+    number_nodes = request.POST.get('cluster_instances', '0')
 
-    res = command_launch_cluster(cluster_name, cluster_instances)
+    res = command_launch_cluster(cluster_name, number_nodes)
     cluster_id = json.loads(res.decode())['ClusterId']
 
     # Save data into database
-    c = Cluster(cluster_id=cluster_id, number_nodes=cluster_instances)
+    c = Cluster(cluster_id=cluster_id, number_nodes=number_nodes)
     c.save()
 
     # Create url
     base_url = reverse('dashboard:cluster-launch-result')
     query_string = urlencode({'cluster_name': cluster_name,
-                              'cluster_instances': cluster_instances,
+                              'cluster_instances': number_nodes,
                               'cluster_id': cluster_id})
     url = '{}?{}'.format(base_url, query_string)
     return redirect(url)
