@@ -44,13 +44,18 @@ def append_to_context(response):
         if 'ReadyDateTime' in i['Status']['Timeline']:
             ready_date_time = i['Status']['Timeline']['ReadyDateTime']
 
+        end_date_time = ''
+        if 'ReadyDateTime' in i['Status']['Timeline']:
+            end_date_time = i['Status']['Timeline']['EndDateTime']
+
         # TODO missing number of nodes
         # TODO missing DNS name
         data.append({
             'id': cluster_id,
             'name': name,
             'state': state,
-            'ready_date_time': ready_date_time})
+            'ready_date_time': ready_date_time,
+            'end_date_time': end_date_time})
 
     return data
 

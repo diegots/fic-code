@@ -66,7 +66,7 @@ def cluster_launch_result(request):
 
 @login_required
 def cluster_list(request):
-    cluster_list_response = command_list_cluster(True)
+    cluster_list_response = command_list_cluster(False)
     context = get_context_data()
     context['data'] = append_to_context(cluster_list_response)
     return render(request, 'dashboard/cluster_list.html', context)
