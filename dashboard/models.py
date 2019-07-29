@@ -15,7 +15,7 @@ class Cluster(models.Model):
     number_nodes = models.IntegerField()
 
     # date when the cluster turn on and off
-    on_date = models.DateTimeField(null=True)
+    ready_date_time = models.DateTimeField(null=True)
     off_date = models.DateTimeField(null=True)
 
     # master public dns used to ssh into the cluster

@@ -4,9 +4,13 @@ from .models import Cluster
 
 
 def cluster_state(state):
-    on_states = ['STARTING', 'BOOTSTRAPPING', 'RUNNING', 'WAITING']
+    on_states = ['RUNNING', 'WAITING']
+    booting_states = ['STARTING', 'BOOTSTRAPPING']
+
     if state in on_states:
         return 'On'
+    if state in booting_states:
+        return 'Booting up'
 
     return 'Off'
 
@@ -35,7 +39,18 @@ def append_to_context(response):
         cluster_id = i['Id']
         name = i['Name']
         state = cluster_state(i['Status']['State'])
-        data.append({'id': cluster_id, 'name': name, 'state': state})
+
+        ready_date_time = ''
+        if 'ReadyDateTime' in i['Status']['Timeline']:
+            ready_date_time = i['Status']['Timeline']['ReadyDateTime']
+
+        # TODO missing number of nodes
+        # TODO missing DNS name
+        data.append({
+            'id': cluster_id,
+            'name': name,
+            'state': state,
+            'ready_date_time': ready_date_time})
 
     return data
 
