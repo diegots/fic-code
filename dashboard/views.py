@@ -69,6 +69,23 @@ def cluster_list(request):
     cluster_list_response = command_list_cluster(False)
     context = get_context_data()
     context['data'] = append_to_context(cluster_list_response)
+
+    # TODO missing number of nodes
+
+    query_set = Cluster.objects.all()
+    for entry in query_set:
+        if entry.master_public_dns_name is None:
+            res = command_describe_cluster(entry.cluster_id)
+            master_public_dns_name = json.loads(res)['Cluster']['MasterPublicDnsName']
+            entry.master_public_dns_name = master_public_dns_name
+            entry.save()
+
+        items = context['data']
+        for item in items:
+            if item['id'] == entry.cluster_id:
+                item['master_public_dns_name'] = entry.master_public_dns_name
+                break
+
     return render(request, 'dashboard/cluster_list.html', context)
 
 
