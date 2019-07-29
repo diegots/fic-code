@@ -6,6 +6,6 @@
 
 # Directories
 .idea/
-env_tfg/
+env-tfg/
 dashboard/migrations/
 
