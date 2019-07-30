@@ -90,6 +90,7 @@ def cluster_list(request):
                     entry.cluster_master_public_dns_name is not None:
                 item['cluster_master_public_dns_name'] = \
                     entry.cluster_master_public_dns_name
+                item['cluster_number_nodes'] = entry.cluster_number_nodes
                 break
 
     return render(request, 'dashboard/cluster_list.html', context)
