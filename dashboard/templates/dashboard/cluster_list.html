@@ -25,16 +25,16 @@
       </tr>
     </thead>
     <tbody>
-      {% for d in data %}
+      {% for item in data %}
       <tr>
         <th scope="row">{{ forloop.counter }}</th>
-        <td>{{ d.id }}</td>
-        <td>{{ d.name }}</td>
-        <td>{{ d.number_nodes }}</td>
-        <td>{{ d.master_public_dns_name }}</td>
-        <td>{{ d.state }}</td>
-        <td>{{ d.ready_date_time }}</td>
-        <td>{{ d.end_date_time }}</td>
+        <td>{{ item.id }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.number_nodes }}</td>
+        <td>{{ item.master_public_dns_name }}</td>
+        <td>{{ item.state }}</td>
+        <td>{{ item.ready_date_time }}</td>
+        <td>{{ item.end_date_time }}</td>
       </tr>
       {% endfor %}
     </tbody>
