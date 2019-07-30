@@ -45,7 +45,7 @@ def append_to_context(response):
             ready_date_time = i['Status']['Timeline']['ReadyDateTime']
 
         end_date_time = ''
-        if 'ReadyDateTime' in i['Status']['Timeline']:
+        if 'EndDateTime' in i['Status']['Timeline']:
             end_date_time = i['Status']['Timeline']['EndDateTime']
 
         # TODO missing number of nodes
