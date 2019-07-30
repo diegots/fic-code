@@ -91,16 +91,21 @@ def cluster_list(request):
 
 @login_required
 def cluster_terminate(request):
-    cluster_list_response = command_list_cluster(True)
+
+    query_set = Cluster.objects.filter(off_date=None)
+    data = []
+    for item in query_set:
+        data.append({'cluster_id': item.cluster_id})
+
     context = get_context_data()
-    context['data'] = append_to_context(cluster_list_response)
+    context['data'] = data
     return render(request, 'dashboard/cluster_terminate.html', context)
 
 
 @login_required
 def cluster_terminate_action(request):
-    cluster_id = request.POST.get('cluster_id', '')
 
+    cluster_id = request.POST.get('cluster_id')
     query_set = Cluster.objects.filter(cluster_id=cluster_id)
     if len(query_set) < 1:
         return render(request,

@@ -11,13 +11,25 @@
   There are no running clusters at the moment. Try <a href="{% url 'dashboard:cluster-launch' %}">launching one</a> first.
 
 {% else %}
-<form action="{% url 'dashboard:cluster-terminate-action' %}" method="post"> <!-- TODO create URL -->
+<form action="{% url 'dashboard:cluster-terminate-action' %}" method="post">
   {% csrf_token %}
-  <div class="form-group">
-    <label for="clusterId">Cluster Id</label>
-    <input type="text" id="clusterId" name="cluster_id" class="form-control"  aria-describedby="clusterIdHelp" placeholder="Enter cluster Id">
-    <small id="clusterIdHelp" class="form-text text-muted">Valid Ids start with <b>j-</b>.</small>
+
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <label class="input-group-text" for="cluster_id">Select a cluster Id</label>
+    </div>
+    <select class="custom-select" id="cluster_id" name="cluster_id">
+      {% for item in data %}
+      <option value="{{ item.cluster_id }}">{{ item.cluster_id }}</option>
+      {% endfor %}
+    </select>
   </div>
+
+  <!--<div class="form-group">-->
+    <!--<label for="clusterId">Cluster Id</label>-->
+    <!--<input type="text" id="clusterId" name="cluster_id" class="form-control"  aria-describedby="clusterIdHelp" placeholder="Enter cluster Id">-->
+    <!--<small id="clusterIdHelp" class="form-text text-muted">Valid Ids start with <b>j-</b>.</small>-->
+  <!--</div>-->
   <button type="submit" class="btn btn-danger">Terminate this cluster now</button>
 </form>
 {% endif %}
