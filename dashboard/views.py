@@ -76,13 +76,15 @@ def cluster_list(request):
     for entry in query_set:
         if entry.master_public_dns_name is None:
             res = command_describe_cluster(entry.cluster_id)
-            master_public_dns_name = json.loads(res)['Cluster']['MasterPublicDnsName']
-            entry.master_public_dns_name = master_public_dns_name
-            entry.save()
+            if 'MasterPublicDnsName' in json.loads(res)['Cluster']:
+                master_public_dns_name = json.loads(res)['Cluster']['MasterPublicDnsName']
+                entry.master_public_dns_name = master_public_dns_name
+                entry.save()
 
         items = context['data']
         for item in items:
-            if item['id'] == entry.cluster_id:
+            if item['id'] == entry.cluster_id and \
+                    entry.master_public_dns_name is not None:
                 item['master_public_dns_name'] = entry.master_public_dns_name
                 break
 
