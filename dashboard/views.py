@@ -73,8 +73,6 @@ def cluster_list(request):
     context = get_context_data()
     context['data'] = append_to_context(cluster_list_response)
 
-    # TODO missing number of nodes
-
     query_set = Cluster.objects.all()
     for entry in query_set:
         if entry.cluster_master_public_dns_name is None:
@@ -90,8 +88,11 @@ def cluster_list(request):
                     entry.cluster_master_public_dns_name is not None:
                 item['cluster_master_public_dns_name'] = \
                     entry.cluster_master_public_dns_name
-                item['cluster_number_nodes'] = entry.cluster_number_nodes
                 break
+
+        for item in items:
+            if item['cluster_id'] == entry.cluster_id:
+                item['cluster_number_nodes'] = entry.cluster_number_nodes
 
     return render(request, 'dashboard/cluster_list.html', context)
 

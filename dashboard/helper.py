@@ -1,5 +1,5 @@
+from datetime import datetime
 from django.shortcuts import render
-
 from .models import Cluster
 
 
@@ -42,20 +42,20 @@ def append_to_context(response):
 
         cluster_ready_date_time = ''
         if 'ReadyDateTime' in item['Status']['Timeline']:
-            cluster_ready_date_time = item['Status']['Timeline']['ReadyDateTime']
+            cluster_ready_date_time = get_date_from_milis(
+                item['Status']['Timeline']['ReadyDateTime'])
 
         cluster_end_date_time = ''
         if 'EndDateTime' in item['Status']['Timeline']:
-            cluster_end_date_time = item['Status']['Timeline']['EndDateTime']
+            cluster_end_date_time = get_date_from_milis(
+                item['Status']['Timeline']['EndDateTime'])
 
-        # TODO missing number of nodes
-        # TODO missing DNS name
         data.append({
             'cluster_id': cluster_id,
             'cluster_name': cluster_name,
             'cluster_state': cluster_state,
-            'ready_date_time': cluster_ready_date_time,
-            'end_date_time': cluster_end_date_time})
+            'cluster_ready_date_time': cluster_ready_date_time,
+            'cluster_end_date_time': cluster_end_date_time})
 
     return data
 
@@ -65,3 +65,9 @@ def get_context_data():
         'name_app': 'cluster'
     }
     return context
+
+
+def get_date_from_milis(miliseconds):
+    string_format = '%Y-%m-%d %H:%M:%S'
+    value = int(miliseconds)
+    return datetime.fromtimestamp(value).strftime(string_format)
