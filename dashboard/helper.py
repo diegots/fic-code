@@ -35,18 +35,18 @@ def get_value_from_request(request, key):
 
 def append_to_context(response):
     data = []
-    for i in response['Clusters']:
-        cluster_id = i['Id']
-        name = i['Name']
-        state = cluster_state(i['Status']['State'])
+    for item in response['Clusters']:
+        cluster_id = item['Id']
+        name = item['Name']
+        state = cluster_state(item['Status']['State'])
 
         ready_date_time = ''
-        if 'ReadyDateTime' in i['Status']['Timeline']:
-            ready_date_time = i['Status']['Timeline']['ReadyDateTime']
+        if 'ReadyDateTime' in item['Status']['Timeline']:
+            ready_date_time = item['Status']['Timeline']['ReadyDateTime']
 
         end_date_time = ''
-        if 'EndDateTime' in i['Status']['Timeline']:
-            end_date_time = i['Status']['Timeline']['EndDateTime']
+        if 'EndDateTime' in item['Status']['Timeline']:
+            end_date_time = item['Status']['Timeline']['EndDateTime']
 
         # TODO missing number of nodes
         # TODO missing DNS name
