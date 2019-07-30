@@ -3,7 +3,7 @@ from django.shortcuts import render
 from .models import Cluster
 
 
-def cluster_state(state):
+def get_cluster_state(state):
     on_states = ['RUNNING', 'WAITING']
     booting_states = ['STARTING', 'BOOTSTRAPPING']
 
@@ -37,25 +37,25 @@ def append_to_context(response):
     data = []
     for item in response['Clusters']:
         cluster_id = item['Id']
-        name = item['Name']
-        state = cluster_state(item['Status']['State'])
+        cluster_name = item['Name']
+        cluster_state = get_cluster_state(item['Status']['State'])
 
-        ready_date_time = ''
+        cluster_ready_date_time = ''
         if 'ReadyDateTime' in item['Status']['Timeline']:
-            ready_date_time = item['Status']['Timeline']['ReadyDateTime']
+            cluster_ready_date_time = item['Status']['Timeline']['ReadyDateTime']
 
-        end_date_time = ''
+        cluster_end_date_time = ''
         if 'EndDateTime' in item['Status']['Timeline']:
-            end_date_time = item['Status']['Timeline']['EndDateTime']
+            cluster_end_date_time = item['Status']['Timeline']['EndDateTime']
 
         # TODO missing number of nodes
         # TODO missing DNS name
         data.append({
-            'id': cluster_id,
-            'name': name,
-            'state': state,
-            'ready_date_time': ready_date_time,
-            'end_date_time': end_date_time})
+            'cluster_id': cluster_id,
+            'cluster_name': cluster_name,
+            'cluster_state': cluster_state,
+            'ready_date_time': cluster_ready_date_time,
+            'end_date_time': cluster_end_date_time})
 
     return data
 

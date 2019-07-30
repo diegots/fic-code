@@ -28,13 +28,13 @@
       {% for item in data %}
       <tr>
         <th scope="row">{{ forloop.counter }}</th>
-        <td>{{ item.id }}</td>
-        <td>{{ item.name }}</td>
-        <td>{{ item.number_nodes }}</td>
-        <td>{{ item.master_public_dns_name }}</td>
-        <td>{{ item.state }}</td>
-        <td>{{ item.ready_date_time }}</td>
-        <td>{{ item.end_date_time }}</td>
+        <td>{{ item.cluster_id }}</td>
+        <td>{{ item.cluster_name }}</td>
+        <td>{{ item.cluster_number_nodes }}</td>
+        <td>{{ item.cluster_master_public_dns_name }}</td>
+        <td>{{ item.cluster_state }}</td>
+        <td>{{ item.cluster_ready_date_time }}</td>
+        <td>{{ item.cluster_end_date_time }}</td>
       </tr>
       {% endfor %}
     </tbody>

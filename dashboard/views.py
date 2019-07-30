@@ -36,19 +36,21 @@ def cluster_launch(request):
 @login_required
 def cluster_launch_action(request):
     cluster_name = request.POST.get('cluster_name', 'unnamed')
-    number_nodes = request.POST.get('cluster_instances', '0')
+    cluster_number_nodes = request.POST.get('cluster_number_nodes', '1')
 
-    res = command_launch_cluster(cluster_name, number_nodes)
+    res = command_launch_cluster(cluster_name, cluster_number_nodes)
     cluster_id = json.loads(res.decode())['ClusterId']
 
     # Save data into database
-    c = Cluster(cluster_id=cluster_id, number_nodes=number_nodes)
+    c = Cluster(cluster_id=cluster_id,
+                cluster_name=cluster_name,
+                cluster_number_nodes=cluster_number_nodes)
     c.save()
 
     # Create url
     base_url = reverse('dashboard:cluster-launch-result')
     query_string = urlencode({'cluster_name': cluster_name,
-                              'cluster_instances': number_nodes,
+                              'cluster_number_nodes': cluster_number_nodes,
                               'cluster_id': cluster_id})
     url = '{}?{}'.format(base_url, query_string)
     return redirect(url)
@@ -58,7 +60,8 @@ def cluster_launch_action(request):
 def cluster_launch_result(request):
     context = get_context_data()
     context['cluster_name'] = request.GET.get('cluster_name')
-    context['cluster_instances'] = int(request.GET.get('cluster_instances'))
+    context['cluster_number_nodes'] = \
+        int(request.GET.get('cluster_number_nodes'))
     context['cluster_id'] = request.GET.get('cluster_id')
 
     return render(request, 'dashboard/cluster_launch_result.html', context)
@@ -74,18 +77,19 @@ def cluster_list(request):
 
     query_set = Cluster.objects.all()
     for entry in query_set:
-        if entry.master_public_dns_name is None:
+        if entry.cluster_master_public_dns_name is None:
             res = command_describe_cluster(entry.cluster_id)
             if 'MasterPublicDnsName' in json.loads(res)['Cluster']:
-                master_public_dns_name = json.loads(res)['Cluster']['MasterPublicDnsName']
-                entry.master_public_dns_name = master_public_dns_name
+                entry.cluster_master_public_dns_name = \
+                    json.loads(res)['Cluster']['MasterPublicDnsName']
                 entry.save()
 
         items = context['data']
         for item in items:
-            if item['id'] == entry.cluster_id and \
-                    entry.master_public_dns_name is not None:
-                item['master_public_dns_name'] = entry.master_public_dns_name
+            if item['cluster_id'] == entry.cluster_id and \
+                    entry.cluster_master_public_dns_name is not None:
+                item['cluster_master_public_dns_name'] = \
+                    entry.cluster_master_public_dns_name
                 break
 
     return render(request, 'dashboard/cluster_list.html', context)
@@ -94,7 +98,7 @@ def cluster_list(request):
 @login_required
 def cluster_terminate(request):
 
-    query_set = Cluster.objects.filter(off_date=None)
+    query_set = Cluster.objects.filter(cluster_end_date_time=None)
     data = []
     for item in query_set:
         data.append({'cluster_id': item.cluster_id})
@@ -114,8 +118,8 @@ def cluster_terminate_action(request):
                       'dashboard/error_cluster_does_not_exist.html',
                       {'cluster_id': cluster_id})
     else:
-        if query_set[0].off_date is None:
-            query_set[0].off_date = timezone.now()
+        if query_set[0].cluster_end_date_time is None:
+            query_set[0].cluster_end_date_time = timezone.now()
             query_set[0].save()
             command_terminate_cluster(cluster_id)
             return redirect(reverse('dashboard:cluster-terminate-result'))

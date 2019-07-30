@@ -7,8 +7,8 @@
 {% endblock %}
 
 {% block cluster_content %}
-<p>Launched cluster <b>{{ cluster_name }}</b> with <b>{{ cluster_instances }}</b>
-    {% if cluster_instances == 1 %}node{% else %}nodes{% endif %}
+<p>Launched cluster <b>{{ cluster_name }}</b> with <b>{{ cluster_number_nodes }}</b>
+    {% if cluster_number_nodes == 1 %}node{% else %}nodes{% endif %}
     and id <b>{{ cluster_id }}</b>.</p>
 </p>
 {% endblock %}
