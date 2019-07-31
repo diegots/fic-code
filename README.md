@@ -56,3 +56,12 @@ Para iniciar el servicio hechos los pasos anteriorres, basta con ejecutar:
 - ```source scripts/active-python-env.sh``` y
 - ```python manage.py runserver```
 El servidor web escucha en <http://127.0.0.1:8000/>, o en la IP indicada. Se puede detener en cualquier momento con ```Ctrl-c```.
+
+# Descripción del servicio
+El siguiente diagrama describe el funcionamiento del servicio. Diagrama elaborado con Draw.io:
+
+![Tareas del servicio](https://raw.githubusercontent.com/diegots/fic-tfg-django-web/master/doc/diagrama-tareas-servicio.svg)
+
+## Trade offs
+1. La similitud entre los vecinos se calcula en la misma máquina donde se ejecuta el servidor web. Dado que este cálculo es especialmente costoso en tiempo de CPU, en un entorno realista sería necesario disponer de una máquina separada. La ventaja de hacer el proceso así es que es más fácil de montar _stand alone_
+2. Si bien la obtención de los ítems únicos y el máximo ítem Id dependen únicamente del dataset, se van a calcular con cada _experimento_. Inicialmente vamos a suponer que el tiempo necesario es bajo en comparación con las recomendaciones. En caso de querer reutilizar los datos entre ejecuciones habría que salvar la información a la BD y recuperarla en caso necesario.
