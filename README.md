@@ -58,7 +58,7 @@ Para iniciar el servicio hechos los pasos anteriorres, basta con ejecutar:
 El servidor web escucha en <http://127.0.0.1:8000/>, o en la IP indicada. Se puede detener en cualquier momento con ```Ctrl-c```.
 
 # Descripción del servicio
-El siguiente diagrama describe el funcionamiento del servicio. Diagrama elaborado con Draw.io:
+El siguiente diagrama describe el funcionamiento del servicio. Diagrama elaborado con [Draw.io](http://draw.io):
 
 ![Tareas del servicio](doc/diagrama-tareas-servicio.svg)
 
