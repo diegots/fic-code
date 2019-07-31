@@ -60,7 +60,7 @@ El servidor web escucha en <http://127.0.0.1:8000/>, o en la IP indicada. Se pue
 # Descripción del servicio
 El siguiente diagrama describe el funcionamiento del servicio. Diagrama elaborado con Draw.io:
 
-![Tareas del servicio](https://raw.githubusercontent.com/diegots/fic-tfg-django-web/master/doc/diagrama-tareas-servicio.svg)
+![Tareas del servicio](doc/diagrama-tareas-servicio.svg)
 
 ## Trade offs
 1. La similitud entre los vecinos se calcula en la misma máquina donde se ejecuta el servidor web. Dado que este cálculo es especialmente costoso en tiempo de CPU, en un entorno realista sería necesario disponer de una máquina separada. La ventaja de hacer el proceso así es que es más fácil de montar _stand alone_
