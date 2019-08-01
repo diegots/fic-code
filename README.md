@@ -7,13 +7,25 @@
 
 # Instalación
 
-## Entorno utilizado
+## Software utilizado
 - Ubuntu 18.04
 - Python 3.6.7
 - Django 2.2
 - Bootstrap 4.1.3
+- AWS CLI 1.16.148
 
-## Descarga del software
+## Instalación de AWS CLI
+Existen varias maneras de instalar las herramientas de consola para AWS, tal como se describe en [la documentación](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html). En el caso del sistema operativo Ubuntu, la utilidad ```snap``` es una de las maneras más fáciles de obtenerla:
+
+```sudo snap install aws-cli```
+
+Una vez instalada es necesario realizar una primera configuración, que vincula la herramienta con una cuenta de Amazon AWS:
+
+```aws configure```
+
+Se necesita el AWS Access Key ID y una AWS Secret Access Key. Más información en la [documentación oficial](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html#cli-quick-configuration).
+
+## Preparación del entorno y descarga del proyecto
 1. Instalar ```pip3```: ```sudo apt-get install python3-pip```.
 2. Instalar ```virtualenv```: ```pip3 install --user virtualenv```. Esta orden instala la herramienta en ```~/.local/bin```. Puede ser necesario cerrar la sesión y volver a entrar para que esta ruta sea añadida al PATH. Alternativamente se puede actualizar el PATH sin necesidad de cerrar la sesión, usando ```source ~/.profile```.
 3. Clonar el repositorio del proyecto desde Github, mediante SSH, ```git clone git@github.com:diegots/fic-tfg-django-web.git```, o bien HTTPS, ```git clone https://github.com/diegots/fic-tfg-django-web.git```.
@@ -27,7 +39,7 @@ Bootstrap y sus dependencias ya están incluidos en las rutas ```static/css``` y
 ## Configuración
 Es necesario configurar varios parámetros para la correcta ejecución de la aplicación. Los ficheros a editar son:
 - ```scripts/active-python-env.sh```
-    - ```DJANGO_ROOT_DIR``` en la variable  hay que indicar la ruta al directorio del proyecto. 
+    - ```DJANGO_ROOT_DIR``` en la variable  hay que indicar la ruta al directorio del proyecto.
     - ```VIRTUALENV_DIR_NAME``` en la variable  hay que indicar el nombre utilizado para el directorio del entorno virtual.
 - ```scripts/global-vars.sh```. En este fichero debe definirse:
     - ```TFG_BUCKET_NAME``` nombre del bucket S3 que se desea utilizar.
@@ -44,7 +56,7 @@ La creación y configuración de la base de datos se realiza con dos comandos:
 El primero activa el entorno virtual recién creado y el segundo genera la BD.
 
 ## Crear un usuario administrador
-Para crear un primer usuario llamado _joe_, se utiliza ```manage.py```: 
+Para crear un primer usuario llamado _joe_, se utiliza ```manage.py```:
 ```python manage.py createsuperuser --username=joe --email=joe@example.com```
 
 Se solicitará una contraseña al ejecutar el comando en la consola. Este usuario puede acceder a la aplicación y a la consola de administración de Django en <http://127.0.0.1:8000/admin/>.
