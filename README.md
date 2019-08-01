@@ -48,15 +48,22 @@ Es necesario configurar varios parámetros para la correcta ejecución de la apl
     - (Opcional) ```TFG_ALLOWED_HOSTS``` direcciones IP admitidas por el servidor web de Django.
     - (Opcional) ```TFG_DEBUG``` activa las funciones de depuración del servicio web.
 
+## Creación del bucket
+El script ```scripts/create-s3-bucket.sh``` facilita la creación inicial del bucket que se desea utilizar. El nombre del bucket se obtiene de la variable ```$TFG_BUCKET_NAME``` definida previamente. Los comandos a ejecutar son:
+1. ```source scripts/active-python-env.sh```
+2. ```source scripts/create-s3-bucket.sh```
+3. ```deactivate```
+
 ## Preparar la base de datos
 La creación y configuración de la base de datos se realiza con dos comandos:
 1. ```source scripts/active-python-env.sh```
 2. ```python manage.py migrate```
+3. ```deactivate```
 
 El primero activa el entorno virtual recién creado y el segundo genera la BD.
 
 ## Crear un usuario administrador
-Para crear un primer usuario llamado _joe_, se utiliza ```manage.py```:
+Para crear un primer usuario llamado _joe_ se utiliza ```manage.py``` (con el entorno virtual activado):
 ```python manage.py createsuperuser --username=joe --email=joe@example.com```
 
 Se solicitará una contraseña al ejecutar el comando en la consola. Este usuario puede acceder a la aplicación y a la consola de administración de Django en <http://127.0.0.1:8000/admin/>.
