@@ -60,7 +60,7 @@ La creación y configuración de la base de datos se realiza con dos comandos:
 2. ```python manage.py migrate```
 3. ```deactivate```
 
-El primero activa el entorno virtual recién creado y el segundo genera la BD.
+El comando ```migrate``` de la herramienta ```manage.py``` genera la base de datos a partir de las definiciones existentes en ```models.py```.
 
 ## Crear un usuario administrador
 Para crear un primer usuario llamado _joe_ se utiliza ```manage.py``` (con el entorno virtual activado):
