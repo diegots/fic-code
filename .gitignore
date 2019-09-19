@@ -4,9 +4,11 @@
 *.swp
 
 # Files
+.idea/workspace.xml
 
 # Directories
-.idea/
+.idea/dictionaries/
+.idea/codeStyles/
 env-tfg/
 dashboard/migrations/
 
