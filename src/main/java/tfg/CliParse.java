@@ -77,21 +77,25 @@ class CliParse {
         }
 
         System.err.println
-                ( "* **************************************************************** *\n"
-                + "*                                                                  *\n"
-                + "* This program COMPUTES and SORTS similarities for a kNN algorithm *\n"
-                + "*                                                                  *\n"
-                + "* **************************************************************** *\n"
-                + "\n"
-                + "   Usage / Valid command line options:\n"
-                + "   -----------------------------------\n"
-                + "    -help\n"
-                + "    -similarities <input-file> <number-threads>\n"
-                + "    -similarities-sort\n"
-                + "        <input-file>\n"
-                + "        <number-threads>\n"
-                + "        <neighborhood-size>\n"
-                + "        <users-per-step>\n"
-                + "* *************************************************************** *\n");
+                ( "* *************************************************************************** *\n"
+                + "*                                                                             *\n"
+                + "* This program *computes* and *sorts* similarities for a kNN algorithm.       *\n"
+                + "*                                                                             *\n"
+                + "* Similarity between users A and B is a representation of how alike they are. *\n"
+                + "* This is a multithreaded implementation for handing big datasets, leveraging *\n"
+                + "* on multicore cpus.                                                          *\n"
+                + "*                                                                             *\n"
+                + "* *************************************************************************** *\n"
+                + "                                                                               \n"
+                + "  Usage / Valid command line options:                                          \n"
+                + "  -----------------------------------                                          \n"
+                + "      -help                                                                    \n"
+                + "      -similarities <input-file> <number-threads>                              \n"
+                + "      -similarities-sort                                                       \n"
+                + "          <input-file>                                                         \n"
+                + "          <number-threads>                                                     \n"
+                + "          <neighborhood-size>                                                  \n"
+                + "          <users-per-step>                                                     \n"
+                + "* *************************************************************************** *\n");
     }
 }
