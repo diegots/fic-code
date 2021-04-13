@@ -5,24 +5,28 @@
 \documentclass[11pt,a4paper,titlepage,twoside,openright,openbib]{report}
 
 %%% RELACIÓN DE VARIABLES A PERSONALIZAR %%%
-\def\lingua{gal}
-%\def\lingua{esp} % descomenta esta liña se redactarás a memoria en español
+%\def\lingua{gal}
+\def\lingua{esp} % descomenta esta liña se redactarás a memoria en español
 %\def\lingua{eng} % descomenta esta liña se redactarás a memoria en inglés
-\def\nome{Nome Completo}                             % substitúe aquí o teu nome
-\def\nomedirectorA{Outro Nome Completo}             % substitúe aquí o nome de quen dirixe
-\def\titulo{Título completo do traballo fin de grao} % substitúe aquí o título do teu TFG
-\def\mencion{NOME DA MENCIÓN}                        % descomenta a mención correspondente
-%\def\mencion{COMPUTACIÓN}
+\def\nome{Diego Trabazo Sardón}                             % substitúe aquí o teu nome
+\def\nomedirectorA{José Carlos Dafonte Vázquez}             % substitúe aquí o nome de quen dirixe
+\def\titulo{Sistema para la extracción automática de información estructurada a partir de documentos con
+elementos de maquetación comunes} % substitúe aquí o título do teu TFG
+%\def\mencion{NOME DA MENCIÓN}                        % descomenta a mención correspondente
+\def\mencion{COMPUTACIÓN}
 %\def\mencion{ENXEÑARÍA DO SOFTWARE}
 %\def\mencion{ENXEÑARÍA DE COMPUTADORES}
 %\def\mencion{SISTEMAS DE INFORMACIÓN}
 %\def\mencion{TECNOLOXÍAS DA INFORMACIÓN}
 
-%\def\renomearcadros{si} % descomenta esta liña se redactas a memoria en español e prefires que
+\def\renomearcadros{si} % descomenta esta liña se redactas a memoria en español e prefires que
                          % os "cuadros" e o "índice de cuadros" se renomeen
                          % a "tablas" e "índice de tablas" respectivamente
 
 \usepackage{estilo_tfg}
+
+% Cambia el tipo y tamaño de la fuente monoespaciada en todo el documento
+\setmonofont[Scale=MatchLowercase]{IBMPlexMono}
 
 % Lista de paquetes potencialmente interesantes (uso baixo demanda)
 
@@ -40,6 +44,8 @@
 % \usepackage{subcaption}  % permite a inclusión de varias subfiguras nunha figura
 % \usepackage{tabu}        % permite táboas flexibles
 % \usepackage{tabularx}    % permite táboas con columnas de anchura determinada
+\usepackage{minted} % proporciona código coloreado para el código
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Corpo                                                                        %
@@ -79,10 +85,12 @@
  % Capítulos                            %
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
- \include{contido/introducion}
- \include{contido/demo}
-%\include{contido/...}
- \include{contido/conclusions}
+ %\include{contido/introducion}
+ %\include{contido/demo}
+ \include{contido/a}
+ \include{contido/c-implementacion}
+ \include{contido/d-conclusiones}
+ %\include{contido/conclusions}
 
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  % Apéndices, glosarios e bibliografía  %
@@ -91,7 +99,7 @@
  \appendix
  \appendixpage
  \include{anexos/adicional}
-%\include{anexos/...}
+ \include{anexos/preparacion}
 
  \printglossary[type=\acronymtype,title=\nomeglosarioacronimos]
  \printglossary[title=\nomeglosariotermos]

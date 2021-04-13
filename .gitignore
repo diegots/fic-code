@@ -1,0 +1,12 @@
+*.acn
+*.aux
+*.log
+*.lof
+*.ist
+*.lot
+*.gz
+*.glo
+*.pyg
+*.toc
+*.pdf
+*.out

@@ -1,0 +1,9 @@
+title Inicio de la aplicación
+
+API->get-job-id.sh: 
+API<--get-job-id.sh:id_job
+API->$job_id/frontend:copia fichero *.zip
+API<--$job_id/frontend:
+API->run.sh:id_job
+API<--run.sh:
+

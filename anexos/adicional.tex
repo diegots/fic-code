@@ -1,9 +1,73 @@
 \chapter{Material adicional}
 \label{chap:adicional}
 
-\lettrine{E}{xemplo} de capítulo con formato de apéndice, onde se pode
-incluír material adicional que non teña cabida no corpo principal do
-documento, suxeito á limitación de 80 páxinas establecida no
-regulamento de TFGs.
+\section{Visualización de regiones HOCR}
 
-\Blindtext
+\section{Conceptos básico para entender un Makefile}
+
+\texttt{Make} es una utilidad que determina automáticamente cuales modelos de un programa necesitan ser recompilados e invoca los comandos que los recompilan. \texttt{Make} utiliza ficheros \verb|makefile| que le dicen qué hacer. Un fichero \verb|makefile| contiene \textbf{reglas} de la forma:
+
+\begin{verbatim}
+target_1 target_2 ... target_n: prerequisites
+    recipe_1
+    recipe_2
+    ...
+    recipe_n    
+\end{verbatim}
+
+Algunas variables a la hora de trabajar con ficheros Makefile:
+
+\begin{itemize}
+    \item \verb|$@|: nombre del target que se está generado
+    \item \verb|$<|: nombre del primer prerequisito
+    \item \verb|$^|: nombres de todos los prerequisitos
+\end{itemize}
+
+El \emph{target} suele ser el nombre del fichero generado. Aunque un \emph{target} también puede ser una acción a llevar a cabo. Estos \emph{targets} que no tienen por objetivo generar ficheros se conocen como \verb|PHONY| \emph{targets}.
+
+El prerequisito es una entrada necesaria para crear el \emph{target}. Los \emph{recipes} son todas aquellas acciones que hay que llevar a cabo para generar el target.
+
+Las \emph{pattern rules} son las reglas que contienen el caracter \verb|%| en el \emph{target}:
+
+\begin{itemize}
+    \item \verb|%| empareja con cualquier cadena no vacía.
+    \item Si el símbolo porcentaje, \verb|%|, aparece en un prerrequisito, empareja con el mismo elemento que el \emph{target}.
+\end{itemize}
+
+\begin{minted}{makefile}
+$(patsub pattern, replacement, text)
+\end{minted}
+
+Esta sentencia en un \emph{Makefile} encuentra palabras separadas por espacios en \emph{text} que encajen en el patron \emph{pattern} y las cambia por \emph{replacement}.
+
+\section{Detalles del lenguaje C}
+
+Hay tres conceptos necesarios para entender qué es un puntero:
+
+\begin{enumerate}
+    \item La dirección del propio puntero en el código, esto es, el puntero como variable.
+    \item El valor al que apunta.
+    \item Los contenidos apuntados.
+\end{enumerate}
+
+Para evitar tener que hacer siempre comprobaciones en los \emph{free} se puede optar por inicializar siempre las variables.
+
+\section{Herramientas de apoyo}
+
+Esta sección recoge en detalle todas las herramientas de que no son utilizadas directamente en la aplicación pero que fueron especialmente importantes durante el desarrollo.
+
+\begin{itemize}
+    \item Pandoc
+    \item Gimp
+\end{itemize}
+
+\subsection{Generando documentación}
+Pandoc es una herramienta para convertir y generar distintos formatos de texto. En el caso de este proyecto, la documentación generada está escrita en ficheros con sintaxis markdown. Con esta herramienta se puede generar HTML en una invocación.
+
+
+\chapter{Manual de usuario}
+\label{chap:manual-usuario}
+
+\section{Instalación}
+
+\section{Uso}
