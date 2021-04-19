@@ -20,7 +20,7 @@ Se describen a continuación cada una de ellas.
 \section{El engine}
 La herramienta se planteó como un software que pudiera ser capaz de recibir uno o varios ficheros en cada invocación. Una vez recibido, cada input debía ser clasificado e identificado para su correcto tratamiento. Dado que la entrada y la salida serían ficheros, resultaba natural utilizar un lenguaje de programación con facilidades para la manipulación de ficheros. Por ser el entorno de operación y desarrollo un sistema GNU/Linux, se optó por emplear el intérprete de \emph{shell} Bash.
 
-Por tratarse de un conjunto de \emph{scripts}, este \emph{pipeline} es flexible tanto para añadir nuevos pasos como para quitarlos. La razón para hacerlo de este modo radica en posibilitar la incorporación de nuevas técnicas de procesado de cualquiera de los aspectos, como el tratamiento de imagen o extracción de texto. Cada \emph{script} es independiente y puede ser ser activado o desactivado.
+Por tratarse de un conjunto de \emph{scripts}, este \emph{pipeline} es flexible tanto para añadir nuevos pasos como para quitarlos. La razón para hacerlo de este modo radica en posibilitar la incorporación de nuevas técnicas de procesado de cualquiera área relevante, como el tratamiento de imagen o la extracción de texto. Cada \emph{script} es independiente y puede ser ser activado o desactivado fácilmente.
 
 %% Convenio de nombrado para evitar perder información o mezclar páginas
 
@@ -46,7 +46,7 @@ Por tratarse de un conjunto de \emph{scripts}, este \emph{pipeline} es flexible 
 
 \section{Estructura física}
 
-Para entender más fácilmente las características de la implementación se describen primero la estructura de directorios que conforman el proyecto. La aplicación se compila y distribuye por medio de un \verb|Makefile|. También se implementó un fichero \verb|Dockerfile|  configurado para generar la correspondiente imagen Docker del programa. 
+Para entender más fácilmente las características de la implementación se describen primero la estructura de directorios que conforman el proyecto. La aplicación se compila y distribuye por medio de un \verb|Makefile|. También se implementó un fichero \verb|Dockerfile| configurado para generar la correspondiente imagen Docker del programa. 
 La estructura y funcionalidad de los directorios del proyecto es importante para detallar como se trata la entrada. Esta estructura general se puede consultar gráficamente en XXX. Los principales directorios utilizados son:
 
 \begin{itemize}
@@ -64,7 +64,7 @@ La estructura y funcionalidad de los directorios del proyecto es importante para
 
 La herramienta es un software \verb|backend|, no está pensada para que un usuario realice las ejecuciones de la aplicación manualmente. Por ello, y aunque no se desarrolló un API para acompañar la solución, si que se definieron varias características con la finalidad de facilitar la depuración durante el desarrollo y servir de primera aproximación para una futura integración en un sistema con un diseño por capas.
 
-Cada ejecución se lleva a cabo en un directorio propio donde se almacena la entrada, se realiza el tratamiento y se ubicar la salida. Además se facilita al programa llamante un identificador que este debe utilizar para la recuperación de los resultados. La ruta al directorio que contiene todas las carpetas de todas las ejecuciones el es directorio \verb|input| mencionado anteriormente.
+Cada ejecución se lleva a cabo en un directorio propio donde se almacena la entrada, se realiza el tratamiento y se ubica la salida. Además se facilita al programa llamante un identificador que debe utilizar para la recuperación de los resultados. La ruta al directorio que contiene todas las carpetas de todas las ejecuciones el es directorio \verb|input|, mencionado anteriormente.
 
 Para evitar colisiones en las rutas de trabajo entre distintas ejecuciones se obtiene una marca de tiempo del instante de recepción de la petición. Para obtener este \emph{timestamp} se utiliza el comando \verb|date| de la forma siguiente:
 
@@ -78,7 +78,7 @@ A continuación se presenta la secuencia de pasos que conforman en comienzo de u
 
 En este momento el llamador debe copiar el fichero de entrada en la ruta \verb|job_id/frontend|. Por último se inicia la ejecución cuando se llama al \emph{script} \verb|run.sh|. La entrada que habrá de tratar se indica con el \verb|job_id| pasado como parámetro. Los pasos se pueden seguir visualmente en la figura \ref{fig:inicio-aplicacion}.
 
-A partir de este momento el sistema comienza a trabajar. Cada acción llevada a cabo se indica con un mensaje por la salida estándar de la consola. Cuando finaliza se notifica con una marca de tiempo del momento final en la ruta \verb|input/job_id/done-<timestamp>|.
+A partir de este momento el sistema comienza a trabajar. Cada acción llevada a cabo se indica con un mensaje por la salida estándar de la consola. Cuando finaliza se notifica con otra marca de tiempo del momento final en la ruta \verb|input/job_id/done-<timestamp>|.
 
 \begin{figure}[hp!]
   \centering
