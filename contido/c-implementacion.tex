@@ -5,30 +5,27 @@
 \chapter{Implementación}
 \label{chap:implemetación}
 
-El software desarrollado consta de tres partes bien diferenciadas. Son las siguientes:
+La implementación está diseñada para recibir peticiones de conversión y generar la salida correspondiente en formato estructurado. El número de ficheros que se pueden tratar en cada ejecución solo está limitado por las capacidades del sistema operativo donde se ejecute. Cada invocación crea una tarea en el sistema, que se gestiona de forma individual. Una vez que se reciben los ficheros para su tratamiento, se produce una ruta específica para ese trabajo y comienza el proceso. En cada etapa se crean nuevos ficheros intermedios que, según se verá más adelante, se mueven a destinos designados para cada paso. El motor encargado de conducir el flujo de información está implementado en lenguaje Bash. El \emph{engine} utiliza varias herramientas complementarias, disponibles en cualquier distribución Linux. Se complementan con el generador de código intermedio y los parsers para cada modelo de documento.
+
+Existen, por tanto, tres partes que se detallarán en las siguientes páginas:
 
 \begin{itemize}
-    \item Un \emph{engine} creado por medio un conjunto de scripts en lenguaje Bash. Su cometido recepcionar los ficheros y su transformarlos paso a paso hasta la obtención de la salida final.
+    \item Un motor o \emph{engine} creado con \emph{scripts} en lenguaje Bash. Su cometido es recepcionar los ficheros y transformarlos paso a paso hasta la obtención de la salida final.
     \item Una aplicación Python encargada de generar el lenguaje intermedio que va a ser procesado.
-    \item Una familia de escáners y parsers desarrollados empleando Flex \cite{estes_flex_2021} y GNU Bison \cite{free_software_foundation_inc_bison_nodate} que toman el lenguaje intermedio y lo traducen a un formato estructurado.
+    \item Una familia de escáners y parsers desarrollados empleando Flex \cite{estes_flex_2021} y GNU Bison \cite{free_software_foundation_inc_bison_nodate}. Toman como entrada el lenguaje intermedio y lo traducen a un formato estructurado.
 \end{itemize}
 
 Se describen a continuación cada una de ellas.
 
 \section{El engine}
-La herramienta se planteó como un software que pudiera ser capaz de recibir uno o varios ficheros en cada invocación. Una vez recibido, cada input debía ser clasificado e identificado para su correcto tratamiento. Dado que la entrada y la salida serían ficheros, resultaba natural utilizar un lenguaje de programación con facilidades para la manipulación de ficheros. Por ser el entorno de operación y desarrollo un sistema GNU/Linux, se optó por emplear la shell Bash.
+La herramienta se planteó como un software que pudiera ser capaz de recibir uno o varios ficheros en cada invocación. Una vez recibido, cada input debía ser clasificado e identificado para su correcto tratamiento. Dado que la entrada y la salida serían ficheros, resultaba natural utilizar un lenguaje de programación con facilidades para la manipulación de ficheros. Por ser el entorno de operación y desarrollo un sistema GNU/Linux, se optó por emplear el intérprete de \emph{shell} Bash.
 
-Para ello se creó una estructura de directorios apropiada para el tratamiento y un proceso completo. 
+Por tratarse de un conjunto de \emph{scripts}, este \emph{pipeline} es flexible tanto para añadir nuevos pasos como para quitarlos. La razón para hacerlo de este modo radica en posibilitar la incorporación de nuevas técnicas de procesado de cualquiera de los aspectos, como el tratamiento de imagen o extracción de texto. Cada \emph{script} es independiente y puede ser ser activado o desactivado.
 
-Por tratarse de un conjunto de scripts, este pipeline es flexible tanto para añadir nuevos pasos como para quitarlos. La razón para hacerlo de este modo radica en posibilitar la incorporación de nuevas técnicas de procesado de cualquier aspecto, como el tratamiento de imagen o extracción de texto. Cada script es independiente y puede ser ser activado o desactivado.
+%% DECIDIR SI ELIMINAR ↓
 
-Los pasos que se llevan a cabo una vez que un fichero es recibido son:
+Los pasos que se llevan a cabo una vez que un fichero es reciben todos los pasos el \emph{engine} mantiene un convenio para el nombrado y la localización de los ficheros generados, consiguiendo, por ejemplo, que no se mezclen páginas. Por este motivo, una vez se descomprime la entrada, se renombran los ficheros de tal modo que no suponga un problema utilizarlos como argumento en los programas.
 
-
-
-En todos los pasos el engine mantiene un convenio para el nombrado y la localización de los ficheros generados, consiguiendo que no se mezclen páginas. Por este motivo, una vez se descomprime la entrada recibida, se renombran los ficheros de tal modo que utilizarlos como argumento no suponga un problema.
-
-El paso de extracción de texto se aplica a todos los ficheros. Con el resultado obtenido se decide si se trata de un fichero de tipo texto o por el contrario un fichero basado en imagen que habrá que tratar por medio de OCR.
 \section{Elaboración de las plantillas}
 Las plantillas son ficheros en formato JSON. Contienen las coordenadas de la geometría para las regiones de interés.
 \section{Generación del lenguaje intermedio}
@@ -59,8 +56,8 @@ Se realizó una mejora que comprueba las propiedades geométricas en lugar de ba
 \subsection{Uso de Docker}
 \subsection{Timestamps para identificar ejecuciones}
 
+%% DECIDIR SI ELIMINAR ↑
 
-%% Comienzo del texto
 
 \section{Estructura física}
 
@@ -80,7 +77,7 @@ La estructura y funcionalidad de los directorios del proyecto es importante para
 
 \section{Tratamiento inicial de la entrada}
 
-La herramienta desarrollada es un software \verb|backend|, no está pensada para que un usuario realice las ejecuciones de la aplicación manualmente. Por ello, y aunque no se desarrolló un API para acompañar la solución, si que se definieron varias características con la finalidad de facilitar la depuración durante el desarrollo y servir de primera aproximación para una futura integración en un sistema con un diseño por capas.
+La herramienta es un software \verb|backend|, no está pensada para que un usuario realice las ejecuciones de la aplicación manualmente. Por ello, y aunque no se desarrolló un API para acompañar la solución, si que se definieron varias características con la finalidad de facilitar la depuración durante el desarrollo y servir de primera aproximación para una futura integración en un sistema con un diseño por capas.
 
 Cada ejecución se lleva a cabo en un directorio propio donde se almacena la entrada, se realiza el tratamiento y se ubicar la salida. Además se facilita al programa llamante un identificador que este debe utilizar para la recuperación de los resultados. La ruta al directorio que contiene todas las carpetas de todas las ejecuciones el es directorio \verb|input| mencionado anteriormente.
 
