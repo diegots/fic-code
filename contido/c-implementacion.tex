@@ -22,42 +22,27 @@ La herramienta se planteó como un software que pudiera ser capaz de recibir uno
 
 Por tratarse de un conjunto de \emph{scripts}, este \emph{pipeline} es flexible tanto para añadir nuevos pasos como para quitarlos. La razón para hacerlo de este modo radica en posibilitar la incorporación de nuevas técnicas de procesado de cualquiera de los aspectos, como el tratamiento de imagen o extracción de texto. Cada \emph{script} es independiente y puede ser ser activado o desactivado.
 
-%% DECIDIR SI ELIMINAR ↓
+%% Convenio de nombrado para evitar perder información o mezclar páginas
 
-Los pasos que se llevan a cabo una vez que un fichero es reciben todos los pasos el \emph{engine} mantiene un convenio para el nombrado y la localización de los ficheros generados, consiguiendo, por ejemplo, que no se mezclen páginas. Por este motivo, una vez se descomprime la entrada, se renombran los ficheros de tal modo que no suponga un problema utilizarlos como argumento en los programas.
+%% Elaboración de las plantillas: Las plantillas son ficheros en formato JSON. Contienen las coordenadas de la geometría para las regiones de interés.
 
-\section{Elaboración de las plantillas}
-Las plantillas son ficheros en formato JSON. Contienen las coordenadas de la geometría para las regiones de interés.
-\section{Generación del lenguaje intermedio}
-\subsection{Flexibilidad en la primera fase. Sistema modular}
-Dado que era previsible que se necesitase librerías de tratamiento de imagen u otras aproximaciones no basadas en imagen, se optó por un lenguaje flexible y con mucho soporte como Python.
-\subsection{Detección de subregiones}
-Se diseñó un algoritmo sencillo pero efectivo para decidir si una región era subregión de otra dada.
-\subsection{Aproximación para la identificación de las lineas individuales}
-Esta aproximación se basó en intentar caracterizar las lineas mediante propiedades sencillas. La aproximación no dio resultado.
-\subsection{Mejora de tiempos}
-Inicialmente se utilizada el tipo de dato Set para comprobar la inclusión de unas regiones en otras. Esta aproximación, aunque funcional, no resultaba rápida para su ejecución durante el desarrollo.
+%% Generación del lenguaje intermedio: el sistema de generación de lenguaje intermedio debía ser necesariamente flexible. Para poder aplicar técnicas distintas. Se optó por utilizar Python, que tiene mucho soporte y una gran colección de librerías disponibles.
 
-Se realizó una mejora que comprueba las propiedades geométricas en lugar de basarse en lógica de conjuntos.
+%% Detección de subregiones: Se diseñó un algoritmo sencillo pero eficaz para decidir si una región era subregión de otra dada.
 
-\section{Obtención de información estructurada}
+%% Aproximación para la identificación de las lineas individuales: Esta aproximación se basó en intentar caracterizar las lineas mediante propiedades sencillas. La aproximación no dio resultado.
 
-\begin{figure}[hp!]
-  \centering
-  \includegraphics[width=9cm]{imaxes/estructura-parser.png}
-  \caption{Vista de la relación de ficheros para la familia de parsers}
-\end{figure}
+%% Mejora de tiempos: Inicialmente se utilizada el tipo de dato Set y sus operaciones para comprobar la inclusión de unas regiones en otras. Esta aproximación, aunque funcional, no resultaba rápida para su ejecución durante el desarrollo. Se realizó una mejora que comprueba las propiedades geométricas en lugar de basarse en lógica de conjuntos.
 
-\subsection{Flex}
-\subsection{Bison}
-\section{Despliegue de la aplicación}
-\section{Cambios para integrarse con la GUI}
-\subsection{Exponiendo las coordenadas}
-\subsection{Uso de Docker}
-\subsection{Timestamps para identificar ejecuciones}
+%% Obtención de información estructurada
+%%%% Flex
+%%%% Bison
 
-%% DECIDIR SI ELIMINAR ↑
+%% Despliegue de la aplicación
 
+%% Cambios para integrarse con la GUI
+%%%% Exponiendo las coordenadas 
+%%%% Uso de Docker
 
 \section{Estructura física}
 
@@ -91,7 +76,7 @@ diego@CompaqCQ57:galiasdoc$
 
 A continuación se presenta la secuencia de pasos que conforman en comienzo de una tarea en el sistema. La primera acción ocurre cuando el invocador del sistema ejecuta el \emph{script} \verb|get-job-id.sh|. Este crea el nuevo directorio para el trabajo y todos los directorios internos. Se devuelve el identificador de trabajo al llamador.
 
-En este momento el llamador debe copiar el fichero de entrada en la ruta \verb|job_id/frontend|. Por último se inicia la ejecución cuando se llama al \emph{script} \verb|run.sh|. La entrada que habrá de tratar se indica con el \verb|job_id| pasado como parámetro. Los pasos se pueden seguir visualmente en la figura \ref{fig:inicio-aplicacion}. 
+En este momento el llamador debe copiar el fichero de entrada en la ruta \verb|job_id/frontend|. Por último se inicia la ejecución cuando se llama al \emph{script} \verb|run.sh|. La entrada que habrá de tratar se indica con el \verb|job_id| pasado como parámetro. Los pasos se pueden seguir visualmente en la figura \ref{fig:inicio-aplicacion}.
 
 A partir de este momento el sistema comienza a trabajar. Cada acción llevada a cabo se indica con un mensaje por la salida estándar de la consola. Cuando finaliza se notifica con una marca de tiempo del momento final en la ruta \verb|input/job_id/done-<timestamp>|.
 
@@ -108,7 +93,7 @@ A partir de este momento el sistema comienza a trabajar. Cada acción llevada a 
 
 \section{Flujo del engine}
 
-Cuando se invoca el \emph{script} \verb|run.sh| se realizan en secuencia todos los pasos que acaban generado la salida en formato estructurado. 
+Cuando se invoca el \emph{script} \verb|run.sh| se realizan en secuencia todos los pasos que acaban generado la salida en formato estructurado.
 
 \begin{enumerate}
     \item Descompresión de la entrada.
