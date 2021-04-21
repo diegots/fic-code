@@ -5,7 +5,7 @@
 \chapter{Implementación}
 \label{chap:implemetación}
 
-La implementación está diseñada para recibir peticiones de conversión y generar la salida correspondiente en formato estructurado. El número de ficheros que se pueden tratar en cada ejecución solo está limitado por las capacidades del sistema operativo donde se ejecute. Cada invocación crea una tarea en el sistema, que se gestiona de forma individual. Una vez que se reciben los ficheros para su tratamiento, se produce una ruta específica para ese trabajo y comienza el proceso. En cada etapa se crean nuevos ficheros intermedios que, según se verá más adelante, se mueven a destinos designados para cada paso. El motor encargado de conducir el flujo de información está implementado en lenguaje Bash. Este \emph{engine} se apoya en varias herramientas adicionales, disponibles en cualquier distribución Linux. Por último, se complementa con el generador de código intermedio y los parsers para cada modelo de documento.
+La implementación está diseñada para recibir peticiones de conversión y generar la salida correspondiente en formato estructurado. El número de ficheros que se pueden tratar en cada ejecución solo está limitado por las capacidades del sistema de ficheros o del SO donde se ejecute. Cada invocación produce una tarea en el sistema, que se gestiona de forma individual. Una vez que se reciben los ficheros para su tratamiento, se crea una ruta específica para ese trabajo y comienza el proceso. En cada etapa se crean nuevos ficheros intermedios que, según se verá más adelante, se mueven a destinos designados para cada paso. Los documentos se tratan a nivel de página individual. El motor encargado de conducir el flujo de información está implementado en lenguaje Bash. Este \emph{engine} se apoya en varias herramientas adicionales, disponibles en cualquier distribución Linux. Por último, se complementa con el generador de código intermedio y los parsers para cada modelo de documento.
 
 % Existen, por tanto, tres partes que se detallarán en las siguientes páginas:
 
@@ -107,6 +107,52 @@ Cuando se invoca el \emph{script} \verb|run.sh| se realizan en secuencia todos l
     \item Invocación del parser necesario.
     \item Publicación de los resultados en el directorio de salida.
 \end{enumerate}
+
+Para facilitar la comunicación se asume que la entrada llega  como un fichero comprimido. En este primer paso es necesario extraer los contenidos de dicho fichero. Se realiza además un renombrado de cada uno para evitar errores debidos a caracteres poco amigables con la consola a la hora de componer las rutas.
+
+Una vez los ficheros PDF ya están disponibles se realiza una primera extracción de texto con la herramienta \verb|pdftotext|. El objetivo es realizar la clasificación que separe los ficheros de texto de aquellos cuyas páginas son imágenes.
+
+Cuando \verb|pdftotext| en invocado en un PDF sin texto, genera igualmente un fichero de salida cuyo único contenido es un marcador de fin de página. Por defecto utiliza el caracter \verb|Form Feed| o \verb|0x0D|. Aquellas páginas que dan como resultado únicamente este carácter son movidas al directorio para el tratamiento por imagen, \verb|based-image|.
+
+El siguiente paso consiste en obtener la descripción de las coordenadas de las palabras y las lineas. Para ello \verb|pdftotext| vuelve a ser clave ya que con el flag \verb|-bbox-layout| permite generar un fichero XML que contiene estos datos y también el texto encontrado. Respecto a la calidad del texto hay que tener presente que muchos PDF introducen variaciones en las palabras, típicamente añadiendo espacios entre las letras. Estos problemas son tratados posteriormente.
+
+A continuación se muestra un fragmento de una de estas salidas XML:
+
+\begin{verbatim}
+<head>
+<title>Factura ES1864857 - OVH</title>
+</head>
+<body>
+<doc>
+  <page width="595.000000" height="842.000000">
+    <flow>
+      <block xMin="1223.064810" yMin="168.431792" xMax="1353.159365" yMax="203.373692">
+        <line xMin="1223.064810" yMin="168.431792" xMax="1353.159365" yMax="203.373692">
+          <word xMin="1223.064810" yMin="168.431792" xMax="1353.159365" yMax="203.373692">Factura:</word>
+        </line>
+      </block>
+    </flow>
+  </page>
+</doc>
+</body>
+</html>
+\end{verbatim}
+
+Para facilitar a la aplicación gráfica la visualización de los contenidos detectados surgió la necesidad de proporcionar imágenes de las páginas de los documentos de tipo texto. Esto se realiza invocando a la herramienta \verb|pdftocairo|. 
+
+La siguiente fase se extraen contenidos y coordenadas de las páginas con imágenes. En este caso se utiliza Tesseract. Además del fichero de entrenamiento estándar está disponible otro de mayor tamaño y que resulta más certero con un coste temporal mayor. Para los casos tratados los resultados con la versión estándar fueron suficientemente satisfactorios. Todos los ficheros de entrenamiento de la aplicación están disponibles en la web oficial del proyecto XXX. Existe además la posibilidad de crear ficheros de entrenamiento propios para casos específicos, el proceso también está documentado en la web oficial XXX.
+
+Para poder aplicar la plantilla a un fichero correcta a un fichero determinado es necesario realizar un emparejamiento. En este caso se optó por buscar en los documentos datos específicos que no causaran colisión con otros documentos. Dado que los datos disponibles son facturas de empresas, se optó por utilizar los códigos NIF o DNI del emisor en este caso y que por ley son obligatorios en este tipo de documentos XXX. Se creó un registro con estos códigos y se realiza una búsqueda con \verb|grep| sobre los textos extraidos bien con Tesseract bien con \verb|pdftotext|. En los casos tratados esta búsqueda fue lo suficiente robusta.
+Cuando un patrón es encontrado, se crea en el directorio donde se está tratando el documento un fichero con el nombre dado al documento en la fase de renombrado y cuyo contenido es el propio identificador encontrado.
+
+\begin{verbatim}
+diego@CompaqCQ57:galiasdoc$ ls input/1617643045714091/based-text/2/*id
+input/1617643045714091/based-text/2/2.id
+diego@CompaqCQ57:galiasdoc$ cat input/1617643045714091/based-text/2/*id
+B83834747
+\end{verbatim}
+
+Llegados a este punto ya están disponibles todos los elementos necesarios para generar el lenguaje intermedio.
 
 \section{Generación del lenguaje intermedio}
 \section{Salida en lenguaje estructurado}
