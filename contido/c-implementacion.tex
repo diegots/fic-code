@@ -126,9 +126,12 @@ A continuación se muestra un fragmento de una de estas salidas XML:
 <doc>
   <page width="595.000000" height="842.000000">
     <flow>
-      <block xMin="1223.064810" yMin="168.431792" xMax="1353.159365" yMax="203.373692">
-        <line xMin="1223.064810" yMin="168.431792" xMax="1353.159365" yMax="203.373692">
-          <word xMin="1223.064810" yMin="168.431792" xMax="1353.159365" yMax="203.373692">Factura:</word>
+      <block xMin="1223.064810" yMin="168.431792" xMax="1353.159365" 
+          yMax="203.373692">
+        <line xMin="1223.064810" yMin="168.431792" xMax="1353.159365" 
+        	    yMax="203.373692">
+          <word xMin="1223.064810" yMin="168.431792" xMax="1353.159365" 
+              yMax="203.373692">Factura:</word>
         </line>
       </block>
     </flow>
@@ -138,9 +141,13 @@ A continuación se muestra un fragmento de una de estas salidas XML:
 </html>
 \end{verbatim}
 
+%% XXX Explicación de representación en coordenadas
+
 Para facilitar a la aplicación gráfica la visualización de los contenidos detectados surgió la necesidad de proporcionar imágenes de las páginas de los documentos de tipo texto. Esto se realiza invocando a la herramienta \verb|pdftocairo|. 
 
-La siguiente fase se extraen contenidos y coordenadas de las páginas con imágenes. En este caso se utiliza Tesseract. Además del fichero de entrenamiento estándar está disponible otro de mayor tamaño y que resulta más certero con un coste temporal mayor. Para los casos tratados los resultados con la versión estándar fueron suficientemente satisfactorios. Todos los ficheros de entrenamiento de la aplicación están disponibles en la web oficial del proyecto XXX. Existe además la posibilidad de crear ficheros de entrenamiento propios para casos específicos, el proceso también está documentado en la web oficial XXX.
+La siguiente fase se extraen contenidos y coordenadas de las páginas con imágenes. En este caso se utiliza Tesseract. Además del fichero de entrenamiento estándar está disponible otro de mayor tamaño y que resulta más certero con un coste temporal mayor. Para los casos tratados los resultados con la versión estándar fueron suficientemente satisfactorios. Todos los ficheros de entrenamiento de la aplicación están disponibles en la web oficial del proyecto XXX. Existe además la posibilidad de crear ficheros de entrenamiento propios para casos específicos, el proceso también está documentado en la web oficial XXX. La salida de Tesseract que se utiliza no es simplemente el texto reconocido. Al igual que en el caso de las páginas con texto se necesitan las coordenadas de los elementos encontrados. Esto se consigue con el parámetro \verb|tessedit_create_hocr|. La salida en este caso será un fichero en formato HOCR.
+
+%% XXX Imagen del fichero HOCR abierto con alguna aplicación de visualización
 
 Para poder aplicar la plantilla a un fichero correcta a un fichero determinado es necesario realizar un emparejamiento. En este caso se optó por buscar en los documentos datos específicos que no causaran colisión con otros documentos. Dado que los datos disponibles son facturas de empresas, se optó por utilizar los códigos NIF o DNI del emisor en este caso y que por ley son obligatorios en este tipo de documentos XXX. Se creó un registro con estos códigos y se realiza una búsqueda con \verb|grep| sobre los textos extraidos bien con Tesseract bien con \verb|pdftotext|. En los casos tratados esta búsqueda fue lo suficiente robusta.
 Cuando un patrón es encontrado, se crea en el directorio donde se está tratando el documento un fichero con el nombre dado al documento en la fase de renombrado y cuyo contenido es el propio identificador encontrado.
@@ -152,7 +159,18 @@ diego@CompaqCQ57:galiasdoc$ cat input/1617643045714091/based-text/2/*id
 B83834747
 \end{verbatim}
 
-Llegados a este punto ya están disponibles todos los elementos necesarios para generar el lenguaje intermedio.
+Llegados a este punto ya están disponibles toda la información necesaria para construir la salida. Hay dos \emph{scripts} más que se ejecutan. Primero se invoca a la herramienta de generación de lenguaje intermedio y después al parser Bison correspondiente. El último \emph{script} mueve los resultados al directorio de salida del \emph{job}, donde podrán ser recuperados. Además se crea en la raíz del \emph{job} un fichero vacío cuyo nombre es el \emph{timestamp} del momento finalización de de la ejecución.
 
 \section{Generación del lenguaje intermedio}
+
+\subsection{Definiendo regiones con las plantillas}
+
+Las plantillas son documentos JSON que contienen toda la información necesaria para filtrar el texto del documento. Para crear una plantilla hay que obtener las coordenadas que delimitan una región de interés. Estas áreas son son cuadrados o rectángulos que abarcan todo el contenido de un tipo de región. Los tipos de regiones utilizadas son cuatro. 
+
+La más sencilla es una región de tipo secuencias, esto es, los contenidos se ordenará de izquierda a derecha y de arriba a abajo. Después están las tabla simples que contienen una única columna y múltiples filas o viceversa. El último tipo de región son las tablas de datos con nxm filas y columnas. En el interior de cada subregión el texto se ordena siguiendo el mismo procedimiento que en el caso más básico.
+
+%% Para ampliar: más tipos de informaciones de las plantillas
+
+El cometido principal de esta herramienta es generar un lenguaje con los suficientes elementos gramaticales que permitan tratarlo con un parser. A partir de las regiones definidas en las plantillas y las coordenadas de las palabras se hace un filtrado. Se descartan todas las palabras que no encajen en ninguna región, las demás se asocian a la región a la que pertenezcan.
+
 \section{Salida en lenguaje estructurado}
