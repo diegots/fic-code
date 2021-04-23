@@ -195,8 +195,30 @@ En este punto ya se ha preparado la información para poder llevar a cabo el tra
 
 La penúltima fase asigna contenidos a las regiones definidas en las plantillas y por último se escriben todos los resultados a disco.
 
-\subsection{Creación del lenguaje intermedio}
+\subsection{Tratamiento de las lineas y las regiones}
 
 El objetivo principal en esta fase es asociar a cada región las lineas que le corresponden. Primero se realiza una clasificación de las regiones según apliquen a una única página, por ejemplo la primera o la última; a múltiples páginas o a todas las páginas del documento. Lo que se hace es escoger las regiones que aplican a la página actual atendiendo al número de página que tiene y su posición dentro del documento. Además de los casos básicos mencionados anteriormente, para el correcto tratamiento fue necesario implementar comportamientos para las siguientes categorías: 
+
+\begin{itemize}
+	\item R1: una región formada por una columna de cabeceras a la izquierda
+	\item R2: región con cabecera en la fila superior
+	\item R3: región básica con contenidos secuenciales. Se trata como una celda única.
+	\item T1: es una tabla bidimensional donde la primera fila contiene la cabecera y tienen múltiples columnas.
+	\item T2: similar al caso anterior pero los límites entre las filas de la tabla se calculan por medio de la transformada de Hough.
+	\item T2_T2: configuración de dos regiones T2 consecutivas.
+	\item T2_T2_R1: región especial formada por una región T2_T2 seguida de una región R1.
+\end{itemize}
+
+%% Adentrarse en cómo seleccionan las regiones las lineas que les corresponden.
+
+%% Mostrar tipos de regiones en el apéndice
+
+%% ¿Por qué fue necesario crear las regiones contiguas. Por el documento tipo \emph{papel continuo}. Detallar.
+
+%% Uso de la transformada de Hough para definición de las filas.
+
+\subsection{Creación del lenguaje intermedio}
+
+Por último los contendidos de cada región, se escriben a la ruta de salida. Existe un método para cada tipo de región. Las regiones dobles utilizadas en la fase anterior no se utilizan aquí y solo se trabaja con R1, R2, R3, T1 y T2.
 
 \section{Salida en lenguaje estructurado}
