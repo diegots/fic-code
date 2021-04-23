@@ -165,12 +165,38 @@ Llegados a este punto ya están disponibles toda la información necesaria para 
 
 \subsection{Definiendo regiones con las plantillas}
 
-Las plantillas son documentos JSON que contienen toda la información necesaria para filtrar el texto del documento. Para crear una plantilla hay que obtener las coordenadas que delimitan una región de interés. Estas áreas son son cuadrados o rectángulos que abarcan todo el contenido de un tipo de región. Los tipos de regiones utilizadas son cuatro. 
+Las plantillas son documentos JSON que contienen toda la información necesaria para localizar el texto de interés del documento. La creación de las plantillas se ha realizado manualmente. En estas plantillas se definen áreas cuadradas o rectacgulares donde están las palabras que se desea generar en formato estructurado. Se distinguen cuatro tipos de regiones.
 
-La más sencilla es una región de tipo secuencias, esto es, los contenidos se ordenará de izquierda a derecha y de arriba a abajo. Después están las tabla simples que contienen una única columna y múltiples filas o viceversa. El último tipo de región son las tablas de datos con nxm filas y columnas. En el interior de cada subregión el texto se ordena siguiendo el mismo procedimiento que en el caso más básico.
+La más sencilla es una región de tipo secuencia, esto es, los contenidos se ordenará de izquierda a derecha y de arriba a abajo. Después están las tabla simples que contienen una única columna y múltiples filas o viceversa. El último tipo de región son las tablas de datos con nxm filas y columnas. En el interior de cada subregión el texto se ordena siguiendo el mismo procedimiento que en el caso más básico.
 
-%% Para ampliar: más tipos de informaciones de las plantillas
+%% Para ampliar: más tipos de informaciones recogidos en las plantillas
 
-El cometido principal de esta herramienta es generar un lenguaje con los suficientes elementos gramaticales que permitan tratarlo con un parser. A partir de las regiones definidas en las plantillas y las coordenadas de las palabras se hace un filtrado. Se descartan todas las palabras que no encajen en ninguna región, las demás se asocian a la región a la que pertenezcan.
+\subsection{Flujo principal de los datos}
+
+El cometido principal de la herramienta de generación de código intermedio es transformar el texto extraído en un lenguaje con elementos gramaticales que permitan tratarlo con un parser. A partir de las regiones definidas en las plantillas y las coordenadas de las palabras se hace un filtrado. Se descartan todas las palabras que no encajen en ninguna región, las demás se asocian a la región a la que pertenezcan.
+
+Los elementos principales del programa se detallan a continuación:
+
+Primero se tratan los argumentos de entrada. Especialmente se selecciona XXX ¿qué cosas se seleccionan? XXX
+Después se realiza el parse de los datos de entrada. Esto transforma la información de coordenadas y los valores de las palabras en estructuras en memoria. Datos que ambos orígenes de datos comparten el formato HTML, es posible utilizar el parser por defecto que proporciona Python, la clase \verb|HTMLParser|, con la finalidad de extraer las lineas y palabras proporcionadas. Se crearon dos clases que especializan la anterior, \verb|xmlTMLParser| y \verb|hocrHTMLParser| para las particularidades de cada tipo de origen.
+
+En la aplicación existen tres conceptos distintos de lo que es una linea. La idea más inmediata de una linea es aquella que se aprecia visualmente sobre un documento. Estas son las lineas que querríamos que el sistema identificara como tales. XXX extender concepto de linea con las otras dos ideas. Creo recordar: la linea área que encaja dentro de una columnas, pero no se extiende a otras. XXX. Un problema encontrado en esa asignación de palabras a lineas es que hay casos donde una linea abarca más de una columnas. Para generar correctamente el lenguaje, cada palabra debe pertenecer a una única linea y la linea debe pertenecer a una única columna. Se realiza por tanto un troceado de las lineas excesivamente extensas. Se fraccionan y se asignan a las regiones que les corresponden.
+
+En este punto ya se ha preparado la información para poder llevar a cabo el tratamiento. Se crea en un objeto tipo diccionario que contiene todos los datos conocidos hasta ahora:
+
+\begin{itemize}
+	\item Las lineas,
+	\item las palabras,
+	\item las regiones definidas en las plantillas,
+	\item el número de página actual,
+	\item el número de páginas que contiene el documento completo,
+	\item la ruta a la imagen de la página actual.
+\end{itemize}
+
+La penúltima fase asigna contenidos a las regiones definidas en las plantillas y por último se escriben todos los resultados a disco.
+
+\subsection{Creación del lenguaje intermedio}
+
+El objetivo principal en esta fase es asociar a cada región las lineas que le corresponden. Primero se realiza una clasificación de las regiones según apliquen a una única página, por ejemplo la primera o la última; a múltiples páginas o a todas las páginas del documento. Lo que se hace es escoger las regiones que aplican a la página actual atendiendo al número de página que tiene y su posición dentro del documento. Además de los casos básicos mencionados anteriormente, para el correcto tratamiento fue necesario implementar comportamientos para las siguientes categorías: 
 
 \section{Salida en lenguaje estructurado}
