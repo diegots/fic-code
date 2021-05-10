@@ -5,7 +5,7 @@
 \chapter{Implementación}
 \label{chap:implemetación}
 
-La implementación está diseñada para recibir peticiones de conversión y generar la salida correspondiente en formato estructurado. El número de ficheros que se pueden tratar en cada ejecución solo está limitado por las capacidades del sistema de ficheros o del SO donde se ejecute. Cada invocación produce una tarea en el sistema, que se gestiona de forma individual. Una vez que se reciben los ficheros para su tratamiento, se crea una ruta específica para ese trabajo y comienza el proceso. En cada etapa se crean nuevos ficheros intermedios que, según se verá más adelante, se mueven a destinos designados para cada paso. Los documentos se tratan a nivel de página individual. El motor encargado de conducir el flujo de información está implementado en lenguaje Bash. Este \emph{engine} se apoya en varias herramientas adicionales, disponibles en cualquier distribución Linux. Por último, se complementa con el generador de código intermedio y los parsers para cada modelo de documento.
+La implementación está diseñada para recibir peticiones de conversión y generar la salida correspondiente en formato estructurado. El número de ficheros que se pueden tratar en cada ejecución solo está limitado por las capacidades del sistema de ficheros o del SO donde se ejecute. Cada invocación produce una tarea en el sistema, que se gestiona de forma individual. Una vez que se reciben los ficheros para su tratamiento, se crea una ruta específica para ese trabajo y comienza el proceso. En cada etapa se crean nuevos ficheros intermedios que, según se verá más adelante, se mueven a destinos designados para cada paso. Los documentos se tratan página a página. El motor encargado de conducir el flujo de información está implementado en lenguaje Bash. Este \emph{engine} se apoya en varias herramientas adicionales, disponibles en cualquier distribución Linux. Por último, se complementa con el generador de código intermedio y los \emph{parsers} para cada modelo de documento.
 
 % Existen, por tanto, tres partes que se detallarán en las siguientes páginas:
 
@@ -30,7 +30,7 @@ La implementación está diseñada para recibir peticiones de conversión y gene
 
 %% Detección de subregiones: Se diseñó un algoritmo sencillo pero eficaz para decidir si una región era subregión de otra dada.
 
-%% Aproximación para la identificación de las lineas individuales: Esta aproximación se basó en intentar caracterizar las lineas mediante propiedades sencillas. La aproximación no dio resultado.
+%% Aproximación para la identificación de las líneas individuales: Esta aproximación se basó en intentar caracterizar las líneas mediante propiedades sencillas. La aproximación no dio resultado.
 
 %% Mejora de tiempos: Inicialmente se utilizada el tipo de dato Set y sus operaciones para comprobar la inclusión de unas regiones en otras. Esta aproximación, aunque funcional, no resultaba rápida para su ejecución durante el desarrollo. Se realizó una mejora que comprueba las propiedades geométricas en lugar de basarse en lógica de conjuntos.
 
@@ -47,12 +47,12 @@ La implementación está diseñada para recibir peticiones de conversión y gene
 \section{Estructura física}
 
 Para entender más fácilmente las características de la implementación se describen primero la estructura de directorios que conforman el proyecto. 
-La estructura y funcionalidad de los directorios del proyecto es importante para detallar como se trata la entrada. Esta estructura general se puede consultar gráficamente en XXX. La aplicación se compila y distribuye por medio de un \verb|Makefile|. También existe un fichero \verb|Dockerfile| configurado para generar la correspondiente imagen Docker del programa. Los principales directorios utilizados son:
+La estructura y funcionalidad de los directorios del proyecto es importante para entender como se trata la entrada. Esta estructura general se puede consultar gráficamente en XXX. La aplicación se compila y distribuye por medio de un \verb|Makefile|. También existe un fichero \verb|Dockerfile| configurado para generar la correspondiente imagen Docker del programa. Los principales directorios utilizados son:
 
 \begin{itemize}
     \item \verb|conf|, empleado para las configuraciones del \emph{engine}, también la configuración de Tesseract y los datos de entrenamiento.
-    \item \verb|data| contiene información de los modelos soportados. Principalmente los identificadores utilizados para reconocer los documentos y las plantillas que relacionan las regiones seleccionadas.
-    \item \verb|doc| está dedicado a la documentación del proyecto. También contiene todos los ejemplos de ficheros PDF utilizados. Esta memoria, escrita en formato \LaTeX  tiene un repositorio propio.
+    \item \verb|data| contiene información de los modelos soportados. Principalmente, los identificadores utilizados para reconocer los documentos y las plantillas que relacionan las regiones seleccionadas.
+    \item \verb|doc| está dedicado a la documentación del proyecto. También contiene todos los ejemplos de ficheros PDF utilizados. Esta memoria, escrita con el sistema de composición de textos \LaTeX,  tiene un repositorio de código propio.
     \item \verb|engine| tiene como finalidad alojar todos los \emph{scripts} del \emph{engine}.
     \item \verb|input| no está en el repositorio, sino que se crea bajo demanda. Es la ruta base para la entrada de datos utiliza por la aplicación. El nombre puede cambiarse definiendo otro en la configuración del \emph{engine}.
     \item \verb|script| mantiene varios \emph{scripts} auxiliares utilizados principalmente para facilitar las ejecuciones durante el desarrollo.
@@ -62,23 +62,24 @@ La estructura y funcionalidad de los directorios del proyecto es importante para
 
 \section{Tratamiento inicial de la entrada}
 
-La herramienta es un software \verb|backend|, no está pensada para que un usuario realice las ejecuciones de la aplicación manualmente. Por ello, y aunque no se desarrolló un API para acompañar la solución, si que se definieron varias características con la finalidad de facilitar la depuración durante el desarrollo y servir de primera aproximación para una futura integración en un sistema con un diseño por capas.
+La herramienta es un software \verb|backend|, no está pensada para que un usuario realice las ejecuciones de la aplicación manualmente. Por ello, y aunque no se desarrolló un API para acompañar la solución, si que se definieron varias características con la finalidad de facilitar la depuración durante el desarrollo y servir de primera aproximación para una futura integración en un sistema basado en un diseño por capas.
 
-Cada ejecución se lleva a cabo en un directorio propio donde se almacena la entrada, se realiza el tratamiento y se ubica la salida. Además se facilita al programa llamante un identificador que debe utilizar para la recuperación de los resultados. La ruta al directorio que contiene todas las carpetas de todas las ejecuciones el es directorio \verb|input|, mencionado anteriormente.
+Cada ejecución se lleva a cabo en un directorio propio donde se almacena la entrada, se realiza el tratamiento y se ubica la salida. Además, se facilita al programa invocador un identificador que debe utilizar para la recuperación de los resultados. La ruta al directorio que contiene todas las carpetas de todas las ejecuciones el es directorio \verb|input|, mencionado anteriormente.
 
-Para evitar colisiones en las rutas de trabajo durante distintas ejecuciones, se obtiene una marca de tiempo del instante de recepción de la petición y se utiliza directorio como raíz para el nuevo trabajo. Este \emph{timestamp} se obtiene con el comando \verb|date| configurado para generar un entero de tamaño 16 con la hora UTC.
+Para evitar colisiones en las rutas de trabajo durante distintas ejecuciones, se obtiene una marca de tiempo del instante de recepción de la petición y se utiliza como directorio raíz para el nuevo trabajo. Este \emph{timestamp} se obtiene con el comando \verb|date| configurado para generar un entero de tamaño 16 con la hora UTC del sistema.
 
 \begin{verbatim}
 diego@CompaqCQ57:galiasdoc$ date -u +"%s%6N"
 1616623143141490
 diego@CompaqCQ57:galiasdoc$
 \end{verbatim}
+%% TODO centrar y añadir caption: ejemplo de directorio de trabajo
 
-A continuación se presenta la secuencia de pasos que conforman en comienzo de una tarea en el sistema. La primera acción ocurre cuando el invocador del sistema ejecuta el \emph{script} \verb|get-job-id.sh|. Este crea el nuevo directorio para el trabajo y todos los directorios internos. Se devuelve el identificador de trabajo al llamador.
+A continuación, se presenta la secuencia de pasos que conforman el comienzo de una tarea en el sistema. La primera acción ocurre cuando el invocador del sistema ejecuta el \emph{script} \verb|get-job-id.sh|. Este crea el nuevo directorio para el trabajo y todos los directorios internos. Se devuelve el identificador de trabajo al programa llamador.
 
-En este momento el llamador debe copiar el fichero de entrada en la ruta \verb|job_id/frontend|. Por último se inicia la ejecución cuando se llama al \emph{script} \verb|run.sh|. El \emph{job} que se debe tratar se indica con el \verb|job_id| pasado como parámetro. Los pasos se pueden seguir visualmente en la figura \ref{fig:inicio-aplicacion}.
+En este momento el llamador debe copiar el fichero de entrada en la ruta \verb|job_id/frontend|. Por último, se inicia la ejecución cuando se llama al \emph{script} \verb|run.sh|. Se le debe indicar al motor el identificador del \emph{job} que que se quiere iniciar. Para ello, el \verb|job_id| se pasa como parámetro. Los pasos se pueden seguir visualmente en la figura \ref{fig:inicio-aplicacion}.
 
-A partir de este momento el sistema comienza a trabajar. Cada acción llevada a cabo se indica con un mensaje por la salida estándar de la consola. Cuando finaliza se notifica con otra marca de tiempo del momento final en la ruta \verb|input/job_id/done-<timestamp>|.
+A partir de este momento el sistema comienza a trabajar. Cada acción llevada a cabo se indica con un mensaje por la salida estándar de la consola. Cuando finaliza, se notifica con otra marca de tiempo del momento final en la ruta \verb|input/job_id/done-<timestamp>|.
 
 \begin{figure}[hp!]
   \centering
@@ -89,32 +90,25 @@ A partir de este momento el sistema comienza a trabajar. Cada acción llevada a 
 
 %% Cambiar diagrama con flecha saliente para indicar que se ejecutan los pasos del engine
 %% Cambiar "copia fichero *.zip" por "datos entrada"
-%% La linea de finalización debe devolver el evento de finalización
+%% La línea de finalización debe devolver el evento de finalización
 
 \section{Flujo de información en el \emph{engine}}
 
 Cuando se invoca el \emph{script} \verb|run.sh| se realizan en secuencia todos los pasos que acaban generado la salida en formato estructurado.
 
-\begin{enumerate}
-    \item Descompresión de la entrada.
-    \item Renombrado seguro de los ficheros.
-    \item Extracción de texto con \emph{pdftotext}.
-    \item Clasificación de los casos basados en texto y aquellos basados en imagen.
-    \item Generación de imágenes para los documentos basados en texto.
-    \item Aplicación del OCR para los casos basados en imagen.
-    \item Identificación de cada documento.
-    \item Generación del lenguaje intermedio.
-    \item Invocación del parser necesario.
-    \item Publicación de los resultados en el directorio de salida.
-\end{enumerate}
+%% Considerar borrado
 
-Para facilitar la comunicación se asume que la entrada llega  como un fichero comprimido. En este primer paso es necesario extraer los contenidos de dicho fichero. Se realiza además un renombrado de cada uno para evitar errores debidos a caracteres poco amigables con la consola a la hora de componer las rutas.
+%% Primero se descomprimen los datos de entrada y se renombran los ficheros recibidos para que su tratamiento sea seguro al construir las rutas. Seguidamente se realiza una primera extracción de texto con \emph{pdftotext}. En tercer lugar, se realiza una clasificación de los casos basados en texto y aquellos basados en imagen. También se generan imágenes de todas las páginas de los documentos basados en texto. A continuación ya se realiza el Reconocimiento Óptico de Caracteres para los casos basados en imagen. Con el OCR completado se trata de identificar cada documento. Lo siguiente es generar el lenguaje intermedio e invocar al \emph{parser} necesario. Por último, se publican los resultados en el directorio de salida del trabajo.
 
-Una vez los ficheros PDF ya están disponibles se realiza una primera extracción de texto con la herramienta \verb|pdftotext|. El objetivo es realizar la clasificación que separe los ficheros de texto de aquellos cuyas páginas son imágenes.
+%% Explicación de los pasos
 
-Cuando \verb|pdftotext| en invocado en un PDF sin texto, genera igualmente un fichero de salida cuyo único contenido es un marcador de fin de página. Por defecto utiliza el caracter \verb|Form Feed| o \verb|0x0D|. Aquellas páginas que dan como resultado únicamente este carácter son movidas al directorio para el tratamiento por imagen, \verb|based-image|.
+Para facilitar la comunicación, se asume que la entrada llega como un único fichero comprimido. En este primer paso es necesario extraer los contenidos de dicho fichero. Se realiza además un renombrado de cada uno, para evitar errores debidos a caracteres poco amigables con el intérprete de comandos, a la hora de componer las rutas.
 
-El siguiente paso consiste en obtener la descripción de las coordenadas de las palabras y las lineas. Para ello \verb|pdftotext| vuelve a ser clave ya que con el flag \verb|-bbox-layout| permite generar un fichero XML que contiene estos datos y también el texto encontrado. Respecto a la calidad del texto hay que tener presente que muchos PDF introducen variaciones en las palabras, típicamente añadiendo espacios entre las letras. Estos problemas son tratados posteriormente.
+Una vez los ficheros PDF ya están disponibles, se realiza una primera extracción de texto con la herramienta \verb|pdftotext|. El objetivo es realizar la clasificación que separe los ficheros de texto de aquellos cuyas páginas son imágenes.
+
+Cuando \verb|pdftotext| en invocado en un PDF sin texto, genera igualmente un fichero de salida cuyo único contenido es un símbolo de fin de página. Por defecto utiliza el carácter \verb|Form Feed| o \verb|0x0D|. Aquellas páginas que dan como resultado únicamente este carácter son movidas al directorio para el tratamiento por imagen, \verb|based-image|.
+
+El siguiente paso consiste en obtener la descripción de las coordenadas de las palabras y las líneas. Para ello \verb|pdftotext| vuelve a ser clave ya que con el flag \verb|-bbox-layout| permite generar un fichero XML que contiene estos datos y también el texto encontrado. Respecto a la calidad del texto hay que tener presente que muchos PDF introducen variaciones en las palabras, típicamente añadiendo espacios entre las letras. Estos problemas son tratados posteriormente.
 
 A continuación se muestra un fragmento de una de estas salidas XML:
 
@@ -149,7 +143,7 @@ La siguiente fase se extraen contenidos y coordenadas de las páginas con imáge
 
 %% XXX Imagen del fichero HOCR abierto con alguna aplicación de visualización
 
-Para poder aplicar la plantilla a un fichero correcta a un fichero determinado es necesario realizar un emparejamiento. En este caso se optó por buscar en los documentos datos específicos que no causaran colisión con otros documentos. Dado que los datos disponibles son facturas de empresas, se optó por utilizar los códigos NIF o DNI del emisor en este caso y que por ley son obligatorios en este tipo de documentos XXX. Se creó un registro con estos códigos y se realiza una búsqueda con \verb|grep| sobre los textos extraidos bien con Tesseract bien con \verb|pdftotext|. En los casos tratados esta búsqueda fue lo suficiente robusta.
+Para poder aplicar la plantilla a un fichero correcta a un fichero determinado es necesario realizar un emparejamiento. En este caso se optó por buscar en los documentos datos específicos que no causaran colisión con otros documentos. Dado que los datos disponibles son facturas de empresas, se optó por utilizar los códigos NIF o DNI del emisor en este caso y que por ley son obligatorios en este tipo de documentos XXX. Se creó un registro con estos códigos y se realiza una búsqueda con \verb|grep| sobre los textos extraídos bien con Tesseract bien con \verb|pdftotext|. En los casos tratados esta búsqueda fue lo suficiente robusta.
 Cuando un patrón es encontrado, se crea en el directorio donde se está tratando el documento un fichero con el nombre dado al documento en la fase de renombrado y cuyo contenido es el propio identificador encontrado.
 
 \begin{verbatim}
@@ -165,9 +159,9 @@ Llegados a este punto ya están disponibles toda la información necesaria para 
 
 \subsection{Definiendo regiones con las plantillas}
 
-Las plantillas son documentos JSON que contienen toda la información necesaria para localizar el texto de interés del documento. La creación de las plantillas se ha realizado manualmente. En estas plantillas se definen áreas cuadradas o rectacgulares donde están las palabras que se desea generar en formato estructurado. Se distinguen cuatro tipos de regiones.
+Las plantillas son documentos JSON que contienen toda la información necesaria para localizar el texto de interés del documento. La creación de las plantillas se ha realizado manualmente. En estas plantillas se definen áreas cuadradas o rectangulares donde están las palabras que se desea generar en formato estructurado. Se distinguen cuatro tipos de regiones.
 
-La más sencilla es una región de tipo secuencia, esto es, los contenidos se ordenará de izquierda a derecha y de arriba a abajo. Después están las tabla simples que contienen una única columna y múltiples filas o viceversa. El último tipo de región son las tablas de datos con nxm filas y columnas. En el interior de cada subregión el texto se ordena siguiendo el mismo procedimiento que en el caso más básico.
+La más sencilla es una región de tipo secuencia, esto es, los contenidos se ordenarán de izquierda a derecha y de arriba a abajo. Después están las tablas simples que contienen una única columna y múltiples filas o viceversa. El último tipo de región son las tablas de datos con nxm filas y columnas. En el interior de cada subregión el texto se ordena siguiendo el mismo procedimiento que en el caso más básico.
 
 %% Para ampliar: más tipos de informaciones recogidos en las plantillas
 
@@ -178,14 +172,14 @@ El cometido principal de la herramienta de generación de código intermedio es 
 Los elementos principales del programa se detallan a continuación:
 
 Primero se tratan los argumentos de entrada. Especialmente se selecciona XXX ¿qué cosas se seleccionan? XXX
-Después se realiza el parse de los datos de entrada. Esto transforma la información de coordenadas y los valores de las palabras en estructuras en memoria. Datos que ambos orígenes de datos comparten el formato HTML, es posible utilizar el parser por defecto que proporciona Python, la clase \verb|HTMLParser|, con la finalidad de extraer las lineas y palabras proporcionadas. Se crearon dos clases que especializan la anterior, \verb|xmlTMLParser| y \verb|hocrHTMLParser| para las particularidades de cada tipo de origen.
+Después se realiza el parse de los datos de entrada. Esto transforma la información de coordenadas y los valores de las palabras en estructuras en memoria. Datos que ambos orígenes de datos comparten el formato HTML, es posible utilizar el parser por defecto que proporciona Python, la clase \verb|HTMLParser|, con la finalidad de extraer las líneas y palabras proporcionadas. Se crearon dos clases que especializan la anterior, \verb|xmlTMLParser| y \verb|hocrHTMLParser| para las particularidades de cada tipo de origen.
 
-En la aplicación existen tres conceptos distintos de lo que es una linea. La idea más inmediata de una linea es aquella que se aprecia visualmente sobre un documento. Estas son las lineas que querríamos que el sistema identificara como tales. XXX extender concepto de linea con las otras dos ideas. Creo recordar: la linea área que encaja dentro de una columnas, pero no se extiende a otras. XXX. Un problema encontrado en esa asignación de palabras a lineas es que hay casos donde una linea abarca más de una columnas. Para generar correctamente el lenguaje, cada palabra debe pertenecer a una única linea y la linea debe pertenecer a una única columna. Se realiza por tanto un troceado de las lineas excesivamente extensas. Se fraccionan y se asignan a las regiones que les corresponden.
+En la aplicación existen tres conceptos distintos de lo que es una línea. La idea más inmediata de una línea es aquella que se aprecia visualmente sobre un documento. Estas son las líneas que querríamos que el sistema identificara como tales. XXX extender concepto de línea con las otras dos ideas. Creo recordar: la línea área que encaja dentro de una columna, pero no se extiende a otras. XXX. Un problema encontrado en esa asignación de palabras a líneas es que hay casos donde una línea abarca más de una columna. Para generar correctamente el lenguaje, cada palabra debe pertenecer a una única línea y la línea debe pertenecer a una única columna. Se realiza por tanto un troceado de las líneas excesivamente extensas. Se fraccionan y se asignan a las regiones que les corresponden.
 
 En este punto ya se ha preparado la información para poder llevar a cabo el tratamiento. Se crea en un objeto tipo diccionario que contiene todos los datos conocidos hasta ahora:
 
 \begin{itemize}
-	\item Las lineas,
+	\item Las líneas,
 	\item las palabras,
 	\item las regiones definidas en las plantillas,
 	\item el número de página actual,
@@ -195,9 +189,9 @@ En este punto ya se ha preparado la información para poder llevar a cabo el tra
 
 La penúltima fase asigna contenidos a las regiones definidas en las plantillas y por último se escriben todos los resultados a disco.
 
-\subsection{Tratamiento de las lineas y las regiones}
+\subsection{Tratamiento de las líneas y las regiones}
 
-El objetivo principal en esta fase es asociar a cada región las lineas que le corresponden. Primero se realiza una clasificación de las regiones según apliquen a una única página, por ejemplo la primera o la última; a múltiples páginas o a todas las páginas del documento. Lo que se hace es escoger las regiones que aplican a la página actual atendiendo al número de página que tiene y su posición dentro del documento. Además de los casos básicos mencionados anteriormente, para el correcto tratamiento fue necesario implementar comportamientos para las siguientes categorías: 
+El objetivo principal en esta fase es asociar a cada región las líneas que le corresponden. Primero se realiza una clasificación de las regiones según apliquen a una única página, por ejemplo la primera o la última; a múltiples páginas o a todas las páginas del documento. Lo que se hace es escoger las regiones que aplican a la página actual atendiendo al número de página que tiene y su posición dentro del documento. Además de los casos básicos mencionados anteriormente, para el correcto tratamiento fue necesario implementar comportamientos para las siguientes categorías: 
 
 \begin{itemize}
 	\item R1: una región formada por una columna de cabeceras a la izquierda
@@ -209,7 +203,7 @@ El objetivo principal en esta fase es asociar a cada región las lineas que le c
 	\item T2\_T2\_R1: región especial formada por una región T2\_T2 seguida de una región R1.
 \end{itemize}
 
-%% Adentrarse en cómo seleccionan las regiones las lineas que les corresponden.
+%% Adentrarse en cómo seleccionan las regiones las líneas que les corresponden.
 
 %% Mostrar tipos de regiones en el apéndice
 
@@ -219,6 +213,6 @@ El objetivo principal en esta fase es asociar a cada región las lineas que le c
 
 \subsection{Creación del lenguaje intermedio}
 
-Por último los contendidos de cada región, se escriben a la ruta de salida. Existe un método para cada tipo de región. Las regiones dobles utilizadas en la fase anterior no se utilizan aquí y solo se trabaja con R1, R2, R3, T1 y T2.
+Por último, los contendidos de cada región se escriben a la ruta de salida. Existe un método para cada tipo de región. Las regiones dobles utilizadas en la fase anterior no se utilizan aquí y solo se trabaja con R1, R2, R3, T1 y T2.
 
 \section{Salida en lenguaje estructurado}
