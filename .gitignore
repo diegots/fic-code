@@ -1,13 +1,20 @@
+# Extensions
 *.acn
 *.aux
-*.log
-*.lof
-*.ist
-*.lot
-*.gz
 *.glo
-*.pyg
-*.toc
-*.pdf
+*.gz
+*.ist
+*.lof
+*.log
+*.lot
 *.out
+*.pdf
+*.pyg
+*.sty
+*.toc
+
+# Directories
 _minted-memoria_tfg/
+
+# Files
+psheader.txt
