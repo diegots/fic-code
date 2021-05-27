@@ -14,9 +14,11 @@
 *.pyg
 *.sty
 *.toc
+*.sav
 
 # Directories
-_minted-memoria_tfg/
+_minted-memoria_tfg
+memoria_tfg_html
 
 # Files
 psheader.txt
