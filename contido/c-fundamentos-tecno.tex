@@ -17,21 +17,34 @@ Un PDF no es un documento de texto, es un fichero binario de 8 bits que posee ci
 
 A nivel estructura física, un PDF tiene cuatro regiones. En orden secuencial están, la cabecera, que indica que se trata de un PDF y versión del estándar utilizado. El cuerpo que almacena todos los objetos definidos. Después está la Tabla de Referencias Cruzadas que se utiliza para la navegación y/o avance por el documento. En la tabla están los valores de desplazamiento para todos los objetos indirectos del documento. El cuarto elemento es el \verb|trailer|. Contiene varias claves, las más importantes son \verb|Size| que informa del número de entradas en la Tabla de Referencias Cruzadas y \verb|Root| que apunta al Catálogo del documento, lugar de comienzo de los objetos.
 
+\subsection{Extracción de datos desde PDF}
+
+\begin{itemize}
+    \item Hablar de pdftotext
+    \item PDFBox
+\end{itemize}
+
 \section{Información de coordenadas en documentos}
 
 La base de este proyecto consiste en utilizar las coordenadas físicas de los textos existentes en los documentos. Dado que los PDF pueden contener una representación textual o simplemente imágenes por cada página, es necesario encontrar una solución aplicable a cada caso y que permita un tratamiento homogéneo en los sucesivos pasos.
 
-\subsection{El microformato HOCR y otras alternativas}
+\subsection{El microformato hOCR y otras alternativas}
 
+HOCR es un microformato para la representación de la información de salida del proceso OCR. Los microformatos permiten dotar de datos estructurados a 
 
 \subsection{Pdftotext e información de bounding box}
 
-\verb|pdftotext| es una herramienta que permite extraer el texto contenido en un PDF. Existen otras herramientas similares, por ejemplo Apache PDFBox \cite{the_apache_software_foundation_apache_nodate}, pero durante el desarrollo \verb|pdftotext| fue la que mostró los resultados más útiles para los objetivos del proyecto. La implementación original de esta utilidad fue realizada por Glyph \& Cog \cite{glyph__cog_llc_glyph_nodate-1} junto con otras herramientas para tratamiento del formato PDF. En el año 2005 nace la librería Poppler a partir del \emph{fork} de la versión 3.0.3 del visor de xpdf \cite{kristian_hogsberg_poppler_2012}. La implementación de Poppler está disponible por defecto en las principales distribuciones Linux. Además del extractor de texto, el proyecto tienen otras utilidades para tratamiento de PDF, por ejemplo, separación y unión de páginas, obtención de imágenes, etc.
+\verb|pdftotext| es una herramienta que permite extraer el texto contenido en un PDF. Existen otras herramientas similares, por ejemplo Apache PDFBox \cite{the_apache_software_foundation_apache_nodate}, pero durante el desarrollo \verb|pdftotext| fue la que mostró los resultados más útiles para los objetivos del proyecto. La implementación original de esta utilidad fue realizada por Glyph \& Cog \cite{glyph__cog_llc_glyph_nodate-1} junto con otras herramientas para tratamiento del formato PDF. En el año 2005 nace la librería Poppler a partir del \emph{fork} de la versión 3.0.3 del visor de \verb|xpdf| \cite{kristian_hogsberg_poppler_2012}. La implementación de Poppler está disponible por defecto en las principales distribuciones Linux. Además del extractor de texto, el proyecto tienen otras utilidades para tratamiento de PDF, por ejemplo, separación y unión de páginas, obtención de imágenes, etc.
 
-La salida con la información de coordenadas, o bounding box, además del texto existe gracias a una aportación al proyecto del año 2010 de Kenneth Berland \cite{kenneth_berland_poppler_2010}. La información se proporciona en formato XHTML y se identifican \emph{tags} para bloques, lineas y palabras. En cada uno se informa de la localización del rectángulo que engloba al elemento con cuatro valores
+La salida con la información de coordenadas, o bounding box, además del texto existe gracias a una aportación al proyecto del año 2010 de Kenneth Berland \cite{kenneth_berland_poppler_2010}. La información se proporciona en formato XHTML y se identifican \emph{tags} para bloques, lineas y palabras. En cada uno se informa de la localización del rectángulo que engloba al elemento con cuatro valores: \emph{xMin}, \emph{xMax}, \emph{yMin}, \emph{yMax}.
 
 %% Incluir imagen del rectángulo
-
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=0.75\textwidth]{imaxes/c-fundamentos-techno/correspondencia-coordenadas-bounding.png}
+	\caption{Correspondencia de las coordenadas en una bounding box}
+	\label{fig:bounding-box}
+\end{figure}
 
 \section{OCR con Tesseract}
 
