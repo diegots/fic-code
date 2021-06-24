@@ -2,14 +2,14 @@
 %%%% FUNDAMENTOS TECNOLÓGICOS %%%%
 %%%%                          %%%%
 
-\chapter{Fundamentos tecnológicos}
-\label{chap:fundamentos-tecnologicos}
+\chapter{Fundamentos teóricos}
+\label{chap:fundamentos-teoricos}
 
 El objetivo de este capítulo es sentar las bases tecnológicas y teóricas sobre las que se ha llevado a cabo el proyecto.
 
 \section{El formato PDF}
 
-PDF es un formato digital para la creación de documentos introducido por Adobe Systems en 1993 \cite{adobe_systems_inc_quick_2010}. En los siguientes años el uso de este formato se extendió por toda la sociedad tanto en el ámbito público como privado. En el año 2008 la ISO publicó el estándar 32000-1 a partir de la versión 1.7 liberada por Adobe \cite{adobe_systems_inc_iso_2008}. Con posterioridad se publicó la versión 2.0 como ISO 32000-2 \cite{international_organization_for_standardization_iso_2017} en el año 2017 y una actualización en el 2020. PDF es un modelo de representación de imágenes que deriva del lenguaje PostScript para descripción de páginas. El modelo de imagen admite gráficos y texto de forma independiente al dispositivo de salida.
+PDF es un formato digital para la creación de documentos introducido por Adobe Systems en 1993 \cite{adobe_systems_inc_quick_2010,canonicalltd.UbuntuManpagePdfinfo}. En los siguientes años el uso de este formato se extendió por toda la sociedad tanto en el ámbito público como privado. En el año 2008 la ISO publicó el estándar 32000-1 a partir de la versión 1.7 liberada por Adobe \cite{adobe_systems_inc_iso_2008}. Con posterioridad se publicó la versión 2.0 como ISO 32000-2 \cite{international_organization_for_standardization_iso_2017} en el año 2017 y una actualización en el 2020. PDF es un modelo de representación de imágenes que deriva del lenguaje PostScript para descripción de páginas. El modelo de imagen admite gráficos y texto de forma independiente al dispositivo de salida.
 
 \subsection{Estructura de un PDF}
 
@@ -17,11 +17,11 @@ Un PDF no es un documento de texto, es un fichero binario de 8 bits que posee ci
 
 A nivel estructura física, un PDF tiene cuatro regiones. En orden secuencial están, la cabecera, que indica que se trata de un PDF y versión del estándar utilizado. El cuerpo que almacena todos los objetos definidos. Después está la Tabla de Referencias Cruzadas que se utiliza para la navegación y/o avance por el documento. En la tabla están los valores de desplazamiento para todos los objetos indirectos del documento. El cuarto elemento es el \verb|trailer|. Contiene varias claves, las más importantes son \verb|Size| que informa del número de entradas en la Tabla de Referencias Cruzadas y \verb|Root| que apunta al Catálogo del documento, lugar de comienzo de los objetos.
 
-\subsection{Extracción de datos desde PDF}
+\subsection{Software para tratamiento de PDF}
 
 \begin{itemize}
-    \item Hablar de pdftotext
     \item PDFBox
+    \item Poppler: pdfimages, pdftotext, pdftocairo, ...
 \end{itemize}
 
 \section{Información de coordenadas en documentos}
@@ -46,7 +46,7 @@ La salida con la información de coordenadas, o bounding box, además del texto 
 	\label{fig:bounding-box}
 \end{figure}
 
-\section{OCR con Tesseract}
+\section{Reconocimiento Óptico de Caracteres}
 
 Existen numerosas herramientas para llevar a cabo Reconocimiento Óptico de Caracteres. Entre ellas destaca Tesseract. Tesseract es un \emph{engine} de código abierto y desarrollado inicialmente por Hewlett Packard entre los años 1985 y 1995. Después de un periodo sin actividad, en el 2006 el proyecto fue recuperado por Google, que lo mantiene desde entonces.
 
@@ -54,15 +54,11 @@ Hoy en día tiene soporte para más de cien idiomas y la red neuronal que utiliz
 
 Se puede obtener como salida el texto reconocido y también la información de las coordenada, sobre el documento, de las palabras detectadas. Esta información resulta fundamental para poder aplicar las plantillas utilizadas este proyecto.
 
-\section{Transformada de Hough}
+\section{Detección de líneas en las tablas}
 
-La transformada de Hough es una técnica de visión por computador utilizada para detectar figuras parametrizables, tales como líneas o círculos. El algoritmo parte de una imagen binaria que representa los bordes encontrados por una detector de bordes. A continuación se calculan todas las posibles líneas que podrían pasar por cada punto y se lleva a cabo una votación. Se seleccionan las líneas más votadas, entre todas las detectadas.
+La Transformada de Hough es una técnica de visión por computador utilizada para detectar figuras parametrizables, tales como líneas o círculos. El algoritmo parte de una imagen binaria que representa los bordes encontrados por una detector de bordes. A continuación se calculan todas las posibles líneas que podrían pasar por cada punto y se lleva a cabo una votación. Se seleccionan las líneas más votadas, entre todas las detectadas.
 
 Este algoritmo proporciona una manera automática de localizar los bordes entre líneas de las tablas de muchos documentos y evita la necesidad de incorporar dicha información a las plantillas de forma manual. Se utiliza la implementación incluida en la librería OpenCV.
-
-\section{GNU Make}
-
-GNU Make es una herramienta que permite automatizar transformaciones sobre ficheros. \verb|make| es capaz de construir ejecutables a partir del código fuente de un proyecto. Para ello utiliza un fichero \verb|makefile| que contiene todas las reglas necesarias.
 
 \section{Flex y Bison}
 
@@ -70,14 +66,13 @@ Flex y Bison son dos herramientas utilizadas en conjunto para construir analizad
 
 La primera se utiliza para crear escáneres y la segunda para generar parsers. Ambas utilizan como entrada unos ficheros que definen las reglas válidas.
 
+\section{GNU Make}
+
+GNU Make es una herramienta que permite automatizar transformaciones sobre ficheros. \verb|make| es capaz de construir ejecutables a partir del código fuente de un proyecto. Para ello utiliza un fichero \verb|makefile| que contiene todas las reglas necesarias.
+
 \section{Ansible}
 
-
-
 \section{Docker}
-
-
-
 
 %% Valorar si mencionar otras herramientas como:
 % Extracción de texto: , pdftotext
