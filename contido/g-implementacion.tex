@@ -5,6 +5,8 @@
 \chapter{Implementación}
 \label{chap:implemetación}
 
+\lettrine{E}ste capítulo describe el diseño y la implementación de la solución construida.
+
 \section{Plantillas y regiones}
 \subsection{Información contenida en las plantillas}
 \subsection{Tipos de regiones}
@@ -29,7 +31,7 @@
 \subsection{Ansible y Docker}
 
 
-Este capítulo describe el diseño y la implementación de la solución construida.
+
 
 %% La implementación está diseñada para recibir peticiones de conversión y generar la salida correspondiente en formato estructurado. El número de ficheros que se pueden tratar en cada ejecución solo está limitado por las capacidades del sistema de ficheros o del SO donde se ejecute. Cada invocación produce una tarea en el sistema, que se gestiona de forma individual. Una vez que se reciben los ficheros para su tratamiento, se crea una ruta específica para ese trabajo y comienza el proceso. En %% cada etapa se crean nuevos ficheros intermedios que, según se verá más adelante, se mueven a destinos designados para cada paso. Los documentos se tratan página a página. El motor encargado de conducir el flujo de información está implementado en lenguaje Bash. Este \emph{engine} se apoya en varias herramientas adicionales, disponibles en cualquier distribución Linux. Por último, se complementa con el generador de código intermedio y los \emph{parsers} para cada modelo de documento.
 %% 
