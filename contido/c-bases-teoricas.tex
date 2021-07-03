@@ -108,13 +108,15 @@ El formato proporciona también información geométrica, posiciones, de las pal
 
 \section{Reconocimiento Óptico de Caracteres}
 \label{sec:rec-optico-caracteres}
-% TODO Mencionar engines alternativos
 
-Existen numerosas herramientas para llevar a cabo Reconocimiento Óptico de Caracteres. Entre ellas destaca Tesseract. Tesseract es un \emph{engine} de código abierto y desarrollado inicialmente por Hewlett Packard entre los años 1985 y 1995. Después de un periodo sin actividad, en el 2006 el proyecto fue recuperado por Google, que lo mantiene desde entonces.
+Para realizar el Reconocimiento Óptico de Caracteres se seleccionó Tesseract \cite{ocr_tesseract_raysmithetal.TesseractocrTesseract2021}. Existen otros de fuente abierta que se pueden considerar:
 
-Hoy en día tiene soporte para más de cien idiomas y la red neuronal que utiliza \footnote{Desde la versión 4, Tesseract utiliza una red LSTM. Esta es una red neuronal de tipo recurrente o RNN} puede ser entrenada para casos específicos si fuese necesario. Existe una amplia documentación en la web oficial, además, numerosos tutoriales en la red permiten familiarizarse con la herramienta al tratarse de un proyecto bien conocido y de larga trayectoria.
+\begin{itemize}
+    \item \textbf{OCRopus} \cite{ocr_ocropus_ocropy_project}, \textbf{Kraken}  y \textbf{Calamary} \cite{ocr_calamari_journal}: OCRopus es una colección de herramientas más que un producto final. Kraken y Calamary son forks de OCRopus que proporcionan un producto final. Sin embargo los tres proyectos están enfocados en resolver el problema de reconocer textos históricos con tipografías clásicas. Revisando la documentación de los tres no se encontró modelos preentrenados en castellano.
+    \item \textbf{EasyOCR} (\cite{ocr_easyocr_official}, \cite{ocr_easyocr_project}) es la alternativa más viable. Es un proyecto que se actualiza regularmente y tiene soporte comercial. Como punto negativo destaca que aunque proporciona información de bounding-box, no sigue ninguno de los estándares comentados con anterioridad.
+\end{itemize}
 
-Se puede obtener como salida el texto reconocido y también la información de las coordenada, sobre el documento, de las palabras detectadas. Esta información resulta fundamental para poder aplicar las plantillas utilizadas este proyecto.
+\textbf{Tesseract} \cite{ocr_tesseract_smith_paper} es un engine de código abierto y desarrollado inicialmente por Hewlett Packard \cite{ocr_tesseract_v4_release_notes} entre los años 1985 y 1995. Después de un periodo sin actividad, en el 2006 el proyecto fue recuperado por Google, que lo mantiene desde entonces. Hoy en día tiene soporte para más de cien idiomas y la red neuronal que emplea \footnote{Desde la versión 4, Tesseract utiliza una red LSTM. Esta es una red neuronal de tipo recurrente o RNN} puede ser entrenada para casos específicos, si se necesita. Existe una amplia documentación en la web oficial, además, numerosos tutoriales en la red permiten familiarizarse con la herramienta. Es un proyecto bien conocido y de larga trayectoria.
 
 \section{Detección de líneas tablas}
 
