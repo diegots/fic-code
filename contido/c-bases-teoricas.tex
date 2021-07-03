@@ -23,7 +23,7 @@ Cuando se invoca la herramienta con el parámetro \verb|-bbox| se genera una sal
 
 \begin{figure}[hp!]
     \centering
-    \includegraphics[width=0.75\textwidth]{imaxes/c-fundamentos-techno/correspondencia-coordenadas-bounding.png}
+    \includegraphics[width=0.75\textwidth]{imaxes/c-bases-teoricas/correspondencia-coordenadas-bounding.png}
     \caption{Correspondencia de las coordenadas en una bounding box}
     \label{fig:bounding-box}
 \end{figure}
@@ -41,28 +41,37 @@ PDF es un formato digital para la creación de documentos. Fue introducido por A
 Un PDF no es un fichero de texto, es un fichero binario de 8 bits con una estructura interna determinada. Sus elementos básicos son los objetos. Cualquier información que se visualice en el documento existirá realmente como un objeto dentro del fichero. Estos objetos están serializados dentro del fichero y pueden ser de alguno de los siguientes nueve tipos:
 
 \begin{enumerate}
-    \item Null: se utiliza para indicar la ausencia de un valor.
-    \item Boolean: indica los valores de verdad true o false.
-    \item Integer: representa valores enteros. Puede aparecer como \verb|1|, \verb|+2|, \verb|-100|.
-    \item Real: representa valores decimales y puede aparecer como \verb|0,05|, \verb|.25|, \verb|-3,1415|.
-    \item Name: son secuencias únicas dentro del fichero, comienzan con una barra. Por ejemplo: \verb|/Type|, \verb|/ThisIsName|.
-    \item String: puede ser de 4 tipos:
+    \item \textbf{Null}: se utiliza para indicar la ausencia de un valor.
+    \item \textbf{Boolean}: indica los valores de verdad true o false.
+    \item \textbf{Integer}: representa valores enteros. Puede aparecer como \verb|1|, \verb|+2|, \verb|-100|.
+    \item \textbf{Real}: representa valores decimales y puede aparecer como \verb|0,05|, \verb|.25|, \verb|-3,1415|.
+    \item \textbf{Name}: son secuencias únicas dentro del fichero, comienzan con una barra. Por ejemplo: \verb|/Type|, \verb|/ThisIsName|.
+    \item \textbf{String}: puede ser de 4 tipos:
     \begin{itemize}
         \item ASCII: bytes codificados en ASCII.
         \item PDFDocEncoded: bytes codificados con la codificación PDFDocEncoding.
         \item Text: bytes codificados en PDFDocEncoding o UTF-16BE.
         \item Date: utilizado para fechas. Se codifican en ASCII con un patrón de fecha. \footnote{D:YYYYMMDDHHmmSSOHH’mm}.
     \end{itemize}
-    \item Array: es una colección heterogénea de objetos. Se escriben entre corchetes: \verb|[ 0 20 (E) ]|.
-    \item Dictionary: es una tabla asociativa que contiene pares clave/valor. Pueden contener valores anidados y es utilizado para crear la jerarquía de todos los objetos del documento. Para indicar el comienzo y fin se utilizan los símbolos \verb|<<| y \verb|>>|. Las claves se indican con valores de tipo name.
-    \item Streams: son secuencias de bytes de 8 bits sin límite de tamaño. Son utilizados para almacenar cualquier información binaria, por ejemplo imágenes, ficheros JSON o tipografías. Los stream tienen como preámbulo un diccionario de propiedades del stream. Este diccionario siempre debe contener, al menos, la clave \verb|/Length| que indica en bytes el tamaño del stream. Otra clave importante es \verb|/Filter|. \verb|/Filter| indica que la información está comprimida o codificada. Las imágenes se suelen codificar como DCTDecode o JPXDe que son versiones diferentes del formato JPEG. Para otro tipo de datos está disponible el algoritmo FlateDecode, similar a  DEFLATE, el mismo utilizado en los ficheros ZIP.
+    \item \textbf{Array}: es una colección heterogénea de objetos. Se escriben entre corchetes: \verb|[ 0 20 (E) ]|.
+    \item \textbf{Dictionary}: es una tabla asociativa que contiene pares clave/valor. Pueden contener valores anidados y es utilizado para crear la jerarquía de todos los objetos del documento. Para indicar el comienzo y fin se utilizan los símbolos \verb|<<| y \verb|>>|. Las claves se indican con valores de tipo name.
+    \item \textbf{Streams}: son secuencias de bytes de 8 bits sin límite de tamaño. Son utilizados para almacenar cualquier información binaria, por ejemplo imágenes, ficheros JSON o tipografías. Los stream tienen como preámbulo un diccionario de propiedades del stream. Este diccionario siempre debe contener, al menos, la clave \verb|/Length| que indica en bytes el tamaño del stream. Otra clave importante es \verb|/Filter|. \verb|/Filter| indica que la información está comprimida o codificada. Las imágenes se suelen codificar como DCTDecode o JPXDe que son versiones diferentes del formato JPEG. Para otro tipo de datos está disponible el algoritmo FlateDecode, similar a  DEFLATE, el mismo utilizado en los ficheros ZIP.
 \end{enumerate}
 
 Los objetos presentados hasta el momento son los objetos directos. Los objetos directos tienen el valor almacenado en el propio objeto. También existen los objetos indirectos que se referencian indirectamente y el consumidor tiene que saltar a otra posición en el fichero. Los objetos indirectos tienen un identificador único dentro del fichero. Las referencias son de la forma: \verb|/ObjIndirecto  5 0 R|.
 
 \subsection{Estructura en un fichero}
 
-La estructura de un fichero está dividida en cuatro partes, header, body, cross-reference table y trailer. El header tiene al menos dos líneas. La primera se utiliza para indicar que el fichero es un PDF y la versión del estándar que le corresponde. La segunda es simplemente un separador: \verb|%%EOF|. El trailer es un objeto de tipo diccionario. Contiene claves y valores que aportan información a nivel de documento. Hay dos claves especialmente importantes, /Size que indica el número de entradas de la Cross-reference table y /Root que apunta al objeto que contiene el comienzo del Catálogo. El body contiene el objeto del Catálogo y todos los demás objetos que conforman el contenido del fichero PDF. La Cross-Reference Table es un índice de todos los objetos indirectos del PDF. Se utiliza para implementar la navegación sobre el fichero. Contiene la información necesaria para poder realizar saltos a la posición donde se encuentra el objeto que se quiere leer. La versión tradicional tiene tres columnas y la secuencia de entradas hace referencia al número del objeto buscado. En el ejemplo, para encontrar el objeto 2, tercera entrada, hay que saltar hasta el byte 32800:
+La estructura de un fichero está dividida en cuatro partes, tal como se muestra en la figura \ref{fig:secciones-pdf}: header, body, cross-reference table y trailer. El header tiene al menos dos líneas. La primera se utiliza para indicar que el fichero es un PDF y la versión del estándar que le corresponde. La segunda es simplemente un separador: \verb|%%EOF|. 
+
+\begin{figure}[hp!]
+    \centering
+    \includegraphics[width=0.3\textwidth]{imaxes/c-bases-teoricas/secciones-de-un-pdf.png}
+    \caption{Las cuatro secciones de un PDF}
+    \label{fig:secciones-pdf}
+\end{figure}
+
+El trailer es un objeto de tipo diccionario. Contiene claves y valores que aportan información a nivel de documento. Hay dos claves especialmente importantes, /Size que indica el número de entradas de la Cross-reference table y /Root que apunta al objeto que contiene el comienzo del Catálogo. El body contiene el objeto del Catálogo y todos los demás objetos que conforman el contenido del fichero PDF. La Cross-Reference Table es un índice de todos los objetos indirectos del PDF. Se utiliza para implementar la navegación sobre el fichero. Contiene la información necesaria para poder realizar saltos a la posición donde se encuentra el objeto que se quiere leer. La versión tradicional tiene tres columnas y la secuencia de entradas hace referencia al número del objeto buscado. En el ejemplo, para encontrar el objeto 2, tercera entrada, hay que saltar hasta el byte 32800:
 
 %\begin{minted}
 0000000000 65535 f\\
@@ -80,20 +89,25 @@ La estructura de un fichero está dividida en cuatro partes, header, body, cross
 
 \section{Representación de coordenadas en orígenes OCR}
 
-La representación de las localizaciones de los elementos identificados por el proceso OCR es solo una parte de toda la información que se genera como salida de un engine. Existen varias propuestas de formatos que se proponen como formatos abiertos con intención de favorecer su adopción. Es el caso de hOCR, ALTO, PAGE y TEI. Los tres últimos emplean XML como base y definen las etiquetas necesarias. La transformación entre ellos es posible y existe al menos un proyecto capaz de hacerlo
-\cite{ocrRepres_conversion_ocrFileformat}.
+La representación de las localizaciones de los elementos identificados por el proceso OCR es solo una parte de toda la información que se genera como salida de un engine. Existen varias propuestas de formatos que se proponen como formatos abiertos con intención de favorecer su adopción. Es el caso de hOCR \cite{ocrRepres_hocr_breuel_spec}, ALTO \cite{ocrRepres_alto_spec}, PAGE \cite{ocrRepres_page_pletschacher_paper} y TEI \cite{ocrRepres_tei_project}. Los tres últimos emplean XML como base y definen las etiquetas necesarias. La transformación entre ellos es posible y existe al menos un proyecto capaz de hacerlo
+\cite{ocrRepres_conversion_ocrFileformat}. hOCR es el formato de representación escogido para el proyecto, como se verá en \ref{sec:rec-optico-caracteres}.
 
 \subsection{El microformato hOCR}
 
-% hablar de hOCR
+hOCR es un estándar abierto que utiliza HTML como base tecnológica. Se diseñó siguiendo el modelos de los microformatos. Los microformatos son una tecnología ligada al auge de los blogs durante el año 2004. Su objetivo es aportar significado semántico a construcciones HTML, que de otro modo no lo tendrían ya que no forman parte como tal del lenguaje. La especificación hOCR hace uso de etiquetas \verb|DIV| y \verb|SPAN| para los elementos. Para la información se utilizan atributos como \verb|class|, \verb|title| o \verb|style|. Se combina con CSS para ampliar las capacidades del HTML en cuanto a representación de la salida OCR. HTML tiene soporte nativo para muchas características habituales en los documentos como estilo, tipografías, espaciado, etc.
 
-% hablar de microformatos
+La especificación hOCR define tres tipos de marcado:
 
-hOCR tiene la particularidad de ser un microformatos
+\begin{itemize}
+    \item Un marcado a \textbf{nivel lógico} que permite definir las secciones de un documento como en una estructura de tipo árbol.
+    \item Un segundo tipo de marcado para representar el \textbf{nivel tipográfico y de división entre páginas}. Tiene la capacidad de modelar el documento de forma  que sus elementos principales se trasladarían al formato impreso de forma correcta. Este modelo se apoya en los procesos habituales que consideran el documento como un conjunto de bloques y elementos que se deben trasladar a su posición correcta.
+    \item Un ultimo tipo para el \textbf{nivel físico} representado por líneas, figuras, y las palabras. Es específico para la implementación de cada motor de OCR. 
+\end{itemize}
 
+El formato proporciona también información geométrica, posiciones, de las palabras y valores de confianza respecto a la calidad que el motor valora sobre el reconocimiento realizado.
 
 \section{Reconocimiento Óptico de Caracteres}
-
+\label{sec:rec-optico-caracteres}
 % TODO Mencionar engines alternativos
 
 Existen numerosas herramientas para llevar a cabo Reconocimiento Óptico de Caracteres. Entre ellas destaca Tesseract. Tesseract es un \emph{engine} de código abierto y desarrollado inicialmente por Hewlett Packard entre los años 1985 y 1995. Después de un periodo sin actividad, en el 2006 el proyecto fue recuperado por Google, que lo mantiene desde entonces.
