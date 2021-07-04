@@ -116,15 +116,69 @@ Para realizar el Reconocimiento Óptico de Caracteres se seleccionó Tesseract \
     \item \textbf{EasyOCR} (\cite{ocr_easyocr_official}, \cite{ocr_easyocr_project}) es la alternativa más viable. Es un proyecto que se actualiza regularmente y tiene soporte comercial. Como punto negativo destaca que aunque proporciona información de bounding-box, no sigue ninguno de los estándares comentados con anterioridad.
 \end{itemize}
 
-\textbf{Tesseract} \cite{ocr_tesseract_smith_paper} es un engine de código abierto y desarrollado inicialmente por Hewlett Packard \cite{ocr_tesseract_v4_release_notes} entre los años 1985 y 1995. Después de un periodo sin actividad, en el 2006 el proyecto fue recuperado por Google, que lo mantiene desde entonces. Hoy en día tiene soporte para más de cien idiomas y la red neuronal que emplea \footnote{Desde la versión 4, Tesseract utiliza una red LSTM. Esta es una red neuronal de tipo recurrente o RNN} puede ser entrenada para casos específicos, si se necesita. Existe una amplia documentación en la web oficial, además, numerosos tutoriales en la red permiten familiarizarse con la herramienta. Es un proyecto bien conocido y de larga trayectoria.
+\textbf{Tesseract} \cite{ocr_tesseract_smith_paper} es un engine de código abierto y desarrollado inicialmente por Hewlett Packard \cite{ocr_tesseract_v4_release_notes} entre los años 1985 y 1995. Después de un periodo sin actividad, en el 2006 el proyecto fue recuperado por Google, que lo mantiene desde entonces. Hoy en día tiene soporte para más de cien idiomas y la red neuronal que emplea \footnote{Desde la versión 4, Tesseract utiliza una red LSTM. Esta es una red neuronal de tipo recurrente o RNN.} puede ser entrenada para casos específicos, si se necesita. Existe una amplia documentación en la web oficial, además, numerosos tutoriales en la red permiten familiarizarse con la herramienta. Es un proyecto bien conocido y de larga trayectoria.
 
 \section{Detección de líneas tablas}
 
-% TODO valorar si llevar esta sección a la implementación
+Los documentos contienen tablas donde hay dibujadas rectas que separan dos líneas de contenido. La Transformada de Hough proporciona una manera automática de delimitar esos espacios.
 
-La Transformada de Hough es una técnica de visión por computador utilizada para detectar figuras parametrizables, tales como líneas o círculos. El algoritmo parte de una imagen binaria que representa los bordes encontrados por una detector de bordes. A continuación se calculan todas las posibles líneas que podrían pasar por cada punto y se lleva a cabo una votación. Se seleccionan las líneas más votadas, entre todas las detectadas.
+Este algoritmo es una técnica de visión por computador utilizada para detectar figuras tales como líneas o círculos. Se puede aplicar a cualquier figura siempre que se conozca una ecuación paramétrica que la defina. A continuación se detalla el funcionamiento general del algoritmo.
 
-Este algoritmo proporciona una manera automática de localizar los bordes entre líneas de las tablas de muchos documentos y evita la necesidad de incorporar dicha información a las plantillas de forma manual. Se utiliza la implementación incluida en la librería OpenCV.
+Se utiliza como entrada la información obtenida al aplicar un detector de bordes en la imagen original. Si se considera un punto borde cualquiera, sobre él pueden pasar infinitas rectas. Estas rectas se pueden definir con la ecuación \ref{hough-ecu-recta}.
+
+\begin{equation}
+    \label{hough-ecu-recta}
+    y = a*x + b
+\end{equation}
+
+Reescribiendo la ecuación como,
+
+\begin{equation}
+b = -a*x + y
+\end{equation}
+
+es posible transformar cada punto borde al espacio de Hough y obtener una recta en dicho espacio.
+
+Considerando dos puntos del espacio imagen \ref{fig:hough-punto-imagen}, al trasladarlos \ref{fig:hough-intersection} al es espacio Hough se puede calcular su intersección resolviendo el sistema de ecuaciones. Esta intersección proporciona los parámetros para construir, en el espacio imagen, la recta \ref{fig:hough-recta-a-b} que une ambos puntos.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imaxes/c-bases-teoricas/hough-1}
+        \caption{Dos puntos borde en el espacio imagen}
+        \label{fig:hough-punto-imagen}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imaxes/c-bases-teoricas/hough-2}
+        \caption{Rectas e intersección en el espacio Hough}
+        \label{fig:hough-intersection}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imaxes/c-bases-teoricas/hough-3}
+        \caption{Recta que une ambos punto en el espacio imagen}
+        \label{fig:hough-recta-a-b}
+    \end{subfigure}
+    \caption{Transformaciones del espacio imagen al espacio Hough}
+    \label{fig:transformaciones-hough}
+\end{figure}
+
+El procedimiento general del algoritmo es como sigue:
+
+\begin{enumerate}
+    \item Se cuantiza el espacio de Hough. La cuantización divide el espacio en celdas.
+    \item Se toma cada par de puntos de la imagen borde.
+    \begin{enumerate}
+        \item Se calcula su intersección.
+        \item Se busca la celda donde coincide el punto intersección.
+        \item Se aumenta en uno el recuento de votos de esta celda.
+    \end{enumerate}
+    \item Al final las celdas más votadas son las candidatas a ser líneas reales.
+\end{enumerate}
 
 \section{Análisis léxico y sintáctico}
 
