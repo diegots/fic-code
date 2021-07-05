@@ -73,6 +73,8 @@ La estructura de un fichero está dividida en cuatro partes, tal como se muestra
 
 El trailer es un objeto de tipo diccionario. Contiene claves y valores que aportan información a nivel de documento. Hay dos claves especialmente importantes, /Size que indica el número de entradas de la Cross-reference table y /Root que apunta al objeto que contiene el comienzo del Catálogo. El body contiene el objeto del Catálogo y todos los demás objetos que conforman el contenido del fichero PDF. La Cross-Reference Table es un índice de todos los objetos indirectos del PDF. Se utiliza para implementar la navegación sobre el fichero. Contiene la información necesaria para poder realizar saltos a la posición donde se encuentra el objeto que se quiere leer. La versión tradicional tiene tres columnas y la secuencia de entradas hace referencia al número del objeto buscado. En el ejemplo, para encontrar el objeto 2, tercera entrada, hay que saltar hasta el byte 32800:
 
+% TODO añadir listing o minted para el código
+
 %\begin{minted}
 0000000000 65535 f\\
 0000000009 00000 n\\
@@ -119,6 +121,8 @@ Para realizar el Reconocimiento Óptico de Caracteres se seleccionó Tesseract \
 \textbf{Tesseract} \cite{ocr_tesseract_smith_paper} es un engine de código abierto y desarrollado inicialmente por Hewlett Packard \cite{ocr_tesseract_v4_release_notes} entre los años 1985 y 1995. Después de un periodo sin actividad, en el 2006 el proyecto fue recuperado por Google, que lo mantiene desde entonces. Hoy en día tiene soporte para más de cien idiomas y la red neuronal que emplea \footnote{Desde la versión 4, Tesseract utiliza una red LSTM. Esta es una red neuronal de tipo recurrente o RNN.} puede ser entrenada para casos específicos, si se necesita. Existe una amplia documentación en la web oficial, además, numerosos tutoriales en la red permiten familiarizarse con la herramienta. Es un proyecto bien conocido y de larga trayectoria.
 
 \section{Detección de líneas tablas}
+
+% TODO añadir referencias a la sección
 
 Los documentos contienen tablas donde hay dibujadas rectas que separan dos líneas de contenido. La Transformada de Hough proporciona una manera automática de delimitar esos espacios.
 
@@ -182,6 +186,54 @@ El procedimiento general del algoritmo es como sigue:
 
 \section{Análisis léxico y sintáctico}
 
-Flex y Bison son dos herramientas utilizadas en conjunto para construir analizadores sintácticos. ¿Qué es un analizador sintáctico?
+\subsection{Introducción}
 
-La primera se utiliza para crear escáneres y la segunda para generar parsers. Ambas utilizan como entrada unos ficheros que definen las reglas válidas.
+- Como parte del proyecto se han desarrollado una herramienta que utiliza análisis léxico/sintáctico para generar una salida estructurada
+- Estos analizadores son una parte de los pasos que habitualmente realiza un compilador para obtener un programa ejecutable
+
+
+\subsection{Conceptos básicos}
+
+\begin{enumerate}
+    \item Un \textbf{lenguaje} es un conjunto de cadenas de longitud finita.
+    \item Un \textbf{token} es la unidad mínima que se caracteriza por aportar significado léxico. En un lenguaje de programación cualquier palabra reservada es un token.
+    \item El \textbf{axioma} en una gramática
+\end{enumerate}
+
+\subsection{Tipos de lenguajes}
+
+Lenguaje formal
+
+- Jerarquía de Chomsky
+
+\begin{enumerate}
+    \item Lenguajes regulares
+    \item Lenguajes independientes del contexto
+    \item Lenguajes dependientes o sensibles al contexto
+    \item Lenguajes recursivamente enumerables
+    \item Lenguajes recursivos (fuera de la jerarquía de Chomsky)
+\end{enumerate}
+
+\subsection{Fases de la compilación}
+
+- El proceso de compilación se divide en varias fases
+
+\begin{enumerate}
+    \item Análisis léxico
+    \item Análisis sintáctico
+    \item Análisis semántico
+    \item Generador de código intermedio
+    \item Optimización de código
+    \item Generador de código
+\end{enumerate}
+
+El \textbf{análisis léxico} es el proceso por el cual se separa el texto de entrada, código fuente, en las unidades lógicas del lenguaje como identificadores, operadores o palabras clave. 
+Durante el análisis se comprueba la validez de los tokens identificados. Es habitual en los lenguajes de programación que la construcción de los identificadores siga unas reglas estrictas. El escáner utiliza expresiones regulares para comprobar la validez de los nombres.
+El analizador léxico y sintáctico comparten información de los identificadores por medio de la tabla de símbolos.
+La salida del analizador léxico es la secuencia de tokens reconocidos. Esta secuencia es la entrada del analizador sintáctico.
+
+
+En el \textbf{análisis sintáctico} se intenta encontrar un árbol sintáctico o árbol de derivación para una secuencia de tokens que tenga como raíz el axioma de la gramática. Cuando se encuentra, significa que la secuencia de tokens pertenece al lenguaje. En caso contrario se notificará un error al usuario del compilador.
+
+Los analizadores utilizados en los compiladores suelen ser de tipo ascendente o descendente. En los ascendentes, el árbol se construye buscando un camino desde las hojas hasta el axioma. Con los descendentes pasa justo lo contrario. En cualquiera de los dos casos la entrada se trata de izquierda a derecha.
+
