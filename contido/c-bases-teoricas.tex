@@ -122,9 +122,7 @@ Para realizar el Reconocimiento Óptico de Caracteres se seleccionó Tesseract \
 
 \section{Detección de líneas tablas}
 
-% TODO añadir referencias a la sección
-
-Los documentos contienen tablas donde hay dibujadas rectas que separan dos líneas de contenido. La Transformada de Hough proporciona una manera automática de delimitar esos espacios.
+Los documentos contienen tablas donde hay dibujadas rectas que separan dos líneas de contenido. La Transformada de Hough (\cite{hough_krishna_computerVision}, \cite{hough_grauman_presentation}) proporciona una manera automática de delimitar esos espacios.
 
 Este algoritmo es una técnica de visión por computador utilizada para detectar figuras tales como líneas o círculos. Se puede aplicar a cualquier figura siempre que se conozca una ecuación paramétrica que la defina. A continuación se detalla el funcionamiento general del algoritmo.
 
@@ -191,49 +189,111 @@ El procedimiento general del algoritmo es como sigue:
 - Como parte del proyecto se han desarrollado una herramienta que utiliza análisis léxico/sintáctico para generar una salida estructurada
 - Estos analizadores son una parte de los pasos que habitualmente realiza un compilador para obtener un programa ejecutable
 
-
 \subsection{Conceptos básicos}
 
 \begin{enumerate}
-    \item Un \textbf{lenguaje} es un conjunto de cadenas de longitud finita.
+    \item Un \textbf{lenguaje} es un conjunto de cadenas de longitud finita creadas a partir de un alfabeto finito.
     \item Un \textbf{token} es la unidad mínima que se caracteriza por aportar significado léxico. En un lenguaje de programación cualquier palabra reservada es un token.
-    \item El \textbf{axioma} en una gramática
+    \item Un \textbf{árbol de derivación} es
+    \item El \textbf{axioma} en una gramática es el elemento desde el que se construyen todos los árboles de derivación en la gramática
+    \item Las producciones son reglas de sustitución para la generación de cadenas del lenguaje.
 \end{enumerate}
 
-\subsection{Tipos de lenguajes}
+\subsection{Lenguajes formales}
 
-Lenguaje formal
+La teoría de autómatas y lenguajes formales es uno de los pilares que definen el funcionamiento de de las máquinas de cómputo. Con esta teoría se pueden construir los compiladores utilizados en los lenguajes de programación.
 
-- Jerarquía de Chomsky
+En los años 30 del siglo XX Alan Turing ideó el modelo de una máquina abstracta que posee las mismas capacidades de cálculo que los ordenadores actuales. 
+
+Posteriormente en los años 50, Noam Chonsky durante el estudio de la construcción de lenguajes naturales comienza el estudio de las gramáticas formales.
+
+En primer lugar hay que entender qué es un lenguaje. Tomando una colección finita de símbolos se puede construir secuencias con ellos. Si se utilizan las letras del alfabeto, combinando los símbolos es posible construir cadenas que pertenecerán al castellano y también otras muchas que no pertenecen.
+
+Una palabra es una secuencia determinada construida con símbolos que están en el alfabeto.
+
+Un lenguaje es una conjunto de palabras o cadenas
+
+- ¿Qué es un autómata?
+
+Un autómata en su visión más inmediata es un diagrama que ayuda en encontrar las palabras de un lenguaje. Se utiliza un grafo dirigido con información adicional. Los nodos del grafo son los estados e indican en qué punto del análisis de la cadena se encuentra. Las aristas van etiquetadas con caracteres del alfabeto y se llaman transiciones
+
+Un autómata especifica un lenguaje como el conjunto de aquellas cadenas que lo llevan del estado inicial a alguno de los estados de aceptación. Al mismo tiempo un autómata puede ser visto como un generador de las cadenas de un lenguaje si se comienza con la cadena vacía y se añaden símbolos según se recorren las transiciones, hasta llevar a un estado de aceptación.
+
+A partir del diagrama de estados del autómata es posible obtener unas expresiones de la forma A -> S que representan las mismas transiciones del autómata y pueden ser consideradas reglas de sustitución para la generación de cadenas.
+
+Queda por tanto clara la relación existente entre las gramáticas, los lenguajes y los autómatas. Una gramática proporciona las reglas para identificar todas las construcciones que pertenecen a un lenguaje. El autómata es el modelo matemático abstracto capaz de recibir cadenas del lenguaje y decidir si son válidas para una gramática.
+
+La notación Backus-Naur se utiliza para describir una gramática. Fue desarrollada por John Backus para el lenguaje Fortran y mejorada por Peter Naur para poder describir el lenguaje Algol 60.
+
+La jerarquía de Chomsky define cuatro tipos de gramáticas dependiendo de la forma de las reglas de producción de la gramática.
+
+\begin{figure}[hp!]
+    \centering
+    \includegraphics[width=0.6\textwidth]{imaxes/c-bases-teoricas/niveles-chomsky.png}
+    \caption{Jerarquía de Chomsky}
+    \label{fig:niveles-chomsky}
+\end{figure}
 
 \begin{enumerate}
-    \item Lenguajes regulares
-    \item Lenguajes independientes del contexto
-    \item Lenguajes dependientes o sensibles al contexto
-    \item Lenguajes recursivamente enumerables
-    \item Lenguajes recursivos (fuera de la jerarquía de Chomsky)
+    \item Gramáticas regulares
+    \item Gramáticas independientes del contexto
+   Una gramática independiente del contexto consta de cuatro componentes
+   - Un conjunto de símbolos terminales, también llamados tokens
+   - Un conjunto de no terminales que representa a un conjunto de cadenas o terminales
+    - Un conjunto de producciones que tienen dos partes con una flecha que las separa. En el lado izquierdo siempre hay un no terminal. En el lado derecho hay un conjunto de terminales y no terminales
+    - Uno de los no terminales es el símbolo inicial.
+    El objetivo es aplicar sustituciones, para obtener las cadenas del lenguaje.
+    
+    
+    \item Gramáticas dependientes o sensibles al contexto
+    \item Gramáticas recursivamente enumerables
+    \item Gramáticas recursivos (fuera de la jerarquía de Chomsky)
 \end{enumerate}
+
+\begin{figure}[hp!]
+    \centering
+    \includegraphics[width=0.6\textwidth]{imaxes/c-bases-teoricas/hauser-2016.png}
+    \caption{Ejemplos de los 4 modelos con la dificultad de reconocimiento}
+    \label{fig:hauser-2016}
+\end{figure}
 
 \subsection{Fases de la compilación}
 
-- El proceso de compilación se divide en varias fases
+El proceso de compilación se divide en varias fases. En la imagen \ref{fig:analisis-lexico-sintáctico} se presenta un ejemplo del proceso completo que un compilador realiza para obtener la representación en código máquina desde el programa fuente. Las fases principales son las siguientes:
 
 \begin{enumerate}
-    \item Análisis léxico
-    \item Análisis sintáctico
-    \item Análisis semántico
-    \item Generador de código intermedio
-    \item Optimización de código
-    \item Generador de código
+    \item El \textbf{análisis léxico} es el proceso por el cual se separa el texto de entrada, código fuente, en las unidades lógicas del lenguaje como identificadores, operadores o palabras clave. 
+    Durante el análisis se comprueba la validez de los tokens identificados. Es habitual en los lenguajes de programación que la construcción de los identificadores siga unas reglas estrictas. El escáner utiliza expresiones regulares para comprobar la validez de los nombres.
+    El analizador léxico y sintáctico comparten información de los identificadores por medio de la tabla de símbolos.
+    La salida del analizador léxico es la secuencia de tokens reconocidos. Esta secuencia es la entrada del analizador sintáctico.
+    
+    \item En el \textbf{análisis sintáctico} se intenta encontrar un árbol sintáctico o árbol de derivación para una secuencia de tokens que tenga como raíz el axioma de la gramática. Si se encuentra, significa que la secuencia de tokens pertenece al lenguaje. En caso contrario el compilador notificará un error al usuario.
+    
+    Los analizadores utilizados en los compiladores suelen ser de tipo ascendente o descendente. En los ascendentes, el árbol se construye buscando un camino desde las hojas hasta el axioma. Con los descendentes pasa justo lo contrario. En cualquiera de los dos casos la entrada se trata de izquierda a derecha. 
+    
+    Los analizadores más habituales son de tipo LL (descendentes) o LR (ascendentes). La primera L indica que en ámbos casos la entrada se trata de izquierda a derecha. La segunda L en LL indica que la derivación se realiza por la izquierda. Y la R en LR indica que la derivación es por la derecha. En el caso de Bison, el analizador utilizado en el proyecto, es un parser de tipo LALR, lo que quiere decir es un LR que utiliza un símbolo de anticipación (\emph{look ahead} LR) para construir el árbol de derivación. 
+
+    \item En la fase de \textbf{análisis semántico} se explota el árbol sintáctico y la tabla de símbolos con el propósito de verificar que el código fuente es consistente con el lenguaje. Algunos ejemplos de tareas realizadas en esta fase son la comprobación de los tipos que comprueba que las operaciones realizadas utilicen los tipos correctamente. Otro aspecto que se realiza es la conversión automática de ciertos tipos como sucede en el caso de Java con las operaciones de Autoboxing y Unboxing. El compilador en este paso añadiría la llamada al método correspondiente para para realizar la conversión entre tipos primitivos y objetos.
+    
+    \item La \textbf{generación de código intermedio} consiste en la creación de una representación no final del programa fuente. Tras el análisis léxico y sintáctico suele ser habitual generar una representación no final del programa fuente en un formato similar al código máquina pero pensado para una máquina abstracta en lugar de la máquina destino. Algunas tareas habituales en esta fase consisten en la reordenación de las sentencias en base a la prioridad de los operadores. También se produce la generación nombres temporales para los resultados de cálculos intermedios.
+    
+    \item La fase de \textbf{optimización del código} intermedio es utilizada para mejorar el código intermedio creando un mejor código para la máquina final. Estas mejoras afectarán a la complejidad del código, consiguiendo reducir el número de sentencias. Si el código tiene menos sentencias el programa final será más pequeño. También se traducir llamadas a métodos por valores finales, como en el caso de Autoboxing mencionado anteriormente. El número o cantidad de optimizaciones van a implicar unos tiempos de compilación muy diferentes. Los compiladores generales tratan de encontrar un equilibrio entre entre los dos parámetros. O se deja en manos del usuario especificar el nivel de optimización deseado.
+    
+    \item La generación del código final sirve para traducir la representación intermedia en el lenguaje de destino, como ensamblador para una máquina en particular. Primero se toma la representación y se asigna al lenguaje de destino. También se seleccionan los registros necesarios para las variables del programa. Luego las instrucciones en lenguaje intermedio se trasladan a las instrucciones de la máquina.
+
 \end{enumerate}
 
-El \textbf{análisis léxico} es el proceso por el cual se separa el texto de entrada, código fuente, en las unidades lógicas del lenguaje como identificadores, operadores o palabras clave. 
-Durante el análisis se comprueba la validez de los tokens identificados. Es habitual en los lenguajes de programación que la construcción de los identificadores siga unas reglas estrictas. El escáner utiliza expresiones regulares para comprobar la validez de los nombres.
-El analizador léxico y sintáctico comparten información de los identificadores por medio de la tabla de símbolos.
-La salida del analizador léxico es la secuencia de tokens reconocidos. Esta secuencia es la entrada del analizador sintáctico.
+
+\begin{figure}[hp!]
+    \centering
+    \includegraphics[width=1.0\textwidth]{imaxes/c-bases-teoricas/analisis-lexico-sintáctico.png}
+    \caption{Ejemplo del proceso de análisis de un compilador}
+    \label{fig:analisis-lexico-sintáctico}
+\end{figure}
 
 
-En el \textbf{análisis sintáctico} se intenta encontrar un árbol sintáctico o árbol de derivación para una secuencia de tokens que tenga como raíz el axioma de la gramática. Cuando se encuentra, significa que la secuencia de tokens pertenece al lenguaje. En caso contrario se notificará un error al usuario del compilador.
 
-Los analizadores utilizados en los compiladores suelen ser de tipo ascendente o descendente. En los ascendentes, el árbol se construye buscando un camino desde las hojas hasta el axioma. Con los descendentes pasa justo lo contrario. En cualquiera de los dos casos la entrada se trata de izquierda a derecha.
+
+
+
 
