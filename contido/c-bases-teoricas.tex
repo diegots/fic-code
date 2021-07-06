@@ -73,17 +73,16 @@ La estructura de un fichero está dividida en cuatro partes, tal como se muestra
 
 El trailer es un objeto de tipo diccionario. Contiene claves y valores que aportan información a nivel de documento. Hay dos claves especialmente importantes, /Size que indica el número de entradas de la Cross-reference table y /Root que apunta al objeto que contiene el comienzo del Catálogo. El body contiene el objeto del Catálogo y todos los demás objetos que conforman el contenido del fichero PDF. La Cross-Reference Table es un índice de todos los objetos indirectos del PDF. Se utiliza para implementar la navegación sobre el fichero. Contiene la información necesaria para poder realizar saltos a la posición donde se encuentra el objeto que se quiere leer. La versión tradicional tiene tres columnas y la secuencia de entradas hace referencia al número del objeto buscado. En el ejemplo, para encontrar el objeto 2, tercera entrada, hay que saltar hasta el byte 32800:
 
-% TODO añadir listing o minted para el código
-
-%\begin{minted}
-0000000000 65535 f\\
-0000000009 00000 n\\
-0000032800 00000 n\\
-0000000203 00000 n\\
-0000000298 00000 n\\
-0000008654 00000 n\\
+\begin{minted}[linenos]{shell-session}
+0000000000 65535 f
+0000000009 00000 n
+0000032800 00000 n
+0000000203 00000 n
+0000000298 00000 n
+0000008654 00000 n
 0000000335 00000 n
-%\end{minted}
+\end{minted}
+
 
 % TODO Considerar hablar del catálogo o dejarlo para la parte de implementación.
 
@@ -186,22 +185,21 @@ El procedimiento general del algoritmo es como sigue:
 
 \subsection{Introducción}
 
-- Como parte del proyecto se han desarrollado una herramienta que utiliza análisis léxico/sintáctico para generar una salida estructurada
-- Estos analizadores son una parte de los pasos que habitualmente realiza un compilador para obtener un programa ejecutable
+Como parte del proyecto se han desarrollado una herramienta que utiliza análisis léxico/sintáctico para generar una salida estructurada. Estos analizadores son una parte de los pasos que habitualmente realiza un compilador para obtener un programa ejecutable.
 
 \subsection{Conceptos básicos}
 
-\begin{enumerate}
+\begin{itemize}
     \item Un \textbf{lenguaje} es un conjunto de cadenas de longitud finita creadas a partir de un alfabeto finito.
     \item Un \textbf{token} es la unidad mínima que se caracteriza por aportar significado léxico. En un lenguaje de programación cualquier palabra reservada es un token.
     \item Un \textbf{árbol de derivación} es
     \item El \textbf{axioma} en una gramática es el elemento desde el que se construyen todos los árboles de derivación en la gramática
-    \item Las producciones son reglas de sustitución para la generación de cadenas del lenguaje.
-\end{enumerate}
+    \item Las \textbf{producciones} son reglas de sustitución para la generación de cadenas del lenguaje.
+\end{itemize}
 
 \subsection{Lenguajes formales}
 
-La teoría de autómatas y lenguajes formales es uno de los pilares que definen el funcionamiento de de las máquinas de cómputo. Con esta teoría se pueden construir los compiladores utilizados en los lenguajes de programación.
+La teoría de autómatas y lenguajes formales es uno de los pilares que definen el funcionamiento de los ordenadores. Con esta teoría se pueden construir los compiladores utilizados en los lenguajes de programación.
 
 En los años 30 del siglo XX Alan Turing ideó el modelo de una máquina abstracta que posee las mismas capacidades de cálculo que los ordenadores actuales. 
 
@@ -213,13 +211,11 @@ Una palabra es una secuencia determinada construida con símbolos que están en 
 
 Un lenguaje es una conjunto de palabras o cadenas
 
-- ¿Qué es un autómata?
-
 Un autómata en su visión más inmediata es un diagrama que ayuda en encontrar las palabras de un lenguaje. Se utiliza un grafo dirigido con información adicional. Los nodos del grafo son los estados e indican en qué punto del análisis de la cadena se encuentra. Las aristas van etiquetadas con caracteres del alfabeto y se llaman transiciones
 
 Un autómata especifica un lenguaje como el conjunto de aquellas cadenas que lo llevan del estado inicial a alguno de los estados de aceptación. Al mismo tiempo un autómata puede ser visto como un generador de las cadenas de un lenguaje si se comienza con la cadena vacía y se añaden símbolos según se recorren las transiciones, hasta llevar a un estado de aceptación.
 
-A partir del diagrama de estados del autómata es posible obtener unas expresiones de la forma A -> S que representan las mismas transiciones del autómata y pueden ser consideradas reglas de sustitución para la generación de cadenas.
+A partir del diagrama de estados del autómata es posible obtener unas expresiones de la forma $A\rightarrow S$ que representan las mismas transiciones del autómata y pueden ser consideradas reglas de sustitución para la generación de cadenas.
 
 Queda por tanto clara la relación existente entre las gramáticas, los lenguajes y los autómatas. Una gramática proporciona las reglas para identificar todas las construcciones que pertenecen a un lenguaje. El autómata es el modelo matemático abstracto capaz de recibir cadenas del lenguaje y decidir si son válidas para una gramática.
 
@@ -229,7 +225,7 @@ La jerarquía de Chomsky define cuatro tipos de gramáticas dependiendo de la fo
 
 \begin{figure}[hp!]
     \centering
-    \includegraphics[width=0.6\textwidth]{imaxes/c-bases-teoricas/niveles-chomsky.png}
+    \includegraphics[width=1.0\textwidth]{imaxes/c-bases-teoricas/niveles-chomsky.png}
     \caption{Jerarquía de Chomsky}
     \label{fig:niveles-chomsky}
 \end{figure}
@@ -244,7 +240,6 @@ La jerarquía de Chomsky define cuatro tipos de gramáticas dependiendo de la fo
     - Uno de los no terminales es el símbolo inicial.
     El objetivo es aplicar sustituciones, para obtener las cadenas del lenguaje.
     
-    
     \item Gramáticas dependientes o sensibles al contexto
     \item Gramáticas recursivamente enumerables
     \item Gramáticas recursivos (fuera de la jerarquía de Chomsky)
@@ -253,7 +248,7 @@ La jerarquía de Chomsky define cuatro tipos de gramáticas dependiendo de la fo
 \begin{figure}[hp!]
     \centering
     \includegraphics[width=0.6\textwidth]{imaxes/c-bases-teoricas/hauser-2016.png}
-    \caption{Ejemplos de los 4 modelos con la dificultad de reconocimiento}
+    \caption{Ejemplos de los 4 modelos con la dificultad de reconocimiento \cite{teoriaCompiladores_hauser_automatas}}
     \label{fig:hauser-2016}
 \end{figure}
 
@@ -283,10 +278,9 @@ El proceso de compilación se divide en varias fases. En la imagen \ref{fig:anal
 
 \end{enumerate}
 
-
 \begin{figure}[hp!]
     \centering
-    \includegraphics[width=1.0\textwidth]{imaxes/c-bases-teoricas/analisis-lexico-sintáctico.png}
+    \includegraphics[width=1.0\textwidth]{imaxes/c-bases-teoricas/analisis-lexico-sintactico.png}
     \caption{Ejemplo del proceso de análisis de un compilador}
     \label{fig:analisis-lexico-sintáctico}
 \end{figure}
