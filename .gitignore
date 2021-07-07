@@ -15,6 +15,7 @@
 *.sty
 *.toc
 *.sav
+*.lol
 
 # Directories
 _minted-memoria_tfg

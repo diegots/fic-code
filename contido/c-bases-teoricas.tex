@@ -73,7 +73,7 @@ La estructura de un fichero está dividida en cuatro partes, tal como se muestra
 
 El trailer es un objeto de tipo diccionario. Contiene claves y valores que aportan información a nivel de documento. Hay dos claves especialmente importantes, /Size que indica el número de entradas de la Cross-reference table y /Root que apunta al objeto que contiene el comienzo del Catálogo. El body contiene el objeto del Catálogo y todos los demás objetos que conforman el contenido del fichero PDF. La Cross-Reference Table es un índice de todos los objetos indirectos del PDF. Se utiliza para implementar la navegación sobre el fichero. Contiene la información necesaria para poder realizar saltos a la posición donde se encuentra el objeto que se quiere leer. La versión tradicional tiene tres columnas y la secuencia de entradas hace referencia al número del objeto buscado. En el ejemplo, para encontrar el objeto 2, tercera entrada, hay que saltar hasta el byte 32800:
 
-\begin{minted}[linenos]{shell-session}
+\begin{lstlisting}[caption={Entradas en la Cross-Reference Table},label=lst:cross-ref-table]
 0000000000 65535 f
 0000000009 00000 n
 0000032800 00000 n
@@ -81,8 +81,7 @@ El trailer es un objeto de tipo diccionario. Contiene claves y valores que aport
 0000000298 00000 n
 0000008654 00000 n
 0000000335 00000 n
-\end{minted}
-
+\end{lstlisting}
 
 % TODO Considerar hablar del catálogo o dejarlo para la parte de implementación.
 

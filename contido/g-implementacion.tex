@@ -92,18 +92,19 @@ La herramienta es un software \verb|backend|, no está pensada para que un usuar
 
 Cada ejecución se realiza en un directorio propio donde se almacena la entrada, se realiza el tratamiento y se ubica la salida. Además, se facilita al programa invocador un identificador que debe utilizar para la recuperación de los resultados. La ruta al directorio que contiene todas las carpetas de todas las ejecuciones el es directorio \verb|input|, mencionado anteriormente.
 
-Para evitar colisiones en las rutas de trabajo entre distintas ejecuciones, se obtiene una marca de tiempo del instante de recepción de la petición y se utiliza como directorio raíz para el nuevo trabajo. Este \emph{timestamp} se obtiene con el comando \verb|date| configurado para generar un entero de tamaño 16 con la hora UTC del sistema:
 
-\begin{minted}[linenos]{shell-session}
+Para evitar colisiones en las rutas de trabajo entre distintas ejecuciones, se obtiene una marca de tiempo del instante de recepción de la petición y se utiliza como directorio raíz para el nuevo trabajo. Este \emph{timestamp} se obtiene con el comando \verb|date| configurado para generar un entero de tamaño 16 con la hora UTC del sistema: \ref{lst:foo}
+
+\begin{lstlisting}[language=bash,caption={Obtención del identificador del trabajo},label=lst:identificador-trabajo]
     diego@CompaqCQ57:galiasdoc$ date -u +"%s%6N"
     1616623143141490
     diego@CompaqCQ57:galiasdoc$
-\end{minted}
+\end{lstlisting}
 %% TODO centrar y añadir caption: ejemplo de directorio de trabajo
 
 A continuación, se presenta la secuencia de pasos que conforman el comienzo de un trabajo. La primera acción ocurre cuando el invocador ejecuta el \emph{script} \verb|get-job-id.sh|. Este crea el nuevo directorio para el trabajo y todos los directorios internos. Se devuelve el identificador de trabajo al programa llamador.
 
-En este momento el llamador debe copiar el fichero de entrada en la ruta \verb|job_id/frontend|. Por último, se inicia la ejecución cuando se llama al \emph{script} \verb|run.sh|. Se le debe indicar al motor el identificador del \emph{job} que que se quiere iniciar. Para ello, el \verb|job_id| se pasa como parámetro. Los pasos se pueden seguir visualmente en la figura \ref{fig:inicio-aplicacion}.
+En este momento el llamador debe copiar el fichero de entrada en la ruta \verb|job_id/frontend|. Por último, se inicia la ejecución cuando se llama al \emph{script} \verb|run.sh|. Se le debe indicar al motor el identificador del \emph{job} que se quiere iniciar. Para ello, el \verb|job_id| se pasa como parámetro. Los pasos se pueden seguir visualmente en la figura \ref{fig:inicio-aplicacion}.
 
 A partir de este momento el sistema comienza a trabajar. Cada acción llevada a cabo se indica con un mensaje por la salida estándar de la consola. Cuando finaliza, se notifica con otra marca de tiempo del momento final en la ruta \verb|input/job_id/done-<timestamp>|.
 
@@ -138,8 +139,7 @@ El siguiente paso consiste en obtener la descripción de las coordenadas de las 
 
 A continuación se muestra un fragmento de una de estas salidas XML:
 
-\begin{minted}[linenos]{html}
-
+\begin{lstlisting}[language=HTML,caption={Obtención del identificador del trabajo},label=lst:salida-pdftotext]
 <html>
   <head>
     <title>Factura ES1864857 - OVH</title>
@@ -161,7 +161,7 @@ A continuación se muestra un fragmento de una de estas salidas XML:
     </doc>
   </body>
 </html>
-\end{minted}
+\end{lstlisting}
 
 %% XXX Explicación de representación en coordenadas
 
@@ -174,12 +174,12 @@ La siguiente fase se extraen contenidos y coordenadas de las páginas con imáge
 Para poder aplicar la plantilla a un fichero correcta a un fichero determinado es necesario realizar un emparejamiento. En este caso se optó por buscar en los documentos datos específicos que no causaran colisión con otros documentos. Dado que los datos disponibles son facturas de empresas, se optó por utilizar los códigos NIF o DNI del emisor en este caso y que por ley son obligatorios en este tipo de documentos XXX. Se creó un registro con estos códigos y se realiza una búsqueda con %% \verb|grep| sobre los textos extraídos bien con Tesseract bien con \verb|pdftotext|. En los casos tratados esta búsqueda fue lo suficiente robusta.
 Cuando un patrón es encontrado, se crea en el directorio donde se está tratando el documento un fichero con el nombre dado al documento en la fase de renombrado y cuyo contenido es el propio identificador encontrado.
 
-\begin{minted}[linenos]{shell-session}
+\begin{lstlisting}[language=bash,caption={Identificador del documento},label=lst:identificador-documento]
     diego@CompaqCQ57:galiasdoc$ ls input/1617643045714091/based-text/2/*id
     input/1617643045714091/based-text/2/2.id
     diego@CompaqCQ57:galiasdoc$ cat input/1617643045714091/based-text/2/*id
     B83834747
-\end{minted}
+\end{lstlisting}
 
 Llegados a este punto ya está disponible toda la información necesaria para construir la salida. Hay dos \emph{scripts} más que se ejecutan. Primero se invoca a la herramienta de generación de lenguaje intermedio y después al parser Bison correspondiente. El último \emph{script} mueve los resultados al directorio de salida del \emph{job}, donde podrán ser recuperados. Además se crea en la raíz del \emph{job} un fichero vacío cuyo nombre es el \emph{timestamp} del momento finalización de de la %% ejecución.
 

@@ -34,9 +34,9 @@ Las \emph{pattern rules} son las reglas que contienen el caracter \verb|%| en el
     \item Si el símbolo porcentaje, \verb|%|, aparece en un prerrequisito, empareja con el mismo elemento que el \emph{target}.
 \end{itemize}
 
-\begin{minted}{makefile}
+\begin{lstlisting}[language=make,caption={Sustitución de pratrones},label=lst:sustitucion-pratrones]
 $(patsub pattern, replacement, text)
-\end{minted}
+\end{lstlisting}
 
 Esta sentencia en un \emph{Makefile} encuentra palabras separadas por espacios en \emph{text} que encajen en el patron \emph{pattern} y las cambia por \emph{replacement}.
 
