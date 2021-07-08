@@ -251,6 +251,15 @@ La jerarquía de Chomsky define cuatro tipos de gramáticas dependiendo de la fo
     \label{fig:hauser-2016}
 \end{figure}
 
+% TODO valorar si incluir los siguientes datos:
+
+Algoritmos ascendentes LR
+Algoritmos descendentes LL
+LL Left Left: 1º entrada de izq a der, 2º se producen derivaciones por la izquierda
+LR Left Right: 1º entrada de izq a der, 2º derivaciones por la derecha
+Bison es LALR (lookahead LR)
+
+
 \subsection{Fases de la compilación}
 
 El proceso de compilación se divide en varias fases. En la imagen \ref{fig:analisis-lexico-sintáctico} se presenta un ejemplo del proceso completo que un compilador realiza para obtener la representación en código máquina desde el programa fuente. Las fases principales son las siguientes:

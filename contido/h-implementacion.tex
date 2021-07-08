@@ -5,31 +5,81 @@
 \chapter{Diseño e Implementación}
 \label{chap:implemetación}
 
-\lettrine{E}ste capítulo describe el diseño y la implementación de la solución construida.
+\lettrine{E}ste capítulo describe el diseño y la implementación de la solución construida. 
 
-\section{Plantillas y regiones}
-\subsection{Información contenida en las plantillas}
-\subsection{Tipos de regiones}
+\section{Etapas del sistema}
 
-\section{Generación de lenguaje intermedio}
-\subsection{Información de bounding box}
-\subsection{Concepto de líneas e identificación}
-\subsection{Selección de palabras}
-\subsection{Uso de la Transformada de Hough}
+Los datos son sometidos a un proceso por etapas tal como se ve en \ref{vision-general-del-sistema}. A continuación se detalla cada una de estas etapas.
 
-\section{Generación de lenguaje estructurado}
-\subsection{Selección dinámica de escáner y parser}
-\subsection{Ventajas como modelo de producto???}
+\begin{figure}[hp!]
+    \centering
+    \includegraphics[width=1.0\textwidth]{imaxes/h-implementacion/vision-general-del-sistema}
+    \caption{Visión general del sistema}
+    \label{fig:vision-general-del-sistema}
+\end{figure}
 
-\section{Mecanización del proceso}
-\subsection{Motor / engine}
-\subsection{Estructura de directorios}
-\subsection{Flujo de información}
+\subsection{Clasificación}
 
-\section{Compilación y despliegue}
-\subsection{Makefile}
-\subsection{Ansible y Docker}
+Los PDF recibidos deben ser clasificados dependiendo de su contenido. En unos casos es posible utilizar directamente el texto del documento para los restantes se procederá a utilizar el software OCR.
 
+% TODO explicar en detalle como se hace la diferenciación
+
+
+\subsection{Extracción de datos}
+
+% TODO separación de las páginas individuales
+
+% TODO comentar caso con pdftotext
+% TODO incluir flags utilizados
+% TODO ejemplo de salida de la información
+
+% TODO comentar caso con OCR
+% TODO parámetros de Tesseract
+% TODO para cumplir con el requisito de tiempo reducido de ejecución se configuró Tesseract para emplear todos los cores disponibles en la máquina
+% TODO ejemplo de salida de la información
+
+\subsection{Identificación}
+
+% TODO modelo de identificación. Explicar que está pensado para ser extensible a uso de BD u otras fuentes de información
+% TODO explicar como se recorre el array en bash
+% TODO mostrar la lista de identificadores
+% TODO mostrar como se marca el directorio con el fichero .id
+
+\subsection{Plantillas y regiones}
+% TODO Tipos de regiones
+% TODO información contenida en las plantillas (la que no se refiere a coordenadas)
+
+\subsection{Generación de código intermedio}
+% TODO describir la implementación en etapas, como el diagrama general
+    % TODO Concepto de línea de identificación
+    % TODO Asignación de palabras a regiones
+    % TODO información de bounding box
+% TODO mostrar el código intermedio
+% TODO introducir el problema de indentificar las líneas
+% TODO explicar se utiliza el algoritmo de Hough en los ejemplos donde es efectivo
+% TODO explicar mejora en el algoritmo para asignación de palabras a regiones para cumplir con el requisito no funcionar de mantener los tiempos contenidos
+
+\subsection{Procesamiento del lenguaje generado}
+% TODO explicar como es la estructura general de Flex / Bison
+% TODO mostrar las modificaciones introducidas
+% TODO explicar la carga dinámica de librerías
+% TODO Mencionar que el modelo de plugins permite entregar al cliente solo los modelos comprados
+% TODO mostrar como es el formato de un fichero Flex y también Bison
+% TODO Mostrar como se utiliza la librería para generación de ficheros JSON
+% TODO Mencionar el pretty printing con jq
+
+\subsection{Creación de un engine modular}
+% TODO Se imita un modelo de procesamiento en batch
+% TODO Se generan códigos de identificación de los jobs recibidos. También marca final.
+% TODO Estructura de directorios considerada
+% TODO Flujo de la información
+
+\subsection{Compilación y despliegue}
+% TODO mostrar el Makefile
+% TODO mostrar script Ansible
+% TODO Mostrar fichero de configuración Docker y su uso
+
+% TODO valorar si incluir capítulo o sección de pruebas. O, al menos, de pruebas realizadas.
 
 %% La implementación está diseñada para recibir peticiones de conversión y generar la salida correspondiente en formato estructurado. El número de ficheros que se pueden tratar en cada ejecución solo está limitado por las capacidades del sistema de ficheros o del SO donde se ejecute. Cada invocación produce una tarea en el sistema, que se gestiona de forma individual. Una vez que se reciben los ficheros para su tratamiento, se crea una ruta específica para ese trabajo y comienza el proceso. En cada etapa se crean nuevos ficheros intermedios que, según se verá más adelante, se mueven a destinos designados para cada paso. Los documentos se tratan página a página. El motor encargado de conducir el flujo de información está implementado en lenguaje Bash. Este \emph{engine} se apoya en varias herramientas adicionales, disponibles en cualquier distribución Linux. Por último, se complementa con el generador de código intermedio y los \emph{parsers} para cada modelo de documento.
 
@@ -110,7 +160,7 @@ A partir de este momento el sistema comienza a trabajar. Cada acción llevada a 
 
 \begin{figure}[hp!]
     \centering
-    \includegraphics[width=11cm]{imaxes/inicio-aplicacion.png}
+    \includegraphics[width=11cm]{imaxes/h-implementacion/inicio-aplicacion.png}
     \caption{Secuencia de inicio de la aplicación}
     \label{fig:inicio-aplicacion}
 \end{figure}
@@ -277,19 +327,7 @@ De forma parecida, un fichero Bison también está compuesto por tres secciones.
     código C. Función main()
 \end{verbatim}
 
-
-
-
-
-% TODO revisar donde incluir las secciones de Bison/Flex
 % \section{GNU Make}
 %
 % GNU Make es una herramienta que permite automatizar transformaciones sobre ficheros. \verb|make| es capaz de construir ejecutables a partir del código fuente de un proyecto. Para ello utiliza un fichero \verb|makefile| que contiene todas las reglas necesarias.
 %
-% \section{Ansible}
-%
-% \section{Docker}
-%
-% %% Valorar si mencionar otras herramientas como:
-% % Extracción de texto: , pdftotext
-% % Pretty print de JSON: jq
