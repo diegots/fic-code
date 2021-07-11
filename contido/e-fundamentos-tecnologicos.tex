@@ -5,18 +5,16 @@
 \chapter{Fundamentos tecnológicos}
 \label{chap:fundamentos-tecnologicos}
 
-\lettrine{E}n este capítulo se explica como es el entorno utilizado para llevar a cabo el proyecto. En particular se comentan las herramientas específicas y las tecnologías utilizadas.
+\lettrine{E}{n} este capítulo se explica como es el entorno utilizado para llevar a cabo el proyecto. También se presentan las tecnologías necesarias para realizar el proyecto.
 
 \section{Herramientas para la realización del desarrollo}
 
-La máquina de trabajo consistió en un portátil HP con un procesador Intel i5 de segunda generación, 12 GB de RAM y sistema operativo Ubuntu. Para el desarrollo en Python se utilizó Eclipse con el plugin Pydev
-\footnote{https://www.pydev.org}. Los editores Atom y vim sirvieron para los scripts y el código en C de los escáneres y parsers. La memoria en \LaTeX está elaborada con TeXstudio. Se utilizó Zotero para las referencias y el plugin Better BibTeX (BBT) 
-\footnote{https://retorque.re/zotero-better-bibtex} para gestionar las claves de la bibliografía. Los diagramas están hechos con yEd, la herramienta para creación de diagramas de yWorks 
-\footnote{https://www.yworks.com/products/yed}. El control de versiones se llevó a cabo con git y Github. Dropbox Paper tiene la facilidad de representar notación Markdown con un diseño agradable así que fue utilizado para la organización, borradores, notas, etc.
+La máquina de trabajo consistió en un portátil HP con un procesador Intel i5 de segunda generación, 12 GB de RAM y sistema operativo Ubuntu. Para el desarrollo en Python se utilizó el IDE Eclipse con el plugin Pydev
+\footnote{\url{https://www.pydev.org}}. Este plugin características como completado de código, refactorizaciones o debbuging. Los editores Atom y vim sirvieron para los scripts y el código en C de los escáneres y parsers. La memoria en \LaTeX está elaborada con TeXstudio. Se utilizó Zotero para las referencias y el plugin Better BibTeX (BBT) 
+\footnote{\url{https://retorque.re/zotero-better-bibtex}} para gestionar las claves de la bibliografía. Los diagramas están hechos con yEd, la herramienta para creación de diagramas de yWorks 
+\footnote{\url{https://www.yworks.com/products/yed}}. El control de versiones se llevó a cabo con git y Github. Dropbox Paper tiene la facilidad de representar la notación Markdown con un diseño agradable así que fue utilizado para la organización, borradores, notas, etc.
 
 \section{Tecnologías}
-
-En esta sección se introducen las tecnologías utilizadas en el proyecto.
 
 \subsection{OpenCV}
 
@@ -25,27 +23,36 @@ En esta sección se introducen las tecnologías utilizadas en el proyecto.
 \begin{wrapfigure}{R}{0.3\textwidth}
     \centering
     \includegraphics[width=0.25\textwidth]{imaxes/e-fundamentos-tecnologicos/logo-opencv.png}
-    %\caption{\label{fig:frog1}This is a figure caption.}
 \end{wrapfigure}
 
-Está escrita en C y C++ pero dispone además de interfaces de compatibilidad para varios lenguajes de programación como Java, Python o MATLAB. Se puede instalar en los principales sistemas operativos para ordenadores y también en Android. Los ámbitos de aplicación son múltiples, así como el número de empresas grandes y pequeñas que la explotan. Se pueden encontrar usos de OpenCV en sistemas de seguridad, análisis de calidad en fábricas, imagen médica, robótica, por citar algunos. En lo que respecta a este proyecto, se utiliza la versión optimizada del algoritmo de Hough que trae implementada.
+Está escrita en C y C++ pero dispone además de interfaces de compatibilidad para varios lenguajes de programación como Java, Python o MATLAB. Se puede instalar en los principales sistemas operativos para ordenadores y también en Android. Los ámbitos de aplicación son múltiples, así como el número de empresas grandes y pequeñas que la explotan. Se pueden encontrar usos de OpenCV en sistemas de seguridad, análisis de calidad en fábricas, imagen médica, robótica, por citar algunos. En lo que respecta a este proyecto, se emplea la versión optimizada de la Transformada de Hough por medio del la capa de compatibilidad Python \footnote{La documentación del API Python se encuentra en \url{https://docs.opencv.org/4.5.2/dd/d1a/group__imgproc__feature.html}.}. El hecho de poder utilizar el algoritmo desde el lenguaje Python facilita 
 
 \subsection{Flex}
 
 \subsection{Bison}
+
+
 
 \subsection{Docker}
 
 \textbf{Docker} \cite{dockerincEmpoweringAppDevelopment} es una plataforma basada en estándares abiertos para facilitar el desarrollo, liberación y ejecución de aplicaciones.
 Los contenedores se ejecutan aisladamente. Es un entorno virtualizado
 
+\begin{wrapfigure}{R}{0.3\textwidth}
+    \centering
+    \includegraphics[width=0.25\textwidth]{imaxes/e-fundamentos-tecnologicos/logo-docker.png}
+\end{wrapfigure}
+
 - La premisa principal de Docker es aislar la aplicación de la infraestructura donde debe ejecutarse
 - Docker propone metodologías para acelerar los procesos de publicación de software
-- Es una tecnología de virtualización más ligera y rápida que la basada en hipervisores \footnote{Un hipervisor, \emph{hypervisor} en inglés, es un software utilizado para crear un ejecutar máquinas virtuales. Utilizando un hipervisor es posible para un ordenador que actúe de anfitrión, compartir recursos hardware con múltiples sistemas operativos invitados.}
-
-
-
+- Es una tecnología de virtualización más ligera y rápida que la basada en hipervisores \footnote{Un hipervisor, \emph{hypervisor} en inglés, es un software utilizado para crear y ejecutar máquinas virtuales. Este tipo de software permite que un ordenador actuando de anfitrión, comparta recursos hardware con múltiples sistemas operativos invitados.}
 
 \subsection{Ansible}
+
+\begin{wrapfigure}{R}{0.3\textwidth}
+    \centering
+    \includegraphics[width=0.25\textwidth]{imaxes/e-fundamentos-tecnologicos/logo-ansible.png}
+
+\end{wrapfigure}
 
 \subsection{Librería de generación de JSON en C}
