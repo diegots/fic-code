@@ -5,14 +5,14 @@
 \chapter{Fundamentos tecnológicos}
 \label{chap:fundamentos-tecnologicos}
 
-\lettrine{E}{n} este capítulo se explica como es el entorno utilizado para llevar a cabo el proyecto. También se presentan las tecnologías necesarias para realizar el proyecto.
+\lettrine{E}{ste} capítulo tiene por objetivo presentar las principales herramientas utilizadas para el desarrollo y la elaboración de la memoria. También se hace una reseña de las tecnologías seleccionadas como bases del proyecto.
 
-\section{Herramientas para la realización del desarrollo}
+\section{Útiles de trabajo}
 
-La máquina de trabajo consistió en un portátil HP con un procesador Intel i5 de segunda generación, 12 GB de RAM y sistema operativo Ubuntu. Para el desarrollo en Python se utilizó el IDE Eclipse con el plugin Pydev
-\footnote{\url{https://www.pydev.org}}. Este plugin características como completado de código, refactorizaciones o debbuging. Los editores Atom y vim sirvieron para los scripts y el código en C de los escáneres y parsers. La memoria en \LaTeX está elaborada con TeXstudio. Se utilizó Zotero para las referencias y el plugin Better BibTeX (BBT) 
-\footnote{\url{https://retorque.re/zotero-better-bibtex}} para gestionar las claves de la bibliografía. Los diagramas están hechos con yEd, la herramienta para creación de diagramas de yWorks 
-\footnote{\url{https://www.yworks.com/products/yed}}. El control de versiones se llevó a cabo con git y Github. Dropbox Paper tiene la facilidad de representar la notación Markdown con un diseño agradable así que fue utilizado para la organización, borradores, notas, etc.
+El ordenador utilizado consistió en un portátil HP con un procesador Intel i5 de segunda generación, 12 GB de RAM y sistema operativo Ubuntu 18.04. Para el desarrollo en Python se utilizó el IDE Eclipse con el plugin Pydev
+\footnote{\url{https://www.pydev.org}}. Este plugin tiene características como completado de código, refactorizaciones o debbuging. Soporta la versión actual del lenguaje, la versión 3. Los editores Atom y vim sirvieron para los scripts y el código en C de los escáneres y parsers. La memoria está elaborada en \LaTeX con la ayuda de TeXstudio. Se utilizó Zotero para organizar la bibliografía y el plugin Better BibTeX (BBT) 
+\footnote{\url{https://retorque.re/zotero-better-bibtex}} para gestionar las claves en el fuente \LaTeX. Este complemento permite la inclusión directa desde Zotero a TeXstudio con lo que agiliza mucho la gestión de las citas. Los diagramas están hechos con yEd, la herramienta para creación de diagramas de yWorks 
+\footnote{\url{https://www.yworks.com/products/yed}}. Dropbox Paper es un editor \acrlong{wysiwyg} que funciona en un navegador y tiene la facilidad de representar la notación Markdown con un diseño agradable. Fue utilizado para la organización general, borradores, notas, etc.
 
 \section{Tecnologías}
 
@@ -27,32 +27,81 @@ La máquina de trabajo consistió en un portátil HP con un procesador Intel i5 
 
 Está escrita en C y C++ pero dispone además de interfaces de compatibilidad para varios lenguajes de programación como Java, Python o MATLAB. Se puede instalar en los principales sistemas operativos para ordenadores y también en Android. Los ámbitos de aplicación son múltiples, así como el número de empresas grandes y pequeñas que la explotan. Se pueden encontrar usos de OpenCV en sistemas de seguridad, análisis de calidad en fábricas, imagen médica, robótica, por citar algunos. En lo que respecta a este proyecto, se emplea la versión optimizada de la Transformada de Hough por medio del la capa de compatibilidad Python \footnote{La documentación del API Python se encuentra en \url{https://docs.opencv.org/4.5.2/dd/d1a/group__imgproc__feature.html}.}. El hecho de poder utilizar el algoritmo desde el lenguaje Python facilita 
 
-\subsection{Flex}
+\subsection{Flex y Bison}
 
-\subsection{Bison}
+Flex y Bison son las versiones modernas de lex y yacc respectivamente. Yacc fue el primero en ser creado por Stephen C. Johnson de los Laboratorios Bell. En esa misma época Mike Lesk y Eric Schmidt crearon lex en AT\&T. Ambos proyectos tuvieron éxito pero tenían licencias restrictivas y por otra parte su rendimiento no era bueno.
+En 1985 Bob Corbett creó la versión inicial del software en que Richard Stallman se basó para crear Bison. De manera parecida, en 1987, Vern Paxson adaptó una versión de lex a C que llega hasta nuestros días como Fast Lexical Analyzer Generator. Bison está mantenido actualmente por la Free Software Foundation. Flex es también open source y se puede encontrar en Github.
 
+Flex es un generador de analizadores léxicos. Esto quiere decir que la salida de flex es un programa C que una vez compilado se puede utilizar para buscar patrones en un texto de entrada. Así mismo Bison se utiliza para generar analizadores sintácticos y su salida también es otro programa C. Es habitual utilizar ambas herramientas trabajando combinadas. Si se hace así, se obtiene un único fuente C que una vez convertido en un programa ejecutable es capaz de realizar una primera fase de análisis léxico seguida del análisis sintáctico. Internamente, los tokens reconocidos por flex son comunicados a Bison, junto con la información semántica, si existe. Flex y Bison pueden aplicarse en la construcción de compiladores e intérpretes pero también para cualquier problema donde deban buscarse patrones en la entrada o la entrada consiste en un lenguaje o instrucciones.
 
+En su forma más básica, un programa Flex consiste en un listado de expresiones regulares asociadas a una acción. El escáner generado trabaja leyendo la entrada y buscando patrones en ella. En \ref{lst:ejemplo-programa-flex} se puede ver un programa básico de ejemplo que es capaz de contar los caracteres, palabras y líneas de un texto. Los programas Flex se dividen en tres secciones separadas por los símbolos \verb|%%|, líneas 7 y 11. La primera sección contiene código C global y se suele utilizar para definir un variables y funciones. La segunda sección contiene líneas formadas por expresiones regulares seguidas de las acciones asociadas. La tercera sección sirve como punto de entrada al programa. No se utiliza cuando se trabaja con Bison ya que es este último el encargado de ejecutar la función \verb|yylex()| que da comienzo al análisis léxico.
+
+\begin{lstlisting}[language=C,caption={Ejemplo de programa Flex autónomo},label=lst:ejemplo-programa-flex]
+/* Esto es un comentario */
+%{
+int letras = 0;
+int palabras = 0;
+int lineas = 0;
+%}
+%%
+[a-zA-Z]+ { palabras++; letras+=strlen(yytext); }
+\n        { letras++; lineas++; }
+.         { letras++; }
+%%
+main(int argc, char **argv)
+{
+    yylex();
+    printf("%8d%8d%8d\n", lines, words, chars);
+}
+\end{lstlisting}
+
+Bison es un generador de analizadores sintácticos
 
 \subsection{Docker}
 
-\textbf{Docker} \cite{dockerincEmpoweringAppDevelopment} es una plataforma basada en estándares abiertos para facilitar el desarrollo, liberación y ejecución de aplicaciones.
-Los contenedores se ejecutan aisladamente. Es un entorno virtualizado
+Los contenedores son una tecnología dentro del ámbito de la virtualización y \textbf{Docker} es una plataforma basada en estándares abiertos que permite automatizar la gestión de aplicaciones utilizando para ello este concepto. De forma similar a la virtualización tradicional basada en \gls{hipervisores}, los contenedores hacen posible coexistir múltiples instancias aisladas de la misma o diferentes aplicaciones en un  equipo anfitrión. Pero los contenedores se ejecutan en espacio de usuario, sobre el núcleo del Sistema Operativo con el que se comunican de forma directa mediante llamadas a su API. Por este motivo se suele conocer a esta tecnología como virtualización a nivel Sistema Operativo. Un ejemplo simple de contenedor es el entorno \verb|chroot| diponible en Linux. Los entornos chroot permiten definir un directorio como base de un espacio donde los procesos se ejecutan aisladamente del resto del sistema. 
 
-\begin{wrapfigure}{R}{0.3\textwidth}
+\begin{wrapfigure}{L}{0.3\textwidth}
     \centering
     \includegraphics[width=0.25\textwidth]{imaxes/e-fundamentos-tecnologicos/logo-docker.png}
 \end{wrapfigure}
 
-- La premisa principal de Docker es aislar la aplicación de la infraestructura donde debe ejecutarse
-- Docker propone metodologías para acelerar los procesos de publicación de software
-- Es una tecnología de virtualización más ligera y rápida que la basada en hipervisores \footnote{Un hipervisor, \emph{hypervisor} en inglés, es un software utilizado para crear y ejecutar máquinas virtuales. Este tipo de software permite que un ordenador actuando de anfitrión, comparta recursos hardware con múltiples sistemas operativos invitados.}
+Una crítica habitual de la \emph{contaneirización} es no alcanzar el mismo nivel de aislamiento entre procesos que el ofrecido por un hipervisor y se los considera menos seguros por este motivo. Pese a ello, los contenedores son utilizados con éxito para este mismo objetivo. Una de las ventajas de los contenedores frente a la virtualización estándar es que al no requerir la capa de emulación y hacer uso de las llamadas directas a los servicios Sistema Operativo tienen menos sobrecarga y esto se traduce en una arranque extremadamente rápido. Al consumir menos recursos se alcanzan una mayores densidades por servidor, reduciendo los costes.
+
+Docker tiene por objetivos principales:
+\begin{itemize}
+    \item Eliminar las disparidades entre los entornos de desarrollo, testing y producción haciendo que no existan para el desarrollador. En otras palabras, Docker consigue aislar la aplicación de la infraestructura en la que debe ejecutarse.
+    \item Reducir el tiempo necesario para completar un ciclo de desarrollo habitual desde que el código es escrito, y probado, se realiza la carga en el entorno de producción y los usuarios comienzan a utilizarlo.
+    \item Fomentar la creación de arquitecturas basadas en servicios. Idealmente una aplicación en un contenedor se ocupa de una única tarea y establece comunicación con otros contenedores para satisfacer sus necesidades. De este modo se facilita la distribución y análisis de las aplicaciones.
+\end{itemize}
+
+Existe documentación y guías para comenzar con esta tecnología \cite{dockerInc_web_startGuides} o textos para profundizar en sus características \cite{turnbull_book_dockerBook}.
 
 \subsection{Ansible}
+
+Ansible es una tecnología para automatizar administración y la configuración de ordenadores. Fue creado inicialmente en el año 2012 por Michael DeHaan, hoy en día forma parte del catálogo de productos de Red Hat.
 
 \begin{wrapfigure}{R}{0.3\textwidth}
     \centering
     \includegraphics[width=0.25\textwidth]{imaxes/e-fundamentos-tecnologicos/logo-ansible.png}
-
 \end{wrapfigure}
+
+Ansible es una tecnología del ámbito de la Gestión de la Configuración. Durante los años 50 el Departamento de Defensa de los Estados Unidos tenía necesidad de crear una metodología para mantener el inventario de los recursos materiales. La Gestión de la Configuración es aquel conjunto de procesos que permiten gestionar los cambios en un sistema utilizando un método conocido de tal manera que se mantenga la integridad del sistema a lo largo del tiempo. La manera de conseguirlo es llevando un registro de los cambios a los que a sido sometido y se consigue conocer cual es el estado actual y como se ha llegado esta este estado. MÉTRICA v3 es un ejemplo de sistema español para la Gestión de la Configuración.
+
+Estas ideas se comenzaron a aplicar a los ordenadores para llevar registro tanto del hardware como de los Sistemas Operativos y aplicaciones instaladas. Gracias al avance y aparición de tecnologías como Ansible, en lugar de generar documentos describiendo los estados se pasa directamente a especificar cuales son los estados deseados y la herramienta realiza los cambios necesarios para asegurar que el estado alcanzado sea el correcto tras la intervención.
+
+Ansible está escrito en Python y su funcionamiento es simple. Para realizar la gestión conecta a las máquinas por SSH y aplica los cambios indicados en los ficheros conocidos como Playbooks. Estos ficheros son giones escritos en YAML que indican a Ansible las acciones a acometer. La sintaxis de YAML guarda parecidos con Markdown y es fácil de comprender.
+
+En \ref{lst:ejemplo-playbook} se muestra un Playbook mínimo que da instrucciones a Ansible para realizar un ping a todos los anfitriones definidos.
+
+\begin{lstlisting}[language=Python,caption={Ejemplo mínimo de Playbook},label=lst:ejemplo-playbook]
+---
+- hosts: all
+    tasks:
+        - ping:
+\end{lstlisting}
+
+
+
 
 \subsection{Librería de generación de JSON en C}
