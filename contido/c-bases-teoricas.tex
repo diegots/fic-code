@@ -210,7 +210,7 @@ Una palabra es una secuencia determinada construida con símbolos que están en 
 
 Un lenguaje es una conjunto de palabras o cadenas
 
-Un autómata en su visión más inmediata es un diagrama que ayuda en encontrar las palabras de un lenguaje. Se utiliza un grafo dirigido con información adicional. Los nodos del grafo son los estados e indican en qué punto del análisis de la cadena se encuentra. Las aristas van etiquetadas con caracteres del alfabeto y se llaman transiciones
+Un autómata en su visión más inmediata es un diagrama que sirve para encontrar las palabras de un lenguaje. Se utiliza un grafo dirigido con información adicional. Los nodos del grafo son los estados e indican en qué punto del análisis de la cadena se encuentra. Las aristas van etiquetadas con caracteres del alfabeto y se llaman transiciones
 
 Un autómata especifica un lenguaje como el conjunto de aquellas cadenas que lo llevan del estado inicial a alguno de los estados de aceptación. Al mismo tiempo un autómata puede ser visto como un generador de las cadenas de un lenguaje si se comienza con la cadena vacía y se añaden símbolos según se recorren las transiciones, hasta llevar a un estado de aceptación.
 
@@ -250,15 +250,6 @@ La jerarquía de Chomsky define cuatro tipos de gramáticas dependiendo de la fo
     \caption{Ejemplos de los 4 modelos con la dificultad de reconocimiento \cite{teoriaCompiladores_hauser_automatas}}
     \label{fig:hauser-2016}
 \end{figure}
-
-% TODO valorar si incluir los siguientes datos:
-
-Algoritmos ascendentes LR
-Algoritmos descendentes LL
-LL Left Left: 1º entrada de izq a der, 2º se producen derivaciones por la izquierda
-LR Left Right: 1º entrada de izq a der, 2º derivaciones por la derecha
-Bison es LALR (lookahead LR)
-
 
 \subsection{Fases de la compilación}
 

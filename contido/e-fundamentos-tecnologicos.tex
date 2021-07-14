@@ -27,7 +27,7 @@ El ordenador utilizado consistió en un portátil HP con un procesador Intel i5 
 
 Está escrita en C y C++ pero dispone además de interfaces de compatibilidad para varios lenguajes de programación como Java, Python o MATLAB. Se puede instalar en los principales sistemas operativos para ordenadores y también en Android. Los ámbitos de aplicación son múltiples, así como el número de empresas grandes y pequeñas que la explotan. Se pueden encontrar usos de OpenCV en sistemas de seguridad, análisis de calidad en fábricas, imagen médica, robótica, por citar algunos. En lo que respecta a este proyecto, se emplea la versión optimizada de la Transformada de Hough por medio del la capa de compatibilidad Python \footnote{La documentación del API Python se encuentra en \url{https://docs.opencv.org/4.5.2/dd/d1a/group__imgproc__feature.html}.}. El hecho de poder utilizar el algoritmo desde el lenguaje Python facilita 
 
-\subsection{Flex y Bison}
+\subsection{Flex}
 
 Flex y Bison son las versiones modernas de lex y yacc respectivamente. Yacc fue el primero en ser creado por Stephen C. Johnson de los Laboratorios Bell. En esa misma época Mike Lesk y Eric Schmidt crearon lex en AT\&T. Ambos proyectos tuvieron éxito pero tenían licencias restrictivas y por otra parte su rendimiento no era bueno.
 En 1985 Bob Corbett creó la versión inicial del software en que Richard Stallman se basó para crear Bison. De manera parecida, en 1987, Vern Paxson adaptó una versión de lex a C que llega hasta nuestros días como Fast Lexical Analyzer Generator. Bison está mantenido actualmente por la Free Software Foundation. Flex es también open source y se puede encontrar en Github.
@@ -37,25 +37,65 @@ Flex es un generador de analizadores léxicos. Esto quiere decir que la salida d
 En su forma más básica, un programa Flex consiste en un listado de expresiones regulares asociadas a una acción. El escáner generado trabaja leyendo la entrada y buscando patrones en ella. En \ref{lst:ejemplo-programa-flex} se puede ver un programa básico de ejemplo que es capaz de contar los caracteres, palabras y líneas de un texto. Los programas Flex se dividen en tres secciones separadas por los símbolos \verb|%%|, líneas 7 y 11. La primera sección contiene código C global y se suele utilizar para definir un variables y funciones. La segunda sección contiene líneas formadas por expresiones regulares seguidas de las acciones asociadas. La tercera sección sirve como punto de entrada al programa. No se utiliza cuando se trabaja con Bison ya que es este último el encargado de ejecutar la función \verb|yylex()| que da comienzo al análisis léxico.
 
 \begin{lstlisting}[language=C,caption={Ejemplo de programa Flex autónomo},label=lst:ejemplo-programa-flex]
-/* Esto es un comentario */
-%{
-int letras = 0;
-int palabras = 0;
-int lineas = 0;
-%}
-%%
-[a-zA-Z]+ { palabras++; letras+=strlen(yytext); }
-\n        { letras++; lineas++; }
-.         { letras++; }
-%%
-main(int argc, char **argv)
-{
-    yylex();
-    printf("%8d%8d%8d\n", lines, words, chars);
-}
+    /* Esto es un comentario */
+    %{
+    int letras = 0;
+    int palabras = 0;
+    int lineas = 0;
+    %}
+    %%
+    [a-zA-Z]+ { palabras++; letras+=strlen(yytext); }
+    \n        { letras++; lineas++; }
+    .         { letras++; }
+    %%
+    main(int argc, char **argv)
+    {
+        yylex();
+        printf("%8d%8d%8d\n", lines, words, chars);
+    }
 \end{lstlisting}
 
-Bison es un generador de analizadores sintácticos
+\subsection{Bison}
+
+Bison es un generador de analizadores sintácticos creados a partir de la descripción de una gramática independiente del contexto en formato BNF. Para conocer de primera mano el funcionamiento y capacidades de Bison se puede consultar el manual elaborado por la Free Software Foundation
+\cite{fsf_web_bisonManual}.
+
+Todos los autómatas que soportan lenguajes independientes del contexto utilizan dos elementos para su funcionamiento. Una estructura de tipo pila y una tabla de transición de estados. Los autómatas se pueden agrupar en dos categorías principales, LL y LR. La primera \textbf{L} indica, en ambos casos, que el flujo de tokens se procesa de izquierda a derecha. Dependiendo de como se realice el parseo, los L\textbf{L} trabajan completando reglas gramaticales desde el axioma hasta las hojas. Los L\textbf{R} hacen lo opuesto, parten de las hojas y ascienden hasta llegar al axioma. Esto es equivalente a aplicar derivaciones por la derecha de forma inversa. Bison es de estos últimos.
+
+Los analizadores funcionan tratando de asociar reglas con los tokens recibidos. Si una regla tiene varios terminales y/o no terminales en su parte derecha, se intentará completar la regla, para hacerlo, los tokens se van acumulando en la pila. Esta acción se conoce como \emph{shift} o desplazamiento. Si en un estado dado es posible completar una regla con los tokens actuales, se produce una reducción y los tokens seleccionados se cambian por el no terminal de la parte izquierda de la regla utilizada. Este procedimiento continua hasta se produce un error gramatical o bien se llega al axioma y no hay más tokens por procesar.
+
+Existen múltiples maneras de construir la tabla y dependiendo del algoritmo utilizado el parser resultante será más o menos eficiente a la hora de calcular las transiciones de estados. Bison soporta tres variantes, LALR(1), IELR(1) y LR(1) (LR canónico). Por defecto se utiliza se utiza LALR (\emph{Lookahead} LR), que es más eficiente que LR(1) en el uso de la memoria, pero no soporta la misma cantidad de gramáticas. IELR es un algoritmo presentado en el 2008 \cite{dennyMalloy_paper_IELRAlgorithm} como una mejora al trabajo previo \texttt{Practical General Method for Constructing LR(k)} \cite{pager_paper_constructLRparsers}. Además, si la gramática es ambigua o no determinista es posible configurar Bison para que genere un parser LR generalizado (GLR). Para un analizador, una gramática es no determinista cuando no hay un número fijo de símbolos de anticipación que puedan ser utilizados para determinar la siguiente regla gramatical que se debe aplicar.
+
+% TODO otros parsers
+
+% TODO explicar como se utilizan
+
+En \ref{lst:ejemplo-programa-bison} se presenta un pequeño ejemplo de la estructura de un fichero fuente Bison. El diseño en tres secciones es similar al encontrado en el ejemplo de Flex en \ref{lst:ejemplo-programa-flex}. La primera sección contiene código en lenguaje C que es copiado directamente en el analizador generado. Esta primera sección también se utiliza para declarar los nombres de los terminales y no terminales utilizados en la gramática y asignarles un tipo de dato. La sección intermedia contiene las reglas gramaticales y, al igual que en flex, se pueden especificar acciones semánticas. En la línea 18 del ejemplo, se calcula el valor de una suma a partir de los 
+
+\begin{lstlisting}[language=C,caption={Ejemplo de programa Bison \cite{mit_web_bisonExample}},label=lst:ejemplo-programa-bison]
+
+%{
+    /* Sección del prólogo para código C común */
+%}
+
+%token double  NUM
+%type  double  exp
+
+%% /* Sección de reglas gramaticales y acciones */
+input:   /* empty */
+       | input line
+       ;
+
+line:    '\n'
+       | exp '\n'  { printf ("\t%.10g\n", $1); }
+       ;
+    
+exp:     NUM         { $$ = $1;      }
+       | exp exp '+' { $$ = $1 + $2; }
+       ;
+%%
+    /* Sección epílogo: código C para inicilizar el parser. Contiene la función main() */
+\end{lstlisting}
 
 \subsection{Docker}
 
@@ -100,8 +140,5 @@ En \ref{lst:ejemplo-playbook} se muestra un Playbook mínimo que da instruccione
     tasks:
         - ping:
 \end{lstlisting}
-
-
-
 
 \subsection{Librería de generación de JSON en C}
