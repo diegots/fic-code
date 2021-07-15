@@ -184,43 +184,68 @@ El procedimiento general del algoritmo es como sigue:
 
 \subsection{Introducción}
 
-Como parte del proyecto se han desarrollado una herramienta que utiliza análisis léxico/sintáctico para generar una salida estructurada. Estos analizadores son una parte de los pasos que habitualmente realiza un compilador para obtener un programa ejecutable.
+Como parte del proyecto se ha desarrollado una herramienta que utiliza análisis léxico y sintáctico para crear una salida estructurada, acorde a los requisitos. Estas dos tareas de análisis son etapas típicas de los compiladores de lenguajes de programación. Los siguientes apartados explican algunos de los conceptos elementales para poder entender como se han aplicado en la implementación \ref{chap:implemetación}.
 
 \subsection{Conceptos básicos}
 
+En primer lugar se presentan algunos de los conceptos elementales que serán citados en el resto de la memoria.
+
 \begin{itemize}
     \item Un \textbf{lenguaje} es un conjunto de cadenas de longitud finita creadas a partir de un alfabeto finito.
-    \item Un \textbf{token} es la unidad mínima que se caracteriza por aportar significado léxico. En un lenguaje de programación cualquier palabra reservada es un token.
-    \item Un \textbf{árbol de derivación} es
-    \item El \textbf{axioma} en una gramática es el elemento desde el que se construyen todos los árboles de derivación en la gramática
+    \item Los alfabetos son colecciones finitas de símbolos.
     \item Las \textbf{producciones} son reglas de sustitución para la generación de cadenas del lenguaje.
+    \item Un \textbf{token} es la unidad mínima que se caracteriza por aportar significado léxico. Por ejemplo, en un lenguaje de programación cualquier palabra reservada es un token. Como también lo son los caracteres de los operadores matemáticos. Se les llama también símbolos terminales.
+    \item Los \textbf{símbolos no terminales} son aquellos símbolos que deben ser sustituidos por otros para generar totalmente una cadena.
+    \item Un \textbf{árbol de derivación} es
+    \item El \textbf{axioma} en una gramática es el elemento desde el que se construyen todos los árboles de derivación en dicha gramática
+
 \end{itemize}
 
-\subsection{Lenguajes formales}
+\subsection{Teoría de autómatas y Lenguajes Formales}
 
-La teoría de autómatas y lenguajes formales es uno de los pilares que definen el funcionamiento de los ordenadores. Con esta teoría se pueden construir los compiladores utilizados en los lenguajes de programación.
+La Teoría de autómatas y los Lenguajes Formales son uno de los pilares que definen lo que un ordenador es capaz de hacer y qué cosas no son computables. Es la base científica sobre la que se construyen los compiladores. Estas herramientas son capaces de transformar código fuente, escrito en un lenguaje de programación, en otro lenguaje que el ordenador sabe interpretar.
 
-En los años 30 del siglo XX Alan Turing ideó el modelo de una máquina abstracta que posee las mismas capacidades de cálculo que los ordenadores actuales. 
+% lenguajes
 
-Posteriormente en los años 50, Noam Chonsky durante el estudio de la construcción de lenguajes naturales comienza el estudio de las gramáticas formales.
+Los Lenguajes Formales son aquellos donde las reglas para unir los símbolos del lenguaje están definidas formalmente. Las palabras en los lenguajes se forman a partir de alfabetos, de tal manera que, realizando combinaciones de símbolos presentes en el alfabeto es posible construir cadenas que pertenecerán al lenguaje y también otras muchas que no pertenecen. 
 
-En primer lugar hay que entender qué es un lenguaje. Tomando una colección finita de símbolos se puede construir secuencias con ellos. Si se utilizan las letras del alfabeto, combinando los símbolos es posible construir cadenas que pertenecerán al castellano y también otras muchas que no pertenecen.
+% gramáticas
 
-Una palabra es una secuencia determinada construida con símbolos que están en el alfabeto.
+La definición formal viene dada por las Gramáticas Formales. Estas indican como construir cadenas que son válidas según las reglas sintácticas. Las gramáticas contienen conjuntos de reglas de transformación o reglas de producción que se aplican sucesivamente hasta obtener la palabra deseada. Cuando no existe una combinación de reglas que permita obtener una cadena determinada se conoce que esa cadena no pertenece al lenguaje.
 
-Un lenguaje es una conjunto de palabras o cadenas
+Las reglas son de la forma $A\rightarrow S$ y pueden estar formadas por símbolos terminales y no terminales \footnote{Por consenso los símbolos no terminales se indican en mayúscula y en minúscula los terminales}. Este es un ejemplo de gramática:
+\begin{center}
+$S\rightarrow AB$ (regla 1) \\
+$A\rightarrow aA$ (r. 2) \\
+$A\rightarrow a$ (r. 3) \\
+$B\rightarrow aB$ (r. 4) \\
+\end{center}
 
-Un autómata en su visión más inmediata es un diagrama que sirve para encontrar las palabras de un lenguaje. Se utiliza un grafo dirigido con información adicional. Los nodos del grafo son los estados e indican en qué punto del análisis de la cadena se encuentra. Las aristas van etiquetadas con caracteres del alfabeto y se llaman transiciones
+Cuando se aplica una sustitución, se parte del lado derecho y se cambia por los símbolos del lado izquierdo de la producción. Con la gramática anterior se puede construir la palabra \verb|aab| partiendo del axioma y aplicando sucesivamente cuatro transformaciones, reglas 1, 4, 2 y 3 de la gramática:
+
+\begin{center}
+$S\Rightarrow AB\Rightarrow Ab \Rightarrow AaB \Rightarrow aab$
+\end{center}
+
+% autómatas
+
+Los primeros autómatas fueron construidos en la Grecia clásica como pequeños artefactos capaces de moverse o actuar por si mismos. La Teoría de Autómatas trata de modelos matemáticos, o máquinas abstractas, capaces de reconocer un lenguaje formal. La Máquina de Turing es uno de estos modelos.
+
+En su visión más inmediata, un autómata, es un diagrama que sirve para encontrar las palabras de un lenguaje. Se utiliza un grafo dirigido al que se le aporta información adicional. Los nodos del grafo son los estados e indican en qué punto del análisis de la cadena se encuentra. Las aristas van etiquetadas con caracteres del alfabeto y se llaman transiciones.
 
 Un autómata especifica un lenguaje como el conjunto de aquellas cadenas que lo llevan del estado inicial a alguno de los estados de aceptación. Al mismo tiempo un autómata puede ser visto como un generador de las cadenas de un lenguaje si se comienza con la cadena vacía y se añaden símbolos según se recorren las transiciones, hasta llevar a un estado de aceptación.
 
-A partir del diagrama de estados del autómata es posible obtener unas expresiones de la forma $A\rightarrow S$ que representan las mismas transiciones del autómata y pueden ser consideradas reglas de sustitución para la generación de cadenas.
+A partir del diagrama de estados del autómata es posible obtener expresiones de la forma $S\rightarrow A$ que representan las  transiciones del autómata y se pueden aplicar como reglas de sustitución para la generación de cadenas.
 
-Queda por tanto clara la relación existente entre las gramáticas, los lenguajes y los autómatas. Una gramática proporciona las reglas para identificar todas las construcciones que pertenecen a un lenguaje. El autómata es el modelo matemático abstracto capaz de recibir cadenas del lenguaje y decidir si son válidas para una gramática.
+% unión de conceptos
 
-La notación Backus-Naur se utiliza para describir una gramática. Fue desarrollada por John Backus para el lenguaje Fortran y mejorada por Peter Naur para poder describir el lenguaje Algol 60.
+Queda por tanto clara la relación existente entre las gramáticas, los lenguajes y los autómatas. Una gramática proporciona las reglas para contruir todas las palabras que pertenecen a un lenguaje. El autómata es el modelo matemático abstracto capaz de recibir cadenas del lenguaje y decidir si son válidas para una gramática.
 
-La jerarquía de Chomsky define cuatro tipos de gramáticas dependiendo de la forma de las reglas de producción de la gramática.
+% jerarquía Chomsky
+
+Noam Chomsky es un investigador destacado en el ámbito de los lenguajes naturales y formales. En la década de los años 50 del siglo XX estaba estudiando el funcionamiento de la construcción de los lenguajes naturales y realizó aportaciones en el ámbito de las gramáticas formales.
+
+Una de estas aportaciones se conoce como la jerarquía de Chomsky. Establece cuatro niveles de tipos de gramáticas dependiendo de la forma de sus reglas de producción o, equivalentemente, de lo restrictivas que sean a la hora de definir lenguajes. En la imagen \ref{fig:niveles-chomsky} se puede ver las gramáticas en la jerarquía ampliada con los autómatas y lenguajes asociados.
 
 \begin{figure}[hp!]
     \centering
@@ -229,25 +254,47 @@ La jerarquía de Chomsky define cuatro tipos de gramáticas dependiendo de la fo
     \label{fig:niveles-chomsky}
 \end{figure}
 
+% tipos de gramáticas
+
 \begin{enumerate}
     \item Gramáticas regulares
+    
+    En las gramáticas regulares las producciones son de la forma \\
+    $B\rightarrow aB$
+    Un no terminal simpre deriva uno o varios terminales seguidos de un no terminal y la cadena vacía está en el lenguaje. De otro modo el autómata no finalizaría. Los lenguajes generados son equivalentes a las cadenas reconocidas por las expresiones regulares.
+    
+    Se requiere que los no terminales aparezcan a la izquierda del terminal obligatorio.
+    
     \item Gramáticas independientes del contexto
-   Una gramática independiente del contexto consta de cuatro componentes
-   - Un conjunto de símbolos terminales, también llamados tokens
-   - Un conjunto de no terminales que representa a un conjunto de cadenas o terminales
-    - Un conjunto de producciones que tienen dos partes con una flecha que las separa. En el lado izquierdo siempre hay un no terminal. En el lado derecho hay un conjunto de terminales y no terminales
-    - Uno de los no terminales es el símbolo inicial.
-    El objetivo es aplicar sustituciones, para obtener las cadenas del lenguaje.
+
+    Si en la parte derecha de la regla los terminales y no terminales pueden aparecer en cualquier orden, la gramática es una Gramática Independiente del Contexto.
+    
+    En las Gramáticas Independientes del Contexto se permite que símbolos terminales y no terminales aparezcan en el lado derecho de la regla. Algunos lenguajes generados serán también 
     
     \item Gramáticas dependientes o sensibles al contexto
     \item Gramáticas recursivamente enumerables
     \item Gramáticas recursivos (fuera de la jerarquía de Chomsky)
 \end{enumerate}
 
+% notación BNF
+
+La notación Backus-Naur se utiliza para describir una gramática. Fue desarrollada por John Backus para el lenguaje Fortran y mejorada por Peter Naur para poder describir el lenguaje Algol 60.
+
+En \ref{lst:ejemplo-gramatica-bnf} se muestra una pequeña gramática. Los símbolos \verb|::=| deben leerse \emph{se define como}. Para indicar alternativa, \emph{or}, se utiliza \verb|||.
+
+\begin{lstlisting}[caption={Gramática en notación BNF},label=lst:ejemplo-gramatica-bnf]
+numero ::= val
+         | val '.' val
+val    ::= n
+         | n val
+n      ::= '0' | '1' | '2' | '3' | '4'
+         | '5' | '6' | '7' | '8' | '9'
+\end{lstlisting}
+
 \begin{figure}[hp!]
     \centering
     \includegraphics[width=0.6\textwidth]{imaxes/c-bases-teoricas/hauser-2016.png}
-    \caption{Ejemplos de los 4 modelos con la dificultad de reconocimiento \cite{teoriaCompiladores_hauser_automatas}}
+    \caption{Comparativa de los 4 modelos y su dificultad de reconocimiento \cite{teoriaCompiladores_hauser_automatas}}
     \label{fig:hauser-2016}
 \end{figure}
 

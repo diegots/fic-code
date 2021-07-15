@@ -57,7 +57,7 @@ En su forma más básica, un programa Flex consiste en un listado de expresiones
 
 \subsection{Bison}
 
-Bison es un generador de analizadores sintácticos creados a partir de la descripción de una gramática independiente del contexto en formato BNF. Para conocer de primera mano el funcionamiento y capacidades de Bison se puede consultar el manual elaborado por la Free Software Foundation
+Bison es un generador de analizadores sintácticos creados a partir de la descripción de una gramática independiente del contexto en formato BNF. Para conocer de primera mano el funcionamiento y capacidades de Bison se puede consultar el manual de la aplicación, elaborado por la Free Software Foundation
 \cite{fsf_web_bisonManual}.
 
 Todos los autómatas que soportan lenguajes independientes del contexto utilizan dos elementos para su funcionamiento. Una estructura de tipo pila y una tabla de transición de estados. Los autómatas se pueden agrupar en dos categorías principales, LL y LR. La primera \textbf{L} indica, en ambos casos, que el flujo de tokens se procesa de izquierda a derecha. Dependiendo de como se realice el parseo, los L\textbf{L} trabajan completando reglas gramaticales desde el axioma hasta las hojas. Los L\textbf{R} hacen lo opuesto, parten de las hojas y ascienden hasta llegar al axioma. Esto es equivalente a aplicar derivaciones por la derecha de forma inversa. Bison es de estos últimos.
