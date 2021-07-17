@@ -192,7 +192,8 @@ En primer lugar se presentan algunos de los conceptos elementales que serán cit
 
 \begin{itemize}
     \item Un \textbf{lenguaje} es un conjunto de cadenas de longitud finita creadas a partir de un alfabeto finito.
-    \item Los alfabetos son colecciones finitas de símbolos.
+    \item Los \textbf{alfabetos} son colecciones finitas de símbolos.
+    \item Las \textbf{palabras} o \emph{cadenas} son secuencias de símbolos tomados de un alfabeto. La cadena vacía es aquella cadena que carece de símbolos. Se representa habitualmente con el símbolo $\epsilon$.
     \item Las \textbf{producciones} son reglas de sustitución para la generación de cadenas del lenguaje.
     \item Un \textbf{token} es la unidad mínima que se caracteriza por aportar significado léxico. Por ejemplo, en un lenguaje de programación cualquier palabra reservada es un token. Como también lo son los caracteres de los operadores matemáticos. Se les llama también símbolos terminales.
     \item Los \textbf{símbolos no terminales} son aquellos símbolos que deben ser sustituidos por otros para generar totalmente una cadena.
@@ -256,27 +257,40 @@ Una de estas aportaciones se conoce como la jerarquía de Chomsky. Establece cua
 
 % tipos de gramáticas
 
-\begin{enumerate}
-    \item Gramáticas regulares
-    
-    En las gramáticas regulares las producciones son de la forma \\
-    $B\rightarrow aB$
-    Un no terminal simpre deriva uno o varios terminales seguidos de un no terminal y la cadena vacía está en el lenguaje. De otro modo el autómata no finalizaría. Los lenguajes generados son equivalentes a las cadenas reconocidas por las expresiones regulares.
-    
-    Se requiere que los no terminales aparezcan a la izquierda del terminal obligatorio.
-    
-    \item Gramáticas independientes del contexto
+En la jerarquía de Chomsky se definen cuatro tipos de gramáticas. Comenzando con las más restrictivas respecto a la cantidad de lenguajes que son capaces de generar, están las gramáticas de Tipo 3 o Regulares. La forma de las reglas es:
 
-    Si en la parte derecha de la regla los terminales y no terminales pueden aparecer en cualquier orden, la gramática es una Gramática Independiente del Contexto.
-    
-    En las Gramáticas Independientes del Contexto se permite que símbolos terminales y no terminales aparezcan en el lado derecho de la regla. Algunos lenguajes generados serán también 
-    
-    \item Gramáticas dependientes o sensibles al contexto
-    \item Gramáticas recursivamente enumerables
-    \item Gramáticas recursivos (fuera de la jerarquía de Chomsky)
-\end{enumerate}
+\begin{center}
+$A\rightarrow a$ o bien $A\rightarrow aB$
+\end{center}
 
-% notación BNF
+Se permite $A\rightarrow\epsilon$ siempre y cuando no aparezca S en la parte derecha de una regla. Este tipo de gramáticas generan los mismos tipos de lenguajes que se pueden describir con las expresiones regulares.
+
+Las gramáticas de Tipo 2 o Gramáticas Independientes del Contexto tienen producciones de la forma 
+
+\begin{center}
+$A\rightarrow \beta$
+\end{center}
+
+donde A es un no terminal y $\beta$ es una cadena que puede contener terminales y no terminales. Estas gramáticas son reconocidas por un autómata de pila. Son las gramáticas empleadas habitualmente en los lenguajes de programación.
+
+La siguiente categoría son las Gramáticas Sensibles al Contexto o gramáticas de Tipo 1. En este caso, las reglas en forma normal son:
+
+\begin{center}
+$\alpha A\beta\rightarrow \alpha\gamma\beta$
+\end{center}
+
+de tal manera que A es un no terminal, $\alpha, \beta$ y $\gamma$ son cadenas de terminales y no terminales. Además $\alpha$ y $\beta$ pueden ser vacíos mientras que $\gamma$ no.
+Estos lenguajes son reconocidos por una Máquina de Turing con una cinta de memoria acotada o limitada.
+
+Las gramáticas más generales son las gramáticas de Tipo 0 o No Restringidas. Los lados izquierdos de las reglas pueden estar formatos por cualquier combinación de terminales y no terminales, siempre y cuando contengan algún símbolo terminal. Sobre el lado derecho no existen restricciones.
+
+Todos los lenguajes hasta aquí comentados son recursivamente enumerables ya que existe para todos ellos una Máquina de Turing que acepta y para cualquier cadena del lenguaje. Pero, si la cadena no pertenece, puede parar y rechazar o bien iterar indefinidamente.
+
+Sin formar parte de la jerarquía, existe otra categoría intermedia entre los sensibles al contexto y los recursivamente enumerables, son los lenguajes recursivos. En estos, se requiere que la Máquina de Turing pare en todos los casos, por este motivo se los conoce como lenguajes decidibles.
+
+Los lenguajes regulares, Independientes del Contexto y los Sensibles al contexto son, a su vez, Recursivos.
+
+\subsection{Notación BNF}
 
 La notación Backus-Naur se utiliza para describir una gramática. Fue desarrollada por John Backus para el lenguaje Fortran y mejorada por Peter Naur para poder describir el lenguaje Algol 60.
 
@@ -330,10 +344,3 @@ El proceso de compilación se divide en varias fases. En la imagen \ref{fig:anal
     \caption{Ejemplo del proceso de análisis de un compilador}
     \label{fig:analisis-lexico-sintáctico}
 \end{figure}
-
-
-
-
-
-
-
