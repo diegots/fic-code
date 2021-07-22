@@ -5,27 +5,30 @@
 \chapter{Planificación}
 \label{chap:planificación}
 
-\lettrine{E}{n} este capítulo se aborda la planificación del proyecto.
+\lettrine{L}{a} creación de este TFG comparte las características generales de cualquier proyecto, ya que tiene un objetivo concreto y definido, no es una actividad rutinaria, tiene unas fechas de comienzo y de fin. Un proyecto necesita recursos en forma de tiempo, mano de obra, herramientas y conocimiento. En este capítulo se aborda la planificación elaborada.
+
 
 \section{Recursos necesarios}
 
 Para acometer el proyecto son necesarios varios tipos de recursos:
 
 \begin{itemize}
-    \item Recursos humanos
+    \item \textbf{Humanos}
         \begin{itemize}
-            \item Director del proyecto para los roles de Product Owner.
-            \item Analista para las fases de análisis del proyecto.
-            \item Diseñador para las fases de diseño del proyecto.
-            \item Equipo de desarrollo formado por el alumno. Para la parte de integración se colaboró con otro alumno del Laboratorio de Telemática, pero no intervino en ningún momento en la creación de esta parte del proyecto.
+            \item Un Product Ownner, rol asignado al director del proyecto.
+            \item Un analista.
+            \item Un diseñador.
+            \item Un equipo de desarrollo, formado íntegramente por el alumno.
         \end{itemize}
-    \item Recursos software: todos los recursos software utilizados son aplicaciones sin coste monetario. Muchas son, además software libre.
-    \item Recursos hardware: el portátil, pantalla y otros accesorios utilizados.
+    \item \textbf{Software}: todos los recursos software utilizados son aplicaciones sin coste económico, mucho de ellos, además, software libre.
+    \item \textbf{Hardware}: el portátil, pantalla y otros accesorios utilizados.
 \end{itemize}
+
+El rol de Product Owner lo realiza el director del proyecto, como se explicó en la sección \ref{sec:uso-scrum-en-el-proyecto}. Las funciones de análisis, diseño y desarrollo fueron asumidas por el alumno. Cabe destacar que la colaboración para la creación de una interfaz gráfica a este proyecto fue realizada por otro alumno de la Facultad de Informática, no obtante debe quedar claro que no intervino en ningún momento en la elaboración de la parte del trabajo presentada en esta memoria.
 
 \subsection{Planificación económica}
 
-De los recursos utilizados para el proyecto se deducen directamente los costes económicos incurridos. El cálculo de los costes salariales está extraído del \emph{Convenio colectivo del sector de empresas de ingeniería y oficinas de estudios técnicos} en su página del BOE \footnote{\url{https://www.boe.es/diario_boe/txt.php?id=BOE-A-2019-14977}}.
+De los recursos utilizados para el proyecto se deducen directamente los costes económicos incurridos. En la tabla \ref{tab:costes-proyecto} se presentan todos los gastos. Para el cálculo de los costes salariales se consultó el \emph{Convenio colectivo del sector de empresas de ingeniería y oficinas de estudios técnicos} en su página del BOE \footnote{\url{https://www.boe.es/diario_boe/txt.php?id=BOE-A-2019-14977}}.
 
 \begin{table}[ht]
     \centering
@@ -43,13 +46,13 @@ De los recursos utilizados para el proyecto se deducen directamente los costes e
         \hline
         TOTAL & & - & x \\        
     \end{tabular}
-    \label{Tab:costes-proyecto}
+    \label{tab:costes-proyecto}
     \caption{Costes del proyecto}
 \end{table}
 
 \section{Planificación temporal inicial}
 
-En la imagen \ref{fig:gantt-inicial} se presenta el diagrama de Gantt inicial de la planificación con el desglose de tareas. Una de las dificultades para la planificación consistió en no saber en qué momento del proyecto sería necesario abordar la integración con la interfaz web. En este plan inicial se contemplaban 524 horas de trabajo.
+En la imagen \ref{fig:gantt-inicial} se presenta el diagrama de Gantt inicial de la planificación con el desglose de tareas. Una de las dificultades para la planificación consistió en no saber en qué momento del proyecto sería necesario abordar la integración con la interfaz web. Inicialmente se asumió que ocurriría con posterioridad al trabajo de desarrollo y antes de comenzar la escritura de la memoria. En este plan inicial se contemplaban 524 horas de trabajo.
 
 \begin{figure}[hp!]
     \centering
@@ -64,37 +67,35 @@ Se expone acontinuación la distribución del trabajo a lo largo de los sprints.
 
 \subsection{Sprint 1}
 
-Este primer sprint se dedicó completamente a la búsqueda de información, análisis del problema y diseño de alto nivel de la solución. Este periodo se utilizó para conocer las herramientas para tratar PDF disponibles en Linux, entender mejor el formato PDF, encontrar la existencia de los formatos de información de los procesos de OCR, hOCR; y búsque
-
-Este primer sprint consistió por completo en un spike con el objetivo de recabar toda la información necesaria para plantear el proyecto a nivel técnico. Principalmente se buscó información de
+Este primer sprint consistió por completo en un spike con el objetivo de recabar toda la información necesaria para plantear el proyecto a nivel técnico. Algunos de los aspectos sobre los que se adquirió conocimiento fueron:
 
 \begin{itemize}
-    \item Información de alternativas comerciales en la misma temática
-    \item Herramientas disponibles en Linux para tratar PDF.
-    \item Información del formato PDF.
-    \item Información sobre hOCR
-    \item Motores de OCR candidatos para el proyecto
+    \item Alternativas comerciales en la misma temática.
+    \item Herramientas y librerías disponibles en Linux para manipular PDF.
+    \item Funcionamiento del formato PDF a nivel interno.
+    \item Formatos de salida de los motores de OCR, es especial del seleccionado, hOCR.
+    \item Posibles engines de OCR candidatos para el proyecto
 \end{itemize}
 
 \subsection{Sprint 2}
 
-Con el conocimiento de reunido se procedió a la construcción inicial del sistema para el procesamiento por lotes de los trabajos. Además de diseñar la estructura de directorios utilizada por el proyecto, se crearon el Makefile, utilizado para las compilaciones y los scripts para implementar el motor.
+Con el conocimiento de reunido se procedió a la construcción inicial del sistema para el procesamiento por lotes de los trabajos. Además de diseñar la estructura de directorios utilizada por el proyecto, se crearon el Makefile general, utilizado para las compilaciones y los scripts para implementar el motor.
 
 \subsection{Sprint 3}
 
-El sprint 3 se creó el generador de lenguaje intermedio y el primer parser para el modelo de documento de Adobe.
+En el sprint 3 se crearon las implementaciones inciales del generador de lenguaje intermedio y se preparó el primer parser, que se probó con los documentos de Adobe. Para la construcción de los parsers se deseaba un enfoque modular, que no es habitual en este tipo de herramientas. El objetivo era tener un único programa ejecutable para el parser y un conjunto de plugins que implementarían cada uno un modelo de documento. Dado que este no es el tipo de configuración más habitual, llevó un poco más de tiempo que otros planteamientos más sencillos.
 
 \subsection{Sprint 4}
 
-En este sprint se añadió soporte para generación de código intermedio y parsing del modelo de OVH. También tuvieron lugar las primeras reuniones de trabajo para explicar el proyecto y decidir las adaptaciones necesarias de cara al prototipo.
+En este sprint se añadió soporte para la generación de código intermedio y parsing del modelo de OVH. También tuvieron lugar las primeras reuniones de trabajo para explicar el proyecto y decidir las adaptaciones necesarias de cara al prototipo.
 
 \subsection{Sprint 5}
 
-Se completó el modelo de documento del proveedor Prodware. Además se abordaron de forma paralela las tareas relacionadas con el prototipo web. Hubo varias reuniones para facilitar la implemtación de aspectos que no habían sido considerados, como  la necesidad de generar imágenes de las páginas individuales de cada documento, cambio del formato de la marca de tiempo y dockerización de la aplicación.
+Se completó el modelo de documento del proveedor Prodware. Además se abordaron de forma paralela las tareas relacionadas con el prototipo web. Hubo varias reuniones para facilitar la implemtación de aspectos que no habían sido considerados, como  la necesidad de generar imágenes de las páginas individuales de cada documento, cambio del formato de la marca de tiempo para mejorar la compatibilidad entre sistemas de ficheros y la dockerización de la aplicación.
 
 \subsection{Sprints 6, 7 y 8}
 
-En estas tres semanas se abordó la escritura de la memoria, con el plan de dejar tiempo al final del proyecto para poner el punto y final.
+En estas tres semanas se abordó la escritura inicial de la memoria, con la previsión de dejar tiempo al final del proyecto para completarla.
 
 \subsection{Sprint 9}
 
