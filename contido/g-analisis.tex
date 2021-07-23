@@ -69,31 +69,55 @@ Se presentan a continuación los casos de uso de forma detallada:
 
 \section{Requisitos funcionales}
 
+Estos son los requisitos funcionales que la aplicación debe soportar:
+
+\begin{itemize}
+	\item Obtención de un identificador único de un trabajo, con anterioridad a la ejecución del mismo.
+	\item Generación una salida en formato estructurado para cada documento suministrado y reconocido en el sistema.
+	\item Creación de imágenes de las páginas individuales de cada uno los documentos.
+	\item Creación de una marca de finalización para cada trabajo completado.
+\end{itemize}
+
+
 \section{Requisitos no funcionales}
+
+Se exponen ahora los requisitos no funcionales de la aplicación:
+
+\begin{itemize}
+	\item La entrada podrá contener uno o más ficheros para su tratamiento en el mismo lote.
+	\item Procesamiento de los modelos de imagen y texto de forma transparente al usuario.
+	\item La salida de una ejecución debe facilitar los resultados de forma individualizada para cada documento.
+	\item Se deben poder identificar las líneas individuales de las tablas existentes en los documentos.
+\end{itemize}
 
 \section{Sobre los documentos}
 
+Se dispone de varios modelos de facturas tanto de casos basados en imagen como otros basados en texto. Estas facturas proporcionan tipos de regiones de interés que se desean capturar.
+
 \subsection{Tipos de regiones}
+
+\begin{enumerate}
+	\item Tablas simples de dos columnas y una cabecera en la columna de la derecha.
+	\item Tablas simples con una cabecera en la primera fila.
+	\item Celdas individuales donde el contenido se captura de forma secuencial.
+	\item Tablas con $n\times m$ dimensiones y cabecera en la primera fila.
+	\item Combinación de regiones simples, como en el caso de los documentos de OVH.
+\end{enumerate}
+
+Los ejemplos de documentos basados en texto son tres
+
+\begin{itemize}
+	\item Adobe.
+	\item OVH.
+	\item Prodware.
+\end{itemize}
+
+% TODO añadir imagen de conjunto con los tres tipos de modelos basados en texto
+
+% TODO añadir imagen de conjunto con los tipos de modelos basados en imagen
 
 \subsection{Características para la identificación}
 
 Datos para identificar los documentos. En este caso, NIF, CIF.
 
 % TODO valorar si comentar los distintos tipos de lineas presentes en los documentos
-
-%%%%%%%%%
-
-\begin{itemize}
-	\item El sistema debe ser capaz de recepcionar 1 o múltiples ficheros por petición
-	\item El sistema debe ser capaz de tratar cada uno de los ficheros de forma independiente y generar su propia salida
-	\item El sistema debe ser capaz de tratar ficheros basados en texto o imagen
-	\item El sistema debe ser capaz de generar una salida en formato estructurado
-	\item El sistema debe ser capaz de generar imágenes de las páginas del documentos para disponibilidad del frontend
-	\item El sistema debe ser capaz de generar un identificador único para cada trabajo tratado
-	\item El sistema debe ser capaz de generar una marca indicativa del final de procesamiento
-	\item El sistema debe ser capaz de identificar líneas individuales en las tablas de los documentos. Aquí se puede hablar de por que
-\end{itemize}
-
-\begin{itemize}
-	\item Mantener reducido el tiempo de cómputo    
-\end{itemize}
