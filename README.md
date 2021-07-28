@@ -1,1 +1,1 @@
-This is a small implementation of a FIFO list.
+# A small C implementation of a FIFO list.
