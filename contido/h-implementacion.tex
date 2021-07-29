@@ -5,28 +5,72 @@
 \chapter{Diseño e Implementación}
 \label{chap:implemetación}
 
-\lettrine{E}{ste} capítulo describe el diseño y la implementación de la solución construida. El sistema implementa un flujo de datos que para el que se ha recurrido a tres lenguajes de programación, Python, C y Bash.
+\lettrine{E}{ste} capítulo describe el diseño y la implementación de la solución construida. El sistema implementa un flujo de datos o pipeline. La construcción se ha realizado con tres lenguajes de programación, Python, C y Bash.
 
 \section{Etapas del sistema}
 
-Los datos son sometidos a un proceso por etapas tal como se ve en \ref{vision-general-del-sistema}. A continuación se detalla cada una de estas etapas.
+Los datos son sometidos a un proceso por etapas tal como se ve en \ref{fig:vision-general-del-sistema}. A continuación se detalla cada una de estas etapas.
 
 \begin{figure}[hp!]
     \centering
     \includegraphics[width=1.0\textwidth]{imaxes/h-implementacion/vision-general-del-sistema-2}
-    \caption{Visión general del sistema}
+    \caption{Visión general del pipeline del sistema}
     \label{fig:vision-general-del-sistema}
 \end{figure}
 
-% TODO descripción del diagrama
-% TODO en la aplicación se mantiene el estado interno por medio del sistema de ficheros
+El proceso comienza cuando se proporcionan al sistema un nuevo conjunto de ficheros PDF. La primera acción realiza la clasificación, según el tipo contenido de los PDF sean páginas con texto o con imágenes. El sistema mantienen el estado colocando los ficheros en las rutas apropiadas. 
+
+A continuación se procede a la extracción de la información de los documentos. Además del propio texto, directamente visible, se genera la información de coordenadas que se utilizará para seleccionar los contenidos relevantes.
+
+El proceso sigue con la identificación de los documentos con el objetivo de poder seleccionar la plantilla correcta, si está dada de alta en el sistema. 
+
+Con toda la información obtenida se puede comenzar la generación del lenguaje intermedio de cada página. Para ello, la información de entrada es la plantilla, el código del identificador encontrado y el texto con las coordenadas de la etapa de extracción.
+
+Por último se transforma el lenguaje intermedio y se genera toda la información de salida del sistema. El identificador es utilizado para seleccionar el parser necesario para tratar el documento. Todos los datos de salida son movidos a un directorio de resultados y se genera la marca de finalización del tratamiento.
+
+De todas estas tareas se ocupa el engine del sistema, que invoca uno a uno los scripts correspondientes a cada tarea haciendo evolucionar el trabajo.
+
+\subsection{Creación de un nuevo trabajo}
+
+Si bien la imagen \ref{fig:vision-general-del-sistema} representa el flujo de datos a nivel general, para comenzar el tratamiento se sigue un proceso formalizado en tres pasos. 
+
+Primero el Sistema Externo solicita un identificador para un nuevo trabajo. En este momento el motor genera el código y lo utiliza para crear las rutas de directorios necesarias para ubicar los resultados de cada etapa. El identificador se obtiene de la fecha UTC actual en segundos y nanosegundos. Se recurre al comando \verb|date| para ello, como se muestra en \ref{lst:creacion-job-id}).
+
+\begin{lstlisting}[language=bash,caption={Obtención del identificador de un trabajo},label=lst:creacion-job-id]
+job_id=$(date -u +%s%6N)
+\end{lstlisting}
+
+Utilizando el identificador, el Sistema Externo formar el path estándar para un nuevo trabajo y debe copiar el comprimido allí. Por último se le debe indicar al motor que comience el procesamiento del trabajo para el id deseado.
 
 \subsection{Clasificación de los ficheros}
 
-Los PDF recibidos deben ser clasificados dependiendo de su contenido. En unos casos es posible utilizar directamente el texto del documento para los restantes se procederá a utilizar el software OCR.
+% TODO renombrado de los ficheros
 
-% TODO explicar en detalle como se hace la diferenciación
+Como primera acción para tratar correctamente los fichero se realiza un saneamiento de los nombres. Crear un nombrado homogénero evita problemas en la construcción de las rutas del sistema de ficheros. También se descartan los directorios que el fichero comprimido facilitado pudiera contener. Los ficheros se renombran secuencialmente.
 
+Los PDF recibidos deben ser clasificados dependiendo de su contenido. En unos casos es posible utilizar directamente el texto del documento. Para los restantes se procederá a utilizar el procedimiento OCR. La clasificación se realiza por medio de un test de extracción de texto y se busca una respuesta negativa en la salida.
+
+En \verb|extract-text.sh| se utiliza la herramienta de extracción de texto, \verb|pdftotext| sobre cada página de cada fichero. En \ref{lst:extraccion-text-inicial} se puede ver la orden utilizada.
+
+\begin{lstlisting}[language=bash,caption={Extracción tentativa del texto},label=lst:extraccion-text-inicial]
+for ((page=1; page<=$last_page; page++))
+do
+    page_number="$($engine_dir/fix-page-numbers.sh $page)"
+    pdftotext -f $page -l $page -layout "$line" "$n-$page_number.txt"
+done
+\end{lstlisting}
+
+Cuando un documento no contiene texto, el fichero creado únicamente contiene caracteres de salto de página, \verb|0x0C|, que son introducidos por \verb|pdftotext|. Estos caracteres pueden ser localizados mediando un editor hexadecimal, como se muestra en \ref{lst:deteccion-salto-pagina}. Tanto si se ejecuta el cuerpo del \verb|if| como del \verb|elif| se trata de un caso de imagen y el fichero es movido al directorio para los casos de imagen.
+
+\begin{lstlisting}[language=bash,caption={Detección del salto de página},label=lst:deteccion-salto-pagina]
+if [ "$(hexdump -e '1/1 "%02X\n"' $i | tr '\n' ' ')" = '0C ' ]
+then
+    mv $i $base_image_dir
+elif [ "$(hexdump -e '1/1 "%02X\n"' $i | tr '\n' ' ')" = '0C * ' ]
+then
+    mv $i $base_image_dir
+fi
+\end{lstlisting}
 
 \subsection{Extracción de datos}
 
@@ -70,13 +114,14 @@ Los PDF recibidos deben ser clasificados dependiendo de su contenido. En unos ca
 % TODO mostrar como es el formato de un fichero Flex y también Bison
 % TODO Mostrar como se utiliza la librería para generación de ficheros JSON
 % TODO Mencionar el pretty printing con jq
+% TODO explicar como es el flujo de información y por qué los terminales y no terminales llevan un tipo de dato en Bison
 
-\section{Creación de un engine modular}
+\subsection{Un engine modular}
+% TODO Detalle de la estructura de directorios considerada
 % TODO Se imita un modelo de procesamiento en batch
 % TODO Se generan códigos de identificación de los jobs recibidos. También marca final.
-% TODO Estructura de directorios considerada
-% TODO Flujo de la información
-% TODO explicar como es el flujo de información y por qué los terminales y no terminales llevan un tipo de dato en Bison
+
+El motor del sistema es el componente implementado en Bash. Esta decisión se tomó para facilitar el manejo de los ficheros dentro de la estructura de directorios. Además se utilizan herramientas en la consola, que sería más engorroso utilizar desde otros lenguajes de programación.
 
 \section{Compilación y despliegue}
 
