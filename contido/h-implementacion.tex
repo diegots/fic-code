@@ -34,23 +34,21 @@ De todas estas tareas se ocupa el engine del sistema, que invoca uno a uno los s
 
 Si bien la imagen \ref{fig:vision-general-del-sistema} representa el flujo de datos a nivel general, para comenzar el tratamiento se sigue un proceso formalizado en tres pasos. 
 
-Primero el Sistema Externo solicita un identificador para un nuevo trabajo. En este momento el motor genera el código y lo utiliza para crear las rutas de directorios necesarias para ubicar los resultados de cada etapa. El identificador se obtiene de la fecha UTC actual en segundos y nanosegundos. Se recurre al comando \verb|date| para ello, como se muestra en \ref{lst:creacion-job-id}).
+Primero el Sistema Externo solicita un identificador para el nuevo job. En ese momento el motor genera el código y lo utiliza para crear las rutas de directorios necesarias para ubicar los resultados de cada etapa. El identificador se obtiene de la fecha UTC actual concatenando segundos y nanosegundos. Se recurre al comando \verb|date| para ello, como se muestra en \ref{lst:creacion-job-id}).
 
 \begin{lstlisting}[language=bash,caption={Obtención del identificador de un trabajo},label=lst:creacion-job-id]
 job_id=$(date -u +%s%6N)
 \end{lstlisting}
 
-Utilizando el identificador, el Sistema Externo formar el path estándar para un nuevo trabajo y debe copiar el comprimido allí. Por último se le debe indicar al motor que comience el procesamiento del trabajo para el id deseado.
+Utilizando el identificador, el Sistema Externo formar el path estándar donde deberá depositar el fichero comprimido. Por último se le debe indicar al motor que comience el procesamiento del trabajo para el id deseado.
 
 \subsection{Clasificación de los ficheros}
 
-% TODO renombrado de los ficheros
+Como primera acción para tratar correctamente los fichero se realiza un saneamiento de los nombres. Aplicar un nombrado homogéneo evita problemas en la construcción de las rutas en el sistema de ficheros. También se descartan los directorios que el fichero comprimido facilitado pudiera contener. Los ficheros simplemente se nombran secuencialmente desde 1 y de forma creciente.
 
-Como primera acción para tratar correctamente los fichero se realiza un saneamiento de los nombres. Crear un nombrado homogénero evita problemas en la construcción de las rutas del sistema de ficheros. También se descartan los directorios que el fichero comprimido facilitado pudiera contener. Los ficheros se renombran secuencialmente.
+Los PDF recibidos deben ser clasificados dependiendo de su contenido. En unos casos es posible utilizar directamente el texto del documento. Para los restantes se procederá a utilizar el procedimiento OCR, como se ha explicado anteriormente. La clasificación se realiza por medio de un test de extracción de texto y se busca una respuesta positiva en la salida.
 
-Los PDF recibidos deben ser clasificados dependiendo de su contenido. En unos casos es posible utilizar directamente el texto del documento. Para los restantes se procederá a utilizar el procedimiento OCR. La clasificación se realiza por medio de un test de extracción de texto y se busca una respuesta negativa en la salida.
-
-En \verb|extract-text.sh| se utiliza la herramienta de extracción de texto, \verb|pdftotext| sobre cada página de cada fichero. En \ref{lst:extraccion-text-inicial} se puede ver la orden utilizada.
+En \verb|extract-text.sh| se utiliza la herramienta \verb|pdftotext| sobre cada página de cada fichero. En \ref{lst:extraccion-text-inicial} se puede ver la instrucción utilizada.
 
 \begin{lstlisting}[language=bash,caption={Extracción tentativa del texto},label=lst:extraccion-text-inicial]
 for ((page=1; page<=$last_page; page++))
@@ -60,7 +58,7 @@ do
 done
 \end{lstlisting}
 
-Cuando un documento no contiene texto, el fichero creado únicamente contiene caracteres de salto de página, \verb|0x0C|, que son introducidos por \verb|pdftotext|. Estos caracteres pueden ser localizados mediando un editor hexadecimal, como se muestra en \ref{lst:deteccion-salto-pagina}. Tanto si se ejecuta el cuerpo del \verb|if| como del \verb|elif| se trata de un caso de imagen y el fichero es movido al directorio para los casos de imagen.
+Cuando un documento no contiene texto, el fichero de la información extraída únicamente almacena caracteres de salto de página, \verb|0x0C|, que son introducidos por el propio \verb|pdftotext|. Estos caracteres pueden ser localizados mediante un editor hexadecimal, como se muestra en \ref{lst:deteccion-salto-pagina}. Tanto si se ejecuta el cuerpo del \verb|if| como del \verb|elif| se trata de un caso de imagen y el fichero es movido al directorio para los casos de imagen.
 
 \begin{lstlisting}[language=bash,caption={Detección del salto de página},label=lst:deteccion-salto-pagina]
 if [ "$(hexdump -e '1/1 "%02X\n"' $i | tr '\n' ' ')" = '0C ' ]
@@ -73,6 +71,40 @@ fi
 \end{lstlisting}
 
 \subsection{Extracción de datos}
+
+Previamente al proceso OCR, el script \verb|extract-images.sh| se encarga de extraer las imágenes contenidas en los ficheros seleccionados en el paso anterior. En este proceso se recupera la información original contenida en el PDF, no se trata de una \emph{foto} de la página. Se utiliza la herramienta \verb|pdfimages| con el flag \verb|-j|. Si las imágenes presentes en el PDF fueron almacenadas en formato JPEG, con este flag se conseguirá recuperar la información sin realizar transformaciones, ya que el formato PDF soporta la codificación JPEG de forma nativa por medio de los filtros DCTDecode y JPXDecode \cite[23]{adobe_book_iso32000-1}. Además, al no requerir transformación la extracción es muy rápida.
+
+El siguiente paso obtiene la información de coordenadas de los casos de texto, nuevamente con \verb|pdftotext|. Se generan los ficheros XHTML cuando se invoca la herramienta con el flag \verb| -bbox-layout|. En \ref{lst:extraccion-text-coord} se muestra un extracto del contenido típico que luego será procesado por el generador de código intermedio. Como se puede apreciar, se identifican la palabras individuales y la línea a la que pertenecen.
+
+\begin{lstlisting}[language=XML,caption={Extracción de texto con información de coordenadas},label=lst:extraccion-text-coord]
+<flow>
+    <block xMin="1594.583333" yMin="461.616667" 
+            xMax="2148.275000" yMax="496.304167">
+    <line xMin="1594.583333" yMin="461.616667" 
+            xMax="2148.275000" yMax="496.304167">
+        <word xMin="1594.583333" yMin="464.608333" xMax="1690.916667" 
+                yMax="495.441667">Fecha</word>
+        <word xMin="1700.183333" yMin="464.608333" xMax="1739.083333"   
+                yMax="495.441667">de</word>
+        <word xMin="1748.350000" yMin="464.608333" xMax="1939.116667" 
+                yMax="495.441667">facturación:</word>
+    </line>
+</block>
+\end{lstlisting}
+
+Completada la extracción de texto se da paso al proceso de OCR. El script \verb|image-apply-ocr.sh| recorre el directorio donde están almacenadas las imágenes recuperadas. 
+
+En la invocación de Tesseract \ref{lst:invocacion-de-tesseract} se le indican varios parámetros importantes. Debe utilizar utilizar los conjuntos de entrenamiento para el contenido en castellano (\verb|-l spa|), el número de \acrlong{ppp} se fija a 300 (\verb|--dpi 300|) ya que es un tamaño adecuado que las imágenes deben tener para que el proceso OCR tenga calidad suficiente. Tesseract dispone de varios algoritmos para interpretar el layout de documento. En este caso, al trabajar directamente con las coordenadas, no es necesario un layout y se le indica que capture la máxima información posible independientemente del orden (\verb|--psm 11|).
+
+\begin{lstlisting}[language=XML,caption={Extracción de texto con información de coordenadas},label=lst:invocacion-de-tesseract]
+tesseract $file_path "$outputbase" \
+    -l spa \
+    --dpi 300 \
+    --psm 11 \
+    -c page_separator='' \
+    --tessdata-dir "$tessdata_dir" \
+    $tessconfig_file
+\end{lstlisting}
 
 % TODO separación de las páginas individuales
 
