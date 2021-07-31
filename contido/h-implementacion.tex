@@ -48,17 +48,17 @@ Como primera acción para tratar correctamente los fichero se realiza un saneami
 
 Los PDF recibidos deben ser clasificados dependiendo de su contenido. En unos casos es posible utilizar directamente el texto del documento. Para los restantes se procederá a utilizar el procedimiento OCR, como se ha explicado anteriormente. La clasificación se realiza por medio de un test de extracción de texto y se busca una respuesta positiva en la salida.
 
-En \verb|extract-text.sh| se utiliza la herramienta \verb|pdftotext| sobre cada página de cada fichero. En \ref{lst:extraccion-text-inicial} se puede ver la instrucción utilizada.
+En \verb|extract-text.sh| se trata cada fichero PDF de tal manera que por cada uno se obtiene su número de páginas y la extracción de texto se realiza página a página, generando un txt individual por página como salida. En \ref{lst:extraccion-text-inicial} se puede ver el cálculo del número de páginas y la instrucción de extracción.
 
 \begin{lstlisting}[language=bash,caption={Extracción tentativa del texto},label=lst:extraccion-text-inicial]
+last_page="$(pdfinfo $line | grep 'Pages:' | cut -c 7- | sed 's_ *__')"
 for ((page=1; page<=$last_page; page++))
 do
-    page_number="$($engine_dir/fix-page-numbers.sh $page)"
     pdftotext -f $page -l $page -layout "$line" "$n-$page_number.txt"
 done
 \end{lstlisting}
 
-Cuando un documento no contiene texto, el fichero de la información extraída únicamente almacena caracteres de salto de página, \verb|0x0C|, que son introducidos por el propio \verb|pdftotext|. Estos caracteres pueden ser localizados mediante un editor hexadecimal, como se muestra en \ref{lst:deteccion-salto-pagina}. Tanto si se ejecuta el cuerpo del \verb|if| como del \verb|elif| se trata de un caso de imagen y el fichero es movido al directorio para los casos de imagen.
+Cuando un documento no contiene texto, el fichero de la información extraída únicamente almacena caracteres de salto de página, \verb|0x0C|, que son introducidos por el propio \verb|pdftotext|. Estos caracteres pueden ser localizados mediante un editor hexadecimal, como se muestra en \ref{lst:deteccion-salto-pagina}. Tanto si se ejecuta el cuerpo del \verb|if| como del \verb|elif|, la página se trata de un caso de imagen y el fichero es movido al directorio para los casos de imagen.
 
 \begin{lstlisting}[language=bash,caption={Detección del salto de página},label=lst:deteccion-salto-pagina]
 if [ "$(hexdump -e '1/1 "%02X\n"' $i | tr '\n' ' ')" = '0C ' ]
@@ -74,7 +74,7 @@ fi
 
 Previamente al proceso OCR, el script \verb|extract-images.sh| se encarga de extraer las imágenes contenidas en los ficheros seleccionados en el paso anterior. En este proceso se recupera la información original contenida en el PDF, no se trata de una \emph{foto} de la página. Se utiliza la herramienta \verb|pdfimages| con el flag \verb|-j|. Si las imágenes presentes en el PDF fueron almacenadas en formato JPEG, con este flag se conseguirá recuperar la información sin realizar transformaciones, ya que el formato PDF soporta la codificación JPEG de forma nativa por medio de los filtros DCTDecode y JPXDecode \cite[23]{adobe_book_iso32000-1}. Además, al no requerir transformación la extracción es muy rápida.
 
-El siguiente paso obtiene la información de coordenadas de los casos de texto, nuevamente con \verb|pdftotext|. Se generan los ficheros XHTML cuando se invoca la herramienta con el flag \verb| -bbox-layout|. En \ref{lst:extraccion-text-coord} se muestra un extracto del contenido típico que luego será procesado por el generador de código intermedio. Como se puede apreciar, se identifican la palabras individuales y la línea a la que pertenecen.
+El siguiente paso obtiene la información de coordenadas de los casos de texto, nuevamente con \verb|pdftotext|. Se generan los ficheros XHTML cuando se invoca la herramienta con el flag \verb|-bbox-layout|. En \ref{lst:extraccion-text-coord} se muestra un extracto del contenido típico que luego será procesado por el generador de código intermedio. Como se puede apreciar, se identifican la palabras individuales y la línea a la cual pertenecen.
 
 \begin{lstlisting}[language=XML,caption={Extracción de texto con información de coordenadas},label=lst:extraccion-text-coord]
 <flow>
@@ -92,9 +92,7 @@ El siguiente paso obtiene la información de coordenadas de los casos de texto, 
 </block>
 \end{lstlisting}
 
-Completada la extracción de texto se da paso al proceso de OCR. El script \verb|image-apply-ocr.sh| recorre el directorio donde están almacenadas las imágenes recuperadas. 
-
-En la invocación de Tesseract \ref{lst:invocacion-de-tesseract} se le indican varios parámetros importantes. Debe utilizar utilizar los conjuntos de entrenamiento para el contenido en castellano (\verb|-l spa|), el número de \acrlong{ppp} se fija a 300 (\verb|--dpi 300|) ya que es un tamaño adecuado que las imágenes deben tener para que el proceso OCR tenga calidad suficiente. Tesseract dispone de varios algoritmos para interpretar el layout de documento. En este caso, al trabajar directamente con las coordenadas, no es necesario un layout y se le indica que capture la máxima información posible independientemente del orden (\verb|--psm 11|).
+Completada la extracción de texto se da paso al proceso de OCR. El script \verb|image-apply-ocr.sh| recorre el directorio donde están almacenadas las imágenes recuperadas y se invoca a Tesseract \ref{lst:invocacion-de-tesseract}.  Se indican varios parámetros importantes. Debe utilizar utilizar los conjuntos de entrenamiento para el contenido en castellano (\verb|-l spa|), ya que los documentos están en este idioma. El número de \acrlong{ppp} se fija a 300 (\verb|--dpi 300|) ya que es un tamaño recomendado que las imágenes deben tener para que el proceso OCR tenga calidad suficiente. Tesseract dispone de varios algoritmos para interpretar el layout de documento. En este caso, al trabajar directamente con las coordenadas, no es necesario un layout y se le indica que capture la máxima información posible independientemente del orden (\verb|--psm 11|). Por otra parte existe un fichero de configuración, apuntado por la variable \verb|$tessconfig_file| que contienen la indicación para que se genera información en el formato hOCR, \verb|tessedit_create_hocr 1|.
 
 \begin{lstlisting}[language=XML,caption={Extracción de texto con información de coordenadas},label=lst:invocacion-de-tesseract]
 tesseract $file_path "$outputbase" \
