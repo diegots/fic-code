@@ -5,11 +5,11 @@
 \chapter{Diseño e Implementación}
 \label{chap:implemetación}
 
-\lettrine{E}{ste} capítulo describe el diseño y la implementación de la solución construida. El sistema implementa un flujo de datos o pipeline. La construcción se ha realizado con tres lenguajes de programación, Python, C y Bash.
+\lettrine{E}{ste} capítulo describe el diseño y la implementación de la solución construida. El sistema implementa un flujo de datos o pipeline. Toda la programación se ha realizado con tres lenguajes de programación, Python, C y Bash.
 
 \section{Etapas del sistema}
 
-Los datos son sometidos a un proceso por etapas tal como se ve en \ref{fig:vision-general-del-sistema}. A continuación se detalla cada una de estas etapas.
+Los datos son sometidos a un proceso por etapas tal como se ve en la figura \ref{fig:vision-general-del-sistema}. A continuación se detalla cada una de estas etapas.
 
 \begin{figure}[hp!]
     \centering
@@ -18,17 +18,17 @@ Los datos son sometidos a un proceso por etapas tal como se ve en \ref{fig:visio
     \label{fig:vision-general-del-sistema}
 \end{figure}
 
-El proceso comienza cuando se proporcionan al sistema un nuevo conjunto de ficheros PDF. La primera acción realiza la clasificación, según el tipo contenido de los PDF sean páginas con texto o con imágenes. El sistema mantienen el estado colocando los ficheros en las rutas apropiadas. 
+El proceso comienza cuando se proporcionan al sistema un nuevo conjunto de ficheros PDF. La primera acción realiza la clasificación, según el tipo contenido de los PDF sean páginas con texto o con imágenes. El sistema mantiene el estado interno en base a los ficheros creados en las rutas definidas.
 
 A continuación se procede a la extracción de la información de los documentos. Además del propio texto, directamente visible, se genera la información de coordenadas que se utilizará para seleccionar los contenidos relevantes.
 
 El proceso sigue con la identificación de los documentos con el objetivo de poder seleccionar la plantilla correcta, si está dada de alta en el sistema. 
 
-Con toda la información obtenida se puede comenzar la generación del lenguaje intermedio de cada página. Para ello, la información de entrada es la plantilla, el código del identificador encontrado y el texto con las coordenadas de la etapa de extracción.
+Con toda la información obtenida se puede comenzar la generación del lenguaje intermedio de cada página. Para ello, la información de entrada está formada por la plantilla, el código del identificador encontrado y el texto con las coordenadas de la etapa de extracción.
 
-Por último se transforma el lenguaje intermedio y se genera toda la información de salida del sistema. El identificador es utilizado para seleccionar el parser necesario para tratar el documento. Todos los datos de salida son movidos a un directorio de resultados y se genera la marca de finalización del tratamiento.
+Por último se transforma el lenguaje intermedio y se genera toda la información de salida del sistema. El identificador es utilizado para seleccionar el parser necesario para transformar el documento. Todos los datos de salida son movidos a un directorio de resultados y se genera la marca de finalización del tratamiento.
 
-De todas estas tareas se ocupa el engine del sistema, que invoca uno a uno los scripts correspondientes a cada tarea haciendo evolucionar el trabajo.
+El engine se ocupa de guiar todas estas actividades, se invocan uno a uno los scripts correspondientes a cada tarea haciendo evolucionar el trabajo.
 
 \subsection{Creación de un nuevo trabajo}
 
@@ -48,7 +48,7 @@ Como primera acción para tratar correctamente los fichero se realiza un saneami
 
 Los PDF recibidos deben ser clasificados dependiendo de su contenido. En unos casos es posible utilizar directamente el texto del documento. Para los restantes se procederá a utilizar el procedimiento OCR, como se ha explicado anteriormente. La clasificación se realiza por medio de un test de extracción de texto y se busca una respuesta positiva en la salida.
 
-En \verb|extract-text.sh| se trata cada fichero PDF de tal manera que por cada uno se obtiene su número de páginas y la extracción de texto se realiza página a página, generando un txt individual por página como salida. En \ref{lst:extraccion-text-inicial} se puede ver el cálculo del número de páginas y la instrucción de extracción.
+En \verb|extract-text.sh| se trata cada fichero PDF de tal manera que por cada uno se obtiene su número de páginas y la extracción de texto se realiza página a página, generando un txt individual por cada página como salida. En \ref{lst:extraccion-text-inicial} se puede ver el cálculo del número de páginas y la instrucción de extracción.
 
 \begin{lstlisting}[language=bash,caption={Extracción tentativa del texto},label=lst:extraccion-text-inicial]
 last_page="$(pdfinfo $line | grep 'Pages:' | cut -c 7- | sed 's_ *__')"
@@ -58,7 +58,7 @@ do
 done
 \end{lstlisting}
 
-Cuando un documento no contiene texto, el fichero de la información extraída únicamente almacena caracteres de salto de página, \verb|0x0C|, que son introducidos por el propio \verb|pdftotext|. Estos caracteres pueden ser localizados mediante un editor hexadecimal, como se muestra en \ref{lst:deteccion-salto-pagina}. Tanto si se ejecuta el cuerpo del \verb|if| como del \verb|elif|, la página se trata de un caso de imagen y el fichero es movido al directorio para los casos de imagen.
+Cuando un documento no contiene texto, el fichero de la información extraída únicamente almacena caracteres de salto de página, \verb|0x0C|, que son introducidos por el propio \verb|pdftotext|. Estos casos pueden ser localizados mediante un editor hexadecimal, como se muestra en \ref{lst:deteccion-salto-pagina}. En el fragmento, tanto si se ejecuta el cuerpo del \verb|if| como del \verb|elif|, la página se trata de un caso de imagen y el fichero es movido al directorio para los casos de imagen.
 
 \begin{lstlisting}[language=bash,caption={Detección del salto de página},label=lst:deteccion-salto-pagina]
 if [ "$(hexdump -e '1/1 "%02X\n"' $i | tr '\n' ' ')" = '0C ' ]
@@ -72,7 +72,7 @@ fi
 
 \subsection{Extracción de datos}
 
-Previamente al proceso OCR, el script \verb|extract-images.sh| se encarga de extraer las imágenes contenidas en los ficheros seleccionados en el paso anterior. En este proceso se recupera la información original contenida en el PDF, no se trata de una \emph{foto} de la página. Se utiliza la herramienta \verb|pdfimages| con el flag \verb|-j|. Si las imágenes presentes en el PDF fueron almacenadas en formato JPEG, con este flag se conseguirá recuperar la información sin realizar transformaciones, ya que el formato PDF soporta la codificación JPEG de forma nativa por medio de los filtros DCTDecode y JPXDecode \cite[23]{adobe_book_iso32000-1}. Además, al no requerir transformación la extracción es muy rápida.
+Previamente al proceso OCR, el script \verb|extract-images.sh| se encarga de extraer las imágenes contenidas en los ficheros seleccionados en el paso anterior. En este proceso se recupera la información original contenida en el PDF, no se trata solo de una \emph{foto} de la página. Se utiliza la herramienta \verb|pdfimages| con el flag \verb|-j|. Si las imágenes presentes en el PDF fueron almacenadas en formato JPEG, con este flag se conseguirá recuperar la información sin realizar transformaciones, ya que el formato PDF soporta la codificación JPEG de forma nativa por medio de los filtros DCTDecode y JPXDecode \cite[23]{adobe_book_iso32000-1}. Además, al no requerir transformación la extracción es muy rápida.
 
 El siguiente paso obtiene la información de coordenadas de los casos de texto, nuevamente con \verb|pdftotext|. Se generan los ficheros XHTML cuando se invoca la herramienta con el flag \verb|-bbox-layout|. En \ref{lst:extraccion-text-coord} se muestra un extracto del contenido típico que luego será procesado por el generador de código intermedio. Como se puede apreciar, se identifican la palabras individuales y la línea a la cual pertenecen.
 
