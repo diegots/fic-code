@@ -29,23 +29,56 @@ Algunas de estas aplicaciones permiten definir roles para los usuarios. En un en
 
 \subsection{Capture de Kofax y FlexiCapture}
 
-Las dos soluciones con mayor número de características son FlexiCapture de Abbyy \cite{solucionesComerciales_abbyy_flexicapture4invoices} y Capture de Kofax \cite{solucionesComerciales_kofax_capture}. Las dos tienen una larga lista de características entre las mencionadas anteriormente, están posicionadas para cubrir un amplio espectro de necesidades ya que se pueden instalar individualmente en un equipo de trabajo como pero pueden crecer para con una arquitectura cliente-servidor modular capaz de absorver grandes volumenes de trabajos. Ambas soportan roles para los usuario. Estas empresas tienen catálogos de productos que complementan y/o amplían las funcionalidades básicas.
+Las dos soluciones con mayor número de características son FlexiCapture de Abbyy \cite{solucionesComerciales_abbyy_flexicapture4invoices} y Capture de Kofax \cite{solucionesComerciales_kofax_capture}. Se muestran en la imagen \ref{fig:kofax-capture-y-abbyy-flexicapture}. Las dos tienen una larga lista de características entre las mencionadas anteriormente, están posicionadas para cubrir un amplio espectro de necesidades ya que se pueden instalar individualmente en un equipo de trabajo como pero pueden crecer para con una arquitectura cliente-servidor modular capaz de absorber grandes volúmenes de trabajos. Ambas soportan roles para los usuario. Estas empresas tienen catálogos de productos que complementan y/o amplían las funcionalidades básicas.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imaxes/b-estado-arte/kofax-capture}
+        \label{fig:hough-punto-imagen}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imaxes/b-estado-arte/abbyy-flexicapture}
+        \label{fig:hough-intersection}
+    \end{subfigure}
+    \caption{Kofax Capture (arriba) y ABBYY FlexiCapture (abajo)}
+    \label{fig:kofax-capture-y-abbyy-flexicapture}
+\end{figure}
 
 \subsection{Grooper}
 
-Grooper \cite{solucionesComerciales_bisok_grooper} está hecho por Bisok y a priori parece seguir próxima en características a las dos anteriores. No obstante durante la búsqueda de información ha llamado la atención la mala organización de la información en la web oficial donde no existe una página o documento lineal que explique las características de la aplicación. Una característica destacable es el uso de técnicas de Procesamiento de lenguajes naturales para encontrar párrafos y frases en un documento o ser capaz de distinguir las clausulas en un contrato. También permite seleccionar el engine de \emph{\acrlong{ocr}} utilizado entre un abanico de opciones.
+Grooper \cite{solucionesComerciales_bisok_grooper} (ver imagen \ref{fig:grooper-bisok}) está hecho por Bisok y a priori parece seguir próxima en características a las dos anteriores. No obstante durante la búsqueda de información ha llamado la atención la mala organización de la información en la web oficial donde no existe una página o documento lineal que explique las características de la aplicación. Una característica destacable es el uso de técnicas de Procesamiento de lenguajes naturales para encontrar párrafos y frases en un documento o ser capaz de distinguir las clausulas en un contrato. También permite seleccionar el engine de \emph{\acrlong{ocr}} utilizado entre un abanico de opciones.
 
 \subsection{Capture de ChronoScan}
 
-Capture de ChronoScan \cite{solucionesComerciales_chronoScanCapture_chronoScanDocumentCapture} es una aplicación individual más limitada en funcionalidades que las anteriores. Soporta el flujo normal de lotes con documento pero no dispone de arquitectura cliente servidor por lo cual su uso puede ser más interesante para pequeñas empresas o usuarios individuales. En este sentido la licencia permite su uso sin restricciones siempre que no sea en un contexto profesional.
+Capture de ChronoScan \cite{solucionesComerciales_chronoScanCapture_chronoScanDocumentCapture} (ver imagen \ref{fig:chronoscan-capture}) es una aplicación individual más limitada en funcionalidades que las anteriores. Soporta el flujo normal de lotes con documento pero no dispone de arquitectura cliente servidor por lo cual su uso puede ser más interesante para pequeñas empresas o usuarios individuales. En este sentido la licencia permite su uso sin restricciones siempre que no sea en un contexto profesional.
 
 \subsection{DocAcquire}
 
-DocAcquire \cite{solucionesComerciales_docAcquire_docAcquire} es una solución \emph{\acrlong{saas}} y no dispone de versión de escritorio. Se puede probar de forma gratuíta acudiendo a la web oficial. Es la aplicación más simple de todas y, al menos en la versión de prueba, parece que las acciones están bastante limitadas. No se pueden eliminar tipos de documentos una vez creados. Utiliza en engine Tesseract para \acrshort{ocr}.
+DocAcquire \cite{solucionesComerciales_docAcquire_docAcquire} es una solución \emph{\acrlong{saas}} y no dispone de versión de escritorio. Se puede probar de forma gratuita acudiendo a la web oficial. Es la aplicación más simple de todas y, al menos en la versión de prueba, parece que las acciones están bastante limitadas. No se pueden eliminar tipos de documentos una vez creados. Utiliza en engine Tesseract para \acrshort{ocr}.
 
 \subsection{Textract y Document AI}
 
 Dos servicios diferentes a los productos anteriores pero aplicables al problema son, Textract de Amazon \cite{solucionesComerciales_amazon_textract} y Document AI de Google \cite{solucionesComerciales_google_documentAI}. Ninguno de los dos suporta el flujo de información explicado ni están pensados para ser solución para el usuario final. Lo que ofrecen es un \emph{\acrlong{api}} capaz de recibir documentos y generar información estructurada como salida. El caso de Textract es totalmente opaco y por tanto no configurable. La salida consiste en ficheros JSON donde puede haber varios tipos de objetos: páginas, líneas y palabras, información de formularios (pares clave-valor), tablas, y elementos seleccionables como casillas. Además es capaz de identificar notas manuscritas. El servicio de Google permite definir \emph{processors}, que son plantillas específicas para modelos de documentos concretos. Actualmente parece que el servicio es muy reciente y está mayormente en beta. Cualquiera de ellos podría utilizarse para construir una solución más completa. Como otros servicios en la nube, el coste depende de la carga de trabajo procesada.
 
+Después de revisar todas estas alternativas uno de los elementos comunes es el procesado por lotes. En general se deja en manos de los usuarios definir cómo son los modelos de los documentos por medio de un editor que selecciona regiones fijas y les asigna una topología. Estas dos características apuntan a que el sistema.
 
-Después de revisar todas estas alternativas uno de los elementos comunes es el procesado por lotes. En general se deja en manos de los usuarios definir cómo son los modelos de los documentos por medio de un editor que selecciona regiones fijas y les asigna una topología. Estas dos características apuntan a que el sistema 
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imaxes/b-estado-arte/bisok-grooper}
+        \caption{Grooper, la solución de Bisok}
+        \label{fig:grooper-bisok}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.8\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imaxes/b-estado-arte/chronoscan-capture}
+        \caption{ChronoscanCapture con uno de los documentos usando en el proyecto}
+        \label{fig:chronoscan-capture}
+    \end{subfigure}
+%    \caption{Kofax Capture (arriba) y ABBYY FlexiCapture (abajo)}
+%    \label{fig:grooper-y-chronoscan-capture}
+\end{figure}
