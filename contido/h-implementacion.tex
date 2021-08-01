@@ -157,8 +157,56 @@ done
 Cuando se encuentra un identificador válido, se registra el el directorio del documento con un fichero que tiene por nombre el número del documento y la extensión \verb|id|. Por último se finaliza el bucle y se continua con el siguiente documento.
 
 \subsection{Plantillas y regiones}
-% TODO Tipos de regiones
-% TODO información contenida en las plantillas (la que no se refiere a coordenadas)
+
+% TODO completar significado de los campos que no son de coordenadas
+% TODO is_global
+% TODO page
+% TODO doc_pages
+
+Las plantillas contienen la información de coordenadas de las regiones de interés seleccionadas para el modelo de documento. En el ejemplo de código \ref{ejemplo-plantilla} se ver que para almacenar esta información se utiliza el formato JSON. Además de las coordenadas en si mismas, se utilizan otras claves para dar más flexibilidad a la información y poder tratar casos como los documentos de OVH. La clave \verb|id| que aparece al comienzo se utiliza para asociar con los identificadores de los documentos. Luego el array \verb|regions| contiene la colección de regiones existentes en el modelo. Se utiliza \verb|type| para identificar el tipo de región, \verb|yMin| y \verb|yMax| para las coordenadas horizontales. Los límites verticales se almanenan en el array de columnas \verb|cols|. En el caso de regiones con una única columna se utiliza igualmente el array pero con un único elemento.
+
+\noindent\begin{minipage}{.45\textwidth}
+\begin{lstlisting}[language=Java,caption=Comienzo de la plantilla,frame=tlrb]{Name}
+{
+  "id": "A48941488",
+  "is_global": false,
+  "regions": [
+    {
+      "page": "0",
+      "type": "R2",
+      "doc_pages": "all",
+      "yMin": 1112,
+      "yMax": 1278,
+      "cols": [
+        {
+          "xMin": 144,
+          "xMax": 429
+        },
+        ...
+\end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}{.45\textwidth}
+\begin{lstlisting}[language=Java,caption=Región T1,frame=tlrb]{Name}
+    {
+      "page": "0",
+      "type": "T1",
+      "doc_pages": "all",
+      "yMin": 1281,
+      "yMax": 2524,
+      "cols": [
+        {
+          "xMin": 76,
+          "xMax": 546
+        },
+        {
+          "xMin": 860,
+          "xMax": 1906
+        }
+        ...
+    \end{lstlisting}
+\end{minipage}
+
+Es un formato homogéneo que para representar todas las regiones. Las primeras plantillas fueron creadas a mano durante el desarrollo utilizando el programa de edición de imágenes GIMP \footnote{\url{http://www.gimp.org.es/}}.
 
 \subsection{Generación del lenguaje intermedio}
 % TODO describir la implementación en etapas, como el diagrama general
