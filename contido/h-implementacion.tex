@@ -48,7 +48,7 @@ Como primera acción para tratar correctamente los fichero se realiza un saneami
 
 Los PDF recibidos deben ser clasificados dependiendo de su contenido. En unos casos es posible utilizar directamente el texto del documento. Para los restantes se procederá a utilizar el procedimiento OCR, como se ha explicado anteriormente. La clasificación se realiza por medio de un test de extracción de texto y se busca una respuesta positiva en la salida.
 
-En \verb|extract-text.sh| se trata cada fichero PDF de tal manera que por cada uno se obtiene su número de páginas y la extracción de texto se realiza página a página, generando un txt individual por cada página como salida. En \ref{lst:extraccion-text-inicial} se puede ver el cálculo del número de páginas y la instrucción de extracción.
+En \verb|extract-text.sh| se trata cada fichero PDF de tal manera que por cada uno se obtiene su número de páginas y la extracción de texto se realiza página a página, generando un txt individual para cada una como salida. Desde este punto y para todos los demás procesos los documentos se tratan página por página. En \ref{lst:extraccion-text-inicial} se puede ver el cálculo del número de páginas y la instrucción de extracción.
 
 \begin{lstlisting}[language=bash,caption={Extracción tentativa del texto},label=lst:extraccion-text-inicial]
 last_page="$(pdfinfo $line | grep 'Pages:' | cut -c 7- | sed 's_ *__')"
@@ -72,7 +72,7 @@ fi
 
 \subsection{Extracción de datos}
 
-Previamente al proceso OCR, el script \verb|extract-images.sh| se encarga de extraer las imágenes contenidas en los ficheros seleccionados en el paso anterior. En este proceso se recupera la información original contenida en el PDF, no se trata solo de una \emph{foto} de la página. Se utiliza la herramienta \verb|pdfimages| con el flag \verb|-j|. Si las imágenes presentes en el PDF fueron almacenadas en formato JPEG, con este flag se conseguirá recuperar la información sin realizar transformaciones, ya que el formato PDF soporta la codificación JPEG de forma nativa por medio de los filtros DCTDecode y JPXDecode \cite[23]{adobe_book_iso32000-1}. Además, al no requerir transformación la extracción es muy rápida.
+Previamente al proceso OCR, el script \verb|extract-images.sh| se encarga de extraer las imágenes contenidas en los ficheros seleccionados en el paso anterior. En este proceso se recupera la información original contenida en el PDF, no se trata simplemente de una \emph{foto} de la página, sino que se utiliza la herramienta \verb|pdfimages| con el flag \verb|-j|. Si las imágenes presentes en el PDF fueron almacenadas en formato JPEG, con este flag se conseguirá recuperar la información sin realizar transformaciones, ya que el formato PDF soporta la codificación JPEG de forma nativa por medio de los filtros DCTDecode y JPXDecode \cite[23]{adobe_book_iso32000-1}. Además, al no requerir transformación la extracción es muy rápida. La situación descrita es la más habitual cuando un escáner profesional digitaliza un número de páginas y crea un PDF final.
 
 El siguiente paso obtiene la información de coordenadas de los casos de texto, nuevamente con \verb|pdftotext|. Se generan los ficheros XHTML cuando se invoca la herramienta con el flag \verb|-bbox-layout|. En \ref{lst:extraccion-text-coord} se muestra un extracto del contenido típico que luego será procesado por el generador de código intermedio. Como se puede apreciar, se identifican la palabras individuales y la línea a la cual pertenecen.
 
@@ -92,7 +92,7 @@ El siguiente paso obtiene la información de coordenadas de los casos de texto, 
 </block>
 \end{lstlisting}
 
-Completada la extracción de texto se da paso al proceso de OCR. El script \verb|image-apply-ocr.sh| recorre el directorio donde están almacenadas las imágenes recuperadas y se invoca a Tesseract \ref{lst:invocacion-de-tesseract}.  Se indican varios parámetros importantes. Debe utilizar utilizar los conjuntos de entrenamiento para el contenido en castellano (\verb|-l spa|), ya que los documentos están en este idioma. El número de \acrlong{ppp} se fija a 300 (\verb|--dpi 300|) ya que es un tamaño recomendado que las imágenes deben tener para que el proceso OCR tenga calidad suficiente. Tesseract dispone de varios algoritmos para interpretar el layout de documento. En este caso, al trabajar directamente con las coordenadas, no es necesario un layout y se le indica que capture la máxima información posible independientemente del orden (\verb|--psm 11|). Por otra parte existe un fichero de configuración, apuntado por la variable \verb|$tessconfig_file| que contienen la indicación para que se genera información en el formato hOCR, \verb|tessedit_create_hocr 1|.
+Completada la extracción de texto se da paso al proceso de OCR. El script \verb|image-apply-ocr.sh| recorre el directorio donde están almacenadas las imágenes recuperadas y se invoca a Tesseract con la instrucción que se puede ver en el código \ref{lst:invocacion-de-tesseract}.  Se indican varios parámetros importantes. Debe utilizar utilizar los conjuntos de entrenamiento para contenido en castellano (\verb|-l spa|), ya que los documentos están en este idioma. El número de \acrlong{ppp} se fija a 300 (\verb|--dpi 300|) ya que es un tamaño recomendado que las imágenes deben tener para que el proceso OCR tenga calidad suficiente. Tesseract dispone de varios algoritmos para interpretar el layout de documento. En este caso, al trabajar directamente con las coordenadas, no es necesario tener en cuenta el layout y se le indica que capture la máxima información posible independientemente del orden (\verb|--psm 11|). Por otra parte existe un fichero de configuración, apuntado por la variable \verb|$tessconfig_file| que contiene la directiva para activar la salida en formato hOCR, \verb|tessedit_create_hocr 1|.
 
 \begin{lstlisting}[language=XML,caption={Extracción de texto con información de coordenadas},label=lst:invocacion-de-tesseract]
 tesseract $file_path "$outputbase" \
@@ -104,23 +104,57 @@ tesseract $file_path "$outputbase" \
     $tessconfig_file
 \end{lstlisting}
 
-% TODO separación de las páginas individuales
+Se puede ver una muestra del formato hOCR en el fragmento \ref{lst:salida-hocr-tesseract}. En el atributo \verb|title| de las palabras se puede ver que aparecen las coordenadas en píxeles respecto al tamaño de la imagen. También hay un indicador de confianza, \verb|x_wconf| que indica la certeza que asigna Tesseract a la identificación de la palabra en particular.
 
-% TODO comentar caso con pdftotext
-% TODO incluir flags utilizados
-% TODO ejemplo de salida de la información
-
-% TODO comentar caso con OCR
-% TODO parámetros de Tesseract
-% TODO para cumplir con el requisito de tiempo reducido de ejecución se configuró Tesseract para emplear todos los cores disponibles en la máquina
-% TODO ejemplo de salida de la información
+\begin{lstlisting}[language=XML,caption={Fragmento de la salida hOCR de Tesseract},label=lst:salida-hocr-tesseract]
+<div class='ocr_page' id='page_1' 
+    title='image "input/1627762529247627/based-image/1/1-000.jpg"; 
+    bbox 0 0 2480 3509; ppageno 0'>
+  <div class='ocr_carea' id='block_1_1' title="bbox 83 141 810 200">
+    <p class='ocr_par' id='par_1_1' lang='spa' 
+        title="bbox 83 141 810 200">
+      <span class='ocr_line' id='line_1_1' title="bbox 83 141 810 200; 
+          baseline 0.001 -16; x_size 59; 
+          x_descenders 15; x_ascenders 15">
+        <span class='ocrx_word' id='word_1_1' title='bbox 83 144 370 185; 
+            x_wconf 96'>SALGADO</span>
+        <span class='ocrx_word' id='word_1_2' title='bbox 390 141 701 200; 
+            x_wconf 93'>Congelados,</span>
+      </span>
+\end{lstlisting}
 
 \subsection{Identificación}
 
-% TODO modelo de identificación. Explicar que está pensado para ser extensible a uso de BD u otras fuentes de información
-% TODO explicar como se recorre el array en bash
-% TODO mostrar la lista de identificadores
-% TODO mostrar como se marca el directorio con el fichero .id
+% TODO si se cambia implementación a SQLite, cambiar explicación.
+
+Los documentos se identifican para poder asociales una plantilla. El mecanismo utilizado consiste en buscar en la información extraída un dato que se considere único para la familia de documentos. Para las facturas tratadas un dato único es el NIF o CIF del emisor, pero podría seleccionarse cualquier dato dependiendo del dominio. Los identificadores están almacenados en los ficheros \verb|id-nif-iva.txt| y \verb|id-cif.txt| en formato \acrshort{csv} en el directorio de datos del sistema.
+
+El script \verb|identify-grep.sh| se encarga de realizar todo el proceso. Primero se leen todos los identificadores por medio de la función \verb|read_identifiers()|, tal como se puede ver en \ref{lst:lectura-de-identificadores}. Los datos leidos son incorporados a un array.
+
+\begin{lstlisting}[language=bash,caption={Lectura de identificadores},label=lst:lectura-de-identificadores]
+read_identifiers() {
+    while IFS= read -r line; do
+        # Add id if line has contents
+        [ ! -z $line ] && ids_+=("$(echo -n $line | sed 's_._.*&_g' | cut -c 3-)")
+    done < $1
+}
+\end{lstlisting}
+
+A continuación se obtiene la lista de ficheros para los cuales se ha extraído información y se iteran buscando ocurrencias de los identificadores conocidos, En \ref{lst:identifica-documentos} se le indica a \verb|grep| que tenga en cuenta solo los casos en los que el patron abarque una palabra completa (\verb|-w|), y que cambie la salida habitual por otra con el recuento de ocurrencias (\verb|-c|).
+
+\begin{lstlisting}[language=bash,caption={Identificación de los documentos},label=lst:identifica-documentos]
+for file in $files; do
+  for id_ in "${ids_[@]}"; do
+    if [ "$(grep -w -c "$id_" $file)" -ge 1 ]; then
+      #echo 'Found id: "'$id_'" in file: "'$file'"'
+      echo $id_ | sed -E 's_\*|\.__g' > $dir_name/$number.id
+      break
+    fi
+  done
+done
+\end{lstlisting}
+
+Cuando se encuentra un identificador válido, se registra el el directorio del documento con un fichero que tiene por nombre el número del documento y la extensión \verb|id|. Por último se finaliza el bucle y se continua con el siguiente documento.
 
 \subsection{Plantillas y regiones}
 % TODO Tipos de regiones
