@@ -61,6 +61,7 @@ Grooper \cite{solucionesComerciales_bisok_grooper} (ver imagen \ref{fig:grooper-
 \subsection{Capture de ChronoScan}
 
 Capture de ChronoScan \cite{solucionesComerciales_chronoScanCapture_chronoScanDocumentCapture} (ver imagen \ref{fig:chronoscan-capture}) es una aplicación individual más limitada en funcionalidades que las anteriores. Soporta el flujo normal de lotes con documento pero no dispone de arquitectura cliente servidor por lo cual su uso puede ser más interesante para pequeñas empresas o usuarios individuales. En este sentido la licencia permite su uso sin restricciones siempre que no sea en un contexto profesional.
+<<<<<<< HEAD
 
 \begin{figure}[hp!]
     \centering
@@ -68,6 +69,8 @@ Capture de ChronoScan \cite{solucionesComerciales_chronoScanCapture_chronoScanDo
     \caption{ChronoscanCapture con uno de los documentos usando en el proyecto}
     \label{fig:chronoscan-capture}
 \end{figure}
+=======
+>>>>>>> 7db457b512ca6b769e6582ad33501a07057ae8de
 
 \subsection{DocAcquire}
 
@@ -78,3 +81,24 @@ DocAcquire \cite{solucionesComerciales_docAcquire_docAcquire} es una solución \
 Dos servicios diferentes a los productos anteriores pero aplicables al problema son, Textract de Amazon \cite{solucionesComerciales_amazon_textract} y Document AI de Google \cite{solucionesComerciales_google_documentAI}. Ninguno de los dos suporta el flujo de información explicado ni están pensados para ser solución para el usuario final. Lo que ofrecen es un \emph{\acrlong{api}} capaz de recibir documentos y generar información estructurada como salida. El caso de Textract es totalmente opaco y por tanto no configurable. La salida consiste en ficheros JSON donde puede haber varios tipos de objetos: páginas, líneas y palabras, información de formularios (pares clave-valor), tablas, y elementos seleccionables como casillas. Además es capaz de identificar notas manuscritas. El servicio de Google permite definir \emph{processors}, que son plantillas específicas para modelos de documentos concretos. Actualmente parece que el servicio es muy reciente y está mayormente en beta. Cualquiera de ellos podría utilizarse para construir una solución más completa. Como otros servicios en la nube, el coste depende de la carga de trabajo procesada.
 
 Después de revisar todas estas alternativas uno de los elementos comunes es el procesado por lotes. En general se deja en manos de los usuarios definir cómo son los modelos de los documentos por medio de un editor que selecciona regiones fijas y les asigna una topología. Estas dos características apuntan a que el sistema.
+<<<<<<< HEAD
+=======
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imaxes/b-estado-arte/bisok-grooper}
+        \caption{Grooper, la solución de Bisok}
+        \label{fig:grooper-bisok}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.8\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imaxes/b-estado-arte/chronoscan-capture}
+        \caption{ChronoscanCapture con uno de los documentos usando en el proyecto}
+        \label{fig:chronoscan-capture}
+    \end{subfigure}
+%    \caption{Kofax Capture (arriba) y ABBYY FlexiCapture (abajo)}
+%    \label{fig:grooper-y-chronoscan-capture}
+\end{figure}
+>>>>>>> 7db457b512ca6b769e6582ad33501a07057ae8de
