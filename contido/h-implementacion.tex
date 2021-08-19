@@ -5,7 +5,7 @@
 \chapter{Diseño e Implementación}
 \label{chap:implemetación}
 
-\lettrine{E}{ste} capítulo describe el diseño y la implementación de la solución construida. El sistema implementa un flujo de datos o pipeline. Toda la programación se ha realizado con tres lenguajes de programación, Python 3, C y Bash.
+\lettrine{E}{ste} capítulo describe el diseño y la implementación de la solución construida. El sistema implementa un flujo de datos o pipeline. Toda la programación se ha realizado por medio de los lenguajes Python 3, C y Bash.
 
 \section{Etapas del sistema}
 
@@ -18,7 +18,7 @@ Los datos son sometidos a un proceso por etapas tal como se ve en la figura \ref
     \label{fig:vision-general-del-sistema}
 \end{figure}
 
-El proceso comienza cuando se proporcionan al sistema un nuevo conjunto de ficheros PDF. La primera acción realiza la clasificación, según el tipo contenido de los PDF sean páginas con texto o con imágenes. El sistema mantiene el estado interno en base a los ficheros creados en las rutas definidas.
+El proceso comienza cuando se proporcionan al sistema un nuevo conjunto de ficheros PDF. La primera acción realiza la clasificación, según el tipo contenido de los PDF sean páginas con texto o con imágenes. El sistema mantiene el estado interno en base a la creación de los ficheros respetando un esquema de rutas particular.
 
 A continuación se procede a la extracción de la información de los documentos. Además del propio texto, directamente visible, se genera la información de coordenadas que se utilizará para seleccionar los contenidos relevantes.
 
@@ -26,9 +26,9 @@ El proceso sigue con la identificación de los documentos con el objetivo de pod
 
 Con toda la información obtenida se puede comenzar la generación del lenguaje intermedio de cada página. Para ello, la información de entrada está formada por la plantilla, el código del identificador encontrado y el texto con las coordenadas de la etapa de extracción.
 
-Por último se transforma el lenguaje intermedio y se genera toda la información de salida del sistema. El identificador es utilizado para seleccionar el parser necesario para transformar el documento. Todos los datos de salida son movidos a un directorio de resultados y se genera la marca de finalización del tratamiento.
+Por último se transforma el lenguaje intermedio y se genera toda la información de salida del sistema. El identificador es utilizado en la  selección del parser necesario para transformar el documento. Cuando los procesos de análisis sintáctico han finalizado para los documentos, todos los datos de salida son movidos a un directorio de resultados y se genera la marca de finalización del tratamiento.
 
-El engine se ocupa de guiar todas estas actividades, se invocan uno a uno los scripts correspondientes a cada tarea haciendo evolucionar el trabajo.
+El componente referido como engine o motor se ocupa de conducir todas estas actividades, invocando uno a uno los scripts correspondientes a cada tarea y haciendo evolucionar el trabajo.
 
 \subsection{Creación de un nuevo trabajo}
 
@@ -40,15 +40,15 @@ Primero el Sistema Externo solicita un identificador para el nuevo job. En ese m
 job_id=$(date -u +%s%6N)
 \end{lstlisting}
 
-Utilizando el identificador, el Sistema Externo formar el path estándar donde deberá depositar el fichero comprimido. Por último se le debe indicar al motor que comience el procesamiento del trabajo para el id deseado.
+Utilizando el identificador, el Sistema Externo forma el path donde deberá depositar el fichero comprimido. Tras realizar la copia, se le debe indicar al motor que comience el procesamiento del trabajo para el id deseado.
 
 \subsection{Clasificación de los ficheros}
 
-Como primera acción para tratar correctamente los fichero se realiza un saneamiento de los nombres. Aplicar un nombrado homogéneo evita problemas en la construcción de las rutas en el sistema de ficheros. También se descartan los directorios que el fichero comprimido facilitado pudiera contener. Los ficheros simplemente se nombran secuencialmente desde 1 y de forma creciente.
+Como primera acción para tratar correctamente los fichero se realiza un saneamiento de los nombres. Aplicar un nombrado homogéneo evita problemas en la construcción de las rutas en el sistema de ficheros. También se descartan los directorios que el fichero comprimido facilitado pudiera contener. El esquema de nombrado para los ficheros utiliza los números naturales desde el 1 y de forma creciente.
 
 Los PDF recibidos deben ser clasificados dependiendo de su contenido. En unos casos es posible utilizar directamente el texto del documento. Para los restantes se procederá a utilizar el procedimiento OCR, como se ha explicado anteriormente. La clasificación se realiza por medio de un test de extracción de texto y se busca una respuesta positiva en la salida.
 
-En \verb|extract-text.sh| se trata cada fichero PDF de tal manera que por cada uno se obtiene su número de páginas y la extracción de texto se realiza página a página, generando un txt individual para cada una como salida. Desde este punto y para todos los demás procesos los documentos se tratan página por página. En \ref{lst:extraccion-text-inicial} se puede ver el cálculo del número de páginas y la instrucción de extracción.
+En \verb|extract-text.sh| se trata cada fichero PDF de tal manera que por cada uno se obtiene su número de páginas. La extracción de texto se realiza página a página, generando como salida un fichero individual para cada una. Desde este punto y para todos los demás procesos los documentos se tratan también página por página hasta llegar al procesamiento del lenguaje intermedio que recibe un único fichero para todas las páginas del documento. En \ref{lst:extraccion-text-inicial} se puede ver el cálculo del número de páginas y la instrucción de extracción.
 
 \begin{lstlisting}[language=bash,caption={Extracción tentativa del texto},label=lst:extraccion-text-inicial]
 last_page="$(pdfinfo $line | grep 'Pages:' | cut -c 7- | sed 's_ *__')"
