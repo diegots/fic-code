@@ -92,8 +92,29 @@ Se exponen ahora los requisitos no funcionales de la aplicación:
 
 \section{Sobre los documentos}
 
-Se dispone de varios modelos de facturas tanto de casos basados en imagen como otros basados en texto. Estas facturas proporcionan tipos de regiones de interés que se desean capturar.
+Para proceder a la inclusión de un nuevo modelo de documento hay entender como está constituido, qué información ofrece, si tienen tablas y como se forman en el modelo. En el caso de documentos multipágina, hay que determinar si cada página comparte las mismas disposiciones en cada página para los elementos o por el contrario cualquiera de ellas, ya sea la primera, las páginas intermedias o la final tienen características propias, como puede ser la extensión de las regiones o posición de las mismas. Este análisis de los modelos tratados en el trabajo se presenta a continuación. Para facilitar la compresión de las características se han incluido imágenes de los documentos en el apéndice de la memoria.
 
+\subsection{Prodware}
+
+Los documentos presentan un layout fijo que se repite en todos los documentos. En la parte superior se encuentran los datos de emisor y receptor. Aunque no hay cuadros dibujados las dimensiones y localización son constantes. A continuación contienen una primera tabla con una fila para la cabecera y otra fila para la información. La tabla principal de datos tienen tres columnas con la fecha, descripción e importe. En algunos documentos las líneas de la columna de la descripción ocupan varias líneas físicas. Para la identificación de las líneas de contenido se pueden utilizar las fechas de la primera columna dado que aunque la descripción ocupe varias líneas físicas, las fechas contienen espacios en las segundas o terceras líneas. En la parte inferior están las tablas con información de resumen del documento. Esta información de resumen respeta las dimensiones y espacios en todos los documentos de la muestra. A mayores, dos documentos son diferentes en cuanto a que no presentan las líneas de las tablas. No obstante, dado que no es necesario recurrir a la Transformada de Hough para este caso y que las posiciones se respeta, no supone diferencia para el tratamiento.
+ 
+\subsection{Adobe}
+
+Los ejemplares de facturas de Adobe presentan todos dos páginas. No obstante la segunda página carece de contenido relevante ya que replica los datos de resumen de la factura, que aparecen idénticos en la primera página. Por tanto las regiones definidas en la plantilla omitirán estas segundas páginas en este modelo.
+Todos los casos presentan el mismo layout, con idéntica ubicación para las tablas, celdas y datos individuales. En la parte superior de los documentos aparece la información de identificación del cliente y emisor, a la izquierda, y los datos relativos a la factura, en la parte derecha.
+La tabla principal contiene seis columnas. Tras la revisión de los casos no es posible determinar si existen líneas de contenido que se extiendan más allá de una línea física de la tabla.
+En la parte inferior se encuentran los datos de resumen como importe, tipo de IVA aplicado y totales.
+
+\subsection{OVH}
+
+Este modelo es el que presenta más variabilidad en su construcción. En la parte superior de la primera página siempre aparece el logotipo de la empresa, a la izquierda, y los datos de identificación de la factura, a la derecha. La información de identificación si que ocupa el mismo tamaño y ubicación en todas las primeras páginas. Para la identificación de las filas de las tablas se utilizará la Transformada de Hough ya que existen casos donde el contenido ocupa varias líneas pero las tablas están perfectamente delimitadas. Las tablas no tienen longitud fija, sino que se extienden tanto como sea necesario para alojar los datos, ocupando incluso páginas enteras. Esto quiere decir que no se puede utilizar el tamaño como indicador del final. El contenido de las tablas es siempre el mismo. Hay 5 columnas y una primera fila de cabecera con los nombres de las columnas. Encima de la primera fila hay un texto que catagoriza la partida de gasto. La última fila de cada tabla contiene la suma del importe de las filas de la tabla precedido de la etiqueta \emph{SUBTOTAL}. Cuando una de las tablas llega hasta el final de la página, siempre sen respeta una altura máxima. Esto quiere quiere decir que las regiones se pueden definir utilizando este máximo.
+
+En la última página, si tienen más de una, o en la parte final si solo tienen una, aparece siempre un resumen con los importes. Tras el resumen existe siempre una misma línea de texto \emph{Factura pagadera en el momento de la recepción}. La ubicación de esta última tabla puede ser calculada a partir de los texto de la cabecera y de la última línea.
+
+\subsection{AC}
+
+Los documentos de esta empresa pueden tener una o varias páginas. El caso con varias páginas respeta los tamaños y posiciones de los datos. En la parte superior se encuentra el logo y datos de la empresa, a la izquierda, y los datos identificativos del cliente, a la derecha. Debajo de la identificación hay regiones simples con los datos identificativos de la factura. En tercer lugar se encuentra la tabla principal de datos que contienen doce columnas. Si bien no se dan casos donde una línea de contenido ocupe más de una línea física, en este modelo los datos se presentan muy próximo entre distintas columnas. Aunque el final de la tabla principal no está dibujado, se puede observar que todas las páginas respetan un tamaño máximo que será el puneto hasta el que se extienda la región. En l aparte inferior se encuentran los datos de resument de la factura, con importes desglosados por tipo de iva y los totales.
+ 
 \subsection{Tipos de regiones}
 
 \begin{enumerate}
