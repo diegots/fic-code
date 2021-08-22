@@ -32,7 +32,9 @@ Una limitación común en todas estas utilidades consiste en no respetar el layo
 
 \section{El formato PDF}
 
-PDF es un formato digital para la creación de documentos. Fue introducido por Adobe Systems en 1993. En los siguientes años, el uso de este formato se extendió por toda la sociedad, tanto en el ámbito público como en el privado. En el año 2008, la ISO publicó el estándar 32000-1, tomando como base especificación de PDF en su versión 1.7, creada y liberada por Adobe. Posteriormente se publicó la versión 2.0 como ISO 32000-2 en el año 2017 y más recientemente una actualización en el año 2020. PDF es un modelo de representación de imágenes que deriva del lenguaje PostScript, también desarrollado por Adobe. En PDF, el modelo de imagen admite gráficos y texto de forma independiente al dispositivo de salida. Un ejemplo de la estructura interna de un PDF se puede ver en \ref{fig:estructura-interna-pdf}
+PDF es un formato digital para la creación de documentos. Fue introducido por Adobe Systems en 1993. En los siguientes años, el uso de este formato se extendió por toda la sociedad, tanto en el ámbito público como en el privado. En el año 2008, la ISO publicó el estándar 32000-1, tomando como base especificación de PDF en su versión 1.7, creada y liberada por Adobe. Posteriormente se publicó la versión 2.0 como ISO 32000-2 en el año 2017 y más recientemente una actualización en el año 2020. PDF es un modelo de representación de imágenes que deriva del lenguaje PostScript, también desarrollado por Adobe. En PDF, el modelo de imagen admite gráficos y texto de forma independiente al dispositivo de salida. 
+
+No existe una gran cantidad de herramientas visuales para explorar el árbol de objetos de un PDF, al menos fáciles de encontrar y gratuitas. En la imagen \ref{fig:estructura-interna-pdf} se presenta una de ellas, PDFXplorer \footnote{\url{https://www.o2sol.com/pdfxplorer/overview.htm}}, con un ejemplo de documento cuyo único contenido es \emph{Hola mundo!}. En la imagen se visualiza un fragmento del stream que alberga el texto, en particular las líneas 22 a 32 equivales a cada uno de los caracteres de la página. Alternativamente también se puede analizar un PDF de forma manual con herramientas simples en la línea de comandos \cite{filodej_blog_pdfstreamcontent}.
 
 \begin{figure}
     \centering
@@ -139,7 +141,7 @@ Para realizar el Reconocimiento Óptico de Caracteres se seleccionó Tesseract \
 
 \section{Detección de líneas en tablas}
 
-Los documentos contienen tablas donde hay dibujadas rectas que separan dos líneas de contenido. La Transformada de Hough (\cite{hough_krishna_computerVision}, \cite{hough_grauman_presentation}) proporciona una manera automática de delimitar esos espacios.
+Existen documentos que contienen tablas donde hay dibujadas rectas que separan dos líneas de contenido, esto se detalla más en la Sección \ref{sec:sobre-los-documentos}. La Transformada de Hough (\cite{hough_krishna_computerVision}, \cite{hough_grauman_presentation}) proporciona una manera automática de delimitar esos espacios.
 
 Este algoritmo es una técnica de visión por computador utilizada para detectar figuras tales como líneas o círculos. Se puede aplicar a cualquier figura siempre que se conozca una ecuación paramétrica que la defina. A continuación se detalla el funcionamiento general del algoritmo.
 

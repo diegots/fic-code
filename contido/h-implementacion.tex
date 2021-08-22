@@ -124,7 +124,7 @@ Se puede ver una muestra del formato hOCR en el fragmento \ref{lst:salida-hocr-t
 \end{lstlisting}
 
 \subsection{Identificación}
-
+\label{subsec:impl-identificacion}
 % TODO si se cambia implementación a SQLite, cambiar explicación.
 
 Los documentos se identifican para poder asociales una plantilla. El mecanismo utilizado consiste en buscar en la información extraída un dato que se considere único para la familia de documentos. Para las facturas tratadas un dato único es el NIF o CIF del emisor, pero podría seleccionarse cualquier dato dependiendo del dominio. Los identificadores están almacenados en los ficheros \verb|id-nif-iva.txt| y \verb|id-cif.txt| en formato \acrshort{csv} en el directorio de datos del sistema.
