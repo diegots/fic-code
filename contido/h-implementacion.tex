@@ -5,7 +5,7 @@
 \chapter{Diseño e Implementación}
 \label{chap:implemetación}
 
-\lettrine{E}{ste} capítulo describe el diseño y la implementación de la solución construida. El sistema implementa un flujo de datos o pipeline. Toda la programación se ha realizado por medio de los lenguajes Python 3, C y Bash.
+\lettrine{E}{ste} capítulo describe el diseño y la implementación de la solución construida. El sistema implementa un flujo de datos o pipeline. Toda la programación se ha realizado utilizando los lenguajes Python 3, C y Bash.
 
 \section{Etapas del sistema}
 
@@ -42,11 +42,13 @@ job_id=$(date -u +%s%6N)
 
 Utilizando el identificador, el Sistema Externo forma el path donde deberá depositar el fichero comprimido. Tras realizar la copia, se le debe indicar al motor que comience el procesamiento del trabajo para el id deseado.
 
+% TODO valorar si incluir el comando de inicio de procesamiento
+
 \subsection{Clasificación de los ficheros}
 
-Como primera acción para tratar correctamente los fichero se realiza un saneamiento de los nombres. Aplicar un nombrado homogéneo evita problemas en la construcción de las rutas en el sistema de ficheros. También se descartan los directorios que el fichero comprimido facilitado pudiera contener. El esquema de nombrado para los ficheros utiliza los números naturales desde el 1 y de forma creciente.
+Como primera acción para tratar correctamente los ficheros se realiza un saneamiento de los nombres. Aplicar un nombrado homogéneo evitará problemas en la construcción de las rutas en el sistema de archivos. Para no perder la relación entre los nombres originales y los nuevos se crea en la ruta de salida un fichero para este dato con el el patrón \#doc.name. También se descartan los directorios que el fichero comprimido facilitado pudiera contener. El esquema de nombrado para los ficheros utiliza los números naturales comenzando en 1 y de forma creciente.
 
-Los PDF recibidos deben ser clasificados dependiendo de su contenido. En unos casos es posible utilizar directamente el texto del documento. Para los restantes se procederá a utilizar el procedimiento OCR, como se ha explicado anteriormente. La clasificación se realiza por medio de un test de extracción de texto y se busca una respuesta positiva en la salida.
+Los PDF recibidos deben ser clasificados dependiendo de su contenido. En unos casos es posible utilizar directamente el texto presenten en el documento. Para los restantes se procederá a utilizar el procedimiento OCR, como se ha explicado anteriormente. La clasificación se realiza por medio de un test de extracción de texto y se busca una respuesta positiva en la salida.
 
 En \verb|extract-text.sh| se trata cada fichero PDF de tal manera que por cada uno se obtiene su número de páginas. La extracción de texto se realiza página a página, generando como salida un fichero individual para cada una. Desde este punto y para todos los demás procesos los documentos se tratan también página por página hasta llegar al procesamiento del lenguaje intermedio que recibe un único fichero para todas las páginas del documento. En \ref{lst:extraccion-text-inicial} se puede ver el cálculo del número de páginas y la instrucción de extracción.
 
@@ -72,9 +74,9 @@ fi
 
 \subsection{Extracción de datos}
 
-Previamente al proceso OCR, el script \verb|extract-images.sh| se encarga de extraer las imágenes contenidas en los ficheros seleccionados en el paso anterior. En este proceso se recupera la información original contenida en el PDF, no se trata simplemente de una \emph{foto} de la página, sino que se utiliza la herramienta \verb|pdfimages| con el flag \verb|-j|. Si las imágenes presentes en el PDF fueron almacenadas en formato JPEG, con este flag se conseguirá recuperar la información sin realizar transformaciones, ya que el formato PDF soporta la codificación JPEG de forma nativa por medio de los filtros DCTDecode y JPXDecode \cite[23]{adobe_book_iso32000-1}. Además, al no requerir transformación la extracción es muy rápida. La situación descrita es la más habitual cuando un escáner profesional digitaliza un número de páginas y crea un PDF final.
+Previamente al proceso OCR, el script \verb|extract-images.sh| se encarga de extraer las imágenes contenidas en los ficheros seleccionados en el paso anterior. En este proceso se recupera la información original contenida en el PDF, no se trata simplemente de una \emph{foto} de la página, sino que se utiliza la herramienta \verb|pdfimages| con el flag \verb|-j|. Si las imágenes presentes en el PDF fueron almacenadas en formato JPEG, con este flag se conseguirá recuperar la información sin realizar transformaciones y sin mayor pérdida de calidad, ya que el formato PDF soporta la codificación JPEG de forma nativa por medio de los filtros DCTDecode y JPXDecode \cite[23]{adobe_book_iso32000-1}. Además, al no requerir conversión la extracción es mucho más rápida. La situación descrita es la más habitual cuando un escáner profesional digitaliza un número de páginas y crea un PDF final para ellas.
 
-El siguiente paso obtiene la información de coordenadas de los casos de texto, nuevamente con \verb|pdftotext|. Se generan los ficheros XHTML cuando se invoca la herramienta con el flag \verb|-bbox-layout|. En \ref{lst:extraccion-text-coord} se muestra un extracto del contenido típico que luego será procesado por el generador de código intermedio. Como se puede apreciar, se identifican la palabras individuales y la línea a la cual pertenecen.
+El siguiente paso obtiene la información de coordenadas de los casos de texto, nuevamente con \verb|pdftotext|. Se generan los ficheros XHTML cuando se invoca la herramienta con el flag \verb|-bbox-layout|. En \ref{lst:extraccion-text-coord} se muestra un extracto del contenido típico que luego será procesado por el generador de código intermedio. Como se puede apreciar, se identifican la palabras individuales con coordenadas y la línea a la cual pertenecen.
 
 \begin{lstlisting}[language=XML,caption={Extracción de texto con información de coordenadas},label=lst:extraccion-text-coord]
 <flow>
@@ -92,7 +94,7 @@ El siguiente paso obtiene la información de coordenadas de los casos de texto, 
 </block>
 \end{lstlisting}
 
-Completada la extracción de texto se da paso al proceso de OCR. El script \verb|image-apply-ocr.sh| recorre el directorio donde están almacenadas las imágenes recuperadas y se invoca a Tesseract con la instrucción que se puede ver en el código \ref{lst:invocacion-de-tesseract}.  Se indican varios parámetros importantes. Debe utilizar utilizar los conjuntos de entrenamiento para contenido en castellano (\verb|-l spa|), ya que los documentos están en este idioma. El número de \acrlong{ppp} se fija a 300 (\verb|--dpi 300|) ya que es un tamaño recomendado que las imágenes deben tener para que el proceso OCR tenga calidad suficiente. Tesseract dispone de varios algoritmos para interpretar el layout de documento. En este caso, al trabajar directamente con las coordenadas, no es necesario tener en cuenta el layout y se le indica que capture la máxima información posible independientemente del orden (\verb|--psm 11|). Por otra parte existe un fichero de configuración, apuntado por la variable \verb|$tessconfig_file| que contiene la directiva para activar la salida en formato hOCR, \verb|tessedit_create_hocr 1|.
+Completada la extracción de texto se da paso al proceso de OCR. El script \verb|image-apply-ocr.sh| recorre el directorio donde están almacenadas las imágenes recuperadas y se invoca a Tesseract con la instrucción que se puede ver en el código \ref{lst:invocacion-de-tesseract}. Se indican varios parámetros importantes. Debe utilizar utilizar los conjuntos de entrenamiento para contenido en castellano (\verb|-l spa|), ya que los documentos están en este idioma. El número de \acrlong{ppp} se fija a 300 (\verb|--dpi 300|) ya que es un tamaño objetivo que las imágenes deben tener para que el proceso OCR tenga calidad suficiente. Tesseract dispone de varios algoritmos para interpretar el layout de documento. En este caso, al trabajar directamente con las coordenadas, no es necesario tener en cuenta el layout y se le indica que capture la máxima información posible independientemente del orden (\verb|--psm 11|). Por otra parte existe un fichero de configuración, apuntado por la variable \verb|$tessconfig_file| que contiene la directiva para activar la salida en formato hOCR, \verb|tessedit_create_hocr 1|.
 
 \begin{lstlisting}[language=XML,caption={Extracción de texto con información de coordenadas},label=lst:invocacion-de-tesseract]
 tesseract $file_path "$outputbase" \
@@ -104,7 +106,7 @@ tesseract $file_path "$outputbase" \
     $tessconfig_file
 \end{lstlisting}
 
-Se puede ver una muestra del formato hOCR en el fragmento \ref{lst:salida-hocr-tesseract}. En el atributo \verb|title| de las palabras se puede ver que aparecen las coordenadas en píxeles respecto al tamaño de la imagen. También hay un indicador de confianza, \verb|x_wconf| que indica la certeza que asigna Tesseract a la identificación de la palabra en particular.
+Se puede ver una muestra del formato hOCR en el fragmento \ref{lst:salida-hocr-tesseract}. En el atributo \verb|title| de las palabras se puede ver que aparecen las coordenadas en píxeles respecto al tamaño de la imagen. También hay un indicador de confianza, \verb|x_wconf| que indica la certeza que asigna Tesseract a la identificación de cada palabra en particular.
 
 \begin{lstlisting}[language=XML,caption={Fragmento de la salida hOCR de Tesseract},label=lst:salida-hocr-tesseract]
 <div class='ocr_page' id='page_1' 
@@ -127,7 +129,7 @@ Se puede ver una muestra del formato hOCR en el fragmento \ref{lst:salida-hocr-t
 \label{subsec:impl-identificacion}
 % TODO si se cambia implementación a SQLite, cambiar explicación.
 
-Los documentos se identifican para poder asociales una plantilla. El mecanismo utilizado consiste en buscar en la información extraída un dato que se considere único para la familia de documentos. Para las facturas tratadas un dato único es el NIF o CIF del emisor, pero podría seleccionarse cualquier dato dependiendo del dominio. Los identificadores están almacenados en los ficheros \verb|id-nif-iva.txt| y \verb|id-cif.txt| en formato \acrshort{csv} en el directorio de datos del sistema.
+Los documentos se identifican para poder asociarles una plantilla. El mecanismo utilizado consiste en buscar en la información extraída el dato que se ha considerado único para la familia de documentos. Para las facturas tratadas un dato único es el NIF o CIF del emisor, pero podría seleccionarse cualquier otros u otros, dependiendo del dominio. Los identificadores están almacenados en los ficheros \verb|id-nif-iva.txt| y \verb|id-cif.txt| en formato \acrshort{csv} en el directorio de datos del sistema.
 
 El script \verb|identify-grep.sh| se encarga de realizar todo el proceso. Primero se leen todos los identificadores por medio de la función \verb|read_identifiers()|, tal como se puede ver en \ref{lst:lectura-de-identificadores}. Los datos leidos son incorporados a un array.
 
@@ -154,7 +156,7 @@ for file in $files; do
 done
 \end{lstlisting}
 
-Cuando se encuentra un identificador válido, se registra el el directorio del documento con un fichero que tiene por nombre el número del documento y la extensión \verb|id|. Por último se finaliza el bucle y se continua con el siguiente documento.
+Cuando se encuentra un identificador válido, se registra en el directorio del documento con un fichero que tiene por nombre el número del documento y la extensión \verb|id|. Por último se finaliza el bucle y se continúa con el siguiente documento.
 
 \subsection{Plantillas y regiones}
 
@@ -209,6 +211,32 @@ Las plantillas contienen la información de coordenadas de las regiones de inter
 Es un formato homogéneo que para representar todas las regiones. Las primeras plantillas fueron creadas a mano durante el desarrollo utilizando el programa de edición de imágenes GIMP \footnote{\url{http://www.gimp.org.es/}}.
 
 \subsection{Generación del lenguaje intermedio}
+
+La generación del lenguaje intermedio se realiza por medio de una aplicación Python escrita para este propósito. El código de la aplicación está dividido en módulos de tal manera que se facilita el desarrollo y mantenimiento. Los módulos se presentan en la tabla \ref{tab:modulo-generador-codigo-intermedio}.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{l l}
+        Nombre del módulo & Objetivo \\
+        \hline
+        \hline
+        assign.py & Asignación de líneas a regiones \\
+        cli.py & Tratamiento de los argumentos de entrada \\
+        constants.py & Almacén de constantes \\
+        hough.py & Uso del algoritmo de Hough \\
+        input\_handler.py & Parsing de los datos de entrada XHTML y hOCR \\
+        loopup.py & funciones para búsqueda \\
+        printer\_element.py & Funciones para la impresión de las palabras y líneas \\
+        printer\_region.py & Funciones para la impresión de las regiones \\
+        region.py & Tratamiento de las regiones \\
+        task.py & Tareas definidas en la aplicación \\
+        util.py & Utilidades comunes para toda el software \\
+        main.py & Punto de entrada a la aplicación \\
+    \end{tabular}
+    \caption{Módulos del generador de lenguaje intermedio}    
+    \label{tab:modulo-generador-codigo-intermedio}
+\end{table}
+
 % TODO describir la implementación en etapas, como el diagrama general
     % TODO Concepto de línea de identificación
     % TODO Asignación de palabras a regiones
@@ -217,6 +245,26 @@ Es un formato homogéneo que para representar todas las regiones. Las primeras p
 % TODO introducir el problema de indentificar las líneas
 % TODO explicar se utiliza el algoritmo de Hough en los ejemplos donde es efectivo
 % TODO explicar mejora en el algoritmo para asignación de palabras a regiones para cumplir con el requisito no funcionar de mantener los tiempos contenidos
+
+La tabla \ref{tab:datos-intermedios} presenta los datos intermedios generados. Estos datos no se exportan a al directorio de salida.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{l l}
+        Esquema del nombre del fichero & Contenido \\
+        \hline
+        \hline
+        \#doc-\#pag-language.txt & Lenguaje intermedio para una página \\
+        \#doc-\#pag.box & Lista caracter a caracter y coordenadas (Tesseract) \\
+        \#doc-\#pag.hocr & Dados en formato hOCR (Tesseract) \\
+        \#doc-xxx-language.txt & Documento global del lenguaje intermedio \\
+        \#doc.id & Identificador de la plantilla \\
+        \#doc-\#pag.xml & XML resultado de la extracción de texto \\
+        \#doc-\#pag.txt & Texto obtenido de pdftotext \\
+    \end{tabular}
+    \caption{Resumen de los datos de salida}    
+    \label{tab:datos-intermedios}
+\end{table}
 
 \subsection{Procesamiento del lenguaje intermedio}
 % TODO explicar como es la estructura general de Flex / Bison
@@ -227,6 +275,26 @@ Es un formato homogéneo que para representar todas las regiones. Las primeras p
 % TODO Mostrar como se utiliza la librería para generación de ficheros JSON
 % TODO Mencionar el pretty printing con jq
 % TODO explicar como es el flujo de información y por qué los terminales y no terminales llevan un tipo de dato en Bison
+
+La Tabla \ref{tab:datos-de-salida} presenta un resumen de los datos que se obtienen como salida del proceso. Todos los ficheros relativos a un documentos llevarán prefijado en número del documento y el número de la página individual, donde sea necesario.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{l l}
+        Esquema del nombre del fichero & Contenido \\
+        \hline
+        \hline
+        \#doc-\#pag-lines.json & Líneas de la página, ubicaciones y palabras asociadas. \\
+        \#doc-\#pag-selected.json & Palabras de la página seleccionadas como relevantes. \\
+        \#doc-\#pag-words.json & Todas las palabras del documento y sus ubicaciones. \\
+        \#doc.jpg & Imagen de la página. \\
+        \#doc-amounts.json & Importes totales e individuales obtenidos de las tablas. \\
+        \#doc-table.csv & Datos de la tabla de datos principal. \\
+        \#doc.name & Nombre original del fichero PDF.\\
+    \end{tabular}
+    \caption{Resumen de los datos de salida}    
+    \label{tab:datos-de-salida}
+\end{table}
 
 \subsection{Un engine modular}
 % TODO Detalle de la estructura de directorios considerada
@@ -245,6 +313,8 @@ El motor del sistema es el componente implementado en Bash. Esta decisión se to
 
 \subsection{Docker}
 % TODO Mostrar fichero de configuración Docker y su uso
+
+% TODO valorar si comentar como Docker construye imágenes en capas del software
 
 % TODO valorar si incluir capítulo o sección de pruebas. O, al menos, de pruebas realizadas.
 
