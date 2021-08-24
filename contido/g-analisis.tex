@@ -91,33 +91,77 @@ Se exponen ahora los requisitos no funcionales de la aplicación:
 \end{itemize}
 
 \section{Sobre los documentos}
+\label{sec:sobre-los-documentos}
 
-Se dispone de varios modelos de facturas tanto de casos basados en imagen como otros basados en texto. Estas facturas proporcionan tipos de regiones de interés que se desean capturar.
+Para proceder a la inclusión de un nuevo modelo de documento hay entender como está constituido, qué información ofrece, si tienen tablas y como se utilizan en el modelo. En el caso de documentos con más de una página, hay que determinar si en cada una se repiten los mismos elementos o por el contrario, cualquiera de ellas, ya sea la primera, las páginas intermedias o la final, tienen características propias, como puede ser la extensión de las regiones o posición de las mismas. Este análisis de los modelos tratados en el trabajo se presenta a continuación. Para facilitar la compresión de las características se han incluido imágenes completas de algunos documentos en el Apéndice \ref{chap:adicional-1}.
 
+Durante la generación de código y posterior tratamiento del lenguaje intermedio, una de las dificultades habituales consiste en localizar las líneas individuales de contenido. Es frecuente que alguna de las columnas tenga datos en varias filas físicas que refieran a una misma línea de contenido, tal como se muestra en la imagen \ref{fig:una-linea-lógica-varias-fisicas}. Para un resultado satisfactorio, hay que aprovechar alguna característica que permita esta separación de tal manera que los datos de filas distintas no se mezclen entre si. Esto sucedería si simplemente se generase un código intermedio donde se colocase el texto de forma secuencial considerando únicamente sus coordenadas.
+
+\begin{figure}[hp!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{imaxes/g-analisis/varias-lineas-en-una.png}
+    \caption{Una línea lógica utiliza varias líneas físicas.}
+    \label{fig:una-linea-lógica-varias-fisicas}
+\end{figure}
+
+\subsection{Prodware}
+
+Los documentos presentan un layout fijo que se repite en todos los ejemplares. En la parte superior se encuentran los datos de emisor y receptor. Aunque los cuadros no están dibujados, las dimensiones y localización son constantes. Más abajo aparece una primera tabla con una fila para la cabecera y otra fila para la información. La tabla principal de datos tiene tres columnas relativas a la fecha, descripción e importe. En algunos documentos las líneas de la columna \emph{Descripción} ocupan varias líneas físicas. Para la identificación de las líneas de contenido se pueden utilizar las fechas de la primera columna dado que aunque la descripción ocupe varias líneas físicas, las fechas contienen espacios en las segundas o terceras líneas. En la parte inferior están las tablas con información de resumen del documento. Esta información de resumen emplea las mismas dimensiones y espacios en todos los documentos de la muestra. A mayores, dos casos son diferentes en cuanto a que no presentan las líneas de las tablas. No obstante, dado que no es necesario recurrir a la Transformada de Hough para este modelo y que las posiciones se mantienen sin cambios, no supone diferencia para el tratamiento.
+ 
+\subsection{Adobe}
+
+Los ejemplares de facturas de Adobe presentan todos dos páginas. No obstante la segunda página carece de contenido relevante ya que replica los datos de resumen de la factura, que aparecen idénticos en la primera página. Por tanto las regiones definidas en la plantilla omitirán estas segundas páginas en este modelo.
+Todos los casos presentan el mismo layout, con idéntica ubicación para las tablas, celdas y datos individuales. En la parte superior de los documentos aparece la información de identificación del cliente y emisor, a la izquierda, y los datos relativos a la factura, en la parte derecha.
+La tabla principal contiene seis columnas. Tras la revisión de los casos no es posible determinar si existen líneas de contenido que se extiendan más allá de una línea física de la tabla.
+En la parte inferior se encuentran los datos de resumen como importe, tipo de IVA aplicado y totales.
+
+\subsection{OVH}
+
+Este modelo es el que presenta más variabilidad en su construcción. En la parte superior de la primera página siempre aparece el logotipo de la empresa, a la izquierda, y los datos de identificación de la factura, a la derecha. La información de identificación si que ocupa el mismo tamaño y ubicación en todas las primeras páginas. Para la identificación de las filas de las tablas se utilizará la Transformada de Hough ya que existen casos donde el contenido ocupa varias líneas pero las tablas están perfectamente delimitadas. Las tablas no tienen longitud fija, sino que se extienden tanto como sea necesario para alojar los datos, ocupando incluso páginas enteras. Esto quiere decir que no se puede utilizar el tamaño como indicador del final. El interior de las tablas es siempre el mismo. Hay 5 columnas y una primera fila de cabecera con los nombres de las columnas. Encima de la primera fila hay un texto que categoriza la partida de gasto. La última fila de cada tabla contiene la suma del importe de las filas de la tabla precedido de la etiqueta \emph{SUBTOTAL}. Cuando una de las tablas llega hasta el final de la página, siempre sen respeta una altura máxima. Esto quiere quiere decir que las regiones se pueden definir utilizando este máximo.
+
+En la última página, si tienen más de una, o en la parte final si solo tienen una, aparece siempre un resumen con los importes. Tras el resumen existe siempre una línea de texto \emph{Factura pagadera en el momento de la recepción}. La ubicación de esta última tabla puede ser calculada a partir de los texto de la cabecera y de la última línea.
+
+\subsection{AC}
+
+Los documentos de esta empresa pueden tener una o varias páginas. El caso con varias páginas respeta los tamaños y posiciones de los datos. En la parte superior se encuentra el logo y datos de la empresa, a la izquierda, y los datos identificativos del cliente, a la derecha. Debajo de la identificación hay regiones simples con los datos identificativos de la factura. En tercer lugar se encuentra la tabla principal de datos que contienen doce columnas. Si bien no se dan casos donde una línea de contenido ocupe más de una línea física, en este modelo algunos datos de columnas diferentes se presentan muy próximos entre si. Aunque el final de la tabla principal no está dibujado, se puede observar que todas las páginas respetan un tamaño máximo que será el punto hasta el que se extienda la región. En la aparte inferior se encuentran los datos de resumen de la factura, con importes desglosados por tipo de IVA y los totales.
+ 
 \subsection{Tipos de regiones}
 
+Vistos los documentos se concluye que las regiones existentes se pueden categorizar en cuatro tipos y variantes para poder tratar todos los escenarios
+
 \begin{enumerate}
-	\item Tablas simples de dos columnas y una cabecera en la columna de la derecha.
-	\item Tablas simples con una cabecera en la primera fila.
-	\item Celdas individuales donde el contenido se captura de forma secuencial.
-	\item Tablas con $m\times n$ dimensiones y cabecera en la primera fila.
-	\item Combinación de regiones simples, como en el caso de los documentos de OVH.
+	\item Tablas simples de dos columnas, cabecera en la columna de la derecha y $m$ filas. Estas son las regiones \verb|R1|, tal como se ejemplifica en \ref{fig:region-r1}.
+	\item Tablas simples con una cabecera en la primera fila, otra fila de contenido y $n$ columnas. Estas son las regiones \verb|R2|, como en \ref{fig:region-r2}.
+	\item Celdas individuales, $1\times 1$, donde el contenido se captura de forma secuencial. Estas son las regiones \verb|R3|.
+	\item Tablas con $m\times n$ dimensiones y una cabecera en la primera fila. Estas son las tablas con código \verb|T1|.
 \end{enumerate}
 
-Los ejemplos de documentos basados en texto son tres
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.34\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imaxes/g-analisis/region-r1}
+        \caption{Región R1}
+        \label{fig:region-r1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.65\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imaxes/g-analisis/region-r2}
+        \caption{Región R2}
+        \label{fig:region-r2}
+    \end{subfigure}
+    \caption{Estructura de dos de los tipos habituales de regiones}
+    \label{fig:tipos-de-regiones}
+\end{figure}
 
-\begin{itemize}
-	\item Adobe.
-	\item OVH.
-	\item Prodware.
-\end{itemize}
+Una caso especial son las tablas bidimensionales donde se necesita utilizar la Transformada de Hough. Tienen el código \verb|T2| en las plantillas y por lo demás son similares a las \verb|T1|.
 
-% TODO añadir imagen de conjunto con los tres tipos de modelos basados en texto
+En los documentos de OVH, dado que las tablas no tienen una longitud fija, se consideran en su lugar las relaciones entre las propias tablas y la página en la que se encuentran u otros elementos fijos, como la línea del final, mencionada anteriormente. En las plantillas se han definido regiones contiguas, por ejemplo, \verb|T2_T2|. Esto indica al generador de código intermedio que esta región aplica siempre y cuando se encuentre dos regiones \verb|T2| anexas.
 
-% TODO añadir imagen de conjunto con los tipos de modelos basados en imagen
+% TODO aumentar explicación de los tipos de regiones en OVH
 
 \subsection{Características para la identificación}
 
-Datos para identificar los documentos. En este caso, NIF, CIF.
+Para emparejar los documentos con las plantillas que los resuelven se identifican datos específicos a los modelos. Dado que los casos tratados son todos facturas, necesariamente aparecerá en ellas el NIF o CIF del emisor. Esta información ha resultado suficiente para. Los mecanismos empleados para realizar el emparejamiento se explican en la subsección \ref{subsec:impl-identificacion}.
 
-% TODO valorar si comentar los distintos tipos de lineas presentes en los documentos
