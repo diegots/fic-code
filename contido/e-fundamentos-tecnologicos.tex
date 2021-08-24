@@ -34,25 +34,25 @@ En 1985 Bob Corbett creó la versión inicial del software en que Richard Stallm
 
 Flex es un generador de analizadores léxicos. Esto quiere decir que la salida de flex es un programa C que una vez compilado se puede utilizar para buscar patrones en un texto de entrada. Así mismo Bison se utiliza para generar analizadores sintácticos y su salida también es otro programa C. Es habitual utilizar ambas herramientas trabajando combinadas. Si se hace así, se obtiene un único fuente C que una vez convertido en un programa ejecutable es capaz de realizar una primera fase de análisis léxico seguida del análisis sintáctico. Internamente, los tokens reconocidos por flex son comunicados a Bison, junto con la información semántica, si existe. Flex y Bison pueden aplicarse en la construcción de compiladores e intérpretes pero también para cualquier problema donde deban buscarse patrones en la entrada o la entrada consiste en un lenguaje o instrucciones.
 
-En su forma más básica, un programa Flex consiste en un listado de expresiones regulares asociadas a una acción. El escáner generado trabaja leyendo la entrada y buscando patrones en ella. En \ref{lst:ejemplo-programa-flex} se puede ver un programa básico de ejemplo que es capaz de contar los caracteres, palabras y líneas de un texto. Los programas Flex se dividen en tres secciones separadas por los símbolos \verb|%%|, líneas 7 y 11. La primera sección contiene código C global y se suele utilizar para definir un variables y funciones. La segunda sección contiene líneas formadas por expresiones regulares seguidas de las acciones asociadas. La tercera sección sirve como punto de entrada al programa. No se utiliza cuando se trabaja con Bison ya que es este último el encargado de ejecutar la función \verb|yylex()| que da comienzo al análisis léxico.
+En su forma más básica, un programa Flex consiste en un listado de expresiones regulares asociadas a una acción. El escáner generado trabaja leyendo la entrada y buscando patrones en ella. En \ref{lst:ejemplo-programa-flex} se puede ver un programa básico de ejemplo que es capaz de contar los caracteres, palabras y líneas de un texto. Los programas Flex se dividen en tres secciones separadas por los símbolos \verb|\%\%|, líneas 7 y 11. La primera sección contiene código C global y se suele utilizar para definir un variables y funciones. La segunda sección contiene líneas formadas por expresiones regulares seguidas de las acciones asociadas. La tercera sección sirve como punto de entrada al programa. No se utiliza cuando se trabaja con Bison ya que es este último el encargado de ejecutar la función \verb|yylex()| que da comienzo al análisis léxico.
 
-\begin{lstlisting}[language=C,caption={Ejemplo de programa Flex autónomo},label=lst:ejemplo-programa-flex]
-    /* Esto es un comentario */
-    %{
-    int letras = 0;
-    int palabras = 0;
-    int lineas = 0;
-    %}
-    %%
-    [a-zA-Z]+ { palabras++; letras+=strlen(yytext); }
-    \n        { letras++; lineas++; }
-    .         { letras++; }
-    %%
-    main(int argc, char **argv)
-    {
-        yylex();
-        printf("%8d%8d%8d\n", lines, words, chars);
-    }
+\begin{lstlisting}[language=C,caption={Ejemplo de programa Flex autónomo.},label=lst:ejemplo-programa-flex]
+/* Esto es un comentario */
+%{
+int letras = 0;
+int palabras = 0;
+int lineas = 0;
+%}
+%%
+[a-zA-Z]+ { palabras++; letras+=strlen(yytext); }
+\n        { letras++; lineas++; }
+.         { letras++; }
+%%
+main(int argc, char **argv)
+{
+    yylex();
+    printf("%8d%8d%8d\n", lines, words, chars);
+}
 \end{lstlisting}
 
 \subsection{Bison}
@@ -72,7 +72,7 @@ Existen múltiples maneras de construir la tabla y dependiendo del algoritmo uti
 
 En \ref{lst:ejemplo-programa-bison} se presenta un pequeño ejemplo de la estructura de un fichero fuente Bison. El diseño, en tres secciones, es similar al encontrado en el ejemplo de Flex en \ref{lst:ejemplo-programa-flex}. La primera sección contiene código en lenguaje C que es copiado directamente en el analizador generado. Esta primera sección también se utiliza para declarar los nombres de los terminales y no terminales utilizados en la gramática y asignarles un tipo de dato. La sección intermedia contiene las reglas gramaticales y, al igual que en flex, se pueden especificar acciones semánticas. Por ejemplo, en la línea 18, se calcula el valor de una suma a partir de los valores semánticos de los tokens recibidos. El valor calculado es devuelto al siguiente nodo del árbol.
 
-\begin{lstlisting}[language=C,caption={Ejemplo de programa Bison \cite{mit_web_bisonExample}},label=lst:ejemplo-programa-bison]
+\begin{lstlisting}[language=C,caption={Ejemplo de programa Bison \cite{mit_web_bisonExample}.},label=lst:ejemplo-programa-bison]
 
 %{
     /* Sección del prólogo para código C común */
@@ -136,7 +136,7 @@ Ansible está escrito en Python y su funcionamiento es simple. Para realizar la 
 
 En \ref{lst:ejemplo-playbook} se muestra un Playbook mínimo que da instrucciones a Ansible para realizar un ping a todos los anfitriones definidos.
 
-\begin{lstlisting}[language=Python,caption={Ejemplo mínimo de Playbook},label=lst:ejemplo-playbook]
+\begin{lstlisting}[language=Python,caption={Ejemplo mínimo de Playbook.},label=lst:ejemplo-playbook]
 ---
 - hosts: all
     tasks:

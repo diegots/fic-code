@@ -7,6 +7,19 @@
 
 \lettrine{E}{n} este apéndice se presentan imágenes de los documentos tratados en el trabajo. También se muestran los directorios y ficheros de código fuente creados. En último lugar se puede encontrar el manual de instalación y uso del software.
 
+
+\section{Visor del formato hOCR}
+
+Existen herramientas para trabajar con el formato hOCR, por ejemplo en el repositorio git del proyecto OCRopus \footnote{\url{https://github.com/ocropus/hocr-tools}} pero si lo que se quiere es poder ver una superposición de las líneas y regiones definidas para una página, el Pattern Recognition \& Image Analysis Research Lab de la Universidad de Salford mantiene una utilidad para hacer justo esto \cite{prima_tool_page_viewer}. En la imagen \ref{fig:visor-formato-hocr} el visor muestra las líneas detectadas para una página del proveedor AC. Además de hOCR la herramienta soporta otros formatos.
+
+\begin{figure}[hp!]
+    \centering
+    \includegraphics[width=1.0\textwidth]{imaxes/z-adicional/visor-hocr.png}
+    \caption{Visor del formato hOCR con un documento de AC.}
+    \label{fig:visor-formato-hocr}
+\end{figure}
+
+
 \section{Ejemplos de los documentos tratados}
 
 % TODO añadir imágenes de los documentos tratados
@@ -16,20 +29,20 @@
 \begin{figure}[hp!]
     \centering
     \includegraphics[width=0.8\textwidth]{imaxes/z-adicional/estructura-general.png}
-    \caption{Directorios del proyecto}
+    \caption{Vista general de los directorios del proyecto.}
     \label{fig:directorios-proyecto}
 \end{figure}
 
 \begin{figure}[hp!]
     \centering
     \includegraphics[angle=90,height=1.6\textwidth]{imaxes/z-adicional/tool-gen-language-pydev.png}
-    \caption{Proyecto del generador de código intermedio en Pydev}
+    \caption{Proyecto del generador de código intermedio en Pydev.}
     \label{fig:tool-gen-language-pydev}
 \end{figure}
 
 
 \noindent\begin{minipage}{.45\textwidth}
-\begin{lstlisting}[caption=Scripts del engine,frame=tlrb]{Name}
+\begin{lstlisting}[caption=Scripts del engine.,frame=tlrb]{Name}
 engine/
     extract-images.sh
     extract-text-coords.sh
@@ -49,7 +62,7 @@ engine/
 \end{lstlisting}
 \end{minipage}\hfill
 \begin{minipage}{.45\textwidth}
-\begin{lstlisting}[caption=Fuentes del procesador de lenguaje intermedio,frame=tlrb]{Name}
+\begin{lstlisting}[caption=Fuentes del procesador de lenguaje intermedio.,frame=tlrb]{Name}
 tool-parser/
     Makefile
     lib/
@@ -99,21 +112,28 @@ En esta sección se asume que se utilizará una distribución Ubuntu 18.04 igual
 
 Se pueden distinguir dos escenarios distintos. Los requisitos necesarios para compilar los fuentes y aquellos imprescindibles únicamente para ejecutar la aplicación. Para el primer caso se debe utilizar el comando mostrado en \ref{lst:requisitos-para-compilacion}. El paquete \verb|build-essential| instala la mayor parte de las aplicaciones como el compilador de C y Make.
 
-\begin{lstlisting}[language=bash,caption={Dependencias para la compilación},label=lst:requisitos-para-compilacion]
+\begin{lstlisting}[language=bash,caption={Dependencias para la compilación.},label=lst:requisitos-para-compilacion]
 sudo apt-get build-essential libpcre2-dev bison flex
 \end{lstlisting}
 
 En el caso de tener ya la aplicación compilada y empaquetada, será necesarios instalar los componentes para la ejecución, como Tesseract, el software de OCR. La orden del listado \ref{lst:requisitos-para-ejecucion} instalará estos requisitos.
 
-\begin{lstlisting}[language=bash,caption={Dependencias para la ejecución},label=lst:requisitos-para-ejecucion]
+\begin{lstlisting}[language=bash,caption={Dependencias para la ejecución.},label=lst:requisitos-para-ejecucion]
 sudo apt-get install unzip poppler-utils mediainfo tesseract-ocr tesseract-ocr-spa jq python3-opencv jq bc
 \end{lstlisting}
 
 De manera opcional, pero recomendable, se puede utilizar un PPA específico para obtener una versión actualizada de Tesseract. Un PPA en el entorno Ubutnu, es un repositorio personal, en este caso mantenido por Alexander Pozdnyakov \footnote{\url{https://launchpad.net/~alex-p/+archive/ubuntu/tesseract-ocr}}. La activación de este repositorio debe hacerse previamente a la instalación del software. En necesario ejecutar los comandos del listado \ref{lst:activar-ppa-tesseract}.
 
-\begin{lstlisting}[language=bash,caption={Activar PPA},label=lst:activar-ppa-tesseract]
+\begin{lstlisting}[language=bash,caption={Activar PPA.},label=lst:activar-ppa-tesseract]
 sudo add-apt-repository ppa:alex-p/tesseract-ocr
 sudo apt-get update
 \end{lstlisting}
 
 No se ahondará en el uso del software ya que ha sido explicado en detalle en el capítulo \ref{chap:implemetación}.
+
+\begin{figure}[hp!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{imaxes/z-adicional/casos-algoritmo-seleccion-regiones.png}
+    \caption{Casos considerados en el algoritmo de selección de regiones.}
+    \label{fig:casos-algoritmo-seleccion-regiones}
+\end{figure}
