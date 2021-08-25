@@ -9,7 +9,7 @@
 
 \section{Actores y casos de uso}
 
-Un caso de uso describe una interacción en entre un rol y el sistema. O cómo es utilizado por un usuario para completar una tarea u alcanzar un objetivo. En el diagrama \ref{fig:casos-de-uso} se presentan los casos de uso de la aplicación. 
+Un caso de uso describe una interacción en entre un rol y el sistema. O cómo es utilizado por un usuario para completar una tarea u alcanzar un objetivo. En el Diagrama \ref{fig:casos-de-uso} se presentan los casos de uso de la aplicación. 
 
 Existen dos actores que interactúan con la aplicación, un sistema externo y una base de datos:
 
@@ -95,7 +95,7 @@ Se exponen ahora los requisitos no funcionales de la aplicación:
 
 Para proceder a la inclusión de un nuevo modelo de documento hay entender como está constituido, qué información ofrece, si tienen tablas y como se utilizan en el modelo. En el caso de documentos con más de una página, hay que determinar si en cada una se repiten los mismos elementos o por el contrario, cualquiera de ellas, ya sea la primera, las páginas intermedias o la final, tienen características propias, como puede ser la extensión de las regiones o posición de las mismas. Este análisis de los modelos tratados en el trabajo se presenta a continuación. Para facilitar la compresión de las características se han incluido imágenes completas de algunos documentos en el Apéndice \ref{chap:adicional-1}.
 
-Durante la generación de código y posterior tratamiento del lenguaje intermedio, una de las dificultades habituales consiste en localizar las líneas individuales de contenido. Es frecuente que alguna de las columnas tenga datos en varias filas físicas que refieran a una misma línea de contenido, tal como se muestra en la imagen \ref{fig:una-linea-lógica-varias-fisicas}. Para un resultado satisfactorio, hay que aprovechar alguna característica que permita esta separación de tal manera que los datos de filas distintas no se mezclen entre si. Esto sucedería si simplemente se generase un código intermedio donde se colocase el texto de forma secuencial considerando únicamente sus coordenadas.
+Durante la generación de código y posterior tratamiento del lenguaje intermedio, una de las dificultades habituales consiste en localizar las líneas individuales de contenido. Es frecuente que alguna de las columnas tenga datos en varias filas físicas que refieran a una misma línea de contenido, tal como se muestra en la Imagen \ref{fig:una-linea-lógica-varias-fisicas}. Para un resultado satisfactorio, hay que aprovechar alguna característica que permita esta separación de tal manera que los datos de filas distintas no se mezclen entre si. Esto sucedería si simplemente se generase un código intermedio donde se colocase el texto de forma secuencial considerando únicamente sus coordenadas.
 
 \begin{figure}[hp!]
     \centering
@@ -130,8 +130,8 @@ Los documentos de esta empresa pueden tener una o varias páginas. El caso con v
 Vistos los documentos se concluye que las regiones existentes se pueden categorizar en cuatro tipos y variantes para poder tratar todos los escenarios
 
 \begin{enumerate}
-	\item Tablas simples de dos columnas, cabecera en la columna de la derecha y $m$ filas. Estas son las regiones \verb|R1|, tal como se ejemplifica en \ref{fig:region-r1}.
-	\item Tablas simples con una cabecera en la primera fila, otra fila de contenido y $n$ columnas. Estas son las regiones \verb|R2|, como en \ref{fig:region-r2}.
+	\item Tablas simples de dos columnas, cabecera en la columna de la derecha y $m$ filas. Estas son las regiones \verb|R1|, tal como se ejemplifica en la Imagen \ref{fig:region-r1}.
+	\item Tablas simples con una cabecera en la primera fila, otra fila de contenido y $n$ columnas. Estas son las regiones \verb|R2|, como en la Imagen \ref{fig:region-r2}.
 	\item Celdas individuales, $1\times 1$, donde el contenido se captura de forma secuencial. Estas son las regiones \verb|R3|.
 	\item Tablas con $m\times n$ dimensiones y una cabecera en la primera fila. Estas son las tablas con código \verb|T1|.
 \end{enumerate}
@@ -163,5 +163,5 @@ En los documentos de OVH, dado que las tablas no tienen una longitud fija, se co
 
 \subsection{Características para la identificación}
 
-Para emparejar los documentos con las plantillas que los resuelven se identifican datos específicos a los modelos. Dado que los casos tratados son todos facturas, necesariamente aparecerá en ellas el NIF o CIF del emisor. Esta información ha resultado suficiente para. Los mecanismos empleados para realizar el emparejamiento se explican en la subsección \ref{subsec:impl-identificacion}.
+Para emparejar los documentos con las plantillas que los resuelven se identifican datos específicos a los modelos. Dado que los casos tratados son todos facturas, necesariamente aparecerá en ellas el NIF o CIF del emisor. Esta información ha resultado suficiente para. Los mecanismos empleados para realizar el emparejamiento se explican en la Subsección \ref{subsec:impl-identificacion}.
 

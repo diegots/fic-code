@@ -34,7 +34,7 @@ Una limitación común en todas estas utilidades consiste en no respetar el layo
 
 PDF es un formato digital para la creación de documentos. Fue introducido por Adobe Systems en 1993. En los siguientes años, el uso de este formato se extendió por toda la sociedad, tanto en el ámbito público como en el privado. En el año 2008, la ISO publicó el estándar 32000-1, tomando como base especificación de PDF en su versión 1.7, creada y liberada por Adobe. Posteriormente se publicó la versión 2.0 como ISO 32000-2 en el año 2017 y más recientemente una actualización en el año 2020. PDF es un modelo de representación de imágenes que deriva del lenguaje PostScript, también desarrollado por Adobe. En PDF, el modelo de imagen admite gráficos y texto de forma independiente al dispositivo de salida. 
 
-No existe una gran cantidad de herramientas visuales para explorar el árbol de objetos de un PDF, al menos fáciles de encontrar y gratuitas. En la imagen \ref{fig:estructura-interna-pdf} se presenta una de ellas, PDFXplorer \footnote{\url{https://www.o2sol.com/pdfxplorer/overview.htm}}, con un ejemplo de documento cuyo único contenido es \emph{Hola mundo!}. En la imagen se visualiza un fragmento del stream que alberga el texto, en particular las líneas 22 a 32 equivales a cada uno de los caracteres de la página. Alternativamente también se puede analizar un PDF de forma manual con herramientas simples en la línea de comandos \cite{filodej_blog_pdfstreamcontent}.
+No existe una gran cantidad de herramientas visuales para explorar el árbol de objetos de un PDF, al menos fáciles de encontrar y gratuitas. En la Imagen \ref{fig:estructura-interna-pdf} se presenta una de ellas, PDFXplorer \footnote{\url{https://www.o2sol.com/pdfxplorer/overview.htm}}, con un ejemplo de documento cuyo único contenido es \emph{Hola mundo!}. En la imagen se visualiza un fragmento del stream que alberga el texto, en particular las líneas 22 a 32 equivales a cada uno de los caracteres de la página. Alternativamente también se puede analizar un PDF de forma manual con herramientas simples en la línea de comandos \cite{filodej_blog_pdfstreamcontent}.
 
 \begin{figure}
     \centering
@@ -83,7 +83,7 @@ Los objetos presentados hasta el momento son los objetos directos. Los objetos d
 
 \subsection{Estructura física}
 
-La estructura física de un fichero está dividida en cuatro partes, tal como se muestra en la figura \ref{fig:secciones-pdf}: header, body, cross-reference table y trailer. El header tiene al menos dos líneas. La primera se utiliza para indicar que el fichero es un PDF y la versión del estándar que le corresponde. La segunda es simplemente un separador: \verb|%%EOF|. 
+La estructura física de un fichero está dividida en cuatro partes, tal como se muestra en la Figura \ref{fig:secciones-pdf}: header, body, cross-reference table y trailer. El header tiene al menos dos líneas. La primera se utiliza para indicar que el fichero es un PDF y la versión del estándar que le corresponde. La segunda es simplemente un separador: \verb|%%EOF|. 
 
 \begin{figure}[hp!]
     \centering
@@ -111,7 +111,7 @@ El trailer es un objeto de tipo diccionario. Contiene claves y valores que aport
 \section{Representación de coordenadas en orígenes OCR}
 
 La representación de las localizaciones de los elementos identificados por el proceso OCR es solo una parte de toda la información que se genera como salida de un engine. Existen varias propuestas de formatos que se proponen como formatos abiertos con intención de favorecer su adopción. Es el caso de hOCR \cite{ocrRepres_hocr_breuel_spec}, ALTO \cite{ocrRepres_alto_spec}, PAGE \cite{ocrRepres_page_pletschacher_paper} y TEI \cite{ocrRepres_tei_project}. Los tres últimos emplean XML como base y definen las etiquetas necesarias. La transformación entre ellos es posible y existe al menos un proyecto capaz de hacerlo
-\cite{ocrRepres_conversion_ocrFileformat}. hOCR es el formato de representación escogido para el proyecto, como se verá en \ref{sec:rec-optico-caracteres}.
+\cite{ocrRepres_conversion_ocrFileformat}. hOCR es el formato de representación escogido para el proyecto, como se verá en la Sección \ref{sec:rec-optico-caracteres}.
 
 \subsection{El microformato hOCR}
 
@@ -145,7 +145,7 @@ Existen documentos que contienen tablas donde hay dibujadas rectas que separan d
 
 Este algoritmo es una técnica de visión por computador utilizada para detectar figuras tales como líneas o círculos. Se puede aplicar a cualquier figura siempre que se conozca una ecuación paramétrica que la defina. A continuación se detalla el funcionamiento general del algoritmo.
 
-Se utiliza como entrada la información obtenida al aplicar un detector de bordes en la imagen original. Si se considera un punto borde cualquiera, sobre él pueden pasar infinitas rectas. Estas rectas se pueden definir con la ecuación \ref{hough-ecu-recta}.
+Se utiliza como entrada la información obtenida al aplicar un detector de bordes en la imagen original. Si se considera un punto borde cualquiera, sobre él pueden pasar infinitas rectas. Estas rectas se pueden definir con la Ecuación \ref{hough-ecu-recta}.
 
 \begin{equation}
     \label{hough-ecu-recta}
@@ -160,7 +160,7 @@ b = -a*x + y
 
 es posible transformar cada punto borde al espacio de Hough y obtener una recta en dicho espacio.
 
-Considerando dos puntos del espacio imagen \ref{fig:hough-punto-imagen}, al trasladarlos \ref{fig:hough-intersection} al es espacio Hough se puede calcular su intersección resolviendo el sistema de ecuaciones. Esta intersección proporciona los parámetros para construir, en el espacio imagen, la recta \ref{fig:hough-recta-a-b} que une ambos puntos.
+Considerando dos puntos del espacio imagen (\ref{fig:hough-punto-imagen}), al trasladarlos (\ref{fig:hough-intersection}) al es espacio Hough se puede calcular su intersección resolviendo el sistema de ecuaciones. Esta intersección proporciona los parámetros para construir, en el espacio imagen, la recta (\ref{fig:hough-recta-a-b}) que une ambos puntos.
 
 \begin{figure}
     \centering
@@ -205,7 +205,7 @@ El procedimiento general del algoritmo es como sigue:
 
 \subsection{Introducción}
 
-Como parte del proyecto se ha desarrollado una herramienta que utiliza análisis léxico y sintáctico para crear una salida estructurada, acorde a los requisitos. Estas dos tareas de análisis son etapas típicas de los compiladores de lenguajes de programación. Los siguientes apartados explican algunos de los conceptos elementales para poder entender como se han aplicado en la implementación \ref{chap:implemetación}.
+Como parte del proyecto se ha desarrollado una herramienta que utiliza análisis léxico y sintáctico para crear una salida estructurada, acorde a los requisitos. Estas dos tareas de análisis son etapas típicas de los compiladores de lenguajes de programación. Los siguientes apartados explican algunos de los conceptos elementales para poder entender como se han aplicado en la implementación (ver Capítulo \ref{chap:implemetación}).
 
 \subsection{Conceptos básicos}
 
@@ -267,7 +267,7 @@ Queda por tanto clara la relación existente entre las gramáticas, los lenguaje
 
 Noam Chomsky es un investigador destacado en el ámbito de los lenguajes naturales y formales. En la década de los años 50 del siglo XX estaba estudiando el funcionamiento de la construcción de los lenguajes naturales y realizó aportaciones en el ámbito de las gramáticas formales.
 
-Una de estas aportaciones se conoce como la jerarquía de Chomsky. Establece cuatro niveles de tipos de gramáticas dependiendo de la forma de sus reglas de producción o, equivalentemente, de lo restrictivas que sean a la hora de definir lenguajes. En la imagen \ref{fig:niveles-chomsky} se puede ver las gramáticas en la jerarquía ampliada con los autómatas y lenguajes asociados.
+Una de estas aportaciones se conoce como la jerarquía de Chomsky. Establece cuatro niveles de tipos de gramáticas dependiendo de la forma de sus reglas de producción o, equivalentemente, de lo restrictivas que sean a la hora de definir lenguajes. En la Imagen \ref{fig:niveles-chomsky} se puede ver las gramáticas en la jerarquía ampliada con los autómatas y lenguajes asociados.
 
 \begin{figure}[hp!]
     \centering
@@ -292,7 +292,7 @@ Las gramáticas de Tipo 2 o Gramáticas Independientes del Contexto tienen produ
 $A\rightarrow \beta$
 \end{center}
 
-donde A es un no terminal y $\beta$ es una cadena que puede contener terminales y no terminales. Estas gramáticas son reconocidas por un autómata de pila, como se explica en la página \pageref{automatas-pila}. Son las gramáticas empleadas habitualmente en los lenguajes de programación.
+donde A es un no terminal y $\beta$ es una cadena que puede contener terminales y no terminales. Estas gramáticas son reconocidas por un autómata de pila, como se explica en la Página \pageref{automatas-pila}. Son las gramáticas empleadas habitualmente en los lenguajes de programación.
 
 La siguiente categoría son las Gramáticas Sensibles al Contexto o gramáticas de Tipo 1. En este caso, las reglas en forma normal son:
 
@@ -315,7 +315,7 @@ Los lenguajes regulares, Independientes del Contexto y los Sensibles al contexto
 
 La notación Backus-Naur se utiliza para describir una gramática. Fue desarrollada por John Backus para el lenguaje Fortran y mejorada por Peter Naur para poder describir el lenguaje Algol 60.
 
-En \ref{lst:ejemplo-gramatica-bnf} se muestra una pequeña gramática. Los símbolos \verb|::=| deben leerse \emph{se define como}. Para indicar alternativa, \emph{or}, se utiliza \verb|||.
+En el Listado \ref{lst:ejemplo-gramatica-bnf} se muestra una pequeña gramática. Los símbolos \verb|::=| deben leerse \emph{se define como}. Para indicar alternativa, \emph{or}, se utiliza \verb|||.
 
 \begin{lstlisting}[caption={Gramática en notación BNF.},label=lst:ejemplo-gramatica-bnf]
 numero ::= val
@@ -335,7 +335,7 @@ n      ::= '0' | '1' | '2' | '3' | '4'
 
 \subsection{Fases de la compilación}
 
-El proceso de compilación se divide en varias fases. En la imagen \ref{fig:analisis-lexico-sintáctico} se presenta un ejemplo del proceso completo que un compilador realiza para obtener la representación en código máquina desde el programa fuente. Las fases principales son las siguientes:
+El proceso de compilación se divide en varias fases. En la Imagen \ref{fig:analisis-lexico-sintáctico} se presenta un ejemplo del proceso completo que un compilador realiza para obtener la representación en código máquina desde el programa fuente. Las fases principales son las siguientes:
 
 \begin{enumerate}
     \item El \textbf{análisis léxico} es el proceso por el cual se separa el texto de entrada, código fuente, en las unidades lógicas del lenguaje como identificadores, operadores o palabras clave. 

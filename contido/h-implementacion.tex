@@ -9,7 +9,7 @@
 
 \section{Etapas del sistema}
 
-Los datos son sometidos a un proceso por etapas tal como se ve en la figura \ref{fig:vision-general-del-sistema}. A continuación se detalla cada una de estas etapas.
+Los datos son sometidos a un proceso por etapas tal como se ve en la Figura \ref{fig:vision-general-del-sistema}. A continuación se detalla cada una de estas etapas.
 
 \begin{figure}[hp!]
     \centering
@@ -32,9 +32,9 @@ El componente referido como engine o motor se ocupa de conducir todas estas acti
 
 \subsection{Creación de un nuevo trabajo}
 
-Si bien la imagen \ref{fig:vision-general-del-sistema} representa el flujo de datos a nivel general, para comenzar el tratamiento se sigue un proceso formalizado en tres pasos. 
+Si bien la Imagen \ref{fig:vision-general-del-sistema} representa el flujo de datos a nivel general, para comenzar el tratamiento se sigue un proceso formalizado en tres pasos. 
 
-Primero el Sistema Externo solicita un identificador para el nuevo job. En ese momento el motor genera el código y lo utiliza para crear las rutas de directorios necesarias para ubicar los resultados de cada etapa. El identificador se obtiene de la fecha UTC actual concatenando segundos y nanosegundos. Se recurre al comando \verb|date| para ello, como se muestra en \ref{lst:creacion-job-id}).
+Primero el Sistema Externo solicita un identificador para el nuevo job. En ese momento el motor genera el código y lo utiliza para crear las rutas de directorios necesarias para ubicar los resultados de cada etapa. El identificador se obtiene de la fecha UTC actual concatenando segundos y nanosegundos. Se recurre al comando \verb|date| para ello, como se muestra en el Listado \ref{lst:creacion-job-id}).
 
 \begin{lstlisting}[language=bash,caption={Obtención del identificador de un trabajo.},label=lst:creacion-job-id]
 job_id=$(date -u +%s%6N)
@@ -50,7 +50,7 @@ Como primera acción para tratar correctamente los ficheros se realiza un saneam
 
 Los PDF recibidos deben ser clasificados dependiendo de su contenido. En unos casos es posible utilizar directamente el texto presenten en el documento. Para los restantes se procederá a utilizar el procedimiento OCR, como se ha explicado anteriormente. La clasificación se realiza por medio de un test de extracción de texto y se busca una respuesta positiva en la salida.
 
-En \verb|extract-text.sh| se trata cada fichero PDF de tal manera que por cada uno se obtiene su número de páginas. La extracción de texto se realiza página a página, generando como salida un fichero individual para cada una. Desde este punto y para todos los demás procesos los documentos se tratan también página por página hasta llegar al procesamiento del lenguaje intermedio que recibe un único fichero para todas las páginas del documento. En \ref{lst:extraccion-text-inicial} se puede ver el cálculo del número de páginas y la instrucción de extracción.
+En \verb|extract-text.sh| se trata cada fichero PDF de tal manera que por cada uno se obtiene su número de páginas. La extracción de texto se realiza página a página, generando como salida un fichero individual para cada una. Desde este punto y para todos los demás procesos los documentos se tratan también página por página hasta llegar al procesamiento del lenguaje intermedio que recibe un único fichero para todas las páginas del documento. En el Listado \ref{lst:extraccion-text-inicial} se puede ver el cálculo del número de páginas y la instrucción de extracción.
 
 \begin{lstlisting}[language=bash,caption={Extracción tentativa del texto.},label=lst:extraccion-text-inicial]
 last_page="$(pdfinfo $line | grep 'Pages:' | cut -c 7- | sed 's_ *__')"
@@ -60,7 +60,7 @@ do
 done
 \end{lstlisting}
 
-Cuando un documento no contiene texto, el fichero de la información extraída únicamente almacena caracteres de salto de página, \verb|0x0C|, que son introducidos por el propio \verb|pdftotext|. Estos casos pueden ser localizados mediante un editor hexadecimal, como se muestra en \ref{lst:deteccion-salto-pagina}. En el fragmento, tanto si se ejecuta el cuerpo del \verb|if| como del \verb|elif|, la página se trata de un caso de imagen y el fichero es movido al directorio para los casos de imagen.
+Cuando un documento no contiene texto, el fichero de la información extraída únicamente almacena caracteres de salto de página, \verb|0x0C|, que son introducidos por el propio \verb|pdftotext|. Estos casos pueden ser localizados mediante un editor hexadecimal, como se muestra en el Listado \ref{lst:deteccion-salto-pagina}. En el fragmento, tanto si se ejecuta el cuerpo del \verb|if| como del \verb|elif|, la página se trata de un caso de imagen y el fichero es movido al directorio para los casos de imagen.
 
 \begin{lstlisting}[language=bash,caption={Detección del salto de página.},label=lst:deteccion-salto-pagina]
 if [ "$(hexdump -e '1/1 "%02X\n"' $i | tr '\n' ' ')" = '0C ' ]
@@ -76,7 +76,7 @@ fi
 
 Previamente al proceso OCR, el script \verb|extract-images.sh| se encarga de extraer las imágenes contenidas en los ficheros seleccionados en el paso anterior. En este proceso se recupera la información original contenida en el PDF, no se trata simplemente de una \emph{foto} de la página, sino que se utiliza la herramienta \verb|pdfimages| con el flag \verb|-j|. Si las imágenes presentes en el PDF fueron almacenadas en formato JPEG, con este flag se conseguirá recuperar la información sin realizar transformaciones y sin mayor pérdida de calidad, ya que el formato PDF soporta la codificación JPEG de forma nativa por medio de los filtros DCTDecode y JPXDecode \cite[23]{adobe_book_iso32000-1}. Además, al no requerir conversión la extracción es mucho más rápida. La situación descrita es la más habitual cuando un escáner profesional digitaliza un número de páginas y crea un PDF final para ellas.
 
-El siguiente paso obtiene la información de coordenadas de los casos de texto, nuevamente con \verb|pdftotext|. Se generan los ficheros XHTML cuando se invoca la herramienta con el flag \verb|-bbox-layout|. En \ref{lst:extraccion-text-coord} se muestra un extracto del contenido típico que luego será procesado por el generador de código intermedio. Como se puede apreciar, se identifican la palabras individuales con coordenadas y la línea a la cual pertenecen.
+El siguiente paso obtiene la información de coordenadas de los casos de texto, nuevamente con \verb|pdftotext|. Se generan los ficheros XHTML cuando se invoca la herramienta con el flag \verb|-bbox-layout|. En el Fragmento \ref{lst:extraccion-text-coord} se muestra un extracto del contenido típico que luego será procesado por el generador de código intermedio. Como se puede apreciar, se identifican la palabras individuales con coordenadas y la línea a la cual pertenecen.
 
 \begin{lstlisting}[language=XML,caption={Extracción de texto con información de coordenadas.},label=lst:extraccion-text-coord]
 <flow>
@@ -94,7 +94,7 @@ El siguiente paso obtiene la información de coordenadas de los casos de texto, 
 </block>
 \end{lstlisting}
 
-Completada la extracción de texto se da paso al proceso de OCR. El script \verb|image-apply-ocr.sh| recorre el directorio donde están almacenadas las imágenes recuperadas y se invoca a Tesseract con la instrucción que se puede ver en el código \ref{lst:invocacion-de-tesseract}. Se indican varios parámetros importantes. Debe utilizar utilizar los conjuntos de entrenamiento para contenido en castellano (\verb|-l spa|), ya que los documentos están en este idioma. El número de \acrlong{ppp} se fija a 300 (\verb|--dpi 300|) ya que es un tamaño objetivo que las imágenes deben tener para que el proceso OCR tenga calidad suficiente. Tesseract dispone de varios algoritmos para interpretar el layout de documento. En este caso, al trabajar directamente con las coordenadas, no es necesario tener en cuenta el layout y se le indica que capture la máxima información posible independientemente del orden (\verb|--psm 11|). Por otra parte existe un fichero de configuración, apuntado por la variable \verb|$tessconfig_file| que contiene la directiva para activar la salida en formato hOCR, \verb|tessedit_create_hocr 1|.
+Completada la extracción de texto se da paso al proceso de OCR. El script \verb|image-apply-ocr.sh| recorre el directorio donde están almacenadas las imágenes recuperadas y se invoca a Tesseract con la instrucción que se puede ver en el Código \ref{lst:invocacion-de-tesseract}. Se indican varios parámetros importantes. Debe utilizar utilizar los conjuntos de entrenamiento para contenido en castellano (\verb|-l spa|), ya que los documentos están en este idioma. El número de \acrlong{ppp} se fija a 300 (\verb|--dpi 300|) ya que es un tamaño objetivo que las imágenes deben tener para que el proceso OCR tenga calidad suficiente. Tesseract dispone de varios algoritmos para interpretar el layout de documento. En este caso, al trabajar directamente con las coordenadas, no es necesario tener en cuenta el layout y se le indica que capture la máxima información posible independientemente del orden (\verb|--psm 11|). Por otra parte existe un fichero de configuración, apuntado por la variable \verb|$tessconfig_file| que contiene la directiva para activar la salida en formato hOCR, \verb|tessedit_create_hocr 1|.
 
 \begin{lstlisting}[language=XML,caption={Extracción de texto con información de coordenadas.},label=lst:invocacion-de-tesseract]
 tesseract $file_path "$outputbase" \
@@ -106,7 +106,7 @@ tesseract $file_path "$outputbase" \
     $tessconfig_file
 \end{lstlisting}
 
-Se puede ver una muestra del formato hOCR en el fragmento \ref{lst:salida-hocr-tesseract}. En el atributo \verb|title| de las palabras se puede ver que aparecen las coordenadas en píxeles respecto al tamaño de la imagen. También hay un indicador de confianza, \verb|x_wconf| que indica la certeza que asigna Tesseract a la identificación de cada palabra en particular.
+Se puede ver una muestra del formato hOCR en el Fragmento \ref{lst:salida-hocr-tesseract}. En el atributo \verb|title| de las palabras se puede ver que aparecen las coordenadas en píxeles respecto al tamaño de la imagen. También hay un indicador de confianza, \verb|x_wconf| que indica la certeza que asigna Tesseract a la identificación de cada palabra en particular.
 
 \begin{lstlisting}[language=XML,caption={Fragmento de la salida hOCR de Tesseract.},label=lst:salida-hocr-tesseract]
 <div class='ocr_page' id='page_1' 
@@ -131,7 +131,7 @@ Se puede ver una muestra del formato hOCR en el fragmento \ref{lst:salida-hocr-t
 
 Los documentos se identifican para poder asociarles una plantilla. El mecanismo utilizado consiste en buscar en la información extraída el dato que se ha considerado único para la familia de documentos. Para las facturas tratadas un dato único es el NIF o CIF del emisor, pero podría seleccionarse cualquier otros u otros, dependiendo del dominio. Los identificadores están almacenados en los ficheros \verb|id-nif-iva.txt| y \verb|id-cif.txt| en formato \acrshort{csv} en el directorio de datos del sistema.
 
-El script \verb|identify-grep.sh| se encarga de realizar todo el proceso. Primero se leen todos los identificadores por medio de la función \verb|read_identifiers()|, tal como se puede ver en \ref{lst:lectura-de-identificadores}. Los datos leidos son incorporados a un array.
+El script \verb|identify-grep.sh| se encarga de realizar todo el proceso. Primero se leen todos los identificadores por medio de la función \verb|read_identifiers()|, tal como se puede ver en el Listado \ref{lst:lectura-de-identificadores}. Los datos leidos son incorporados a un array.
 
 \begin{lstlisting}[language=bash,caption={Lectura de identificadores.},label=lst:lectura-de-identificadores]
 read_identifiers() {
@@ -142,7 +142,7 @@ read_identifiers() {
 }
 \end{lstlisting}
 
-A continuación se obtiene la lista de ficheros para los cuales se ha extraído información y se iteran buscando ocurrencias de los identificadores conocidos, En \ref{lst:identifica-documentos} se le indica a \verb|grep| que tenga en cuenta solo los casos en los que el patron abarque una palabra completa (\verb|-w|), y que cambie la salida habitual por otra con el recuento de ocurrencias (\verb|-c|).
+A continuación se obtiene la lista de ficheros para los cuales se ha extraído información y se iteran buscando ocurrencias de los identificadores conocidos, En el Código \ref{lst:identifica-documentos} se le indica a \verb|grep| que tenga en cuenta solo los casos en los que el patron abarque una palabra completa (\verb|-w|), y que cambie la salida habitual por otra con el recuento de ocurrencias (\verb|-c|).
 
 \begin{lstlisting}[language=bash,caption={Identificación de los documentos.},label=lst:identifica-documentos]
 for file in $files; do
@@ -165,7 +165,7 @@ Cuando se encuentra un identificador válido, se registra en el directorio del d
 % TODO page
 % TODO doc_pages
 
-Las plantillas contienen la información de coordenadas de las regiones de interés seleccionadas para el modelo de documento. En el ejemplo de código \ref{ejemplo-plantilla} se ver que para almacenar esta información se utiliza el formato JSON. Además de las coordenadas en si mismas, se utilizan otras claves para dar más flexibilidad a la información y poder tratar casos como los documentos de OVH. La clave \verb|id| que aparece al comienzo se utiliza para asociar con los identificadores de los documentos. Luego el array \verb|regions| contiene la colección de regiones existentes en el modelo. Se utiliza \verb|type| para identificar el tipo de región, \verb|yMin| y \verb|yMax| para las coordenadas horizontales. Los límites verticales se almanenan en el array de columnas \verb|cols|. En el caso de regiones con una única columna se utiliza igualmente el array pero con un único elemento.
+Las plantillas contienen la información de coordenadas de las regiones de interés seleccionadas para el modelo de documento. En el ejemplo de Código \ref{ejemplo-plantilla} se ver que para almacenar esta información se utiliza el formato JSON. Además de las coordenadas en si mismas, se utilizan otras claves para dar más flexibilidad a la información y poder tratar casos como los documentos de OVH. La clave \verb|id| que aparece al comienzo se utiliza para asociar con los identificadores de los documentos. Luego el array \verb|regions| contiene la colección de regiones existentes en el modelo. Se utiliza \verb|type| para identificar el tipo de región, \verb|yMin| y \verb|yMax| para las coordenadas horizontales. Los límites verticales se almanenan en el array de columnas \verb|cols|. En el caso de regiones con una única columna se utiliza igualmente el array pero con un único elemento.
 
 \noindent\begin{minipage}{.45\textwidth}
     \begin{lstlisting}[language=Java,caption=Comienzo de la plantilla.,frame=tlrb]{Name}
@@ -219,9 +219,9 @@ El motor del sistema es el componente implementado en Bash. Esta decisión se to
 
 \section{Generación del lenguaje intermedio}
 
-La generación del lenguaje intermedio se realiza por medio de una aplicación Python escrita para este propósito. El código del programa está dividido en módulos de tal manera que se facilita el desarrollo y mantenimiento, agrupando lógica relacionada. La lista de módulos se presentan de forma resumida en la tabla \ref{tab:modulo-generador-codigo-intermedio}.
+La generación del lenguaje intermedio se realiza por medio de una aplicación Python escrita para este propósito. El código del programa está dividido en módulos de tal manera que se facilita el desarrollo y mantenimiento, agrupando lógica relacionada. La lista de módulos se presentan de forma resumida en la Tabla \ref{tab:modulo-generador-codigo-intermedio}.
 
-El lenguaje generado es suficientemente expresivo para representar los tipos de regiones, las filas y columnas de las tablas y otros elementos. Al mismo tiempo es sencillo para facilitar su tratamiento  en los analizadores léxicos y sintácticos que se utilizan posteriormente. En la imagen \ref{fig:lenguaje-intermedio} se presenta un extracto donde se puede observar la definición de tres regiones. La elección de los símbolos para señalizar comienzo y fin de filas y columnas en las tablas se escogió para hacer fácilmente reconocibles estos elementos al tratar con los ficheros manualmente. 
+El lenguaje generado es suficientemente expresivo para representar los tipos de regiones, las filas y columnas de las tablas y otros elementos. Al mismo tiempo es sencillo para facilitar su tratamiento  en los analizadores léxicos y sintácticos que se utilizan posteriormente. En la Imagen \ref{fig:lenguaje-intermedio} se presenta un extracto donde se puede observar la definición de tres regiones. La elección de los símbolos para señalizar comienzo y fin de filas y columnas en las tablas se escogió para hacer fácilmente reconocibles estos elementos al tratar con los ficheros manualmente. 
 
 Las palabras siguen siempre el mismo patrón. Por ejemplo, en la palabra \verb|P1·W146·365·| la primera parte, \verb|P1| indica la página del documento en donde se encuentra la palabra. \verb|W146| se refiere a que es una palabra del cuerpo, frente a una palabra de cabecera, que llevaría una \verb|H|. Por último \verb|365| es el contenido.
 
@@ -327,9 +327,9 @@ En el Listado \ref{lst:captura-de-palabras} se puede como se utiliza una lista c
 
 \subsection{Truncado de líneas y reasignación de líneas a regiones}
 
-Una vez leída la información se tienen en memoria todas las líneas y palabras con sus posiciones. El siguiente paso consiste en asignar las líneas a las regiones que les corresponden atendiendo a las coordenadas de ambas.
+Una vez leída la información se tienen en memoria todas las líneas y palabras con sus posiciones. El siguiente paso consiste en asignar las líneas a las regiones que les corresponden atendiendo, a las coordenadas de ambas.
 
-Para asociar líneas o palabras a regiones se utiliza un algoritmo genérico que se explicará primero. El truncado de líneas resuelve un problema descubierto durante el desarrollo y que no había sido considerado. La longitud de las líneas identificadas por los procesos de extracción excede, en muchos casos, el tamaño de las columnas definidas en las plantillas. Por tal motivo, es necesario truncar las líneas y crear otras nuevas que encajen dentro de las columnas y reasignar las palabras a las nuevas columnas. En la imagen \ref{fig:visor-formato-hocr} del Apéndice se puede ver, por ejemplo, que los datos correspondientes a la tarifa y al IVA, están en la misma zona verde, la misma línea. Esto quiere decir que estas herramientas identifican una línea como una secuencia de caracteres próximos, y no como todo el contenido de una fila de la tabla.
+Para asociar líneas o palabras a regiones se utiliza un algoritmo genérico que se explicará primero. El truncado de líneas resuelve un problema descubierto durante el desarrollo y que no había sido considerado previamente. La longitud de las líneas identificadas por los procesos de extracción excede, en muchos casos, el tamaño de las columnas definidas en las plantillas. Por tal motivo, es necesario truncar las líneas y crear otras nuevas que encajen dentro de las columnas y reasignar las palabras a las nuevas columnas. En la Imagen \ref{fig:visor-formato-hocr} del Apéndice se puede ver, por ejemplo, que los datos correspondientes a la tarifa y al IVA, están en la misma zona verde, la misma línea. Esto quiere decir que estas herramientas identifican una línea como una secuencia de caracteres próximos, y no como todo el contenido de una fila de la tabla.
 
 El algoritmo para considerar si una región está dentro de otra utiliza comparaciones sobre las posiciones relativas de ambos elementos. Al comienzo del desarrollo se realizó una primera implementación que utilizaba conjuntos como tipo de dato, pero resultaba excesivamente lenta. Con la aproximación actual se consideran nueve situaciones: una región puede estar dentro de la otra, sobre alguna de las esquinas de la segunda o sobre alguno de los lados. Una representación gráfica de los casos puede verse en la Imagen \ref{fig:casos-algoritmo-seleccion-regiones} del Apéndice. Los datos de entrada son la lista de áreas que se quieren clasificar y la zona sobre la que se quiere realizar el test. Un bucle recorre las áreas evaluando los criterios. La asignación se produce si todas las condiciones son verdaderas en alguno de los casos. Para considerar los casos donde al área está sobre el borde, se tiene en cuenta un margen de proximidad, configurado para el $ 30\% $. Con esto se regula cuando puede sobrepasar la figura para seguir siendo considerada válida para el caso.
 
@@ -352,7 +352,7 @@ container[k_x_min] - element[k_x_min] < x_length]
 % TODO explicar mejora en el algoritmo para asignación de palabras a regiones para cumplir con el requisito no funcionar de mantener los tiempos contenidos
 
 
-La tabla \ref{tab:datos-intermedios} presenta los datos intermedios generados. Estos datos no se exportan a al directorio de salida.
+La Tabla \ref{tab:datos-intermedios} presenta los datos intermedios generados. Estos datos no se exportan a al directorio de salida.
 
 \begin{table}[ht]
     \centering
