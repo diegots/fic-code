@@ -81,9 +81,9 @@ Un PDF no es un fichero de texto, es un fichero binario de 8 bits con una estruc
 
 Los objetos presentados hasta el momento son los objetos directos. Los objetos directos tienen el valor almacenado en el propio objeto. También existen los objetos indirectos que se referencian indirectamente y el consumidor tiene que saltar a otra posición en el fichero. Los objetos indirectos tienen un identificador único dentro del fichero. Las referencias son de la forma: \verb|/ObjIndirecto  5 0 R|.
 
-\subsection{Estructura en un fichero}
+\subsection{Estructura física}
 
-La estructura de un fichero está dividida en cuatro partes, tal como se muestra en la figura \ref{fig:secciones-pdf}: header, body, cross-reference table y trailer. El header tiene al menos dos líneas. La primera se utiliza para indicar que el fichero es un PDF y la versión del estándar que le corresponde. La segunda es simplemente un separador: \verb|%%EOF|. 
+La estructura física de un fichero está dividida en cuatro partes, tal como se muestra en la figura \ref{fig:secciones-pdf}: header, body, cross-reference table y trailer. El header tiene al menos dos líneas. La primera se utiliza para indicar que el fichero es un PDF y la versión del estándar que le corresponde. La segunda es simplemente un separador: \verb|%%EOF|. 
 
 \begin{figure}[hp!]
     \centering
@@ -184,7 +184,7 @@ Considerando dos puntos del espacio imagen \ref{fig:hough-punto-imagen}, al tras
         \caption{Recta que une ambos punto en el espacio imagen.}
         \label{fig:hough-recta-a-b}
     \end{subfigure}
-    \caption{Transformaciones del espacio imagen al espacio Hough.}
+    \caption{Transformaciones del espacio imagen al Espacio Hough.}
     \label{fig:transformaciones-hough}
 \end{figure}
 
@@ -329,7 +329,7 @@ n      ::= '0' | '1' | '2' | '3' | '4'
 \begin{figure}[hp!]
     \centering
     \includegraphics[width=0.6\textwidth]{imaxes/c-bases-teoricas/hauser-2016.png}
-    \caption{Comparativa de los 4 modelos y su dificultad de reconocimiento \cite{teoriaCompiladores_hauser_automatas}.}
+    \caption{Comparativa de los 4 modelos en relación a su dificultad de reconocimiento \cite{teoriaCompiladores_hauser_automatas}.}
     \label{fig:hauser-2016}
 \end{figure}
 
