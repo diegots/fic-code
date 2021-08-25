@@ -15,7 +15,7 @@ Existen dos actores que interactúan con la aplicación, un sistema externo y un
 
 \begin{itemize}
 	\item \textbf{Sistema externo}: la aplicación está diseñada para comunicarse con sistemas externo mediante invocación directa de comandos o bien un API REST. Si bien mediante comandos un usuario podrían solicitar la ejecución de trabajos en el engine, el objetivo principal es ser un backend conectado empleado por otros sistemas.
-	\item \textbf{Base de datos}: este agente es consultado para la obtención de datos de idenficación de los documentos.
+	\item \textbf{Base de datos}: este agente es consultado para la obtención de datos de identificación de los documentos.
 \end{itemize}
 
 Se presentan a continuación los casos de uso de forma detallada:
@@ -42,13 +42,13 @@ Se presentan a continuación los casos de uso de forma detallada:
 \item \textbf{CU-04} - Informar error
 	\begin{itemize}
 		\item \textbf{Descripción}: en caso de problemas durante el procesamiento se informa al sistema externo del error ocurrido.
-		\item \textbf{Precondición} sucece una condición de error en el sistema.
+		\item \textbf{Precondición} sucede una condición de error en el sistema.
 		\item \textbf{Postcondición}: dependiendo del tipo de error el engine consigue finalizar el procesamiento o se finaliza si no es posible recuperarse del error.
 \end{itemize}
 \item \textbf{CU-05} - Relacionar documento y plantilla
 	\begin{itemize}
 		\item \textbf{Descripción}: a partir de los datos extraídos del documento en curso se consigue identificar la plantilla correcta para la generación de su lenguaje intermedio y su posterior proceso de parseo. La búsqueda del identificador se solicita a una base de datos externa.
-		\item \textbf{Precondición} los datos extraidos son de la suficiente calidad para contener el identificador del documento.
+		\item \textbf{Precondición} los datos extraídos son de la suficiente calidad para contener el identificador del documento.
 		\item \textbf{Postcondición}: se genera un fichero con el identificador único de la plantilla.Precondición
 \end{itemize}
 \item \textbf{CU-06} - Identificar la finalización

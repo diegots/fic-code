@@ -290,7 +290,7 @@ La tarea de generación de código intermedio puede agruparse en los siguientes 
     \item Parsing de los datos en formato XHTML / hOCR
     \item Truncado de líneas y reasignación de líneas a regiones
     \item Tratamiento de las regiones
-    \item Impresión del lenguaje intermedio
+    \item Impresión del lenguaje
 \end{enumerate}    
 
 \subsection{Parsing de los datos}
@@ -374,8 +374,14 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 Una vez seleccionadas las regiones se procede a procesarlas. En el módulo \verb|region.py| existe una clase para cada una de ellas. La mayoría definen únicamente un método, \verb|assign_lines()| y definen el constructor para inicializar la clase con las coordenadas de la región. Si la región tienen columnas, se informa también de las posiciones de las mismas. El objetivo de método \verb|assign_lines()| es recorrer las columnas, o el espacio principal si no hay columnas y llamar a \verb|assign_words_to_regions_geometric()| con cada una de ellas. El método anterior corresponde al algoritmo genérico de clasificación de regiones comentado en la Subsección anterior. Una responsabilidad más de \verb|assign_lines()| es guardar, junto con los demás datos de la región, la implementación necesaria para crear el texto de salida. Lo que se hace es asignar directamente la referencia a alguno de los métodos del módulo \verb|printer_region.py|. Las funciones de impresión se comentarán más adelante, pero es en este punto cuando se realiza la selección, dado que cada tipo de región genera un texto propio.
 
-Estas clases descritas están diseñadas para ser genéricas, no estando asociadas a ningún tipo de modelo en particular. En el caso de los documentos de OVH se crearon unas regiones especiales, \verb|T2_T2_R1|, por ejemplo, ya las regiones que están contiguas unas a otras indican como se han de asignar los datos. A pesar de ello, nada limita que una de ellas se puedan aplicar a otros modelos de documentos que compartan las mismas características.
+Estas clases descritas están diseñadas para ser genéricas, no estando asociadas a ningún tipo de modelo en particular. En el caso de los documentos de OVH se crearon unas regiones diferentes, \verb|T2_T2_R1|, por ejemplo, ya las regiones que están contiguas unas a otras indican como se han de asignar los datos. A pesar de ello, nada limita que cualquiera de ellas se pueda aplicar en el futuro a otros modelos de documentos que compartan las mismas características.
 
+\subsection{Impresión del lenguaje}
+
+En este punto se tienen las regiones con sus líneas asignadas. En el módulo \verb|printer_region.py| se encuentran las funciones que toman la regiones, líneas y palabras y crean el texto que finalmente se escribirá a disco. Tomando por ejemplo la implementación para las tablas T1, los pasos que se siguen consisten en buscar todas las líneas \emph{reales} de la tabla. Por líneas reales se entienden aquellas que forman una unidad de contenido, independientemente de cuantas líneas físicas tenga dicho contenido. Actualmente se consideran las líneas de la primera columnas como líneas que indican contenido.
+
+- Se obtienen las líneas de la primera columna, que se consideran las líneas reales
+- 
 
 
 % TODO información de bounding box
