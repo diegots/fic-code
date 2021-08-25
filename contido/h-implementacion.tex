@@ -221,6 +221,8 @@ El motor del sistema es el componente implementado en Bash. Esta decisión se to
 
 La generación del lenguaje intermedio se realiza por medio de una aplicación Python escrita para este propósito. El código del programa está dividido en módulos de tal manera que se facilita el desarrollo y mantenimiento, agrupando lógica relacionada. La lista de módulos se presentan de forma resumida en la Tabla \ref{tab:modulo-generador-codigo-intermedio}.
 
+Uno de los módulos comunes que se usa en toda la aplicación es \verb|constants.py|. Como evidencia su nombre, el objetivo del módulo es almacenar las constantes compartidas por todos los demás módulos. En particular, dado que se hace uso muy frecuente del tipo diccionario, todas las claves usadas se encuentran definidas en este fichero. En los listados de código se podrá apreciar que aparecen precedidas por el prefijo \verb|k| como en \verb|k_y_min|.
+
 El lenguaje generado es suficientemente expresivo para representar los tipos de regiones, las filas, columnas de las tablas y las palabras. Al mismo tiempo evita complejidades que dificulten su tratamiento en los analizadores léxicos y sintácticos que se utilizan posteriormente. En la Imagen \ref{fig:lenguaje-intermedio} se presenta un extracto donde se puede observar la definición de tres regiones. La región \verb|T1| tiene tiene tres filas y tres columnas. La primera fila corresponde con la cabecera de la tabla. La elección de los símbolos para señalizar comienzo y fin de filas y columnas se escogió para hacer fácilmente reconocibles estos elementos al manejar los ficheros manualmente. 
 
 Las palabras siguen siempre el mismo patrón. Por ejemplo, en la caso \verb|P1·W146·365·| la primera parte, \verb|P1| indica la página del documento en donde se encuentra la palabra. \verb|W146| se refiere a que es una palabra del cuerpo, frente a una palabra de cabecera, que llevaría una \verb|H|. Por último \verb|365| es el contenido. Los demás se utilizan como separadores.
@@ -351,18 +353,33 @@ El truncado de líneas resuelve un problema descubierto durante el desarrollo y 
 
 \subsection{Tratamiento de las regiones}
 
+El tratamiento de las regiones comienza seleccionando aquellas que aplican a la página. El parámetro \verb|page| que cada región tienen definida en las plantillas especifica si la región a de ser considerada para la página teniendo en cuenta el número de página actual y el total de páginas del documento. El parámetro se evalúa como un \emph{slice} Python y da suficiente flexibilidad para todos los casos que se han encontrado hasta el momento. En el Listado \ref{lst:seleccion-de-regiones-segun-pagina} se muestran ejemplos de uso en una sesión interactiva. La implementación hace uso del método \verb|eval()| para la evaluar expresiones a partir de literales: \verb|eval(f"doc_page_numbers[{region_slice}]")| donde \verb|doc_page_numbers| es la lista con los números de las páginas, que se generó previamente.
+
+\begin{lstlisting}[language=Python,caption={Selección de regiones según las páginas},label=lst:seleccion-de-regiones-segun-pagina]
+Python 3.6.9 (default, Jan 26 2021, 15:33:00) [GCC 8.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>>
+>>> paginas = list(range(1,11)) # lista de páginas
+>>> paginas
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+>>> paginas[0] # solo aplica a la primera página
+1
+>>> paginas[-1] # solo a la última
+10
+>>> paginas[-1] # a todas las páginas
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+>>> paginas[1:-1] # todas menos primera y última
+[2, 3, 4, 5, 6, 7, 8, 9]
+\end{lstlisting}
+
+Una vez seleccionadas las regiones se procede a procesarlas. En el módulo \verb|region.py| existe una clase para cada una de ellas. La mayoría definen únicamente un método, \verb|assign_lines()| y definen el constructor para inicializar la clase con las coordenadas de la región. Si la región tienen columnas, se informa también de las posiciones de las mismas. El objetivo de método \verb|assign_lines()| es recorrer las columnas, o el espacio principal si no hay columnas y llamar a \verb|assign_words_to_regions_geometric()| con cada una de ellas. El método anterior corresponde al algoritmo genérico de clasificación de regiones comentado en la Subsección anterior. Una responsabilidad más de \verb|assign_lines()| es guardar, junto con los demás datos de la región, la implementación necesaria para crear el texto de salida. Lo que se hace es asignar directamente la referencia a alguno de los métodos del módulo \verb|printer_region.py|. Las funciones de impresión se comentarán más adelante, pero es en este punto cuando se realiza la selección, dado que cada tipo de región genera un texto propio.
+
+Estas clases descritas están diseñadas para ser genéricas, no estando asociadas a ningún tipo de modelo en particular. En el caso de los documentos de OVH se crearon unas regiones especiales, \verb|T2_T2_R1|, por ejemplo, ya las regiones que están contiguas unas a otras indican como se han de asignar los datos. A pesar de ello, nada limita que una de ellas se puedan aplicar a otros modelos de documentos que compartan las mismas características.
 
 
 
-% TODO describir la implementación en etapas, como el diagrama general
-    % TODO Concepto de línea de identificación
-    % TODO Asignación de palabras a regiones
-    % TODO información de bounding box
-% TODO mostrar el código intermedio
-% TODO introducir el problema de indentificar las líneas
+% TODO información de bounding box
 % TODO explicar se utiliza el algoritmo de Hough en los ejemplos donde es efectivo
-% TODO explicar mejora en el algoritmo para asignación de palabras a regiones para cumplir con el requisito no funcionar de mantener los tiempos contenidos
-
 
 La Tabla \ref{tab:datos-intermedios} presenta los datos intermedios generados. Estos datos no se exportan a al directorio de salida.
 
