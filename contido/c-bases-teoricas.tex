@@ -14,7 +14,7 @@ Las aplicaciones comerciales utilizan las ubicaciones para seleccionar contenido
 Existen librerías y también aplicaciones capaces de manipular ficheros PDF para extraer texto, imágenes, reordenar páginas y otras muchas posibilidades. Para los objetivos del proyecto, sería necesaria una herramienta capaz de extraer el texto pero también sus coordenadas sobre el documento. Se revisaron varias alternativas, como PDFBox 
 \footnote{https://pdfbox.apache.org/}, Win2PDF 
 \footnote{https://www.win2pdf.com/doc/command-line-extract-text-pdf.html}, ebook-convert 
-\footnote{https://manual.calibre-ebook.com/es/generated/es/ebook-convert.html}, que forma parte de la aplicación Calibre, y pdftotext 
+\footnote{https://manual.calibre-ebook.com/es/generated/es/ebook-convert.html}, que forma parte de la aplicación Calibre, y \verb|pdftotext| 
 \footnote{https://poppler.freedesktop.org/}. Únicamente esta última ofrece la posibilidad de generar las localizaciones necesarias.
 
 La implementación original de esta utilidad fue realizada por Glyph \& Cog, autores del visor Xpdf. En el año 2005 surge la librería Poppler a partir del fork de la versión 3.0.3 de Xpdf. Esta es la implementación disponible mayormente en las distribuciones Linux. Por ejemplo, en Ubuntu se puede instalar con el paquete \verb|poppler-utils| e incluye otras muchas herramientas relacionadas.

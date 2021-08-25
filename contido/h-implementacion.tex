@@ -221,9 +221,9 @@ El motor del sistema es el componente implementado en Bash. Esta decisión se to
 
 La generación del lenguaje intermedio se realiza por medio de una aplicación Python escrita para este propósito. El código del programa está dividido en módulos de tal manera que se facilita el desarrollo y mantenimiento, agrupando lógica relacionada. La lista de módulos se presentan de forma resumida en la Tabla \ref{tab:modulo-generador-codigo-intermedio}.
 
-El lenguaje generado es suficientemente expresivo para representar los tipos de regiones, las filas y columnas de las tablas y otros elementos. Al mismo tiempo es sencillo para facilitar su tratamiento  en los analizadores léxicos y sintácticos que se utilizan posteriormente. En la Imagen \ref{fig:lenguaje-intermedio} se presenta un extracto donde se puede observar la definición de tres regiones. La elección de los símbolos para señalizar comienzo y fin de filas y columnas en las tablas se escogió para hacer fácilmente reconocibles estos elementos al tratar con los ficheros manualmente. 
+El lenguaje generado es suficientemente expresivo para representar los tipos de regiones, las filas, columnas de las tablas y las palabras. Al mismo tiempo evita complejidades que dificulten su tratamiento en los analizadores léxicos y sintácticos que se utilizan posteriormente. En la Imagen \ref{fig:lenguaje-intermedio} se presenta un extracto donde se puede observar la definición de tres regiones. La región \verb|T1| tiene tiene tres filas y tres columnas. La primera fila corresponde con la cabecera de la tabla. La elección de los símbolos para señalizar comienzo y fin de filas y columnas se escogió para hacer fácilmente reconocibles estos elementos al manejar los ficheros manualmente. 
 
-Las palabras siguen siempre el mismo patrón. Por ejemplo, en la palabra \verb|P1·W146·365·| la primera parte, \verb|P1| indica la página del documento en donde se encuentra la palabra. \verb|W146| se refiere a que es una palabra del cuerpo, frente a una palabra de cabecera, que llevaría una \verb|H|. Por último \verb|365| es el contenido.
+Las palabras siguen siempre el mismo patrón. Por ejemplo, en la caso \verb|P1·W146·365·| la primera parte, \verb|P1| indica la página del documento en donde se encuentra la palabra. \verb|W146| se refiere a que es una palabra del cuerpo, frente a una palabra de cabecera, que llevaría una \verb|H|. Por último \verb|365| es el contenido. Los demás se utilizan como separadores.
 
 \begin{figure}[hp!]
     \centering
@@ -255,17 +255,7 @@ Las palabras siguen siempre el mismo patrón. Por ejemplo, en la palabra \verb|P
     \label{tab:modulo-generador-codigo-intermedio}
 \end{table}
 
-La tarea de generación de código intermedio puede resumirse en los siguientes pasos, que se explicarán a continuación con detalle:
-
-\begin{enumerate}
-    \item Tratamiento de los argumentos de entrada
-    \item Parsing de los datos en formato XHTML / hOCR
-    \item Truncado de líneas y reasignación de líneas a regiones
-    \item Tratamiento de las regiones
-    \item Impresión del lenguaje intermedio
-\end{enumerate}    
-
-En el primer paso, además de realizar el tratamiento de argumentos de entrada, se configura la aplicación para que pueda llevar a cabo la tarea solicitada. Si se invoca la aplicación con el flag \verb|-h| se obtendrá información de los parámetros. En el Listado \ref{lst:ayuda-generador-codigo-intermedio} se puede ver el mensaje de ayuda y el detalle del objetivo de cada parámetro. Los argumentos pueden ser de dos tipos, posicionales y opcionales. Los parámetros posicionales son obligatorios y deben ser indicados en el mismo orden que se muestra en la segunda línea del mensaje de ayuda. 
+Cuando se invoca la herramienta, el primer paso, además de realizar el tratamiento de argumentos de entrada, consiste en configurar la aplicación para que pueda generar la salida solicitada. En una ejecución interactiva, con el flag \verb|-h| se obtendrá ayuda sobre de los parámetros disponibles. En el Listado \ref{lst:ayuda-generador-codigo-intermedio} se puede ver este mensaje de ayuda y el significado de cada uno de los parámetros. Estos argumentos pueden ser de dos tipos, posicionales y opcionales. Los parámetros posicionales son obligatorios y deben ser indicados en el mismo orden que se muestra en la segunda línea del mensaje de ayuda. 
 
 \begin{lstlisting}[caption={Ayuda del generador de código intermedio.},label=lst:ayuda-generador-codigo-intermedio]
 usage: main.py [-h] [-w WORKTASK]
@@ -288,13 +278,22 @@ optional arguments:
 Escoge el tipo de salida deseada. Por detecto produce la lista de palabras del fichero de entrada
 \end{lstlisting}
 
-El script \verb|generate-json.sh| es el encargado de realizar la invocación del generador de código intermedio con la parametrización correcta.
+El flag \verb|-w| se utiliza para escoger el tipo de salida que se desea. Seleccionando \verb|GENERATE| se obtiene el lenguaje intermedio. \verb|LIST_WORDS| produce un listado de todas las líneas y palabras asociadas. Mostrando por la salida estándar sus identificadores y coordenadas. Internamente estas tareas se definen como clases diferentes que exponen un método, \verb|run()|, que recibe los datos de la entrada y realiza el procesamiento de acuerdo a su objetivo. De esta manera es sencillo extender la aplicación para realizar distintos tipos de procesamientos.
 
-Las tareas se definen como clases que comparten el método \verb|run| como punto único de ejecución. Además de la tarea para generación del código intermedio, existe otra para crear un listado de las líneas y palabras existentes en los los datos de entrada.
+El script \verb|generate-json.sh| es el encargado de realizar la invocación del generador de código intermedio con la parametrización necesaria para tratar cada página de forma individual.
+
+La tarea de generación de código intermedio puede agruparse en los siguientes pasos, que se explicarán a continuación:
+
+\begin{enumerate}
+    \item Parsing de los datos en formato XHTML / hOCR
+    \item Truncado de líneas y reasignación de líneas a regiones
+    \item Tratamiento de las regiones
+    \item Impresión del lenguaje intermedio
+\end{enumerate}    
 
 \subsection{Parsing de los datos}
 
-Dado que ambos tipos de entradas tienen en común el formato (X)HTML, se utiliza el módulo \verb|HTMLParser| de la librería estándar Python para tratarlas. Se definen dos clases que extienden de \verb|HTMLParser| y sobrescriben los métodos \verb|__init__|, \verb|handle_starttag|, \verb|handle_data| y \verb|handle_endtag|. \verb|handle_starttag| y \verb|handle_endtag| son llamados cuando el parser encuentra el comienzo y final de un tag, respectivamente. \verb|handle_data| es invocado para tratar los datos de la etiqueta, en este caso interesa el contenido de las palabra y la ocurrencia de las líneas.
+Dado que ambos tipos de entradas tienen en común el formato (X)HTML, se utiliza el módulo \verb|HTMLParser| de la librería estándar Python para tratarlas. Se definen dos clases que extienden de \verb|HTMLParser| y sobrescriben los métodos \verb|__init__()|, \verb|handle_starttag()|, \verb|handle_data()| y \verb|handle_endtag()|. \verb|handle_starttag()| y \verb|handle_endtag()| son llamados cuando el parser encuentra el comienzo y final de un tag, respectivamente. \verb|handle_data()| es invocado para tratar los datos de la etiqueta, en este caso interesa el contenido de las palabra y la ocurrencia de las líneas.
 
 \noindent\begin{minipage}{.45\textwidth}
     \begin{lstlisting}[language=Python,caption=Captura de las palabras.,frame=tlrb,label={lst:captura-de-palabras}]{CapturaDePalabras}
@@ -323,24 +322,37 @@ def get_coords(self, attrs):
     \end{lstlisting}
 \end{minipage}
 
-En el Listado \ref{lst:captura-de-palabras} se puede como se utiliza una lista con estructuras de tipo diccionario para almacenar todos los datos de una palabra. Las coordenadas se recuperon previamente de los atributos del tag, tal como se muestra en el Listado \ref{lst:recuperacion-coordenadas}. También se utiliza un contador para generar los identificadores de las palabras en la variable \verb|self.word_counter|. Por último, al almacenar las líneas, se les asocian las palabras que contienen por medio de los identificadores descritos.
+En el Listado \ref{lst:captura-de-palabras} se puede como se utiliza una lista donde se almacenan estructuras de tipo diccionario para con todos los datos de una palabra. Las coordenadas se recuperaron previamente de los atributos del etiqueta en el método de apertura, tal como se muestra en el Listado \ref{lst:recuperacion-coordenadas}. También se utiliza un contador para generar los identificadores de las palabras en la variable \verb|self.word_counter|. Por último, al almacenar las líneas, se les asocian las palabras que contienen por medio de los identificadores descritos. 
 
 \subsection{Truncado de líneas y reasignación de líneas a regiones}
 
-Una vez leída la información se tienen en memoria todas las líneas y palabras con sus posiciones. El siguiente paso consiste en asignar las líneas a las regiones que les corresponden atendiendo, a las coordenadas de ambas.
+Una vez leída la información, se tienen en memoria todas las líneas y palabras con sus posiciones. El siguiente paso consiste en asignar las líneas a las regiones que les corresponden atendiendo a las coordenadas de ambas.
 
-Para asociar líneas o palabras a regiones se utiliza un algoritmo genérico que se explicará primero. El truncado de líneas resuelve un problema descubierto durante el desarrollo y que no había sido considerado previamente. La longitud de las líneas identificadas por los procesos de extracción excede, en muchos casos, el tamaño de las columnas definidas en las plantillas. Por tal motivo, es necesario truncar las líneas y crear otras nuevas que encajen dentro de las columnas y reasignar las palabras a las nuevas columnas. En la Imagen \ref{fig:visor-formato-hocr} del Apéndice se puede ver, por ejemplo, que los datos correspondientes a la tarifa y al IVA, están en la misma zona verde, la misma línea. Esto quiere decir que estas herramientas identifican una línea como una secuencia de caracteres próximos, y no como todo el contenido de una fila de la tabla.
+Para asociar líneas o palabras las regiones definidas en las plantillas se utiliza un algoritmo genérico. Es genérico ya que compara dos regiones rectangulares y resuelve si una está sobre la otra, en base a sus coordenadas y dimensiones. Este algoritmo se utiliza en varios punto del programa para clasificar líneas en regiones o líneas en columnas de las regiones.
 
-El algoritmo para considerar si una región está dentro de otra utiliza comparaciones sobre las posiciones relativas de ambos elementos. Al comienzo del desarrollo se realizó una primera implementación que utilizaba conjuntos como tipo de dato, pero resultaba excesivamente lenta. Con la aproximación actual se consideran nueve situaciones: una región puede estar dentro de la otra, sobre alguna de las esquinas de la segunda o sobre alguno de los lados. Una representación gráfica de los casos puede verse en la Imagen \ref{fig:casos-algoritmo-seleccion-regiones} del Apéndice. Los datos de entrada son la lista de áreas que se quieren clasificar y la zona sobre la que se quiere realizar el test. Un bucle recorre las áreas evaluando los criterios. La asignación se produce si todas las condiciones son verdaderas en alguno de los casos. Para considerar los casos donde al área está sobre el borde, se tiene en cuenta un margen de proximidad, configurado para el $ 30\% $. Con esto se regula cuando puede sobrepasar la figura para seguir siendo considerada válida para el caso.
+Al comienzo del desarrollo se realizó una primera implementación para resolver esta clasificación pero utilizaba Sets de Python como tipo de dato y resultaba excesivamente lenta. 
+
+Con la aproximación actual se comparan nueve casos. Si hay dos rectángulos, $ \alpha $ y $ \beta $ y se quiere saber $ \alpha $ está dentro de $ \beta $, primero se comprueba si, atendiendo a sus coordenadas, está totalmente dentro. Este es un caso muy frecuente. En los demás se mira si $ \alpha $ podría estar sobre alguno de los lados de $ \beta $ y por último si $ \alpha $ podría estar en alguna sobre alguna de las esquinas de $ \beta $. Una representación gráfica de los casos puede verse en la Imagen \ref{fig:casos-algoritmo-seleccion-regiones} del Apéndice. 
+
+Los datos de entrada son la lista de áreas que se quieren clasificar y la zona sobre la que se quiere realizar el test. Un bucle recorre las áreas evaluando los criterios. La asignación de un área a la zona se produce si todas las condiciones son verdaderas en alguno de los casos. Para considerar las situaciones donde $ \alpha $ está sobre el borde de $ \beta $, se tiene en cuenta un margen de proximidad, configurado para el $ 30\% $. Con esto se regula cuando puede sobresalir $ \alpha $ de $ \beta $ para seguir siendo considerada válida para el caso. En el Listado \ref{lst:condiciones-caso-b} se puede ver el código donde se evalúan las condiciones para ser perteneciente al caso B mostrado en \ref{fig:casos-algoritmo-seleccion-regiones}.
 
 \begin{lstlisting}[language=Python,caption={Evaluación de las condiciones del Caso B.},label=lst:condiciones-caso-b]
-case_b = [element[k_x_max] > container[k_x_min],
-element[k_x_max] <= container[k_x_max],
-element[k_y_min] >= container[k_y_min],
-element[k_y_max] <= container[k_y_max],
-element[k_x_min] < container[k_x_min],
-container[k_x_min] - element[k_x_min] < x_length]
+    case_b = [element[k_x_max] > container[k_x_min],
+    element[k_x_max] <= container[k_x_max],
+    element[k_y_min] >= container[k_y_min],
+    element[k_y_max] <= container[k_y_max],
+    element[k_x_min] < container[k_x_min],
+    container[k_x_min] - element[k_x_min] < x_length]
 \end{lstlisting}
+
+El truncado de líneas resuelve un problema descubierto durante el desarrollo y que no había sido considerado previamente. La longitud de las líneas identificadas por los procesos de extracción excede frecuentemente el tamaño de las columnas definidas en las plantillas. A la hora de generar el lenguaje hay que colocar las palabras en una única columnas de las tablas. Por tal motivo, es necesario truncar las líneas y crear otras nuevas que encajen dentro de las columnas y reasignar las palabras a las nuevas columnas. En la Imagen \ref{fig:visor-formato-hocr} del Apéndice se puede ver, por ejemplo, que los datos correspondientes a la tarifa y al IVA, están en la misma zona verde, la misma línea. Esto quiere decir que para el formato hOCR o \verb|pdftotext| una línea se asimila como una secuencia de caracteres próximos, y no como todo el contenido de una fila de la tabla o una línea de una página de texto.
+
+% TODO detalle del algoritmo de truncado
+
+\subsection{Tratamiento de las regiones}
+
+
+
 
 % TODO describir la implementación en etapas, como el diagrama general
     % TODO Concepto de línea de identificación
@@ -366,7 +378,7 @@ La Tabla \ref{tab:datos-intermedios} presenta los datos intermedios generados. E
         \#doc-xxx-language.txt & Documento global del lenguaje intermedio \\
         \#doc.id & Identificador de la plantilla \\
         \#doc-\#pag.xml & XML resultado de la extracción de texto \\
-        \#doc-\#pag.txt & Texto obtenido de pdftotext \\
+        \#doc-\#pag.txt & Texto obtenido de \verb|pdftotext| \\
     \end{tabular}
     \caption{Resumen de los datos de salida.}    
     \label{tab:datos-intermedios}
