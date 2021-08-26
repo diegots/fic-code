@@ -378,16 +378,14 @@ Estas clases descritas están diseñadas para ser genéricas, no estando asociad
 
 \subsection{Impresión del lenguaje}
 
-En este punto se tienen las regiones con sus líneas asignadas. En el módulo \verb|printer_region.py| se encuentran las funciones que toman la regiones, líneas y palabras y crean el texto que finalmente se escribirá a disco. Tomando por ejemplo la implementación para las tablas T1, los pasos que se siguen consisten en buscar todas las líneas \emph{reales} de la tabla. Por líneas reales se entienden aquellas que forman una unidad de contenido, independientemente de cuantas líneas físicas tenga dicho contenido. Actualmente se consideran las líneas de la primera columnas como líneas que indican contenido.
+En este punto se han asignado las líneas a las regiones que les corresponde. En el módulo \verb|printer_region.py| se encuentran las funciones que toman la regiones, líneas y palabras y crean el texto que finalmente se escribirá a disco. Por ejemplo, en la implementación para las tablas T1, los pasos que se siguen consisten en buscar todas las líneas \emph{reales} de la tabla. Por líneas reales se entienden aquellas que forman una unidad de contenido, independientemente de cuantas líneas físicas tenga dicho contenido. Para ello se toman las líneas de la primera columna. Estas líneas se comparan en altura con todas las demás que están en la tabla. Para estar consideradas al mismo nivel la altura debe ser la misma, aceptando un margen del $ 25\% $ de desviación. Este porcentaje es el que mejor resultados ofreció en las pruebas. A continuación se trasladan a la primera todas las palabras que están en segundas líneas físicas. Ya por último solo queda recorrer las líneas, columnas y palabras almacenando los valores generados.
 
-- Se obtienen las líneas de la primera columna, que se consideran las líneas reales
-- 
-
+La escritura en disco se realiza de vuelta en la tarea, donde además se imprimen los ficheros de líneas y palabras que se listan en la Tabla \ref{tab:datos-de-salida}.
 
 % TODO información de bounding box
 % TODO explicar se utiliza el algoritmo de Hough en los ejemplos donde es efectivo
 
-La Tabla \ref{tab:datos-intermedios} presenta los datos intermedios generados. Estos datos no se exportan a al directorio de salida.
+Por último, en la Tabla \ref{tab:datos-intermedios} se presenta la relación de ficheros existentes cuando la generación del lenguaje intermedio finaliza. Estos datos no se exportan a al directorio de salida.
 
 \begin{table}[ht]
     \centering
@@ -395,23 +393,147 @@ La Tabla \ref{tab:datos-intermedios} presenta los datos intermedios generados. E
         Esquema del nombre del fichero & Contenido \\
         \hline
         \hline
-        \#doc-\#pag-language.txt & Lenguaje intermedio para una página \\
-        \#doc-\#pag.box & Lista caracter a caracter y coordenadas (Tesseract) \\
-        \#doc-\#pag.hocr & Dados en formato hOCR (Tesseract) \\
-        \#doc-xxx-language.txt & Documento global del lenguaje intermedio \\
-        \#doc.id & Identificador de la plantilla \\
-        \#doc-\#pag.xml & XML resultado de la extracción de texto \\
-        \#doc-\#pag.txt & Texto obtenido de \verb|pdftotext| \\
+        \verb|#doc-#pag-language.txt| & Lenguaje intermedio para una página \\
+        \verb|#doc-#pag.box| & Lista caracter a caracter y coordenadas (Tesseract) \\
+        \verb|#doc-#pag.hocr| & Dados en formato hOCR (Tesseract) \\
+        \verb|#doc-xxx-language.txt| & Documento global del lenguaje intermedio \\
+        \verb|#doc.id| & Identificador de la plantilla \\
+        \verb|#doc-#pag.xml| & XML resultado de la extracción de texto \\
+        \verb|#doc-#pag.txt| & Texto obtenido de \verb|pdftotext| \\
     \end{tabular}
     \caption{Resumen de los datos de salida.}    
     \label{tab:datos-intermedios}
 \end{table}
 
 \section{Procesamiento del lenguaje intermedio}
-% TODO explicar como es la estructura general de Flex / Bison
-% TODO mostrar las modificaciones introducidas
-% TODO explicar la carga dinámica de librerías
-% TODO Mencionar que el modelo de plugins permite entregar al cliente solo los modelos comprados
+
+% Diferencias organizativas
+La organización de la aplicación a nivel código fuente en esta parte del proyecto presenta diferencias respecto a los que sería un programa clásico hecho en Flex y Bison, tal como se presenta en la Subsección \ref{subsec:flex}. En caso de proceder del modo tradicional, las reglas de distintos modelos estaría todas en el mismo ficheros, que crecería con cada nuevo caso a tratar. Además, organizar las reglas para evitar colisiones supondría un alto coste de mantenimiento. Se hacía necesario flexibilizar el esquema  para permitir que con un mismo ejecutable fuese posible iniciar múltiples parejas de reglas léxicas y sintácticas. Una alternativa que se barajó fue la de crear un ejecutable por cada modelo, aplicaciones independientes, pero se descartó por ser excesivamente compleja y poco elegante. En la aproximación utilizada, cada modelo de documento tienen su par de ficheros \verb|.y| y \verb|.l|, que son totalmente independientes a otros ficheros de reglas. No solo eso, además, la compilación también es independiente. Se puede considerar que cada modelo se implementa como un plugin al sistema.
+
+
+\subsection{Carga dinámica del parser}
+
+Incluyendo \verb|dlfcn.h| en un programa C se tienen acceso a las funciones que permiten realizar la carga dinámica de ficheros \verb|.so| y la ejecución de una función cuyo prototipo sea conocido de antemano. En este caso, primero se define el puntero a función que se necesita:
+
+\begin{lstlisting}[language=C,caption={},label={}]
+int (*parse)();
+\end{lstlisting}
+
+Luego se realiza la apertura de la librería dinámica que se quiere utilizar, pero no se cargan en memoria los símbolos que contiene. La inicialización es lazy:
+
+\begin{lstlisting}[language=C,caption={},label={}]
+handle = dlopen(app_config->plugin_path, RTLD_LAZY);
+\end{lstlisting}
+
+Se obtiene la dirección de memoria del símbolo que se quiere utilizar, en este caso la función \verb|yyparse()|:
+
+\begin{lstlisting}[language=C,caption={},label={}]
+parse = dlsym(handle, PARSER_NAME);
+\end{lstlisting}
+
+Y por último se ejecuta el parser a través del puntero a función:
+
+\begin{lstlisting}[language=C,caption={},label={}]
+int completed = (*parse)();
+\end{lstlisting}
+
+Para finalizar se cierra la librería compartida y, en este caso, también en fichero de entrada.
+
+\begin{lstlisting}[language=C,caption={},label={}]
+dlclose(handle);
+fclose(yyin);
+\end{lstlisting}
+
+\subsection{Dependencias entre módulos}
+% dependencias entre módulos 
+
+% variables globales
+
+% compilación separada
+
+
+% flujo alto nivel
+
+Estos ficheros de reglas son totalmente independientes entre si y se compilan a librerías dinámicas (extensión \verb|.so|). La carga de las reglas se decide en tiempo de ejecución. Por otra parte, si que existen aspectos que se necesitaba fuesen compartidos, empezando por la función \verb|main()| pero también los tipos de datos para representar las regiones, los módulos de generación y ciertas variables globales. En el Listado \ref{lst:fuentes-del-procesador-de-lenguajes} del Apéndice se pueden ver todos los ficheros que forman parte del procesador de lenguajes. Alternativamente, en la Tabla \ref{tab:modulos-procesador-lenguaje} están relacionados los más relevantes.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{l l}
+        Módulo & Responsabilidades \\
+        \hline
+        \hline
+        \multicolumn{2}{c}{tool-parser/main/ ↓} \\
+        \hline    
+        \verb|main.c| & Inicializaciones, argumentos de entrada, carga e invocación del parser \\
+        \verb|app-conf.h| & Tipos de datos para la configuración de la aplicación \\
+        \verb|gen.c| & Generación de tablas de datos y palabras seleccionadas \\
+        \verb|get-amounts.c| & Generación de importes \\
+        \verb|global-vars.h| & Definiciones de variables globales para usar en Bison \\
+        \verb|types.h| & Estructuras de datos para la fase generación \\
+        \verb|flex-prologue.{c,h}| & Prólogo Flex único \\
+        \verb|bison-prologue.{c,h}| & Prólogo Bison único \\
+        \verb|bison-epilogue.{c,h}| & Epílogo Bison único \\
+        \hline
+        \multicolumn{2}{c}{tool-parser/plugin/ ↓} \\            
+        \hline        
+        \verb|*.{l}| & Fuentes Flex para todos los modelos \\
+        \verb|*.{y}| & Fuentes Bison para todos los modelos \\
+        \hline
+        \multicolumn{2}{c}{tool-parser/lib/ ↓} \\     
+        \hline
+        \verb|util.c| & Utilidades para toda la aplicación \\
+    \end{tabular}
+    \caption{Módulos de procesador de lenguaje}    
+    \label{tab:modulos-procesador-lenguaje}
+\end{table}
+
+El funcionamiento de alto nivel es como sigue: se inicia el método \verb|main()| que inicializa la configuración de la aplicación y también algunas variables globales. Después se gestionan los argumento de entrada, tras lo cual se carga la librería dinámica que contiene la función \verb|yyparse()|, a la cual se llama, dando comienzo al proceso de parsing. Al finalizar se libera la memoria utilizada.
+
+El proceso del parser conlleva varios pasos. En el primer paso se tokeniza la entrada, el lenguaje intermedio en este caso, aplicando las reglas léxicas y se evalúan las sintácticas de tal manera que se va construyendo el \acrlong{ast}. Si no se produce ningún error, se consume la entrada y se llega al axioma, donde se llama a las funciones de generación de código, pasando el árbol. Las funciones de generación recorren el \acrshort{ast} creando el texto que se volcará finalmente a disco para cada uno de los ficheros que componen la salida.
+
+% TODO Variables globales? Explicar como se enlazan los ficheros fuente y para qué son las variables globales
+
+En esta implementación, los elementos comunes a todos los modelos se han externalizado y se relacionan por medio de sentencias \verb|#include|. Esto permite aislar los ficheros Flex de tal manera que su contenido sea únicamente el necesario para tratar el modelo de documento. El las Imágenes \ref{fig:dependencia-flex} y \ref{fig:dependencia-bison} se presenta la relación de dependencias.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.40\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imaxes/h-implementacion/relaciones-flex}
+        \caption{Dependencias Flex}
+        \label{fig:dependencia-flex}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.59\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imaxes/h-implementacion/relaciones-bison}
+        \caption{Dependencias Bison}
+        \label{fig:dependencia-bison}
+    \end{subfigure}
+    %\caption{Dependencias}
+    %\label{fig:dependencias-flex-bison}
+\end{figure}
+
+Las variables globales son utilizadas para poder acceder durante la fase de generación a información que no viene en el \acrshort{ast}. Por ejemplo, la información de configuración, que se obtienen durante el comienzo en \verb|main()| no se puede consultar. Para la generación del JSON de importes, sea utiliza una variable distinta al \acrshort{ast} que tampoco estaría disponible. Por tal motivo se recurre al uso de estas variables globales.
+
+
+% TODO Como funciona la carga dinámica? Qué facilidad se utiliza? Como se compila?
+
+La carga dinámica emplea la librería 
+
+% TODO tipos de datos utilizados. Explicar que todos los procesos de generación recorren el árbol de parseo extrayendo la información necesaria
+
+% TODO mostrar reglas léxicas y sintácticas para algún caso
+
+% TODO tabla estática de funciones para la generación
+
+% TODO generación de las palabras selecconadasd
+
+% TODO generación de la tabla CSV
+
+% TODO generación de los importes
+
+
 % TODO mostrar como es el formato de un fichero Flex y también Bison
 % TODO Mostrar como se utiliza la librería para generación de ficheros JSON
 % TODO Mencionar el pretty printing con jq
@@ -425,13 +547,13 @@ La Tabla \ref{tab:datos-de-salida} presenta un resumen de los datos que se obtie
         Esquema del nombre del fichero & Contenido \\
         \hline
         \hline
-        \#doc-\#pag-lines.json & Líneas de la página, ubicaciones y palabras asociadas. \\
-        \#doc-\#pag-selected.json & Palabras de la página seleccionadas como relevantes. \\
-        \#doc-\#pag-words.json & Todas las palabras del documento y sus ubicaciones. \\
-        \#doc.jpg & Imagen de la página. \\
-        \#doc-amounts.json & Importes totales e individuales obtenidos de las tablas. \\
-        \#doc-table.csv & Datos de la tabla de datos principal. \\
-        \#doc.name & Nombre original del fichero PDF.\\
+        \verb|#doc-#pag-lines.json| & Líneas de la página, ubicaciones y palabras asociadas. \\
+        \verb|#doc-#pag-selected.json| & Palabras de la página seleccionadas como relevantes. \\
+        \verb|#doc-#pag-words.json| & Todas las palabras del documento y sus ubicaciones. \\
+        \verb|#doc.jpg| & Imagen de la página. \\
+        \verb|#doc-amounts.json| & Importes totales e individuales obtenidos de las tablas. \\
+        \verb|#doc-table.csv| & Datos de la tabla de datos principal. \\
+        \verb|#doc.name| & Nombre original del fichero PDF.\\
     \end{tabular}
     \caption{Resumen de los datos de salida.}    
     \label{tab:datos-de-salida}
@@ -451,6 +573,3 @@ La Tabla \ref{tab:datos-de-salida} presenta un resumen de los datos que se obtie
 % TODO valorar si comentar como Docker construye imágenes en capas del software
 
 % TODO valorar si incluir capítulo o sección de pruebas. O, al menos, de pruebas realizadas.
-
-\section{Editor de coordenadas}
-
