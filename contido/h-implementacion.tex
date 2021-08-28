@@ -385,7 +385,7 @@ La escritura en disco se realiza de vuelta en la tarea, donde además se imprime
 % TODO información de bounding box
 % TODO explicar se utiliza el algoritmo de Hough en los ejemplos donde es efectivo
 
-Por último, en la Tabla \ref{tab:datos-intermedios} se presenta la relación de ficheros existentes cuando la generación del lenguaje intermedio finaliza. Estos datos no se exportan a al directorio de salida.
+Por último, en la Tabla \ref{tab:datos-intermedios} se presenta la relación de ficheros existentes cuando la generación del lenguaje intermedio finaliza. Estos datos no se exportan a al directorio de salida. En la tabla se muestran tanto los ficheros para casos de imagen como de texto.
 
 \begin{table}[ht]
     \centering
@@ -408,8 +408,40 @@ Por último, en la Tabla \ref{tab:datos-intermedios} se presenta la relación de
 \section{Procesamiento del lenguaje intermedio}
 
 % Diferencias organizativas
-La organización de la aplicación a nivel código fuente en esta parte del proyecto presenta diferencias respecto a los que sería un programa clásico hecho en Flex y Bison, tal como se presenta en la Subsección \ref{subsec:flex}. En caso de proceder del modo tradicional, las reglas de distintos modelos estaría todas en el mismo ficheros, que crecería con cada nuevo caso a tratar. Además, organizar las reglas para evitar colisiones supondría un alto coste de mantenimiento. Se hacía necesario flexibilizar el esquema  para permitir que con un mismo ejecutable fuese posible iniciar múltiples parejas de reglas léxicas y sintácticas. Una alternativa que se barajó fue la de crear un ejecutable por cada modelo, aplicaciones independientes, pero se descartó por ser excesivamente compleja y poco elegante. En la aproximación utilizada, cada modelo de documento tienen su par de ficheros \verb|.y| y \verb|.l|, que son totalmente independientes a otros ficheros de reglas. No solo eso, además, la compilación también es independiente. Se puede considerar que cada modelo se implementa como un plugin al sistema.
+La organización de la aplicación a nivel código fuente en esta parte del proyecto presenta diferencias respecto a los que sería un programa clásico hecho en Flex y Bison, tal y como se presenta en la Subsección \ref{subsec:flex}. En caso de proceder del modo tradicional, las reglas de distintos modelos estaría todas en el mismo fichero, que crecería con cada nuevo modelo a tratar. Además, organizar las reglas para evitar colisiones supondría un alto coste de mantenimiento. Se hacía necesario flexibilizar el esquema  para permitir que con un mismo ejecutable fuese posible iniciar múltiples analizadores léxicos y sintácticos. Una alternativa que se barajó fue la de crear un ejecutable por cada modelo, aplicaciones independientes, pero se descartó por ser excesivamente compleja y poco elegante. En la aproximación utilizada, cada modelo de documento tienen su par de ficheros \verb|.y| y \verb|.l|, que son totalmente independientes a otros ficheros de reglas. No solo eso, además, la compilación también es independiente. Se puede considerar que cada modelo se implementa como un plugin al sistema.
 
+En el Listado \ref{lst:fuentes-del-procesador-de-lenguajes} del Apéndice se pueden ver todos los ficheros fuente que forman parte del procesador de lenguaje. Alternativamente, en la Tabla \ref{tab:modulos-procesador-lenguaje} están relacionados los más relevantes.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{l l}
+        Módulo & Responsabilidades \\
+        \hline
+        \hline
+        \multicolumn{2}{c}{tool-parser/main/ ↓} \\
+        \hline    
+        \verb|main.c| & Inicializaciones, argumentos de entrada, carga e invocación del parser \\
+        \verb|app-conf.h| & Tipos de datos para la configuración de la aplicación \\
+        \verb|gen.c| & Generación de tablas de datos y palabras seleccionadas \\
+        \verb|get-amounts.c| & Generación de importes \\
+        \verb|global-vars.h| & Definiciones de variables globales para usar en Bison \\
+        \verb|types.h| & Estructuras de datos para la fase generación \\
+        \verb|flex-prologue.{c,h}| & Prólogo Flex único \\
+        \verb|bison-prologue.{c,h}| & Prólogo Bison único \\
+        \verb|bison-epilogue.{c,h}| & Epílogo Bison único \\
+        \hline
+        \multicolumn{2}{c}{tool-parser/plugin/ ↓} \\            
+        \hline        
+        \verb|*.{l}| & Fuentes Flex para todos los modelos \\
+        \verb|*.{y}| & Fuentes Bison para todos los modelos \\
+        \hline
+        \multicolumn{2}{c}{tool-parser/lib/ ↓} \\     
+        \hline
+        \verb|util.c| & Utilidades para toda la aplicación \\
+    \end{tabular}
+    \caption{Módulos de procesador de lenguaje}    
+    \label{tab:modulos-procesador-lenguaje}
+\end{table}
 
 \subsection{Carga dinámica del parser}
 
@@ -502,7 +534,7 @@ Debido a la reestructuración, las variables que se definen en el epílogo de Bi
 
 El path del fichero del lenguaje intermedio se descompone en partes (ruta de salida, número de documento) y se utilizan en la fase de generación para escribir los ficheros de resultados en la ruta y con el nombre correctos. Para la generación de los datos de las tablas en formato CSV no se utiliza el \acrshort{ast} sino que se utiliza una lista donde se guardan únicamente los datos relacionados.
 
-El acceso a esta información no es posible si no se emplean variables globales. El struct \verb|app_config| disponible en el módulo de cabecera \verb|app-conf.h| contiene los tipos de datos para guardar toda la información relativa a los parámetros de entrada y cualquier otro dato de configuración que fuese necesario. En el módulo \verb|global-vars.h| están las declaraciones de las variables que contendrán los datos de importes.
+El acceso a esta información no es posible si no se emplean variables globales. El \verb|struct app_config| disponible en el módulo de cabecera \verb|app-conf.h| contiene los tipos de datos para guardar toda la información relativa a los parámetros de entrada y cualquier otro dato de configuración que fuese necesario. En el módulo \verb|global-vars.h| están las declaraciones de las variables que contendrán los datos de importes.
 
 \subsection{Compilación separada}
 
@@ -525,20 +557,20 @@ gcc -o $@.so -shared bison-epilogue.o flex-prologue.o $@.tab.o $@.yy.o
 
 Las dos primeras líneas generan los analizadores sintáctico y léxico, respectivamente. Se hace en este orden para poder incluir el fichero \verb|*.tab.c| en el analizador léxico. Este fichero contienen las definiciones de tokens compartidas por ambos. En la quinta línea se compila la librería y se obtiene el fichero \verb|.so|.
 
-\subsection{Evaluación léxico-sintáctica}
+\subsection{Análisis léxico}
 
 Cuando se invoca la función \verb|yyparse()| comienza el análisis sintáctico para el modelo cargado. En esta fase se utilizan tanto tipos de datos definidos en \verb|types.h| como otros desarrollados por terceros. 
 
-El árbol de parseo se almacena como un tipo abstracto lista. Algunos de los elementos del árbol, si son recursivos, utilizan a su vez otras listas, hasta llegar las variables que contienen las palabras. La implementación del tipo de datos lista se encuentra en los módulos \verb|lista.{c,h}| y contiene todos los métodos habituales para la creación y liberación de listas e inserción, obtención y borrado de elementos. 
+El árbol de parseo se almacena como un tipo abstracto lista. Algunos de los elementos del árbol, si son recursivos, utilizan a su vez otras listas. Estas relaciones continúan hasta llegar las variables que contienen las palabras. La implementación del tipo de datos lista se encuentra en los módulos \verb|lista.{c,h}| y contiene todos los métodos habituales para la creación y liberación de listas e inserción, obtención y borrado de elementos. 
 
-En el programa, para la manipulación de strings se recurre a funciones de la librería estándar de C como, \verb|strdup()|, pero también se utiliza el tipo de dato \verb|strbuf|, que expone sus métodos en el módulo de cabecera \verb|strbuf.h|. Este módulo tiene operaciones seguras para actuar sobre cadenas. Los \verb|strbuf| se pueden concatenar, copiar y formatear, al estilo \verb|printf()|.
+En el programa, para la manipulación de strings se recurre a funciones de la librería estándar de C como, \verb|strdup()|, pero también se utiliza el tipo de dato \verb|strbuf|, que expone sus métodos en el módulo de cabecera \verb|strbuf.h|. Este módulo tiene operaciones seguras para actuar sobre cadenas. Los \verb|strbuf| se pueden concatenar, copiar y formatear, de igual forma a como se utiliza en \verb|printf()|.
 
 Tanto \verb|lista.c| como \verb|strbuf| han sido desarrolladas por terceros y no forma parte del trabajo realizado para este TFG.
 
-Para almacenar los tipos de regiones se creó el tipo \verb|region| como un \verb|strun| compuesto de un enumerado y un \verb|union|. Cuando se crea una región le asigna un tipo del enumerado y se utiliza para los datos la variable correspondiente. Más tarde en la generación se sigue el mismo mecanismo para recuperar los datos de la lista o tabla correcta.
+Para almacenar los tipos de regiones se creó el tipo \verb|region| como un \verb|struct| compuesto de un enumerado y un \verb|union|. Cuando se crea una nueva región le asigna un tipo del enumerado y se utiliza para los datos la variable correspondiente del \verb|union|. Más tarde en la generación se sigue el mismo mecanismo para recuperar los datos de la lista o tabla correcta:
 
 \noindent\begin{minipage}{.45\textwidth}
-    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{WordValue}
+    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{RegionType}
 typedef struct region {
     enum {
         R_R1,
@@ -550,7 +582,7 @@ typedef struct region {
     \end{lstlisting}
 \end{minipage}\hfill
 \begin{minipage}{.45\textwidth}
-    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{WordValue}
+    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{RegionType}
     union {
         lista r1;
         lista r2;
@@ -562,58 +594,72 @@ typedef struct region {
     \end{lstlisting}
 \end{minipage}
 
+La tablas se almacenan en un \verb|struct| que contiene dos listas, una para las palabras de la cabecera y otra para las filas de la tabla. A su vez, las columnas son listas con palabras:
+
+\noindent\begin{minipage}{.45\textwidth}
+    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{Tables}
+typedef struct table {
+    lista col_titles;
+    lista rows;
+} table;
+    \end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}{.45\textwidth}
+    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{Cols}
+typedef lista cols;
+    \end{lstlisting}
+\end{minipage}
+
+Los ficheros de reglas Flex tienen similitudes en lo que se refiere a los tokens para los delimitadores de las regiones y las palabras. En el Listado \ref{lst:reglas-lexicas} se pueden ver reglas disponibles. Las dos primeras líneas encuentras los delimitadores para el tipo de región T1. En este caso no es necesario ningún valor semántico. La tercera regla corresponde a una palabra de una cabecera (lleva \verb|H| en lugar de \verb|W|). La última regla se utiliza para encontrar las palabras que forman el contenido. Nótese que aquí si se devuelve un valor semántico por medio de la variable \verb|yylval.word_value|. Además se define en la regla una función útil si se necesita depurar el escaner. La activación de esta función se controla por medio del flag \verb|-DDEBUG_LEXER| del preprocesador de C. De tal manera que si este flag no se indica, la función no está presente en el código generado.
+
+\begin{lstlisting}[language=C,caption={Reglas léxicas habituales},label={lst:reglas-lexicas}]
+"T1_START" {return T1_START;}
+"T1_END" {return T1_END;}
+"P"{number}"·H"{number}"·Importe·" {return IMPORTE;}
+"P"{number}"·W"{number}"·"{word}"·" {
+    PRINTF("WORD[\%s]\n", yytext); yylval.word_value = split_id_value(yytext);
+    return WORD; }
+\end{lstlisting}
+
+\verb|word| y \verb|number| son expresiones regulares definidas en la sección de definiciones con la finalidad de ser reutilizables.
+
+\begin{lstlisting}[caption={Expresiones regulares para palabras y números},label={lst:word-and-number}]
+word [\ 0-9A-Za-zÁÉÍÓÚÑáéíóúñ\.\,\-\$\%&\*\?\(\)\"\_\:\'\/\|\+]+
+number [0-9]+
+\end{lstlisting}
+
+Otra responsabilidad de los analizadores léxicos es limpiar los datos recibidos. Las palabras Tarifa e Iva del documento de AC que se muestra en el la Imagen \ref{fig:visor-formato-hocr} del Apéndice llegan juntas en el lenguaje intermedio ubicadas en la columna del IVA. La forma recibida es \verb|P1·W134·32,240010,00·|. El 10 y los dos decimales a la derecha deben separarse y habilitar un mecanismo para poder colocar el dato de la tarifa en su columna. En este caso se genera un token específico, \verb|DOUBLE_WORD| para que el analizador sintáctico pueda tratarlo.
+
+\subsection{Análisis sintáctico}
+
+Aunque las reglas analizan en Bison desde las hojas al axioma, para facilitar la exposición se mostrarán de forma inversa, mostrando aquellas que son comunes a todos los parsers.
+
+El axioma es equivalente a una lista de regiones y en la acción se llama a las dos funciones de generación, \verb|gen_contents()| y \verb|gen_table_amounts()|. Cuando el flujo retorna a la acción llama a una última función, \verb|free_ast()| cuyo cometido es la liberación de la memoria reservada para el \acrshort{ast}.
+
+Las regiones almacenan en el árbol mediante dos reglas, la primera de ellas recursiva:
+
+\begin{lstlisting}[caption={},label={}]
+regions: regions region  {
+    $$ = $1;
+    lista_append(&$$, $2);
+} | region {
+    nueva_lista(&$$);
+    lista_append(&$$, $1); }
+\end{lstlisting}
+
+La recursividad sucede porque el no terminal resultado, \verb|regions|, aparece también en la parte derecha de la regla. Se utiliza recursividad por la izquierda, según se recomienda en el manual de Bison para mantener el uso del espacio del stack acotado. Utilizando recursividad por la derecha el espacio utilizado es proporcional al número de elementos de la secuencia, que necesitan ser movidos a la pila antes de que la regla pueda ser aplicada.
+
+Cuando llega la primera región se produce una reducción por la segunda de las reglas. En ese momento se inicializa la lista de regiones, \verb|$$|, y se  guarda la región actual accediendo al valor semántico de su no terminal, \verb|$1|. Para las sucesivas regiones aplica la primera regla, que tiene que conservar el puntero a la lista y guardar la región desde el segundo no terminal.
+
+Descendiendo un nivel están las reglas para formar las regiones. En este punto se inicializa el \verb|struct region|, asignándose el tipo correspondiente.
+
+\begin{lstlisting}[caption={},label={}]
+region: t1 {$$->type = R_T1;, $$->t1.rows = $1;} | r3 {$$->type = R_R3;}
+\end{lstlisting}
 
 \subsection{Generación de código}
 
-% TODO  -------------------------------------
-
-El funcionamiento de alto nivel es como sigue: se invoca el método \verb|main()|, que inicializa la configuración de la aplicación y también las variables globales. Después se gestionan los argumentos de entrada, tras lo cual se carga la librería dinámica que contiene la función \verb|yyparse()|, a la cual se llama, dando comienzo al proceso de parsing. Al finalizar se libera la memoria utilizada.
-
-El proceso del parser conlleva varios pasos. En el primer paso se tokeniza la entrada, el lenguaje intermedio en este caso, aplicando las reglas léxicas y se evalúan las sintácticas de tal manera que se va construyendo el \acrlong{ast}. Si no se produce ningún error, se consume la entrada y se llega al axioma, donde se llama a las funciones de generación de código, pasando el árbol. Las funciones de generación recorren el \acrshort{ast} creando el texto que se volcará finalmente a disco para cada uno de los ficheros que componen la salida.
-
-% TODO ---------------------------
-
-Estos ficheros de reglas son totalmente independientes entre si y se compilan a librerías dinámicas (extensión \verb|.so|). La carga de las reglas se decide en tiempo de ejecución. Por otra parte, si que existen aspectos que se necesitaba fuesen compartidos, empezando por la función \verb|main()| pero también los tipos de datos para representar las regiones, los módulos de generación y ciertas variables globales. En el Listado \ref{lst:fuentes-del-procesador-de-lenguajes} del Apéndice se pueden ver todos los ficheros que forman parte del procesador de lenguajes. Alternativamente, en la Tabla \ref{tab:modulos-procesador-lenguaje} están relacionados los más relevantes.
-
-\begin{table}[ht]
-    \centering
-    \begin{tabular}{l l}
-        Módulo & Responsabilidades \\
-        \hline
-        \hline
-        \multicolumn{2}{c}{tool-parser/main/ ↓} \\
-        \hline    
-        \verb|main.c| & Inicializaciones, argumentos de entrada, carga e invocación del parser \\
-        \verb|app-conf.h| & Tipos de datos para la configuración de la aplicación \\
-        \verb|gen.c| & Generación de tablas de datos y palabras seleccionadas \\
-        \verb|get-amounts.c| & Generación de importes \\
-        \verb|global-vars.h| & Definiciones de variables globales para usar en Bison \\
-        \verb|types.h| & Estructuras de datos para la fase generación \\
-        \verb|flex-prologue.{c,h}| & Prólogo Flex único \\
-        \verb|bison-prologue.{c,h}| & Prólogo Bison único \\
-        \verb|bison-epilogue.{c,h}| & Epílogo Bison único \\
-        \hline
-        \multicolumn{2}{c}{tool-parser/plugin/ ↓} \\            
-        \hline        
-        \verb|*.{l}| & Fuentes Flex para todos los modelos \\
-        \verb|*.{y}| & Fuentes Bison para todos los modelos \\
-        \hline
-        \multicolumn{2}{c}{tool-parser/lib/ ↓} \\     
-        \hline
-        \verb|util.c| & Utilidades para toda la aplicación \\
-    \end{tabular}
-    \caption{Módulos de procesador de lenguaje}    
-    \label{tab:modulos-procesador-lenguaje}
-\end{table}
-
-
-
-% TODO Como funciona la carga dinámica? Qué facilidad se utiliza? Como se compila?
-
-
-% TODO tipos de datos utilizados. Explicar que todos los procesos de generación recorren el árbol de parseo extrayendo la información necesaria
-
-% TODO mostrar reglas léxicas y sintácticas para algún caso
+% TODO Explicar que todos los procesos de generación recorren el árbol de parseo extrayendo la información necesaria
 
 % TODO tabla estática de funciones para la generación
 
@@ -623,11 +669,13 @@ Estos ficheros de reglas son totalmente independientes entre si y se compilan a 
 
 % TODO generación de los importes
 
-
-% TODO mostrar como es el formato de un fichero Flex y también Bison
 % TODO Mostrar como se utiliza la librería para generación de ficheros JSON
+
 % TODO Mencionar el pretty printing con jq
-% TODO explicar como es el flujo de información y por qué los terminales y no terminales llevan un tipo de dato en Bison
+
+% TODO por qué los terminales y no terminales llevan un tipo de dato en Bison
+
+\subsection{Salida generada}
 
 La Tabla \ref{tab:datos-de-salida} presenta un resumen de los datos que se obtienen como salida del proceso. Todos los ficheros relativos a un documentos llevarán prefijado en número del documento y el número de la página individual, donde sea necesario.
 
