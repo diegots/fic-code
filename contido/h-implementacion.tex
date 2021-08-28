@@ -525,15 +525,49 @@ gcc -o $@.so -shared bison-epilogue.o flex-prologue.o $@.tab.o $@.yy.o
 
 Las dos primeras líneas generan los analizadores sintáctico y léxico, respectivamente. Se hace en este orden para poder incluir el fichero \verb|*.tab.c| en el analizador léxico. Este fichero contienen las definiciones de tokens compartidas por ambos. En la quinta línea se compila la librería y se obtiene el fichero \verb|.so|.
 
-\subsection{Evaluación sintáctica}
+\subsection{Evaluación léxico-sintáctica}
 
-Cuando se invoca la función \verb|yyperse()| comienza el análisis sintáctico para el modelo cargado.
+Cuando se invoca la función \verb|yyparse()| comienza el análisis sintáctico para el modelo cargado. En esta fase se utilizan tanto tipos de datos definidos en \verb|types.h| como otros desarrollados por terceros. 
+
+El árbol de parseo se almacena como un tipo abstracto lista. Algunos de los elementos del árbol, si son recursivos, utilizan a su vez otras listas, hasta llegar las variables que contienen las palabras. La implementación del tipo de datos lista se encuentra en los módulos \verb|lista.{c,h}| y contiene todos los métodos habituales para la creación y liberación de listas e inserción, obtención y borrado de elementos. 
+
+En el programa, para la manipulación de strings se recurre a funciones de la librería estándar de C como, \verb|strdup()|, pero también se utiliza el tipo de dato \verb|strbuf|, que expone sus métodos en el módulo de cabecera \verb|strbuf.h|. Este módulo tiene operaciones seguras para actuar sobre cadenas. Los \verb|strbuf| se pueden concatenar, copiar y formatear, al estilo \verb|printf()|.
+
+Tanto \verb|lista.c| como \verb|strbuf| han sido desarrolladas por terceros y no forma parte del trabajo realizado para este TFG.
+
+Para almacenar los tipos de regiones se creó el tipo \verb|region| como un \verb|strun| compuesto de un enumerado y un \verb|union|. Cuando se crea una región le asigna un tipo del enumerado y se utiliza para los datos la variable correspondiente. Más tarde en la generación se sigue el mismo mecanismo para recuperar los datos de la lista o tabla correcta.
+
+\noindent\begin{minipage}{.45\textwidth}
+    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{WordValue}
+typedef struct region {
+    enum {
+        R_R1,
+        R_R2,
+        R_R3,
+        R_T1,
+        R_T2
+    } type;
+    \end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}{.45\textwidth}
+    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{WordValue}
+    union {
+        lista r1;
+        lista r2;
+        lista r3;
+        table t1;
+        table t2;
+    };
+} region;
+    \end{lstlisting}
+\end{minipage}
+
 
 \subsection{Generación de código}
 
 % TODO  -------------------------------------
 
-El funcionamiento de alto nivel es como sigue: se invoca el método \verb|main()|, que inicializa la configuración de la aplicación y también las variables globales. Después se gestionan los argumento de entrada, tras lo cual se carga la librería dinámica que contiene la función \verb|yyparse()|, a la cual se llama, dando comienzo al proceso de parsing. Al finalizar se libera la memoria utilizada.
+El funcionamiento de alto nivel es como sigue: se invoca el método \verb|main()|, que inicializa la configuración de la aplicación y también las variables globales. Después se gestionan los argumentos de entrada, tras lo cual se carga la librería dinámica que contiene la función \verb|yyparse()|, a la cual se llama, dando comienzo al proceso de parsing. Al finalizar se libera la memoria utilizada.
 
 El proceso del parser conlleva varios pasos. En el primer paso se tokeniza la entrada, el lenguaje intermedio en este caso, aplicando las reglas léxicas y se evalúan las sintácticas de tal manera que se va construyendo el \acrlong{ast}. Si no se produce ningún error, se consume la entrada y se llega al axioma, donde se llama a las funciones de generación de código, pasando el árbol. Las funciones de generación recorren el \acrshort{ast} creando el texto que se volcará finalmente a disco para cada uno de los ficheros que componen la salida.
 
@@ -615,15 +649,26 @@ La Tabla \ref{tab:datos-de-salida} presenta un resumen de los datos que se obtie
     \label{tab:datos-de-salida}
 \end{table}
 
-\section{Compilación y despliegue}
+\section{Despliegue}
 
-\subsection{Makefile}
-% TODO mostrar el Makefile
+Inicialmente no se pensó en Docker para el proyecto. Si se deseaba disponer de algún mecanismo para automatizar los deployments \footnote{Se entienden por deployments todas aquellas actividades necesarias para que un software esté disponible para su uso.} y para ello se seleccionó Ansible, del cual existe un script desarrollado. A raíz de las adaptaciones para la construcción del prototipo surgió la necesidad de ejecutar la aplicación en un entorno Windows. Aunque algunas de las herramientas utilizadas en el proyecto están disponibles en este sistema operativo, por ejemplo a través de Cygwin \footnote{\url{https://www.cygwin.com/}}, tanto el rendimiento como la disponibilidad de todos los paquetes era incierta. Además de otros posibles problemas que pudieran surgir, como el tratamiento de paths en Windows vs. Linux. Docker proporciona una solución apropiada en esta situación.
 
 \subsection{Ansible}
-% TODO mostrar script Ansible
+
+
 
 \subsection{Docker}
+
+Para \emph{Dockerizar} un aplicación se necesita escribir un \verb|Dockerfile|. Este fichero está en la raíz del proyecto. Las sentencias del \verb|Dockerfile| se ejecutan en secuencia para construir la imagen Docker de la aplicación. Una imagen, en este contexto, es el conjunto de instrucciones que permiten a Docker crear un contenedor. Las imágenes se forman a partir de capas superpuestas y cuando una capa cambia también se reconstruyen las superiores. En este caso se utiliza como base Ubuntu 18.04, indicado en el fichero con la instrucción \verb|FROM ubuntu:bionic|. Sobre ella se crean las capas adicionales por medio de varias instrucciones \verb|RUN|. Con ellas se lleva a cabo \footnote{Ver Apéndice, Sección \ref{sec:instalacion-software} para más detalles del repositorio y los paquetes.}:
+
+\begin{enumerate}
+    \item El alta del repositorio de Tesseract actualizado.
+    \item Se instalan todas las dependencias para la ejecución de la aplicación.
+    \item Se instalan paquetes para la compilación en C (\verb|build-essential|, por ejemplo).
+    \item Se copia el proyecto a una carpeta dentro de la imagen.
+    \item Se compila y exporta el directorio de distribución. La instrucción completa es \verb|RUN make -C galiasdoc|, donde \verb|-C| indica a Make que cambie al directorio \verb|galiasdoc| y luego ejecute el target \verb|all| en él. Tras la compilación, todos los ficheros necesarios para la ejecución en el directorio \verb|dist| de la imagen.
+\end{enumerate}
+
 % TODO Mostrar fichero de configuración Docker y su uso
 
 % TODO valorar si comentar como Docker construye imágenes en capas del software
