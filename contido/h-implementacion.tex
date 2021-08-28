@@ -413,7 +413,7 @@ La organización de la aplicación a nivel código fuente en esta parte del proy
 
 \subsection{Carga dinámica del parser}
 
-Incluyendo \verb|dlfcn.h| en un programa C se tienen acceso a las funciones que permiten realizar la carga dinámica de ficheros \verb|.so| y la ejecución de una función cuyo prototipo sea conocido de antemano. En este caso, primero se define el puntero a función que se necesita:
+Definiendo el include de \verb|dlfcn.h| en un programa C se tienen acceso a las funciones que permiten realizar la carga dinámica de ficheros \verb|.so| y la ejecución de una función cuyo prototipo sea conocido de antemano. En este caso, primero se define el puntero a función que se necesita:
 
 \begin{lstlisting}[language=C,caption={},label={}]
 int (*parse)();
@@ -425,13 +425,13 @@ Luego se realiza la apertura de la librería dinámica que se quiere utilizar, p
 handle = dlopen(app_config->plugin_path, RTLD_LAZY);
 \end{lstlisting}
 
-Se obtiene la dirección de memoria del símbolo que se quiere utilizar, en este caso la función \verb|yyparse()|:
+Se obtiene la dirección de memoria del símbolo que se quiere utilizar, en este caso la función \verb|yyparse()|. Esta es la función la define Bison:
 
 \begin{lstlisting}[language=C,caption={},label={}]
 parse = dlsym(handle, PARSER_NAME);
 \end{lstlisting}
 
-Y por último se ejecuta el parser a través del puntero a función:
+Y por último se ejecuta el parser a través del puntero a función. Cuando el proceso finaliza correctamente la variable \verb|completed| valdrá 0. En caso de valer 1, lo más habitual es que se produjese un error de parser:
 
 \begin{lstlisting}[language=C,caption={},label={}]
 int completed = (*parse)();
@@ -445,14 +445,99 @@ fclose(yyin);
 \end{lstlisting}
 
 \subsection{Dependencias entre módulos}
-% dependencias entre módulos 
 
-% variables globales
+Al tener una colección de parsers, las secciones de los prólogos y el epílogo de Bison tienen partes comunes en todos los casos. Para evitar redundancias se crearon módulos específicos para albergar todo aquello que es común a todos los parses y realiza su inclusión previamente a cualquier otro contenido. Haciéndolo así, los analizadores no pierden las secciones sino que estas contienen únicamente las definiciones específicas para tratar cada una su modelo. La relación de dependencias puede verse en las Figuras \ref{fig:dependencia-flex} y \ref{fig:dependencia-bison}
 
-% compilación separada
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.40\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imaxes/h-implementacion/relaciones-flex}
+        \caption{Dependencias Flex}
+        \label{fig:dependencia-flex}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.59\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imaxes/h-implementacion/relaciones-bison}
+        \caption{Dependencias Bison}
+        \label{fig:dependencia-bison}
+    \end{subfigure}
+    %\caption{Dependencias}
+    %\label{fig:dependencias-flex-bison}
+\end{figure}
 
+Por ejemplo, en \verb|flex-prologue.c| se puede encontrar la implementación de la función \verb|split_id_value| (el prototipo completo es \verb| word_value *split_id_value(char *contents)|) cuyo cometido es recibir una palabra como, \verb|P1·W146·365·|, dividirla en componentes y crear su representación en memoria. El tipo de dato definido para las palabras es un \verb|struct| y se puede encontrar en \verb|types.h|:
 
-% flujo alto nivel
+\noindent\begin{minipage}{.45\textwidth}
+    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{WordValue}
+typedef struct word {
+    char *value;
+    char *w_id_string;
+    int w_id_numeric;
+    \end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}{.45\textwidth}
+    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{WordValue}
+    int w_id_numeric;
+    char *w_page_number_string;
+    int w_page_number_numeric;
+} word_value;
+    \end{lstlisting}
+\end{minipage}
+
+Para evitar la necesidad de conversiones en cualquier otros punto del programa, los identificadores se guardan como strings, útil durante escritura en disco, y como enteros, en el caso de necesitar realizar cualquier operación con ellos.
+
+El fichero \verb|bison-prologue.h| contiene las definiciones de prototipos de \verb|yyerror()| e \verb|yylex()|, que son llamadas durante la ejecución de \verb|yyparse()|. \verb|yylex()| es la función para ejecutar el escáner. \verb|yyerror()|, que se define en \verb|bison-epilogue.c| tienen por finalidad mostrar los errores del tratamiento por la salida de error, \verb|stderr|.
+
+\subsection{Variables globales}
+
+Debido a la reestructuración, las variables que se definen en el epílogo de Bison no están disponibles durante el parseo. El epílogo es donde está normalmente la función \verb|main()|. Aquí la función \verb|main()| es totalmente independiente y tienen su módulo propio. Esto es un inconveniente debido a que hay información necesaria que no va a ser accesible fuera del \verb|main()|. Por ejemplo, los parámetros de entrada al programa, que son tres:
+
+\begin{itemize}
+    \item La ruta al fichero del lenguaje intermedio.
+    \item La ruta al fichero del identificador del documento (el fichero \verb|.id|).
+    \item Y la ruta al plugin, para poder realizar la carga dinámica.
+\end{itemize}
+
+El path del fichero del lenguaje intermedio se descompone en partes (ruta de salida, número de documento) y se utilizan en la fase de generación para escribir los ficheros de resultados en la ruta y con el nombre correctos. Para la generación de los datos de las tablas en formato CSV no se utiliza el \acrshort{ast} sino que se utiliza una lista donde se guardan únicamente los datos relacionados.
+
+El acceso a esta información no es posible si no se emplean variables globales. El struct \verb|app_config| disponible en el módulo de cabecera \verb|app-conf.h| contiene los tipos de datos para guardar toda la información relativa a los parámetros de entrada y cualquier otro dato de configuración que fuese necesario. En el módulo \verb|global-vars.h| están las declaraciones de las variables que contendrán los datos de importes.
+
+\subsection{Compilación separada}
+
+La obtención los ejecutables se automatiza con GNU Make y dado que la carga de los parser se realiza como librerías dinámicas, la compilación se puede llevarse a cabo de forma separada ya que los parsers no se enlazan con el programa principal. Para su ejecución es posible crear distribuciones que contengan algunos parsers y no otros.
+Para la obtención de las librerías dinámicas se compilan primero los módulos dependientes de los que se ha hablado anteriormente, prólogos y epílogo, y también los módulos utilizados en la generación en la fase de generación \footnote{En las líneas de código de ejemplo la variable $ \$@ $, propia de Make, contiene el nombre del fichero que se va a compilar.}:
+
+\begin{lstlisting}[language=C,caption={},label={}]
+gcc -fPIC -c $@.c
+\end{lstlisting}
+
+El parámetro \verb|fPIC| de GCC compila los módulos de manera que el código generado no depende de estar en una dirección específica para funcionar y es necesario para las librerías dinámicas. A continuación ya se puede compilar cada uno de los parsers:
+
+\begin{lstlisting}[language=C,caption={},label={}]
+bison -y -Wno-yacc -d -r all -o $(PLUGIN)/$@.tab.c $(PLUGIN)/$@.y
+flex -o $(PLUGIN)/$@.yy.c $(PLUGIN)/$@.l
+gcc -fPIC -c $(PLUGIN)/$@.tab.c
+gcc -fPIC -c $(PLUGIN)/$@.yy.c
+gcc -o $@.so -shared bison-epilogue.o flex-prologue.o $@.tab.o $@.yy.o
+\end{lstlisting}
+
+Las dos primeras líneas generan los analizadores sintáctico y léxico, respectivamente. Se hace en este orden para poder incluir el fichero \verb|*.tab.c| en el analizador léxico. Este fichero contienen las definiciones de tokens compartidas por ambos. En la quinta línea se compila la librería y se obtiene el fichero \verb|.so|.
+
+\subsection{Evaluación sintáctica}
+
+Cuando se invoca la función \verb|yyperse()| comienza el análisis sintáctico para el modelo cargado.
+
+\subsection{Generación de código}
+
+% TODO  -------------------------------------
+
+El funcionamiento de alto nivel es como sigue: se invoca el método \verb|main()|, que inicializa la configuración de la aplicación y también las variables globales. Después se gestionan los argumento de entrada, tras lo cual se carga la librería dinámica que contiene la función \verb|yyparse()|, a la cual se llama, dando comienzo al proceso de parsing. Al finalizar se libera la memoria utilizada.
+
+El proceso del parser conlleva varios pasos. En el primer paso se tokeniza la entrada, el lenguaje intermedio en este caso, aplicando las reglas léxicas y se evalúan las sintácticas de tal manera que se va construyendo el \acrlong{ast}. Si no se produce ningún error, se consume la entrada y se llega al axioma, donde se llama a las funciones de generación de código, pasando el árbol. Las funciones de generación recorren el \acrshort{ast} creando el texto que se volcará finalmente a disco para cada uno de los ficheros que componen la salida.
+
+% TODO ---------------------------
 
 Estos ficheros de reglas son totalmente independientes entre si y se compilan a librerías dinámicas (extensión \verb|.so|). La carga de las reglas se decide en tiempo de ejecución. Por otra parte, si que existen aspectos que se necesitaba fuesen compartidos, empezando por la función \verb|main()| pero también los tipos de datos para representar las regiones, los módulos de generación y ciertas variables globales. En el Listado \ref{lst:fuentes-del-procesador-de-lenguajes} del Apéndice se pueden ver todos los ficheros que forman parte del procesador de lenguajes. Alternativamente, en la Tabla \ref{tab:modulos-procesador-lenguaje} están relacionados los más relevantes.
 
@@ -487,39 +572,10 @@ Estos ficheros de reglas son totalmente independientes entre si y se compilan a 
     \label{tab:modulos-procesador-lenguaje}
 \end{table}
 
-El funcionamiento de alto nivel es como sigue: se inicia el método \verb|main()| que inicializa la configuración de la aplicación y también algunas variables globales. Después se gestionan los argumento de entrada, tras lo cual se carga la librería dinámica que contiene la función \verb|yyparse()|, a la cual se llama, dando comienzo al proceso de parsing. Al finalizar se libera la memoria utilizada.
-
-El proceso del parser conlleva varios pasos. En el primer paso se tokeniza la entrada, el lenguaje intermedio en este caso, aplicando las reglas léxicas y se evalúan las sintácticas de tal manera que se va construyendo el \acrlong{ast}. Si no se produce ningún error, se consume la entrada y se llega al axioma, donde se llama a las funciones de generación de código, pasando el árbol. Las funciones de generación recorren el \acrshort{ast} creando el texto que se volcará finalmente a disco para cada uno de los ficheros que componen la salida.
-
-% TODO Variables globales? Explicar como se enlazan los ficheros fuente y para qué son las variables globales
-
-En esta implementación, los elementos comunes a todos los modelos se han externalizado y se relacionan por medio de sentencias \verb|#include|. Esto permite aislar los ficheros Flex de tal manera que su contenido sea únicamente el necesario para tratar el modelo de documento. El las Imágenes \ref{fig:dependencia-flex} y \ref{fig:dependencia-bison} se presenta la relación de dependencias.
-
-\begin{figure}
-    \centering
-    \begin{subfigure}[b]{0.40\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{imaxes/h-implementacion/relaciones-flex}
-        \caption{Dependencias Flex}
-        \label{fig:dependencia-flex}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.59\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{imaxes/h-implementacion/relaciones-bison}
-        \caption{Dependencias Bison}
-        \label{fig:dependencia-bison}
-    \end{subfigure}
-    %\caption{Dependencias}
-    %\label{fig:dependencias-flex-bison}
-\end{figure}
-
-Las variables globales son utilizadas para poder acceder durante la fase de generación a información que no viene en el \acrshort{ast}. Por ejemplo, la información de configuración, que se obtienen durante el comienzo en \verb|main()| no se puede consultar. Para la generación del JSON de importes, sea utiliza una variable distinta al \acrshort{ast} que tampoco estaría disponible. Por tal motivo se recurre al uso de estas variables globales.
 
 
 % TODO Como funciona la carga dinámica? Qué facilidad se utiliza? Como se compila?
 
-La carga dinámica emplea la librería 
 
 % TODO tipos de datos utilizados. Explicar que todos los procesos de generación recorren el árbol de parseo extrayendo la información necesaria
 
