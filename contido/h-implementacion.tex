@@ -131,7 +131,7 @@ Se puede ver una muestra del formato hOCR en el Fragmento \ref{lst:salida-hocr-t
 
 Los documentos se identifican para poder asociarles una plantilla. El mecanismo utilizado consiste en buscar en la información extraída el dato que se ha considerado único para la familia de documentos. Para las facturas tratadas un dato único es el NIF o CIF del emisor, pero podría seleccionarse cualquier otros u otros, dependiendo del dominio. Los identificadores están almacenados en los ficheros \verb|id-nif-iva.txt| y \verb|id-cif.txt| en formato \acrshort{csv} en el directorio de datos del sistema.
 
-El script \verb|identify-grep.sh| se encarga de realizar todo el proceso. Primero se leen todos los identificadores por medio de la función \verb|read_identifiers()|, tal como se puede ver en el Listado \ref{lst:lectura-de-identificadores}. Los datos leidos son incorporados a un array.
+El script \verb|identify-grep.sh| se encarga de realizar todo el proceso. Primero se leen todos los identificadores por medio de la función \verb|read_identifiers()|, tal como se puede ver en el Listado \ref{lst:lectura-de-identificadores}. Los datos leídos son incorporados a un array.
 
 \begin{lstlisting}[language=bash,caption={Lectura de identificadores.},label=lst:lectura-de-identificadores]
 read_identifiers() {
@@ -142,7 +142,7 @@ read_identifiers() {
 }
 \end{lstlisting}
 
-A continuación se obtiene la lista de ficheros para los cuales se ha extraído información y se iteran buscando ocurrencias de los identificadores conocidos, En el Código \ref{lst:identifica-documentos} se le indica a \verb|grep| que tenga en cuenta solo los casos en los que el patron abarque una palabra completa (\verb|-w|), y que cambie la salida habitual por otra con el recuento de ocurrencias (\verb|-c|).
+A continuación se obtiene la lista de ficheros para los cuales se ha extraído información y se iteran buscando ocurrencias de los identificadores conocidos, En el Código \ref{lst:identifica-documentos} se le indica a \verb|grep| que tenga en cuenta solo los casos en los que el patrón abarque una palabra completa (\verb|-w|), y que cambie la salida habitual por otra con el recuento de ocurrencias (\verb|-c|).
 
 \begin{lstlisting}[language=bash,caption={Identificación de los documentos.},label=lst:identifica-documentos]
 for file in $files; do
@@ -165,7 +165,7 @@ Cuando se encuentra un identificador válido, se registra en el directorio del d
 % TODO page
 % TODO doc_pages
 
-Las plantillas contienen la información de coordenadas de las regiones de interés seleccionadas para el modelo de documento. En el ejemplo de Código \ref{ejemplo-plantilla} se ver que para almacenar esta información se utiliza el formato JSON. Además de las coordenadas en si mismas, se utilizan otras claves para dar más flexibilidad a la información y poder tratar casos como los documentos de OVH. La clave \verb|id| que aparece al comienzo se utiliza para asociar con los identificadores de los documentos. Luego el array \verb|regions| contiene la colección de regiones existentes en el modelo. Se utiliza \verb|type| para identificar el tipo de región, \verb|yMin| y \verb|yMax| para las coordenadas horizontales. Los límites verticales se almanenan en el array de columnas \verb|cols|. En el caso de regiones con una única columna se utiliza igualmente el array pero con un único elemento.
+Las plantillas contienen la información de coordenadas de las regiones de interés seleccionadas para el modelo de documento. En el ejemplo de Código \ref{ejemplo-plantilla} se ver que para almacenar esta información se utiliza el formato JSON. Además de las coordenadas en si mismas, se utilizan otras claves para dar más flexibilidad a la información y poder tratar casos como los documentos de OVH. La clave \verb|id| que aparece al comienzo se utiliza para asociar con los identificadores de los documentos. Luego el array \verb|regions| contiene la colección de regiones existentes en el modelo. Se utiliza \verb|type| para identificar el tipo de región, \verb|yMin| y \verb|yMax| para las coordenadas horizontales. Los límites verticales se almacenan en el array de columnas \verb|cols|. En el caso de regiones con una única columna se utiliza igualmente el array pero con un único elemento.
 
 \noindent\begin{minipage}{.45\textwidth}
     \begin{lstlisting}[language=Java,caption=Comienzo de la plantilla.,frame=tlrb]{Name}
@@ -266,7 +266,7 @@ parser_type text_with_coords template output_base number_pages page_image_path
 positional arguments:
 parser_type           Selecciona el tipo de parser HTML utilizado. Se puede
 seleccionar entre HOCR y XML.
-text_with_coords      Ruta al fichero del texto extraido/reconocido por OCR
+text_with_coords      Ruta al fichero del texto extraído/reconocido por OCR
 con la información de coordenadas.
 template              Ruta a la plantilla que ha de utilizarse con el
 modelo.
@@ -394,7 +394,7 @@ Por último, en la Tabla \ref{tab:datos-intermedios} se presenta la relación de
         \hline
         \hline
         \verb|#doc-#pag-language.txt| & Lenguaje intermedio para una página \\
-        \verb|#doc-#pag.box| & Lista caracter a caracter y coordenadas (Tesseract) \\
+        \verb|#doc-#pag.box| & Lista carácter a carácter y coordenadas (Tesseract) \\
         \verb|#doc-#pag.hocr| & Dados en formato hOCR (Tesseract) \\
         \verb|#doc-xxx-language.txt| & Documento global del lenguaje intermedio \\
         \verb|#doc.id| & Identificador de la plantilla \\
@@ -478,7 +478,7 @@ fclose(yyin);
 
 \subsection{Dependencias entre módulos}
 
-Al tener una colección de parsers, las secciones de los prólogos y el epílogo de Bison tienen partes comunes en todos los casos. Para evitar redundancias se crearon módulos específicos para albergar todo aquello que es común a todos los parses y realiza su inclusión previamente a cualquier otro contenido. Haciéndolo así, los analizadores no pierden las secciones sino que estas contienen únicamente las definiciones específicas para tratar cada una su modelo. La relación de dependencias puede verse en las Figuras \ref{fig:dependencia-flex} y \ref{fig:dependencia-bison}
+Al tener una colección de parsers, las secciones de los prólogos y el epílogo de Bison tienen partes comunes en todos los casos. Para evitar redundancias se crearon módulos específicos para albergar todo aquello que es común a todos los parsers y realiza su inclusión previamente a cualquier otro contenido. Haciéndolo así, los analizadores no pierden las secciones sino que estas contienen únicamente las definiciones específicas para tratar cada una su modelo. La relación de dependencias puede verse en las Figuras \ref{fig:dependencia-flex} y \ref{fig:dependencia-bison}
 
 \begin{figure}
     \centering
@@ -610,7 +610,7 @@ typedef lista cols;
     \end{lstlisting}
 \end{minipage}
 
-Los ficheros de reglas Flex tienen similitudes en lo que se refiere a los tokens para los delimitadores de las regiones y las palabras. En el Listado \ref{lst:reglas-lexicas} se pueden ver reglas disponibles. Las dos primeras líneas encuentras los delimitadores para el tipo de región T1. En este caso no es necesario ningún valor semántico. La tercera regla corresponde a una palabra de una cabecera (lleva \verb|H| en lugar de \verb|W|). La última regla se utiliza para encontrar las palabras que forman el contenido. Nótese que aquí si se devuelve un valor semántico por medio de la variable \verb|yylval.word_value|. Además se define en la regla una función útil si se necesita depurar el escaner. La activación de esta función se controla por medio del flag \verb|-DDEBUG_LEXER| del preprocesador de C. De tal manera que si este flag no se indica, la función no está presente en el código generado.
+Los ficheros de reglas Flex tienen similitudes en lo que se refiere a los tokens para los delimitadores de las regiones y las palabras. En el Listado \ref{lst:reglas-lexicas} se pueden ver reglas disponibles. Las dos primeras líneas encuentras los delimitadores para el tipo de región T1. En este caso no es necesario ningún valor semántico. La tercera regla corresponde a una palabra de una cabecera (lleva \verb|H| en lugar de \verb|W|). La última regla se utiliza para encontrar las palabras que forman el contenido. Nótese que aquí si se devuelve un valor semántico por medio de la variable \verb|yylval.word_value|. Además se define en la regla una función útil si se necesita depurar el escáner. La activación de esta función se controla por medio del flag \verb|-DDEBUG_LEXER| del preprocesador de C. De tal manera que si este flag no se indica, la función no está presente en el código generado.
 
 \begin{lstlisting}[language=C,caption={Reglas léxicas habituales},label={lst:reglas-lexicas}]
 "T1_START" {return T1_START;}
@@ -628,7 +628,7 @@ word [\ 0-9A-Za-zÁÉÍÓÚÑáéíóúñ\.\,\-\$\%&\*\?\(\)\"\_\:\'\/\|\+]+
 number [0-9]+
 \end{lstlisting}
 
-Otra responsabilidad de los analizadores léxicos es limpiar los datos recibidos. Las palabras Tarifa e Iva del documento de AC que se muestra en el la Imagen \ref{fig:visor-formato-hocr} del Apéndice llegan juntas en el lenguaje intermedio ubicadas en la columna del IVA. La forma recibida es \verb|P1·W134·32,240010,00·|. El 10 y los dos decimales a la derecha deben separarse y habilitar un mecanismo para poder colocar el dato de la tarifa en su columna. En este caso se genera un token específico, \verb|DOUBLE_WORD| para que el analizador sintáctico pueda tratarlo.
+Otra responsabilidad de los analizadores léxicos es limpiar los datos recibidos. Las palabras Tarifa e IVA del documento de AC que se muestra en el la Imagen \ref{fig:visor-formato-hocr} del Apéndice llegan juntas en el lenguaje intermedio ubicadas en la columna del IVA. La forma recibida es \verb|P1·W134·32,240010,00·|. El 10 y los dos decimales a la derecha deben separarse y habilitar un mecanismo para poder colocar el dato de la tarifa en su columna. En este caso se genera un token específico, \verb|DOUBLE_WORD| para que el analizador sintáctico pueda tratarlo.
 
 \subsection{Análisis sintáctico}
 

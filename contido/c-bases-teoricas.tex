@@ -259,7 +259,7 @@ A partir del diagrama de estados del autómata es posible obtener expresiones de
 
 % unión de conceptos
 
-Queda por tanto clara la relación existente entre las gramáticas, los lenguajes y los autómatas. Una gramática proporciona las reglas para contruir todas las palabras que pertenecen a un lenguaje. El autómata es el modelo matemático abstracto capaz de recibir cadenas del lenguaje y decidir si son válidas para una gramática.
+Queda por tanto clara la relación existente entre las gramáticas, los lenguajes y los autómatas. Una gramática proporciona las reglas para construir todas las palabras que pertenecen a un lenguaje. El autómata es el modelo matemático abstracto capaz de recibir cadenas del lenguaje y decidir si son válidas para una gramática.
 
 % jerarquía Chomsky
 
@@ -345,7 +345,7 @@ El proceso de compilación se divide en varias fases. En la Imagen \ref{fig:anal
     
     Los analizadores utilizados en los compiladores suelen ser de tipo ascendente o descendente. En los ascendentes, el árbol se construye buscando un camino desde las hojas hasta el axioma. Con los descendentes pasa justo lo contrario. En cualquiera de los dos casos la entrada se trata de izquierda a derecha. 
     
-    Los analizadores más habituales son de tipo LL (descendentes) o LR (ascendentes). La primera L indica que en ámbos casos la entrada se trata de izquierda a derecha. La segunda L en LL indica que la derivación se realiza por la izquierda. Y la R en LR indica que la derivación es por la derecha. En el caso de Bison, el analizador utilizado en el proyecto, es un parser de tipo LALR, lo que quiere decir es un LR que utiliza un símbolo de anticipación (\emph{look ahead} LR) para construir el árbol de derivación. 
+    Los analizadores más habituales son de tipo LL (descendentes) o LR (ascendentes). La primera L indica que en ambos casos la entrada se trata de izquierda a derecha. La segunda L en LL indica que la derivación se realiza por la izquierda. Y la R en LR indica que la derivación es por la derecha. En el caso de Bison, el analizador utilizado en el proyecto, es un parser de tipo LALR, lo que quiere decir es un LR que utiliza un símbolo de anticipación (\emph{look ahead} LR) para construir el árbol de derivación. 
 
     \item En la fase de \textbf{análisis semántico} se explota el árbol sintáctico y la tabla de símbolos con el propósito de verificar que el código fuente es consistente con el lenguaje. Algunos ejemplos de tareas realizadas en esta fase son la comprobación de los tipos que comprueba que las operaciones realizadas utilicen los tipos correctamente. Otro aspecto que se realiza es la conversión automática de ciertos tipos como sucede en el caso de Java con las operaciones de Autoboxing y Unboxing. El compilador en este paso añadiría la llamada al método correspondiente para para realizar la conversión entre tipos primitivos y objetos.
     
