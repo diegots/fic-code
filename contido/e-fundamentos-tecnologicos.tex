@@ -33,7 +33,7 @@ Está escrita en C y C++ pero dispone además de interfaces de compatibilidad pa
 Flex y Bison son las versiones modernas de lex y yacc respectivamente. Yacc fue el primero en ser creado por Stephen C. Johnson de los Laboratorios Bell. En esa misma época Mike Lesk y Eric Schmidt crearon lex en AT\&T. Ambos proyectos tuvieron éxito pero tenían licencias restrictivas y por otra parte su rendimiento no era bueno.
 En 1985 Bob Corbett creó la versión inicial del software en que Richard Stallman se basó para crear Bison. De manera parecida, en 1987, Vern Paxson adaptó una versión de lex a C que llega hasta nuestros días como Fast Lexical Analyzer Generator. Bison está mantenido actualmente por la Free Software Foundation. Flex es también open source y se puede encontrar en Github.
 
-Flex es un generador de analizadores léxicos. Esto quiere decir que la salida de flex es un programa C que una vez compilado se puede utilizar para buscar patrones en un texto de entrada. Así mismo Bison se utiliza para generar analizadores sintácticos y su salida también es otro programa C. Es habitual utilizar ambas herramientas trabajando combinadas. Si se hace así, se obtiene un único fuente C que una vez convertido en un programa ejecutable es capaz de realizar una primera fase de análisis léxico seguida del análisis sintáctico. Internamente, los tokens reconocidos por flex son comunicados a Bison, junto con la información semántica, si existe. Flex y Bison pueden aplicarse en la construcción de compiladores e intérpretes pero también para cualquier problema donde deban buscarse patrones en la entrada o la entrada consiste en un lenguaje o instrucciones.
+Flex es un generador de analizadores léxicos. Esto quiere decir que la salida de flex es un programa C que una vez compilado se puede utilizar para buscar patrones en un texto de entrada. Así mismo Bison se utiliza para generar analizadores sintácticos y su salida también es otro programa C. Es habitual utilizar ambas herramientas trabajando combinadas. Si se hace así, se obtiene un único fuente C que una vez convertido en un programa ejecutable es capaz de realizar una primera fase de análisis léxico seguida del análisis sintáctico. Internamente, los tokens reconocidos por flex son comunicados a Bison, junto con la información semántica, si existe. Flex y Bison pueden aplicarse en la construcción de compiladores e intérpretes pero también para cualquier problema donde deban buscarse patrones en la entrada o que la entrada consista en un lenguaje o instrucciones.
 
 En su forma más básica, un programa Flex consiste en un listado de expresiones regulares asociadas a una acción. El escáner generado trabaja leyendo la entrada y buscando patrones en ella. En el Listado \ref{lst:ejemplo-programa-flex} se puede ver un programa básico de ejemplo que es capaz de contar los caracteres, palabras y líneas de un texto. Los programas Flex se dividen en tres secciones separadas por los símbolos \verb|\%\%|, líneas 7 y 11. La primera sección contiene código C global y se suele utilizar para definir un variables y funciones. La segunda sección contiene líneas formadas por expresiones regulares seguidas de las acciones asociadas. La tercera sección sirve como punto de entrada al programa. No se utiliza cuando se trabaja con Bison ya que es este último el encargado de ejecutar la función \verb|yylex()| que da comienzo al análisis léxico.
 
@@ -116,31 +116,5 @@ Docker tiene por objetivos principales:
 \end{itemize}
 
 Existe documentación y guías para comenzar con esta tecnología \cite{dockerInc_web_startGuides} o textos para profundizar en sus características \cite{turnbull_book_dockerBook}.
-
-%TODO valorar incluir una explicación del modelo de construcción por capas de las imágenes docker
-
-\subsection{Ansible}
-
-Ansible es una tecnología para automatizar administración y la configuración de ordenadores. Fue creado inicialmente en el año 2012 por Michael DeHaan, hoy en día forma parte del catálogo de productos de Red Hat.
-
-\begin{wrapfigure}{R}{0.3\textwidth}
-    \centering
-    \includegraphics[width=0.25\textwidth]{imaxes/e-fundamentos-tecnologicos/logo-ansible.png}
-\end{wrapfigure}
-
-Ansible es una tecnología del ámbito de la Gestión de la Configuración. Durante los años 50 el Departamento de Defensa de los Estados Unidos tenía necesidad de crear una metodología para mantener el inventario de los recursos materiales. La Gestión de la Configuración es aquel conjunto de procesos que permiten gestionar los cambios en un sistema utilizando un método conocido de tal manera que se mantenga la integridad del sistema a lo largo del tiempo. La manera de conseguirlo es llevando un registro de los cambios a los que a sido sometido y se consigue conocer cual es el estado actual y como se ha llegado esta este estado. MÉTRICA v3 es un ejemplo de sistema español para la Gestión de la Configuración.
-
-Estas ideas se comenzaron a aplicar a los ordenadores para llevar registro tanto del hardware como de los Sistemas Operativos y aplicaciones instaladas. Gracias al avance y aparición de tecnologías como Ansible, en lugar de generar documentos describiendo los estados se pasa directamente a especificar cuales son los estados deseados y la herramienta realiza los cambios necesarios para asegurar que el estado alcanzado sea el correcto tras la intervención.
-
-Ansible está escrito en Python y su funcionamiento es simple. Para realizar la gestión conecta a las máquinas por SSH y aplica los cambios indicados en los ficheros conocidos como Playbooks. Estos ficheros son guiones escritos en YAML que indican a Ansible las acciones a acometer. La sintaxis de YAML guarda parecidos con Markdown y es fácil de comprender.
-
-En el Listado \ref{lst:ejemplo-playbook} se muestra un Playbook mínimo que da instrucciones a Ansible para realizar un ping a todos los anfitriones definidos.
-
-\begin{lstlisting}[language=Python,caption={Ejemplo mínimo de Playbook.},label=lst:ejemplo-playbook]
----
-- hosts: all
-    tasks:
-        - ping:
-\end{lstlisting}
 
 % TODO Valorar si presentar la librería de generación de JSON en C
