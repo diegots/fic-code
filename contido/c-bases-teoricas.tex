@@ -7,7 +7,7 @@
 
 \lettrine{E}{l} objetivo de este capítulo es sentar las bases tecnológicas y teóricas sobre las que se ha llevado a cabo el proyecto. En particular, se expone de qué manera se consiguen las coordenadas de las palabras y qué tecnologías intervienen para la obtención de la salida en formato estructurado.
 
-Las aplicaciones comerciales utilizan las ubicaciones para seleccionar contenidos relevantes. Lo habitual es que el usuario pueda marque rectángulos sobre las páginas y los procesos de extracción y verificación únicamente tengan en cuenta estas áreas. Para poder hacer esto se necesitan las localizaciones de las palabras, pares clave-valor, tablas, etc. Entre los PDF manejados para la elaboración de este trabajo hay dos categorías importantes: aquellos que tienen texto directamente extraíble y otros donde cada página es una imagen. El primer caso es el habitual en los PDF generados con procesadores de textos u otros software. Se puede comprobar fácilmente si un PDF contiene texto directamente extraíble abriendo el documento con un visor y realizando la selección con el ratón. Si es el caso, se puede evitar hacer OCR del documento y obtener una versión sin errores del texto.
+Las aplicaciones comerciales utilizan las ubicaciones para seleccionar contenidos relevantes. Lo habitual es que el usuario pueda marcar rectángulos sobre las páginas y los procesos de extracción y verificación únicamente tengan en cuenta estas áreas. Para poder hacer esto se necesitan las localizaciones de las palabras, pares clave-valor, tablas, etc. Entre los PDF manejados para la elaboración de este trabajo hay dos categorías importantes: aquellos que tienen texto directamente extraíble y otros donde cada página es una imagen. El primer caso es el habitual en los PDF generados con procesadores de textos u otros software. Se puede comprobar fácilmente si un PDF contiene texto directamente extraíble abriendo el documento con un visor y realizando la selección con el ratón. Si es el caso, se puede evitar hacer OCR del documento y obtener una versión sin errores del texto.
 
 \section{Software para la manipulación de PDF}
 
@@ -115,7 +115,7 @@ La representación de las localizaciones de los elementos identificados por el p
 
 \subsection{El microformato hOCR}
 
-hOCR es un estándar abierto que utiliza HTML como base tecnológica. Se diseñó siguiendo el modelos de los microformatos. Los microformatos son una tecnología ligada al auge de los blogs durante el año 2004. Su objetivo es aportar significado semántico a construcciones HTML, que de otro modo no lo tendrían ya que no forman parte como tal del lenguaje. La especificación hOCR hace uso de etiquetas \verb|DIV| y \verb|SPAN| para los elementos. Para la información se utilizan atributos como \verb|class|, \verb|title| o \verb|style|. Se combina con CSS para ampliar las capacidades del HTML en cuanto a representación de la salida OCR. HTML tiene soporte nativo para muchas características habituales en los documentos como estilo, tipografías, espaciado, etc.
+hOCR es un estándar abierto que utiliza HTML como base tecnológica. Se diseñó siguiendo los modelos de los microformatos \footnote{\url{http://microformats.org/}}. Los microformatos son una tecnología ligada al auge de los blogs durante el año 2004. Su objetivo es aportar significado semántico a construcciones HTML, que de otro modo no lo tendrían ya que no forman parte como tal del lenguaje. La especificación hOCR hace uso de etiquetas \verb|DIV| y \verb|SPAN| para los elementos. Para la información se utilizan atributos como \verb|class|, \verb|title| o \verb|style|. Se combina con CSS para ampliar las capacidades del HTML en cuanto a representación de la salida OCR. HTML tiene soporte nativo para muchas características habituales en los documentos como estilo, tipografías, espaciado, etc.
 
 La especificación hOCR define tres tipos de marcado:
 
@@ -130,10 +130,10 @@ El formato proporciona también información geométrica, posiciones, de las pal
 \section{Reconocimiento Óptico de Caracteres}
 \label{sec:rec-optico-caracteres}
 
-Para realizar el Reconocimiento Óptico de Caracteres se seleccionó Tesseract \cite{ocr_tesseract_raysmithetal.TesseractocrTesseract2021}. Existen otros de fuente abierta que se pueden considerar:
+Para realizar el Reconocimiento Óptico de Caracteres se seleccionó Tesseract \cite{ocr_tesseract_raysmithetal.TesseractocrTesseract2021}. Existen otros proyectos de fuente abierta que se pueden considerar:
 
 \begin{itemize}
-    \item \textbf{OCRopus} \cite{ocr_ocropus_ocropy_project}, \textbf{Kraken}  y \textbf{Calamary} \cite{ocr_calamari_journal}: OCRopus es una colección de herramientas más que un producto final. Kraken y Calamary son forks de OCRopus que proporcionan un producto final. Sin embargo los tres proyectos están enfocados en resolver el problema de reconocer textos históricos con tipografías clásicas. Revisando la documentación de los tres no se encontró modelos preentrenados en castellano.
+    \item \textbf{OCRopus} \cite{ocr_ocropus_ocropy_project}, \textbf{Kraken}  y \textbf{Calamary} \cite{ocr_calamari_journal}: OCRopus es una colección de herramientas más que un producto final. Kraken y Calamary son forks de OCRopus que proporcionan un producto final. Sin embargo los tres proyectos están enfocados en resolver el problema de reconocer textos históricos con tipografías clásicas. Revisando la documentación de los tres no se encontraron modelos preentrenados en castellano.
     \item \textbf{EasyOCR} (\cite{ocr_easyocr_official}, \cite{ocr_easyocr_project}) es la alternativa más viable. Es un proyecto que se actualiza regularmente y tiene soporte comercial. Como punto negativo destaca que aunque proporciona información de bounding-box, no sigue ninguno de los estándares comentados con anterioridad.
 \end{itemize}
 
@@ -160,7 +160,7 @@ b = -a*x + y
 
 es posible transformar cada punto borde al espacio de Hough y obtener una recta en dicho espacio.
 
-Considerando dos puntos del espacio imagen (\ref{fig:hough-punto-imagen}), al trasladarlos (\ref{fig:hough-intersection}) al es espacio Hough se puede calcular su intersección resolviendo el sistema de ecuaciones. Esta intersección proporciona los parámetros para construir, en el espacio imagen, la recta (\ref{fig:hough-recta-a-b}) que une ambos puntos.
+Considerando dos puntos del espacio imagen (\ref{fig:hough-punto-imagen}), al trasladarlos (\ref{fig:hough-intersection}) al espacio Hough se puede calcular su intersección resolviendo el sistema de ecuaciones. Esta intersección proporciona los parámetros para construir, en el espacio imagen, la recta (\ref{fig:hough-recta-a-b}) que une ambos puntos.
 
 \begin{figure}
     \centering
@@ -216,7 +216,7 @@ En primer lugar se presentan algunos de los conceptos elementales que serán cit
     \item Las \textbf{producciones} son reglas de sustitución para la generación de cadenas del lenguaje.
     \item Un \textbf{token} es la unidad mínima que se caracteriza por aportar significado léxico. Por ejemplo, en un lenguaje de programación cualquier palabra reservada es un token. Como también lo son los caracteres de los operadores matemáticos. Se les llama también símbolos terminales.
     \item Los \textbf{símbolos no terminales} son aquellos símbolos que deben ser sustituidos por otros para generar totalmente una cadena.
-    \item Un \textbf{árbol de derivación} es
+    \item Un \textbf{árbol de derivación} un árbol de derivación es la representación gráfica que muestra la secuencia de sucesivas transformaciones necesarias para obtener una cadena particular partiendo desde el axioma de una gramática independiente del contexto.
     \item El \textbf{axioma} en una gramática es el elemento desde el que se construyen todos los árboles de derivación en dicha gramática
 
 \end{itemize}
@@ -303,7 +303,7 @@ Estos lenguajes son reconocidos por una Máquina de Turing con una cinta de memo
 
 Las gramáticas más generales son las gramáticas de Tipo 0 o No Restringidas. Los lados izquierdos de las reglas pueden estar formatos por cualquier combinación de terminales y no terminales, siempre y cuando contengan algún símbolo terminal. Sobre el lado derecho no existen restricciones.
 
-Todos los lenguajes hasta aquí comentados son recursivamente enumerables ya que existe para todos ellos una Máquina de Turing que acepta y para cualquier cadena del lenguaje. Pero, si la cadena no pertenece, puede parar y rechazar o bien iterar indefinidamente.
+Todos los lenguajes hasta aquí comentados son recursivamente enumerables ya que existe para todos ellos una Máquina de Turing que acepta y se detiene con cualquier cadena del lenguaje. Pero, si la cadena no pertenece, puede parar y rechazar o bien iterar indefinidamente.
 
 Sin formar parte de la jerarquía, existe otra categoría intermedia entre los sensibles al contexto y los recursivamente enumerables, son los lenguajes recursivos. En estos, se requiere que la Máquina de Turing pare en todos los casos, por este motivo se los conoce como lenguajes decidibles.
 
