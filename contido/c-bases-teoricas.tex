@@ -24,7 +24,7 @@ Cuando se invoca la herramienta con el parámetro \verb|-bbox| se genera una sal
 \begin{figure}[hp!]
     \centering
     \includegraphics[width=0.75\textwidth]{imaxes/c-bases-teoricas/correspondencia-coordenadas-bounding.png}
-    \caption{Correspondencia de las coordenadas en una bounding box.}
+    \caption{Correspondencia de las coordenadas en una bounding box}
     \label{fig:bounding-box}
 \end{figure}
 
@@ -41,17 +41,17 @@ No existe una gran cantidad de herramientas visuales para explorar el árbol de 
     \begin{subfigure}[b]{0.29\textwidth}
         \centering
         \includegraphics[width=\textwidth]{imaxes/c-bases-teoricas/hola-mundo-adobe-reader}
-        \caption{PDF en Adobe Reader.}
+        \caption{PDF en Adobe Reader}
         \label{fig:hola-mundo-adobe-reader}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.7\textwidth}
         \centering
         \includegraphics[width=\textwidth]{imaxes/c-bases-teoricas/hola-mundo-pdfxplorer}
-        \caption{Árbol de objetos del PDF en PDFXplorer.}
+        \caption{Árbol de objetos del PDF en PDFXplorer}
         \label{fig:hola-mundo-pdfxplorer}
     \end{subfigure}
-    \caption{Elementos internos de un PDF simple.}
+    \caption{Elementos internos de un PDF simple}
     \label{fig:estructura-interna-pdf}
 \end{figure}
 
@@ -72,7 +72,7 @@ Un PDF no es un fichero de texto, es un fichero binario de 8 bits con una estruc
         \item ASCII: bytes codificados en ASCII.
         \item PDFDocEncoded: bytes codificados con la codificación PDFDocEncoding.
         \item Text: bytes codificados en PDFDocEncoding o UTF-16BE.
-        \item Date: utilizado para fechas. Se codifican en ASCII con un patrón de fecha. \footnote{D:YYYYMMDDHHmmSSOHH’mm}.
+        \item Date: utilizado para fechas. Se codifican en ASCII con un patrón de fecha. \footnote{D:YYYYMMDDHHmmSSOHH’mm.}.
     \end{itemize}
     \item \textbf{Array}: es una colección heterogénea de objetos. Se escriben entre corchetes: \verb|[ 0 20 (E) ]|.
     \item \textbf{Dictionary}: es una tabla asociativa que contiene pares clave/valor. Pueden contener valores anidados y es utilizado para crear la jerarquía de todos los objetos del documento. Para indicar el comienzo y fin se utilizan los símbolos \verb|<<| y \verb|>>|. Las claves se indican con valores de tipo name.
@@ -88,13 +88,13 @@ La estructura física de un fichero está dividida en cuatro partes, tal como se
 \begin{figure}[hp!]
     \centering
     \includegraphics[width=0.3\textwidth]{imaxes/c-bases-teoricas/secciones-de-un-pdf.png}
-    \caption{Las cuatro secciones de un PDF.}
+    \caption{Las cuatro secciones de un PDF}
     \label{fig:secciones-pdf}
 \end{figure}
 
 El trailer es un objeto de tipo diccionario. Contiene claves y valores que aportan información a nivel de documento. Hay dos claves especialmente importantes, /Size que indica el número de entradas de la Cross-reference table y /Root que apunta al objeto que contiene el comienzo del Catálogo. El body contiene el objeto del Catálogo y todos los demás objetos que conforman el contenido del fichero PDF. La Cross-Reference Table es un índice de todos los objetos indirectos del PDF. Se utiliza para implementar la navegación sobre el fichero. Contiene la información necesaria para poder realizar saltos a la posición donde se encuentra el objeto que se quiere leer. La versión tradicional tiene tres columnas y la secuencia de entradas hace referencia al número del objeto buscado. En el ejemplo, para encontrar el objeto 2, tercera entrada, hay que saltar hasta el byte 32800:
 
-\begin{lstlisting}[caption={Entradas en la Cross-Reference Table.},label=lst:cross-ref-table]
+\begin{lstlisting}[caption={Entradas en la Cross-Reference Table},label=lst:cross-ref-table]
 0000000000 65535 f
 0000000009 00000 n
 0000032800 00000 n
@@ -105,8 +105,6 @@ El trailer es un objeto de tipo diccionario. Contiene claves y valores que aport
 \end{lstlisting}
 
 % TODO Considerar hablar del catálogo o dejarlo para la parte de implementación.
-
-%%%%%
 
 \section{Representación de coordenadas en orígenes OCR}
 
@@ -167,21 +165,21 @@ Considerando dos puntos del espacio imagen (\ref{fig:hough-punto-imagen}), al tr
     \begin{subfigure}[b]{0.3\textwidth}
         \centering
         \includegraphics[width=\textwidth]{imaxes/c-bases-teoricas/hough-1}
-        \caption{Dos puntos borde en el espacio imagen.}
+        \caption{Dos puntos borde en el espacio imagen}
         \label{fig:hough-punto-imagen}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.3\textwidth}
         \centering
         \includegraphics[width=\textwidth]{imaxes/c-bases-teoricas/hough-2}
-        \caption{Rectas e intersección en el espacio Hough.}
+        \caption{Rectas e intersección en el espacio Hough}
         \label{fig:hough-intersection}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.3\textwidth}
         \centering
         \includegraphics[width=\textwidth]{imaxes/c-bases-teoricas/hough-3}
-        \caption{Recta que une ambos punto en el espacio imagen.}
+        \caption{Recta que une ambos punto en el espacio imagen}
         \label{fig:hough-recta-a-b}
     \end{subfigure}
 \end{figure}
@@ -270,7 +268,7 @@ Una de estas aportaciones se conoce como la jerarquía de Chomsky. Establece cua
 \begin{figure}[hp!]
     \centering
     \includegraphics[width=1.0\textwidth]{imaxes/c-bases-teoricas/niveles-chomsky.png}
-    \caption{Jerarquía de Chomsky.}
+    \caption{Jerarquía de Chomsky}
     \label{fig:niveles-chomsky}
 \end{figure}
 
@@ -315,7 +313,7 @@ La notación Backus-Naur se utiliza para describir una gramática. Fue desarroll
 
 En el Listado \ref{lst:ejemplo-gramatica-bnf} se muestra una pequeña gramática. Los símbolos \verb|::=| deben leerse \emph{se define como}. Para indicar alternativa, \emph{or}, se utiliza una barra (\verb|||).
 
-\begin{lstlisting}[caption={Gramática en notación BNF.},label=lst:ejemplo-gramatica-bnf]
+\begin{lstlisting}[caption={Gramática en notación BNF},label=lst:ejemplo-gramatica-bnf]
 numero ::= val
          | val '.' val
 val    ::= n
@@ -327,7 +325,7 @@ n      ::= '0' | '1' | '2' | '3' | '4'
 \begin{figure}[hp!]
     \centering
     \includegraphics[width=0.6\textwidth]{imaxes/c-bases-teoricas/hauser-2016.png}
-    \caption{Comparativa de los 4 modelos en relación a su dificultad de reconocimiento \cite{teoriaCompiladores_hauser_automatas}.}
+    \caption{Comparativa de los 4 modelos en relación a su dificultad de reconocimiento \cite{teoriaCompiladores_hauser_automatas}}
     \label{fig:hauser-2016}
 \end{figure}
 
@@ -360,6 +358,6 @@ El proceso de compilación se divide en varias fases. En la Imagen \ref{fig:anal
 \begin{figure}[hp!]
     \centering
     \includegraphics[width=1.0\textwidth]{imaxes/c-bases-teoricas/analisis-lexico-sintactico.png}
-    \caption{Ejemplo del proceso de análisis de un compilador.}
+    \caption{Ejemplo del proceso de análisis de un compilador}
     \label{fig:analisis-lexico-sintáctico}
 \end{figure}

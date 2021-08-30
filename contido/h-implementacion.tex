@@ -14,7 +14,7 @@ Los datos son sometidos a un proceso por etapas tal como se ve en la Figura \ref
 \begin{figure}[hp!]
     \centering
     \includegraphics[width=1.0\textwidth]{imaxes/h-implementacion/vision-general-del-sistema-2}
-    \caption{Visión general del pipeline del sistema.}
+    \caption{Visión general del pipeline del sistema}
     \label{fig:vision-general-del-sistema}
 \end{figure}
 
@@ -36,7 +36,7 @@ Si bien la Imagen \ref{fig:vision-general-del-sistema} representa el flujo de da
 
 Primero el Sistema Externo solicita un identificador para el nuevo job. En ese momento el motor genera el código y lo utiliza para crear las rutas de directorios necesarias para ubicar los resultados de cada etapa. El identificador se obtiene de la fecha UTC actual concatenando segundos y nanosegundos. Se recurre al comando \verb|date| para ello, como se muestra en el Listado \ref{lst:creacion-job-id}).
 
-\begin{lstlisting}[language=bash,caption={Obtención del identificador de un trabajo.},label=lst:creacion-job-id]
+\begin{lstlisting}[language=bash,caption={Obtención del identificador de un trabajo},label=lst:creacion-job-id]
 job_id=$(date -u +%s%6N)
 \end{lstlisting}
 
@@ -52,7 +52,7 @@ Los PDF recibidos deben ser clasificados dependiendo de su contenido. En unos ca
 
 En \verb|extract-text.sh| se trata cada fichero PDF de tal manera que por cada uno se obtiene su número de páginas. La extracción de texto se realiza página a página, generando como salida un fichero individual para cada una. Desde este punto y para todos los demás procesos los documentos se tratan también página por página hasta llegar al procesamiento del lenguaje intermedio que recibe un único fichero para todas las páginas del documento. En el Listado \ref{lst:extraccion-text-inicial} se puede ver el cálculo del número de páginas y la instrucción de extracción.
 
-\begin{lstlisting}[language=bash,caption={Extracción tentativa del texto.},label=lst:extraccion-text-inicial]
+\begin{lstlisting}[language=bash,caption={Extracción tentativa del texto},label=lst:extraccion-text-inicial]
 last_page="$(pdfinfo $line | grep 'Pages:' | cut -c 7- | sed 's_ *__')"
 for ((page=1; page<=$last_page; page++))
 do
@@ -62,7 +62,7 @@ done
 
 Cuando un documento no contiene texto, el fichero de la información extraída únicamente almacena caracteres de salto de página, \verb|0x0C|, que son introducidos por el propio \verb|pdftotext|. Estos casos pueden ser localizados mediante un editor hexadecimal, como se muestra en el Listado \ref{lst:deteccion-salto-pagina}. En el fragmento, tanto si se ejecuta el cuerpo del \verb|if| como del \verb|elif|, la página se trata de un caso de imagen y el fichero es movido al directorio para los casos de imagen.
 
-\begin{lstlisting}[language=bash,caption={Detección del salto de página.},label=lst:deteccion-salto-pagina]
+\begin{lstlisting}[language=bash,caption={Detección del salto de página},label=lst:deteccion-salto-pagina]
 if [ "$(hexdump -e '1/1 "%02X\n"' $i | tr '\n' ' ')" = '0C ' ]
 then
     mv $i $base_image_dir
@@ -78,7 +78,7 @@ Previamente al proceso OCR, el script \verb|extract-images.sh| se encarga de ext
 
 El siguiente paso obtiene la información de coordenadas de los casos de texto, nuevamente con \verb|pdftotext|. Se generan los ficheros XHTML cuando se invoca la herramienta con el flag \verb|-bbox-layout|. En el Fragmento \ref{lst:extraccion-text-coord} se muestra un extracto del contenido típico que luego será procesado por el generador de código intermedio. Como se puede apreciar, se identifican la palabras individuales con coordenadas y la línea a la cual pertenecen.
 
-\begin{lstlisting}[language=XML,caption={Extracción de texto con información de coordenadas.},label=lst:extraccion-text-coord]
+\begin{lstlisting}[language=XML,caption={Extracción de texto con información de coordenadas},label=lst:extraccion-text-coord]
 <flow>
     <block xMin="1594.583333" yMin="461.616667" 
             xMax="2148.275000" yMax="496.304167">
@@ -96,7 +96,7 @@ El siguiente paso obtiene la información de coordenadas de los casos de texto, 
 
 Completada la extracción de texto se da paso al proceso de OCR. El script \verb|image-apply-ocr.sh| recorre el directorio donde están almacenadas las imágenes recuperadas y se invoca a Tesseract con la instrucción que se puede ver en el Código \ref{lst:invocacion-de-tesseract}. Se indican varios parámetros importantes. Debe utilizar utilizar los conjuntos de entrenamiento para contenido en castellano (\verb|-l spa|), ya que los documentos están en este idioma. El número de \acrlong{ppp} se fija a 300 (\verb|--dpi 300|) ya que es un tamaño objetivo que las imágenes deben tener para que el proceso OCR tenga calidad suficiente. Tesseract dispone de varios algoritmos para interpretar el layout de documento. En este caso, al trabajar directamente con las coordenadas, no es necesario tener en cuenta el layout y se le indica que capture la máxima información posible independientemente del orden (\verb|--psm 11|). Por otra parte existe un fichero de configuración, apuntado por la variable \verb|$tessconfig_file| que contiene la directiva para activar la salida en formato hOCR, \verb|tessedit_create_hocr 1|.
 
-\begin{lstlisting}[language=XML,caption={Extracción de texto con información de coordenadas.},label=lst:invocacion-de-tesseract]
+\begin{lstlisting}[language=XML,caption={Invocación de Tesseract utilizada en el proyecto},label=lst:invocacion-de-tesseract]
 tesseract $file_path "$outputbase" \
     -l spa \
     --dpi 300 \
@@ -108,7 +108,7 @@ tesseract $file_path "$outputbase" \
 
 Se puede ver una muestra del formato hOCR en el Fragmento \ref{lst:salida-hocr-tesseract}. En el atributo \verb|title| de las palabras se puede ver que aparecen las coordenadas en píxeles respecto al tamaño de la imagen. También hay un indicador de confianza, \verb|x_wconf| que indica la certeza que asigna Tesseract a la identificación de cada palabra en particular.
 
-\begin{lstlisting}[language=XML,caption={Fragmento de la salida hOCR de Tesseract.},label=lst:salida-hocr-tesseract]
+\begin{lstlisting}[language=XML,caption={Fragmento de la salida hOCR de Tesseract},label=lst:salida-hocr-tesseract]
 <div class='ocr_page' id='page_1' 
     title='image "input/1627762529247627/based-image/1/1-000.jpg"; 
     bbox 0 0 2480 3509; ppageno 0'>
@@ -133,7 +133,7 @@ Los documentos se identifican para poder asociarles una plantilla. El mecanismo 
 
 El script \verb|identify-grep.sh| se encarga de realizar todo el proceso. Primero se leen todos los identificadores por medio de la función \verb|read_identifiers()|, tal como se puede ver en el Listado \ref{lst:lectura-de-identificadores}. Los datos leídos son incorporados a un array.
 
-\begin{lstlisting}[language=bash,caption={Lectura de identificadores.},label=lst:lectura-de-identificadores]
+\begin{lstlisting}[language=bash,caption={Lectura de identificadores},label=lst:lectura-de-identificadores]
 read_identifiers() {
     while IFS= read -r line; do
         # Add id if line has contents
@@ -144,7 +144,7 @@ read_identifiers() {
 
 A continuación se obtiene la lista de ficheros para los cuales se ha extraído información y se iteran buscando ocurrencias de los identificadores conocidos, En el Código \ref{lst:identifica-documentos} se le indica a \verb|grep| que tenga en cuenta solo los casos en los que el patrón abarque una palabra completa (\verb|-w|), y que cambie la salida habitual por otra con el recuento de ocurrencias (\verb|-c|).
 
-\begin{lstlisting}[language=bash,caption={Identificación de los documentos.},label=lst:identifica-documentos]
+\begin{lstlisting}[language=bash,caption={Identificación de los documentos},label=lst:identifica-documentos]
 for file in $files; do
   for id_ in "${ids_[@]}"; do
     if [ "$(grep -w -c "$id_" $file)" -ge 1 ]; then
@@ -168,7 +168,7 @@ Cuando se encuentra un identificador válido, se registra en el directorio del d
 Las plantillas contienen la información de coordenadas de las regiones de interés seleccionadas para el modelo de documento. En el ejemplo de Código \ref{ejemplo-plantilla} se ver que para almacenar esta información se utiliza el formato JSON. Además de las coordenadas en si mismas, se utilizan otras claves para dar más flexibilidad a la información y poder tratar casos como los documentos de OVH. La clave \verb|id| que aparece al comienzo se utiliza para asociar con los identificadores de los documentos. Luego el array \verb|regions| contiene la colección de regiones existentes en el modelo. Se utiliza \verb|type| para identificar el tipo de región, \verb|yMin| y \verb|yMax| para las coordenadas horizontales. Los límites verticales se almacenan en el array de columnas \verb|cols|. En el caso de regiones con una única columna se utiliza igualmente el array pero con un único elemento.
 
 \noindent\begin{minipage}{.45\textwidth}
-    \begin{lstlisting}[language=Java,caption=Comienzo de la plantilla.,frame=tlrb]{Name}
+    \begin{lstlisting}[language=Java,caption=Comienzo de la plantilla,frame=tlrb]{Name}
 {
   "id": "A48941488",
   "is_global": false,
@@ -188,7 +188,7 @@ Las plantillas contienen la información de coordenadas de las regiones de inter
     \end{lstlisting}
 \end{minipage}\hfill
 \begin{minipage}{.45\textwidth}
-    \begin{lstlisting}[language=Java,caption=Región T1.,frame=tlrb]{Name}
+    \begin{lstlisting}[language=Java,caption=Región T1,frame=tlrb]{Name}
     {
       "page": "0",
       "type": "T1",
@@ -230,7 +230,7 @@ Las palabras siguen siempre el mismo patrón. Por ejemplo, en la caso \verb|P1·
 \begin{figure}[hp!]
     \centering
     \includegraphics[width=1.0\textwidth]{imaxes/h-implementacion/lenguaje-intermedio.png}
-    \caption{Extracto de lenguaje intermedio.}
+    \caption{Extracto de lenguaje intermedio}
     \label{fig:lenguaje-intermedio}
 \end{figure}
 
@@ -253,13 +253,13 @@ Las palabras siguen siempre el mismo patrón. Por ejemplo, en la caso \verb|P1·
         util.py & Utilidades comunes para toda el software \\
         main.py & Punto de entrada a la aplicación \\
     \end{tabular}
-    \caption{Módulos del generador de lenguaje intermedio.}    
+    \caption{Módulos del generador de lenguaje intermedio}    
     \label{tab:modulo-generador-codigo-intermedio}
 \end{table}
 
 Cuando se invoca la herramienta, el primer paso, además de realizar el tratamiento de argumentos de entrada, consiste en configurar la aplicación para que pueda generar la salida solicitada. En una ejecución interactiva, con el flag \verb|-h| se obtendrá ayuda sobre de los parámetros disponibles. En el Listado \ref{lst:ayuda-generador-codigo-intermedio} se puede ver este mensaje de ayuda y el significado de cada uno de los parámetros. Estos argumentos pueden ser de dos tipos, posicionales y opcionales. Los parámetros posicionales son obligatorios y deben ser indicados en el mismo orden que se muestra en la segunda línea del mensaje de ayuda. 
 
-\begin{lstlisting}[caption={Ayuda del generador de código intermedio.},label=lst:ayuda-generador-codigo-intermedio]
+\begin{lstlisting}[caption={Ayuda del generador de código intermedio},label=lst:ayuda-generador-codigo-intermedio]
 usage: main.py [-h] [-w WORKTASK]
 parser_type text_with_coords template output_base number_pages page_image_path
 
@@ -298,7 +298,7 @@ La tarea de generación de código intermedio puede agruparse en los siguientes 
 Dado que ambos tipos de entradas tienen en común el formato (X)HTML, se utiliza el módulo \verb|HTMLParser| de la librería estándar Python para tratarlas. Se definen dos clases que extienden de \verb|HTMLParser| y sobrescriben los métodos \verb|__init__()|, \verb|handle_starttag()|, \verb|handle_data()| y \verb|handle_endtag()|. \verb|handle_starttag()| y \verb|handle_endtag()| son llamados cuando el parser encuentra el comienzo y final de un tag, respectivamente. \verb|handle_data()| es invocado para tratar los datos de la etiqueta, en este caso interesa el contenido de las palabra y la ocurrencia de las líneas.
 
 \noindent\begin{minipage}{.45\textwidth}
-    \begin{lstlisting}[language=Python,caption=Captura de las palabras.,frame=tlrb,label={lst:captura-de-palabras}]{CapturaDePalabras}
+    \begin{lstlisting}[language=Python,caption=Captura de las palabras,frame=tlrb,label={lst:captura-de-palabras}]{CapturaDePalabras}
 def handle_data(self, data):
   if self.store_word == True and 
       data.strip() != '':
@@ -314,7 +314,7 @@ def handle_data(self, data):
     \end{lstlisting}
 \end{minipage}\hfill
 \begin{minipage}{.45\textwidth}
-    \begin{lstlisting}[language=Python,caption=Recuperación de coordenadas.,frame=tlrb,label={lst:recuperacion-coordenadas}]{RecuperacionCoordenadas}
+    \begin{lstlisting}[language=Python,caption=Recuperación de coordenadas,frame=tlrb,label={lst:recuperacion-coordenadas}]{RecuperacionCoordenadas}
 def get_coords(self, attrs):
     xMin = int(float(attrs[0][1]))
     yMin = int(float(attrs[1][1]))
@@ -338,7 +338,7 @@ Con la aproximación actual se comparan nueve casos. Si hay dos rectángulos, $ 
 
 Los datos de entrada son la lista de áreas que se quieren clasificar y la zona sobre la que se quiere realizar el test. Un bucle recorre las áreas evaluando los criterios. La asignación de un área a la zona se produce si todas las condiciones son verdaderas en alguno de los casos. Para considerar las situaciones donde $ \alpha $ está sobre el borde de $ \beta $, se tiene en cuenta un margen de proximidad, configurado para el $ 30\% $. Con esto se regula cuando puede sobresalir $ \alpha $ de $ \beta $ para seguir siendo considerada válida para el caso. En el Listado \ref{lst:condiciones-caso-b} se puede ver el código donde se evalúan las condiciones para ser perteneciente al caso B mostrado en \ref{fig:casos-algoritmo-seleccion-regiones}.
 
-\begin{lstlisting}[language=Python,caption={Evaluación de las condiciones del Caso B.},label=lst:condiciones-caso-b]
+\begin{lstlisting}[language=Python,caption={Evaluación de las condiciones del Caso B},label=lst:condiciones-caso-b]
     case_b = [element[k_x_max] > container[k_x_min],
     element[k_x_max] <= container[k_x_max],
     element[k_y_min] >= container[k_y_min],
@@ -401,7 +401,7 @@ Por último, en la Tabla \ref{tab:datos-intermedios} se presenta la relación de
         \verb|#doc-#pag.xml| & XML resultado de la extracción de texto \\
         \verb|#doc-#pag.txt| & Texto obtenido de \verb|pdftotext| \\
     \end{tabular}
-    \caption{Resumen de los datos de salida.}    
+    \caption{Resumen de los datos de salida}    
     \label{tab:datos-intermedios}
 \end{table}
 
@@ -495,14 +495,12 @@ Al tener una colección de parsers, las secciones de los prólogos y el epílogo
         \caption{Dependencias Bison}
         \label{fig:dependencia-bison}
     \end{subfigure}
-    %\caption{Dependencias}
-    %\label{fig:dependencias-flex-bison}
 \end{figure}
 
 Por ejemplo, en \verb|flex-prologue.c| se puede encontrar la implementación de la función \verb|split_id_value| (el prototipo completo es \verb| word_value *split_id_value(char *contents)|) cuyo cometido es recibir una palabra como, \verb|P1·W146·365·|, dividirla en componentes y crear su representación en memoria. El tipo de dato definido para las palabras es un \verb|struct| y se puede encontrar en \verb|types.h|:
 
 \noindent\begin{minipage}{.45\textwidth}
-    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{WordValue}
+    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{}
 typedef struct word {
     char *value;
     char *w_id_string;
@@ -510,7 +508,7 @@ typedef struct word {
     \end{lstlisting}
 \end{minipage}\hfill
 \begin{minipage}{.45\textwidth}
-    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{WordValue}
+    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{}
     int w_id_numeric;
     char *w_page_number_string;
     int w_page_number_numeric;
@@ -570,7 +568,7 @@ Tanto \verb|lista.c| como \verb|strbuf| han sido desarrolladas por terceros y no
 Para almacenar los tipos de regiones se creó el tipo \verb|region| como un \verb|struct| compuesto de un enumerado y un \verb|union|. Cuando se crea una nueva región le asigna un tipo del enumerado y se utiliza para los datos la variable correspondiente del \verb|union|. Más tarde en la generación se sigue el mismo mecanismo para recuperar los datos de la lista o tabla correcta:
 
 \noindent\begin{minipage}{.45\textwidth}
-    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{RegionType}
+    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{}
 typedef struct region {
     enum {
         R_R1,
@@ -582,7 +580,7 @@ typedef struct region {
     \end{lstlisting}
 \end{minipage}\hfill
 \begin{minipage}{.45\textwidth}
-    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{RegionType}
+    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{}
     union {
         lista r1;
         lista r2;
@@ -597,7 +595,7 @@ typedef struct region {
 La tablas se almacenan en un \verb|struct| que contiene dos listas, una para las palabras de la cabecera y otra para las filas de la tabla. A su vez, las columnas son listas con palabras:
 
 \noindent\begin{minipage}{.45\textwidth}
-    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{Tables}
+    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{}
 typedef struct table {
     lista col_titles;
     lista rows;
@@ -605,7 +603,7 @@ typedef struct table {
     \end{lstlisting}
 \end{minipage}\hfill
 \begin{minipage}{.45\textwidth}
-    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{Cols}
+    \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{}
 typedef lista cols;
     \end{lstlisting}
 \end{minipage}
@@ -671,7 +669,7 @@ La regla para el token \verb|WORD| pasa los datos al no terminal \verb|word| y a
 Una característica de Bison no comentada es que tanto los terminales como los no terminales pueden tener un tipo de dato si es necesario para trasladar un valor semántico. En la sección de definiciones se pueden encontrar todos los terminales y no terminales conocidos para el parser y los tipos asignados, Listado \ref{lst:definiciones-tipos-bison}. Para poder subir información por el árbol, todos los símbolos de la gramática deben tener el dato correcto.
 
 \noindent\begin{minipage}{.45\textwidth}
-    \begin{lstlisting}[language=C,caption={Definiciones de tipos para tokens y no terminales},frame=tlrb,label={lst:definiciones-tipos-bison}]{TypeToken}
+    \begin{lstlisting}[language=C,caption={Definiciones de tipos para tokens y no terminales},frame=tlrb,label={lst:definiciones-tipos-bison}]{}
 %token TOTAL TIPO
 %token <word_value> WORD
 %type<region> region
@@ -680,7 +678,7 @@ Una característica de Bison no comentada es que tanto los terminales como los n
     \end{lstlisting}
 \end{minipage}\hfill
 \begin{minipage}{.45\textwidth}
-    \begin{lstlisting}[language=C,caption={Tipo de variables compartidas entre Bison y Flex},frame=tlrb,label={lst:union-variables-compartidas}]{Union}
+    \begin{lstlisting}[language=C,caption={Tipo de variables compartidas entre Bison y Flex},frame=tlrb,label={lst:union-variables-compartidas}]{}
 %union {
     int *int_pointer;
     char *string;
@@ -698,7 +696,7 @@ La fase de generación de código o, en este caso, creación de los distintos fi
 
 La definición de las funciones se hace por medio de un array estático de punteros a función, como se muestra en el Listado \ref{lst:def-estaticas-funciones-regiones}. La variable \verb|fa| del array (linea 7) selecciona la columna del mapa \verb|GENERATION_MAP| que corresponde para las funciones que tratan la selección de palabras, en el caso mostrado. Existe otro array análogo que contiene los punteros a las funciones de la última columna.
 
-\begin{lstlisting}[caption={Definiciones estáticas para las funciones que tratan las regiones.},label={lst:def-estaticas-funciones-regiones}]
+\begin{lstlisting}[caption={Definiciones estáticas para las funciones que tratan las regiones},label={lst:def-estaticas-funciones-regiones}]
 #define GENERATION_MAP(X) \
 /* Region type, Handlers selected words,   Handlers XML contents */ \
 X(R_R1,         handler_selected_words_r1, handler_xml_contents_r1) \
@@ -747,7 +745,7 @@ La Tabla \ref{tab:datos-de-salida} presenta un resumen de los datos que se obtie
         \verb|#doc-table.csv| & Datos de la tabla de datos principal. \\
         \verb|#doc.name| & Nombre original del fichero PDF.\\
     \end{tabular}
-    \caption{Resumen de los datos de salida.}    
+    \caption{Resumen de los datos de salida}    
     \label{tab:datos-de-salida}
 \end{table}
 

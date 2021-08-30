@@ -18,19 +18,19 @@ En esta sección se asume que se utilizará una distribución Ubuntu 18.04 igual
 
 Se pueden distinguir dos escenarios distintos. Los requisitos necesarios para compilar los fuentes y aquellos imprescindibles únicamente para ejecutar la aplicación. Para el primer caso se debe utilizar el comando mostrado en \ref{lst:requisitos-para-compilacion}. El paquete \verb|build-essential| instala la mayor parte de las aplicaciones como el compilador de C y Make.
 
-\begin{lstlisting}[language=bash,caption={Dependencias para la compilación.},label=lst:requisitos-para-compilacion]
+\begin{lstlisting}[language=bash,caption={Dependencias para la compilación},label=lst:requisitos-para-compilacion]
     sudo apt-get build-essential libpcre2-dev bison flex
 \end{lstlisting}
 
 En el caso de tener ya la aplicación compilada y empaquetada, será necesarios instalar los componentes para la ejecución, como Tesseract, el software de OCR. La orden del listado \ref{lst:requisitos-para-ejecucion} instalará estos requisitos.
 
-\begin{lstlisting}[language=bash,caption={Dependencias para la ejecución.},label=lst:requisitos-para-ejecucion]
+\begin{lstlisting}[language=bash,caption={Dependencias para la ejecución},label=lst:requisitos-para-ejecucion]
     sudo apt-get install unzip poppler-utils mediainfo tesseract-ocr tesseract-ocr-spa jq python3-opencv jq bc
 \end{lstlisting}
 
 De manera opcional, pero recomendable, se puede utilizar un PPA específico para obtener una versión actualizada de Tesseract. Un PPA en el entorno Ubuntu, es un repositorio personal, en este caso mantenido por Alexander Pozdnyakov \footnote{\url{https://launchpad.net/~alex-p/+archive/ubuntu/tesseract-ocr}}. La activación de este repositorio debe hacerse previamente a la instalación del software. En necesario ejecutar los comandos del listado \ref{lst:activar-ppa-tesseract}.
 
-\begin{lstlisting}[language=bash,caption={Activar PPA de Tesseract.},label=lst:activar-ppa-tesseract]
+\begin{lstlisting}[language=bash,caption={Activar PPA de Tesseract},label=lst:activar-ppa-tesseract]
     sudo add-apt-repository ppa:alex-p/tesseract-ocr
     sudo apt-get update
 \end{lstlisting}
@@ -44,7 +44,7 @@ Existen herramientas para trabajar con el formato hOCR, por ejemplo en el reposi
 \begin{figure}[hp!]
     \centering
     \includegraphics[width=1.0\textwidth]{imaxes/z-adicional/visor-hocr.png}
-    \caption{Visor del formato hOCR con un documento de AC.}
+    \caption{Visor del formato hOCR con un documento de AC}
     \label{fig:visor-formato-hocr}
 \end{figure}
 
@@ -67,7 +67,7 @@ Ansible está escrito en Python y su funcionamiento es simple. Para realizar la 
 
 En el Listado \ref{lst:ejemplo-playbook} se muestra un Playbook mínimo que da instrucciones a Ansible para realizar un ping a todos los anfitriones definidos.
 
-\begin{lstlisting}[language=Python,caption={Ejemplo mínimo de Playbook.},label=lst:ejemplo-playbook]
+\begin{lstlisting}[language=Python,caption={Ejemplo mínimo de Playbook},label=lst:ejemplo-playbook]
     ---
     - hosts: all
     tasks:

@@ -37,7 +37,7 @@ Flex es un generador de analizadores léxicos. Esto quiere decir que la salida d
 
 En su forma más básica, un programa Flex consiste en un listado de expresiones regulares asociadas a una acción. El escáner generado trabaja leyendo la entrada y buscando patrones en ella. En el Listado \ref{lst:ejemplo-programa-flex} se puede ver un programa básico de ejemplo que es capaz de contar los caracteres, palabras y líneas de un texto. Los programas Flex se dividen en tres secciones separadas por los símbolos \verb|\%\%|, líneas 7 y 11. La primera sección contiene código C global y se suele utilizar para definir un variables y funciones. La segunda sección contiene líneas formadas por expresiones regulares seguidas de las acciones asociadas. La tercera sección sirve como punto de entrada al programa. No se utiliza cuando se trabaja con Bison ya que es este último el encargado de ejecutar la función \verb|yylex()| que da comienzo al análisis léxico.
 
-\begin{lstlisting}[language=C,caption={Ejemplo de programa Flex autónomo.},label=lst:ejemplo-programa-flex]
+\begin{lstlisting}[language=C,caption={Ejemplo de programa Flex autónomo},label=lst:ejemplo-programa-flex]
 /* Esto es un comentario */
 %{
 int letras = 0;
@@ -73,7 +73,7 @@ Existen múltiples maneras de construir la tabla y dependiendo del algoritmo uti
 
 En el Listado \ref{lst:ejemplo-programa-bison} se presenta un pequeño ejemplo de la estructura de un fichero fuente Bison. El diseño, en tres secciones, es similar al encontrado en el ejemplo de Flex en el Listado \ref{lst:ejemplo-programa-flex}. La primera sección contiene código en lenguaje C que es copiado directamente en el analizador generado. Esta primera sección también se utiliza para declarar los nombres de los terminales y no terminales utilizados en la gramática y asignarles un tipo de dato. La sección intermedia contiene las reglas gramaticales y, al igual que en flex, se pueden especificar acciones semánticas. Por ejemplo, en la línea 18, se calcula el valor de una suma a partir de los valores semánticos de los tokens recibidos. El valor calculado es devuelto al siguiente nodo del árbol.
 
-\begin{lstlisting}[language=C,caption={Ejemplo de programa Bison \cite{mit_web_bisonExample}.},label=lst:ejemplo-programa-bison]
+\begin{lstlisting}[language=C,caption={Ejemplo de programa Bison \cite{mit_web_bisonExample}},label=lst:ejemplo-programa-bison]
 %{
     /* Sección del prólogo para código C común */
 %}
