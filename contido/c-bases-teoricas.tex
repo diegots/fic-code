@@ -7,19 +7,19 @@
 
 \lettrine{E}{l} objetivo de este capítulo es sentar las bases tecnológicas y teóricas sobre las que se ha llevado a cabo el proyecto. En particular, se expone de qué manera se consiguen las coordenadas de las palabras y qué tecnologías intervienen para la obtención de la salida en formato estructurado.
 
-Las aplicaciones comerciales utilizan las ubicaciones para seleccionar contenidos relevantes. Lo habitual es que el usuario pueda marcar rectángulos sobre las páginas y los procesos de extracción y verificación únicamente tengan en cuenta estas áreas. Para poder hacer esto se necesitan las localizaciones de las palabras, pares clave-valor, tablas, etc. Entre los PDF manejados para la elaboración de este trabajo hay dos categorías importantes: aquellos que tienen texto directamente extraíble y otros donde cada página es una imagen. El primer caso es el habitual en los PDF generados con procesadores de textos u otros software. Se puede comprobar fácilmente si un PDF contiene texto directamente extraíble abriendo el documento con un visor y realizando la selección con el ratón. Si es el caso, se puede evitar hacer OCR del documento y obtener una versión sin errores del texto.
+Las aplicaciones comerciales utilizan las ubicaciones para seleccionar contenidos relevantes. Lo habitual es que el usuario pueda marcar rectángulos sobre las páginas y los procesos de extracción y verificación únicamente tengan en cuenta estas áreas. Para poder hacer esto se necesitan las localizaciones de las palabras, pares clave-valor, tablas, etc. Entre los PDF manejados para la elaboración de este trabajo hay dos categorías importantes: aquellos que tienen texto directamente extraíble y otros donde cada página es una imagen. El primer caso es el habitual en los PDF generados con procesadores de textos u otros software. Se puede comprobar fácilmente si un PDF contiene texto directamente extraíble abriendo el documento con un visor y realizando la selección con el ratón. Si la operación es posible, se puede evitar hacer OCR del documento y obtener una versión del texto sin los errores derivados del Reconocimiento Óptico.
 
 \section{Software para la manipulación de PDF}
 
-Existen librerías y también aplicaciones capaces de manipular ficheros PDF para extraer texto, imágenes, reordenar páginas y otras muchas posibilidades. Para los objetivos del proyecto, sería necesaria una herramienta capaz de extraer el texto pero también sus coordenadas sobre el documento. Se revisaron varias alternativas, como PDFBox 
-\footnote{https://pdfbox.apache.org/}, Win2PDF 
-\footnote{https://www.win2pdf.com/doc/command-line-extract-text-pdf.html}, ebook-convert 
-\footnote{https://manual.calibre-ebook.com/es/generated/es/ebook-convert.html}, que forma parte de la aplicación Calibre, y \verb|pdftotext| 
-\footnote{https://poppler.freedesktop.org/}. Únicamente esta última ofrece la posibilidad de generar las localizaciones necesarias.
+Existen librerías y también aplicaciones capaces de manipular ficheros PDF para extraer texto, imágenes, reordenar páginas y otras muchas posibilidades. Para los objetivos del proyecto, se necesita una herramienta capaz de extraer el texto pero también sus coordenadas sobre el documento. Se revisaron varias alternativas, como PDFBox 
+\footnote{\url{https://pdfbox.apache.org/}}, Win2PDF 
+\footnote{\url{https://www.win2pdf.com/doc/command-line-extract-text-pdf.html}}, ebook-convert 
+\footnote{\url{https://manual.calibre-ebook.com/es/generated/es/ebook-convert.html}}, que forma parte de la aplicación Calibre, y \verb|pdftotext| 
+\footnote{\url{https://poppler.freedesktop.org/}}. Únicamente esta última ofrece la posibilidad de generar las localizaciones necesarias.
 
-La implementación original de esta utilidad fue realizada por Glyph \& Cog, autores del visor Xpdf. En el año 2005 surge la librería Poppler a partir del fork de la versión 3.0.3 de Xpdf. Esta es la implementación disponible mayormente en las distribuciones Linux. Por ejemplo, en Ubuntu se puede instalar con el paquete \verb|poppler-utils| e incluye otras muchas herramientas relacionadas.
+La implementación original de esta utilidad fue realizada por Glyph \& Cog \footnote{\url{http://www.glyphandcog.com/}}, autores del visor Xpdf. En el año 2005 apareció la librería Poppler a partir del fork de la versión 3.0.3 de Xpdf. Esta es la implementación disponible mayormente en las distribuciones Linux. Por ejemplo, en Ubuntu se puede instalar con el paquete \verb|poppler-utils| e incluye otras muchas herramientas relacionadas.
 
-Cuando se invoca la herramienta con el parámetro \verb|-bbox| se genera una salida en lenguaje XHTML. Esta variante del HTML tiene la ventaja de ser admitida por cualquier parser XML. Se identifican tags para los elementos que representan bloques, lineas y palabras. En cada uno se informa con cuatro valores de la localización del rectángulo que engloba al elemento: \emph{xMin}, \emph{xMax}, \emph{yMin}, \emph{yMax}. La generación de información de coordenadas o bounding box, además del texto, existe gracias a una aportación al proyecto del año 2010 de Kenneth Berland. 
+Cuando se invoca la herramienta con el parámetro \verb|-bbox| se genera una salida en lenguaje XHTML. Esta variante del HTML tiene la ventaja de ser admitida por cualquier parser XML. Se identifican tags para los elementos que representan bloques, lineas y palabras. En cada uno se informa con cuatro valores de la localización del rectángulo que engloba al elemento: \emph{xMin}, \emph{xMax}, \emph{yMin}, \emph{yMax}. La generación de información de coordenadas o bounding box, además del texto, existe gracias a una aportación al proyecto en el año 2010 de Kenneth Berland. 
 
 \begin{figure}[hp!]
     \centering
@@ -28,54 +28,33 @@ Cuando se invoca la herramienta con el parámetro \verb|-bbox| se genera una sal
     \label{fig:bounding-box}
 \end{figure}
 
-Una limitación común en todas estas utilidades consiste en no respetar el layout del texto, tal como aparece en el documento original. Esto implica que algunos elementos pueden aparecer antes que otros en la información extraída. Otro problema es que hay palabras que aparecen con caracteres intermedios, espacios, por ejemplo, que no se ven en el PDF. Estas limitaciones se derivan del propio funcionamiento del formato PDF.
+Una limitación común en todas estas utilidades consiste en no respetar el layout del texto, tal como aparece en el documento original. Esto implica que algunos elementos pueden aparecer antes que otros en la información extraída. Otro problema es que hay palabras que aparecen con caracteres extraños intercalados, o espacios. Las anomalías comentadas no son visibles en el PDF. Estas limitaciones se derivan del propio funcionamiento del formato PDF.
 
 \section{El formato PDF}
 
 PDF es un formato digital para la creación de documentos. Fue introducido por Adobe Systems en 1993. En los siguientes años, el uso de este formato se extendió por toda la sociedad, tanto en el ámbito público como en el privado. En el año 2008, la ISO publicó el estándar 32000-1, tomando como base especificación de PDF en su versión 1.7, creada y liberada por Adobe. Posteriormente se publicó la versión 2.0 como ISO 32000-2 en el año 2017 y más recientemente una actualización en el año 2020. PDF es un modelo de representación de imágenes que deriva del lenguaje PostScript, también desarrollado por Adobe. En PDF, el modelo de imagen admite gráficos y texto de forma independiente al dispositivo de salida. 
 
-No existe una gran cantidad de herramientas visuales para explorar el árbol de objetos de un PDF, al menos fáciles de encontrar y gratuitas. En la Imagen \ref{fig:estructura-interna-pdf} se presenta una de ellas, PDFXplorer \footnote{\url{https://www.o2sol.com/pdfxplorer/overview.htm}}, con un ejemplo de documento cuyo único contenido es \emph{Hola mundo!}. En la imagen se visualiza un fragmento del stream que alberga el texto, en particular las líneas 22 a 32 equivales a cada uno de los caracteres de la página. Alternativamente también se puede analizar un PDF de forma manual con herramientas simples en la línea de comandos \cite{filodej_blog_pdfstreamcontent}.
-
-\begin{figure}
-    \centering
-    \begin{subfigure}[b]{0.29\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{imaxes/c-bases-teoricas/hola-mundo-adobe-reader}
-        \caption{PDF en Adobe Reader}
-        \label{fig:hola-mundo-adobe-reader}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.7\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{imaxes/c-bases-teoricas/hola-mundo-pdfxplorer}
-        \caption{Árbol de objetos del PDF en PDFXplorer}
-        \label{fig:hola-mundo-pdfxplorer}
-    \end{subfigure}
-    \caption{Elementos internos de un PDF simple}
-    \label{fig:estructura-interna-pdf}
-\end{figure}
-
 % TODO Considerar si añadir más información de PostScript.
 
 \subsection{Almacenamiento de información}
 
-Un PDF no es un fichero de texto, es un fichero binario de 8 bits con una estructura interna determinada. Sus elementos básicos son los objetos. Cualquier información que se visualice en el documento existirá realmente como un objeto dentro del fichero. Estos objetos están serializados dentro del fichero y pueden ser de alguno de los siguientes nueve tipos:
+Un PDF no es un fichero de texto, es un formato binario de 8 bits con una estructura interna determinada. Sus elementos básicos son los objetos. Cualquier información que se visualice en el documento existirá realmente como un objeto dentro del archivo. Estos objetos están serializados dentro del fichero y pueden ser de alguno de los siguientes nueve tipos:
 
 \begin{enumerate}
     \item \textbf{Null}: se utiliza para indicar la ausencia de un valor.
-    \item \textbf{Boolean}: indica los valores de verdad true o false.
+    \item \textbf{Boolean}: indica los valores de verdad, true o false.
     \item \textbf{Integer}: representa valores enteros. Puede aparecer como \verb|1|, \verb|+2|, \verb|-100|.
     \item \textbf{Real}: representa valores decimales y puede aparecer como \verb|0,05|, \verb|.25|, \verb|-3,1415|.
-    \item \textbf{Name}: son secuencias únicas dentro del fichero, comienzan con una barra. Por ejemplo: \verb|/Type|, \verb|/ThisIsName|.
+    \item \textbf{Name}: son secuencias únicas dentro del fichero, comienzan con una barra. Por ejemplo: \verb|/Type|, \verb|/ThisIsAName|.
     \item \textbf{String}: puede ser de 4 tipos:
     \begin{itemize}
         \item ASCII: bytes codificados en ASCII.
         \item PDFDocEncoded: bytes codificados con la codificación PDFDocEncoding.
         \item Text: bytes codificados en PDFDocEncoding o UTF-16BE.
-        \item Date: utilizado para fechas. Se codifican en ASCII con un patrón de fecha. \footnote{D:YYYYMMDDHHmmSSOHH’mm.}.
+        \item Date: utilizado para fechas. Se codifican en ASCII con un patrón de fecha. \footnote{En concreto, el patrón para las fechas es: D:YYYYMMDDHHmmSSOHH’mm.}.
     \end{itemize}
     \item \textbf{Array}: es una colección heterogénea de objetos. Se escriben entre corchetes: \verb|[ 0 20 (E) ]|.
-    \item \textbf{Dictionary}: es una tabla asociativa que contiene pares clave/valor. Pueden contener valores anidados y es utilizado para crear la jerarquía de todos los objetos del documento. Para indicar el comienzo y fin se utilizan los símbolos \verb|<<| y \verb|>>|. Las claves se indican con valores de tipo name.
+    \item \textbf{Dictionary}: es una tabla asociativa que contiene pares clave/valor. Los valores anidados están permitidos y es utilizado para crear la jerarquía de todos los objetos del documento. Para indicar el comienzo y fin se utilizan los símbolos \verb|<<| y \verb|>>|. Las claves se indican con valores de tipo Name.
     \item \textbf{Streams}: son secuencias de bytes de 8 bits sin límite de tamaño. Son utilizados para almacenar cualquier información binaria, por ejemplo imágenes, ficheros JSON o tipografías. Los stream tienen como preámbulo un diccionario de propiedades del stream. Este diccionario siempre debe contener, al menos, la clave \verb|/Length| que indica en bytes el tamaño del stream. Otra clave importante es \verb|/Filter|. \verb|/Filter| indica que la información está comprimida o codificada. Las imágenes se suelen codificar como DCTDecode o JPXDe que son versiones diferentes del formato JPEG. Para otro tipo de datos está disponible el algoritmo FlateDecode, similar a  DEFLATE, el mismo utilizado en los ficheros ZIP.
 \end{enumerate}
 
@@ -83,7 +62,7 @@ Los objetos presentados hasta el momento son los objetos directos. Los objetos d
 
 \subsection{Estructura física}
 
-La estructura física de un fichero está dividida en cuatro partes, tal como se muestra en la Figura \ref{fig:secciones-pdf}: header, body, cross-reference table y trailer. El header tiene al menos dos líneas. La primera se utiliza para indicar que el fichero es un PDF y la versión del estándar que le corresponde. La segunda es simplemente un separador: \verb|%%EOF|. 
+La estructura física de un fichero está dividida en cuatro partes, tal como se muestra en la Figura \ref{fig:secciones-pdf}: Header, Body, Cross-Reference Table y Trailer. El Header tiene al menos dos líneas. La primera se utiliza para indicar que el fichero es un PDF y la versión del estándar que le corresponde. La segunda es simplemente un separador: \verb|%%EOF|. 
 
 \begin{figure}[hp!]
     \centering
@@ -92,7 +71,7 @@ La estructura física de un fichero está dividida en cuatro partes, tal como se
     \label{fig:secciones-pdf}
 \end{figure}
 
-El trailer es un objeto de tipo diccionario. Contiene claves y valores que aportan información a nivel de documento. Hay dos claves especialmente importantes, /Size que indica el número de entradas de la Cross-reference table y /Root que apunta al objeto que contiene el comienzo del Catálogo. El body contiene el objeto del Catálogo y todos los demás objetos que conforman el contenido del fichero PDF. La Cross-Reference Table es un índice de todos los objetos indirectos del PDF. Se utiliza para implementar la navegación sobre el fichero. Contiene la información necesaria para poder realizar saltos a la posición donde se encuentra el objeto que se quiere leer. La versión tradicional tiene tres columnas y la secuencia de entradas hace referencia al número del objeto buscado. En el ejemplo, para encontrar el objeto 2, tercera entrada, hay que saltar hasta el byte 32800:
+El Trailer es un objeto de tipo diccionario. Contiene claves y valores que aportan información a nivel de documento. Hay dos claves especialmente importantes, /Size que indica el número de entradas de la Cross-Reference Table y /Root que apunta al objeto que contiene el comienzo del Catálogo. El Body contiene el objeto del Catálogo y todos los demás objetos que conforman el contenido del fichero PDF. La Cross-Reference Table es un índice de todos los objetos indirectos del PDF. Se utiliza para implementar la navegación sobre el fichero. Contiene la información necesaria para poder realizar saltos a la posición donde se encuentra el objeto que se quiere leer. La versión tradicional tiene tres columnas y la secuencia de entradas hace referencia al número del objeto buscado. En el ejemplo, para encontrar el objeto 2, tercera entrada, hay que saltar hasta el byte 32800:
 
 \begin{lstlisting}[caption={Entradas en la Cross-Reference Table},label=lst:cross-ref-table]
 0000000000 65535 f
@@ -104,16 +83,38 @@ El trailer es un objeto de tipo diccionario. Contiene claves y valores que aport
 0000000335 00000 n
 \end{lstlisting}
 
+No existe una gran cantidad de herramientas visuales para explorar el árbol de objetos de un PDF, al menos fáciles de encontrar y gratuitas. En la Imagen \ref{fig:estructura-interna-pdf} se presenta una de ellas, PDFXplorer \footnote{\url{https://www.o2sol.com/pdfxplorer/overview.htm}}, con un ejemplo de documento cuyo único contenido es el texto \emph{Hola mundo!}. En la imagen se visualiza un fragmento del stream que alberga el texto, en particular las líneas 22 a 32 equivales a cada uno de los caracteres de la página. Alternativamente también se puede analizar un PDF de forma manual con herramientas simples en la línea de comandos \cite{filodej_blog_pdfstreamcontent}.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{0.29\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{imaxes/c-bases-teoricas/hola-mundo-adobe-reader}
+		\caption{PDF en Adobe Reader}
+		\label{fig:hola-mundo-adobe-reader}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.7\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{imaxes/c-bases-teoricas/hola-mundo-pdfxplorer}
+		\caption{Árbol de objetos del PDF en PDFXplorer}
+		\label{fig:hola-mundo-pdfxplorer}
+	\end{subfigure}
+	\caption{Elementos internos de un PDF simple}
+	\label{fig:estructura-interna-pdf}
+\end{figure}
+
+
 % TODO Considerar hablar del catálogo o dejarlo para la parte de implementación.
 
 \section{Representación de coordenadas en orígenes OCR}
 
-La representación de las localizaciones de los elementos identificados por el proceso OCR es solo una parte de toda la información que se genera como salida de un engine. Existen varias propuestas de formatos que se proponen como formatos abiertos con intención de favorecer su adopción. Es el caso de hOCR \cite{ocrRepres_hocr_breuel_spec}, ALTO \cite{ocrRepres_alto_spec}, PAGE \cite{ocrRepres_page_pletschacher_paper} y TEI \cite{ocrRepres_tei_project}. Los tres últimos emplean XML como base y definen las etiquetas necesarias. La transformación entre ellos es posible y existe al menos un proyecto capaz de hacerlo
+La representación de las localizaciones de los elementos identificados por el proceso OCR es solo una parte de toda la información que se genera como salida de un motor OCR. Existen varias alternativas de formatos que se proponen como formatos abiertos con intención de favorecer su adopción. Es el caso de hOCR \cite{ocrRepres_hocr_breuel_spec}, ALTO \cite{ocrRepres_alto_spec}, PAGE \cite{ocrRepres_page_pletschacher_paper} y TEI \cite{ocrRepres_tei_project}. Los tres últimos emplean XML como base y definen las etiquetas necesarias. La transformación entre ellos es posible y existe al menos un proyecto capaz de hacerlo
 \cite{ocrRepres_conversion_ocrFileformat}. hOCR es el formato de representación escogido para el proyecto, como se verá en la Sección \ref{sec:rec-optico-caracteres}.
 
 \subsection{El microformato hOCR}
 
-hOCR es un estándar abierto que utiliza HTML como base tecnológica. Se diseñó siguiendo los modelos de los microformatos \footnote{\url{http://microformats.org/}}. Los microformatos son una tecnología ligada al auge de los blogs durante el año 2004. Su objetivo es aportar significado semántico a construcciones HTML, que de otro modo no lo tendrían ya que no forman parte como tal del lenguaje. La especificación hOCR hace uso de etiquetas \verb|DIV| y \verb|SPAN| para los elementos. Para la información se utilizan atributos como \verb|class|, \verb|title| o \verb|style|. Se combina con CSS para ampliar las capacidades del HTML en cuanto a representación de la salida OCR. HTML tiene soporte nativo para muchas características habituales en los documentos como estilo, tipografías, espaciado, etc.
+hOCR es un estándar abierto que utiliza HTML como base tecnológica. Se diseñó siguiendo los modelos de los microformatos \footnote{\url{http://microformats.org/}}. Los microformatos son una tecnología ligada al auge de los blogs durante el año 2004. Su objetivo es aportar significado semántico a construcciones HTML, que de otro modo no lo tendrían ya que no forman parte como tal del lenguaje. La especificación hOCR hace uso de etiquetas \verb|DIV| y \verb|SPAN| para los elementos. Para la información se utilizan atributos como \verb|class|, \verb|title| o \verb|style|. Uno de los motivos para para basarse en HTML a la hora de diseñar el formato fue que este tiene soporte nativo para muchas de las características habituales en los documentos como el estilo, tipografías, espaciado, etc. Además, para ampliar las capacidades de representación se combina con CSS.
 
 La especificación hOCR define tres tipos de marcado:
 
@@ -123,7 +124,7 @@ La especificación hOCR define tres tipos de marcado:
     \item Un ultimo tipo para el \textbf{nivel físico} representado por líneas, figuras, y las palabras. Es específico para la implementación de cada motor de OCR. 
 \end{itemize}
 
-El formato proporciona también información geométrica, posiciones, de las palabras y valores de confianza respecto a la calidad que el motor valora sobre el reconocimiento realizado.
+El formato proporciona también información geométrica, posiciones, de las palabras y valores de confianza respecto a la calidad que el motor tiene sobre el reconocimiento realizado.
 
 \section{Reconocimiento Óptico de Caracteres}
 \label{sec:rec-optico-caracteres}
@@ -131,7 +132,7 @@ El formato proporciona también información geométrica, posiciones, de las pal
 Para realizar el Reconocimiento Óptico de Caracteres se seleccionó Tesseract \cite{ocr_tesseract_raysmithetal.TesseractocrTesseract2021}. Existen otros proyectos de fuente abierta que se pueden considerar:
 
 \begin{itemize}
-    \item \textbf{OCRopus} \cite{ocr_ocropus_ocropy_project}, \textbf{Kraken}  y \textbf{Calamary} \cite{ocr_calamari_journal}: OCRopus es una colección de herramientas más que un producto final. Kraken y Calamary son forks de OCRopus que proporcionan un producto final. Sin embargo los tres proyectos están enfocados en resolver el problema de reconocer textos históricos con tipografías clásicas. Revisando la documentación de los tres no se encontraron modelos preentrenados en castellano.
+    \item \textbf{OCRopus} \cite{ocr_ocropus_ocropy_project}, \textbf{Kraken}  y \textbf{Calamary} \cite{ocr_calamari_journal}: OCRopus es una colección de herramientas más que un producto final. Kraken y Calamary son dos derivaciones de OCRopus que proporcionan un producto final. Sin embargo los tres proyectos están enfocados en resolver el problema de reconocer textos históricos con tipografías clásicas. Revisando la documentación de los tres no se encontraron modelos preentrenados en castellano.
     \item \textbf{EasyOCR} (\cite{ocr_easyocr_official}, \cite{ocr_easyocr_project}) es la alternativa más viable. Es un proyecto que se actualiza regularmente y tiene soporte comercial. Como punto negativo destaca que aunque proporciona información de bounding-box, no sigue ninguno de los estándares comentados con anterioridad.
 \end{itemize}
 
