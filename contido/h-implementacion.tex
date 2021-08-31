@@ -218,11 +218,11 @@ El motor del sistema es el componente implementado en Bash. Esta decisión se to
 
 La generación del lenguaje intermedio se realiza por medio de una aplicación Python escrita para este propósito. El código del programa está dividido en módulos de tal manera que se facilita el desarrollo y mantenimiento, agrupando lógica relacionada. La lista de módulos se presentan de forma resumida en la Tabla \ref{tab:modulo-generador-codigo-intermedio}.
 
-Uno de los módulos comunes que se usa en toda la aplicación es \verb|constants.py|. Como evidencia su nombre, el objetivo del módulo es almacenar las constantes compartidas por todos los demás módulos. En particular, dado que se hace uso muy frecuente del tipo diccionario, todas las claves usadas se encuentran definidas en este fichero. En los listados de código se podrá apreciar que aparecen precedidas por el prefijo \verb|k| como en \verb|k_y_min|.
+Uno de los módulos comunes que se usa en toda la aplicación es \verb|constants.py|. Como evidencia su nombre, el objetivo del módulo es almacenar las constantes compartidas por todos los demás módulos. En particular, dado que se hace uso muy frecuente del tipo diccionario, todas las claves utilizadas se encuentran definidas en este fichero. En los listados de código se podrá apreciar que aparecen precedidas por el prefijo \verb|k| como en \verb|k_y_min|.
 
-El lenguaje generado es suficientemente expresivo para representar los tipos de regiones, las filas, columnas de las tablas y las palabras. Al mismo tiempo evita complejidades que dificulten su tratamiento en los analizadores léxicos y sintácticos que se utilizan posteriormente. En la Imagen \ref{fig:lenguaje-intermedio} se presenta un extracto donde se puede observar la definición de tres regiones. La región \verb|T1| tiene tiene tres filas y tres columnas. La primera fila corresponde con la cabecera de la tabla. La elección de los símbolos para señalizar comienzo y fin de filas y columnas se escogió para hacer fácilmente reconocibles estos elementos al manejar los ficheros manualmente. 
+El lenguaje intermedio es suficientemente expresivo para representar los tipos de regiones, las filas, columnas de las tablas y las palabras. Al mismo tiempo evita complejidades que dificulten su tratamiento en los analizadores léxicos y sintácticos que se utilizan posteriormente. En la Imagen \ref{fig:lenguaje-intermedio} se presenta un extracto donde se puede observar la definición de tres regiones. La región \verb|T1| tiene tiene tres filas y tres columnas. La primera fila corresponde con la cabecera de la tabla. La elección de los símbolos para señalizar comienzo y fin de filas y columnas se escogió para hacer fácilmente reconocibles estos elementos al manejar los ficheros manualmente y no suponen especial complejidad en las reglas léxicas.
 
-Las palabras siguen siempre el mismo patrón. Por ejemplo, en la caso \verb|P1·W146·365·| la primera parte, \verb|P1| indica la página del documento en donde se encuentra la palabra. \verb|W146| se refiere a que es una palabra del cuerpo, frente a una palabra de cabecera, que llevaría una \verb|H|. Por último \verb|365| es el contenido. Los demás se utilizan como separadores.
+Las palabras siguen siempre el mismo patrón. Por ejemplo, en la caso \verb|P1·W146·365·| la primera parte, \verb|P1| indica la página del documento en donde se encuentra la palabra. \verb|W146| se refiere a que es una palabra del cuerpo, frente a una palabra de cabecera, que llevaría una \verb|H|. Por último \verb|365| es el contenido. Los demás símbolos se utilizan como separadores.
 
 \begin{figure}[hp!]
     \centering
@@ -277,7 +277,7 @@ optional arguments:
 Escoge el tipo de salida deseada. Por detecto produce la lista de palabras del fichero de entrada
 \end{lstlisting}
 
-El flag \verb|-w| se utiliza para escoger el tipo de salida que se desea. Seleccionando \verb|GENERATE| se obtiene el lenguaje intermedio. \verb|LIST_WORDS| produce un listado de todas las líneas y palabras asociadas. Mostrando por la salida estándar sus identificadores y coordenadas. Internamente estas tareas se definen como clases diferentes que exponen un método, \verb|run()|, que recibe los datos de la entrada y realiza el procesamiento de acuerdo a su objetivo. De esta manera es sencillo extender la aplicación para realizar distintos tipos de procesamientos.
+El flag \verb|-w| se utiliza para escoger el tipo de salida que se desea. Seleccionando \verb|GENERATE| se obtiene el lenguaje intermedio. \verb|LIST_WORDS| produce un listado de todas las líneas y palabras asociadas. Mostrando por la salida estándar sus identificadores y coordenadas. Internamente estas tareas se definen como clases diferentes que exponen un método, \verb|run()|. Este método recibe los datos de la entrada y realiza el procesamiento de acuerdo a su objetivo. De esta manera es sencillo extender la aplicación para realizar distintos tipos de procesamientos.
 
 El script \verb|generate-json.sh| es el encargado de realizar la invocación del generador de código intermedio con la parametrización necesaria para tratar cada página de forma individual.
 
@@ -321,7 +321,7 @@ def get_coords(self, attrs):
     \end{lstlisting}
 \end{minipage}
 
-En el Listado \ref{lst:captura-de-palabras} se puede como se utiliza una lista donde se almacenan estructuras de tipo diccionario para con todos los datos de una palabra. Las coordenadas se recuperaron previamente de los atributos del etiqueta en el método de apertura, tal como se muestra en el Listado \ref{lst:recuperacion-coordenadas}. También se utiliza un contador para generar los identificadores de las palabras en la variable \verb|self.word_counter|. Por último, al almacenar las líneas, se les asocian las palabras que contienen por medio de los identificadores descritos. 
+En el Listado \ref{lst:captura-de-palabras} se puede como se utiliza una lista donde se almacenan estructuras de tipo diccionario para todos los datos de una palabra. Las coordenadas se recuperaron previamente leyendo los atributos en el método de apertura, tal como se muestra en el Listado \ref{lst:recuperacion-coordenadas}. También se utiliza un contador para generar los identificadores de las palabras en la variable \verb|self.word_counter|. Por último, al almacenar las líneas, se les asocian las palabras que contienen por medio de los identificadores descritos. 
 
 \subsection{Truncado de líneas y reasignación de líneas a regiones}
 
@@ -329,11 +329,9 @@ Una vez leída la información, se tienen en memoria todas las líneas y palabra
 
 Para asociar líneas o palabras las regiones definidas en las plantillas se utiliza un algoritmo genérico. Es genérico ya que compara dos regiones rectangulares y resuelve si una está sobre la otra, en base a sus coordenadas y dimensiones. Este algoritmo se utiliza en varios punto del programa para clasificar líneas en regiones o líneas en columnas de las regiones.
 
-Al comienzo del desarrollo se realizó una primera implementación para resolver esta clasificación pero utilizaba Sets de Python como tipo de dato y resultaba excesivamente lenta. 
+Al comienzo del desarrollo se realizó una primera implementación para resolver esta clasificación pero utilizaba Sets de Python como tipo de dato y resultaba excesivamente lenta. Con la aproximación actual se comparan nueve casos. Si hay dos rectángulos, $ \alpha $ y $ \beta $ y se quiere saber $ \alpha $ está dentro de $ \beta $, primero se comprueba si, atendiendo a sus coordenadas, está totalmente dentro. Este es un caso muy frecuente. En los demás se mira si $ \alpha $ podría estar sobre alguno de los lados de $ \beta $ y por último si $ \alpha $ podría estar en alguna sobre alguna de las esquinas de $ \beta $. Una representación gráfica de los casos puede verse en la Imagen \ref{fig:casos-algoritmo-seleccion-regiones} del Apéndice. 
 
-Con la aproximación actual se comparan nueve casos. Si hay dos rectángulos, $ \alpha $ y $ \beta $ y se quiere saber $ \alpha $ está dentro de $ \beta $, primero se comprueba si, atendiendo a sus coordenadas, está totalmente dentro. Este es un caso muy frecuente. En los demás se mira si $ \alpha $ podría estar sobre alguno de los lados de $ \beta $ y por último si $ \alpha $ podría estar en alguna sobre alguna de las esquinas de $ \beta $. Una representación gráfica de los casos puede verse en la Imagen \ref{fig:casos-algoritmo-seleccion-regiones} del Apéndice. 
-
-Los datos de entrada son la lista de áreas que se quieren clasificar y la zona sobre la que se quiere realizar el test. Un bucle recorre las áreas evaluando los criterios. La asignación de un área a la zona se produce si todas las condiciones son verdaderas en alguno de los casos. Para considerar las situaciones donde $ \alpha $ está sobre el borde de $ \beta $, se tiene en cuenta un margen de proximidad, configurado para el $ 30\% $. Con esto se regula cuando puede sobresalir $ \alpha $ de $ \beta $ para seguir siendo considerada válida para el caso. En el Listado \ref{lst:condiciones-caso-b} se puede ver el código donde se evalúan las condiciones para ser perteneciente al caso B mostrado en \ref{fig:casos-algoritmo-seleccion-regiones}.
+Los datos de entrada son la lista de áreas que se quieren clasificar y la zona sobre la que se quiere realizar el test. Un bucle recorre las áreas evaluando los criterios. La asignación de un área a la zona se produce si todas las condiciones son verdaderas en alguno de los casos. Para considerar las situaciones donde $ \alpha $ está sobre el borde de $ \beta $, se tiene en cuenta un margen de proximidad, configurado para el $ 30\% $. Con esto se regula cuanto puede sobresalir $ \alpha $ de $ \beta $ para seguir siendo considerada válida para el caso. En el Listado \ref{lst:condiciones-caso-b} se puede ver el código donde se evalúan las condiciones para ser perteneciente al caso B mostrado en \ref{fig:casos-algoritmo-seleccion-regiones}.
 
 \begin{lstlisting}[language=Python,caption={Evaluación de las condiciones del Caso B},label=lst:condiciones-caso-b]
     case_b = [element[k_x_max] > container[k_x_min],
@@ -350,7 +348,7 @@ El truncado de líneas resuelve un problema descubierto durante el desarrollo y 
 
 \subsection{Tratamiento de las regiones}
 
-El tratamiento de las regiones comienza seleccionando aquellas que aplican a la página. El parámetro \verb|page| que cada región tienen definida en las plantillas especifica si la región a de ser considerada para la página teniendo en cuenta el número de página actual y el total de páginas del documento. El parámetro se evalúa como un \emph{slice} Python y da suficiente flexibilidad para todos los casos que se han encontrado hasta el momento. En el Listado \ref{lst:seleccion-de-regiones-segun-pagina} se muestran ejemplos de uso en una sesión interactiva. La implementación hace uso del método \verb|eval()| para la evaluar expresiones a partir de literales: \verb|eval(f"doc_page_numbers[{region_slice}]")| donde \verb|doc_page_numbers| es la lista con los números de las páginas, que se generó previamente.
+El tratamiento de las regiones comienza seleccionando aquellas que aplican a la página. El parámetro \verb|page| que cada región tiene definida en las plantillas especifica si la región a de ser considerada para la página teniendo en cuenta el número de página actual y el total de páginas del documento. El parámetro se evalúa como un \emph{slice} Python y da suficiente flexibilidad para todos los casos que se han encontrado hasta el momento. En el Listado \ref{lst:seleccion-de-regiones-segun-pagina} se muestran ejemplos de uso en una sesión interactiva. La implementación hace uso del método \verb|eval()| para la evaluar expresiones a partir de literales: \verb|eval(f"doc_page_numbers[{region_slice}]")| donde \verb|doc_page_numbers| es la lista con los números de las páginas, que se generó previamente.
 
 \begin{lstlisting}[language=Python,caption={Selección de regiones según las páginas},label=lst:seleccion-de-regiones-segun-pagina]
 Python 3.6.9 (default, Jan 26 2021, 15:33:00) [GCC 8.4.0] on linux
@@ -369,20 +367,20 @@ Type "help", "copyright", "credits" or "license" for more information.
 [2, 3, 4, 5, 6, 7, 8, 9]
 \end{lstlisting}
 
-Una vez seleccionadas las regiones se procede a procesarlas. En el módulo \verb|region.py| existe una clase para cada una de ellas. La mayoría definen únicamente un método, \verb|assign_lines()| y definen el constructor para inicializar la clase con las coordenadas de la región. Si la región tienen columnas, se informa también de las posiciones de las mismas. El objetivo de método \verb|assign_lines()| es recorrer las columnas, o el espacio principal si no hay columnas y llamar a \verb|assign_words_to_regions_geometric()| con cada una de ellas. El método anterior corresponde al algoritmo genérico de clasificación de regiones comentado en la Subsección anterior. Una responsabilidad más de \verb|assign_lines()| es guardar, junto con los demás datos de la región, la implementación necesaria para crear el texto de salida. Lo que se hace es asignar directamente la referencia a alguno de los métodos del módulo \verb|printer_region.py|. Las funciones de impresión se comentarán más adelante, pero es en este punto cuando se realiza la selección, dado que cada tipo de región genera un texto propio.
+Una vez seleccionadas las regiones se procede a procesarlas. En el módulo \verb|region.py| existe una clase para cada una de ellas. La mayoría definen únicamente un método, \verb|assign_lines()| y también el constructor, para inicializar la clase con las coordenadas de la región. Si la región tienen columnas, se informa también de las posiciones de las mismas. El objetivo de método \verb|assign_lines()| es recorrer las columnas, o el espacio principal si no hay columnas y llamar a \verb|assign_words_to_regions_geometric()| con cada una de ellas. El método anterior corresponde al algoritmo genérico de clasificación de regiones comentado en la Subsección anterior. Una responsabilidad más de \verb|assign_lines()| es guardar, junto con los demás datos de la región, la implementación necesaria para crear el texto de salida. Lo que se hace es asignar directamente la referencia a alguno de los métodos del módulo \verb|printer_region.py|. Las funciones de impresión se comentarán más adelante, pero es en este punto cuando se realiza la selección, dado que cada tipo de región genera un texto diferente.
 
 Estas clases descritas están diseñadas para ser genéricas, no estando asociadas a ningún tipo de modelo en particular. En el caso de los documentos de OVH se crearon unas regiones diferentes, \verb|T2_T2_R1|, por ejemplo, ya las regiones que están contiguas unas a otras indican como se han de asignar los datos. A pesar de ello, nada limita que cualquiera de ellas se pueda aplicar en el futuro a otros modelos de documentos que compartan las mismas características.
 
 \subsection{Impresión del lenguaje}
 
-En este punto se han asignado las líneas a las regiones que les corresponde. En el módulo \verb|printer_region.py| se encuentran las funciones que toman la regiones, líneas y palabras y crean el texto que finalmente se escribirá a disco. Por ejemplo, en la implementación para las tablas T1, los pasos que se siguen consisten en buscar todas las líneas \emph{reales} de la tabla. Por líneas reales se entienden aquellas que forman una unidad de contenido, independientemente de cuantas líneas físicas tenga dicho contenido. Para ello se toman las líneas de la primera columna. Estas líneas se comparan en altura con todas las demás que están en la tabla. Para estar consideradas al mismo nivel la altura debe ser la misma, aceptando un margen del $ 25\% $ de desviación. Este porcentaje es el que mejor resultados ofreció en las pruebas. A continuación se trasladan a la primera todas las palabras que están en segundas líneas físicas. Ya por último solo queda recorrer las líneas, columnas y palabras almacenando los valores generados.
+En este punto se han asignado las líneas a las regiones que les corresponde. En el módulo \verb|printer_region.py| se encuentran las funciones que toman la regiones, líneas y palabras y crean el texto que finalmente se escribirá a disco. Por ejemplo, en la implementación para las tablas T1, los pasos que se siguen consisten en buscar todas las líneas \emph{reales} de la tabla. Por líneas reales se entienden aquellas que forman una unidad de contenido, independientemente de cuantas líneas físicas tenga dicho contenido. Para ello se toman como referencia las líneas de la primera columna. Estas líneas se comparan en altura con todas las demás que están en la tabla. Para ser consideradas al mismo nivel, la altura debe ser la misma, aceptando un margen del $ 25\% $ de desviación. Este porcentaje es el que mejor resultados ofreció en las pruebas. A continuación se trasladan a la primera línea todas las palabras que están en segundas líneas físicas. Por último, solo queda recorrer las líneas, columnas y palabras acumulando el string generado y que se corresponde con el lenguaje intermedio.
 
-La escritura en disco se realiza de vuelta en la tarea, donde además se imprimen los ficheros de líneas y palabras que se listan en la Tabla \ref{tab:datos-de-salida}.
+La escritura en disco se realiza una vez el flujo a llegado de vuelta a la tarea GENERATE, donde además se imprimen los ficheros de líneas y palabras que se listan en la Tabla \ref{tab:datos-de-salida}.
 
 % TODO información de bounding box
 % TODO explicar se utiliza el algoritmo de Hough en los ejemplos donde es efectivo
 
-Por último, en la Tabla \ref{tab:datos-intermedios} se presenta la relación de ficheros existentes cuando la generación del lenguaje intermedio finaliza. Estos datos no se exportan a al directorio de salida. En la tabla se muestran tanto los ficheros para casos de imagen como de texto.
+Por último, en la Tabla \ref{tab:datos-intermedios} se presenta la relación de ficheros existentes para un documento cuando la generación del lenguaje intermedio finaliza. Estos datos no se exportan a al directorio de salida. En la tabla se muestran tanto los ficheros para casos de imagen como de texto.
 
 \begin{table}[ht]
     \centering
@@ -390,13 +388,13 @@ Por último, en la Tabla \ref{tab:datos-intermedios} se presenta la relación de
         Esquema del nombre del fichero & Contenido \\
         \hline
         \hline
-        \verb|#doc-#pag-language.txt| & Lenguaje intermedio para una página \\
-        \verb|#doc-#pag.box| & Lista carácter a carácter y coordenadas (Tesseract) \\
-        \verb|#doc-#pag.hocr| & Dados en formato hOCR (Tesseract) \\
-        \verb|#doc-xxx-language.txt| & Documento global del lenguaje intermedio \\
-        \verb|#doc.id| & Identificador de la plantilla \\
-        \verb|#doc-#pag.xml| & XML resultado de la extracción de texto \\
-        \verb|#doc-#pag.txt| & Texto obtenido de \verb|pdftotext| \\
+        \verb|<#doc>-<#pag>-language.txt| & Lenguaje intermedio para una página \\
+        \verb|<#doc>-<#pag>.box| & Lista carácter a carácter y coordenadas (Tesseract) \\
+        \verb|<#doc-<#pag>.hocr| & Dados en formato hOCR (Tesseract) \\
+        \verb|<#doc>-xxx-language.txt| & Documento global del lenguaje intermedio \\
+        \verb|<#doc>.id| & Identificador de la plantilla \\
+        \verb|<#doc>-<#pag>.xml| & XML resultado de la extracción de texto \\
+        \verb|<#doc>-<#pag>.txt| & Texto obtenido de \verb|pdftotext| \\
     \end{tabular}
     \caption{Resumen de los datos de salida}    
     \label{tab:datos-intermedios}
@@ -405,7 +403,7 @@ Por último, en la Tabla \ref{tab:datos-intermedios} se presenta la relación de
 \section{Procesamiento del lenguaje intermedio}
 
 % Diferencias organizativas
-La organización de la aplicación a nivel código fuente en esta parte del proyecto presenta diferencias respecto a los que sería un programa clásico hecho en Flex y Bison, tal y como se presenta en la Subsección \ref{subsec:flex}. En caso de proceder del modo tradicional, las reglas de distintos modelos estaría todas en el mismo fichero, que crecería con cada nuevo modelo a tratar. Además, organizar las reglas para evitar colisiones supondría un alto coste de mantenimiento. Se hacía necesario flexibilizar el esquema  para permitir que con un mismo ejecutable fuese posible iniciar múltiples analizadores léxicos y sintácticos. Una alternativa que se barajó fue la de crear un ejecutable por cada modelo, aplicaciones independientes, pero se descartó por ser excesivamente compleja y poco elegante. En la aproximación utilizada, cada modelo de documento tienen su par de ficheros \verb|.y| y \verb|.l|, que son totalmente independientes a otros ficheros de reglas. No solo eso, además, la compilación también es independiente. Se puede considerar que cada modelo se implementa como un plugin al sistema.
+La organización de la aplicación a nivel código fuente en esta parte del proyecto presenta diferencias respecto a los que sería un programa clásico hecho en Flex y Bison, tal y como se presenta en la Subsección \ref{subsec:flex}. En caso de proceder del modo tradicional, las reglas de distintos modelos estaría todas en el mismo fichero, que crecería con cada nuevo modelo a tratar. Además, organizar las reglas para evitar colisiones supondría un alto coste de mantenimiento. Se hacía necesario encontrar un aproximación más flexible para permitir que con un mismo ejecutable fuese posible iniciar múltiples analizadores léxicos y sintácticos. Una alternativa que se barajó fue la de crear un ejecutable por cada modelo, aplicaciones independientes, pero se descartó por ser excesivamente compleja y poco elegante. En la aproximación utilizada, cada modelo de documento tienen su par de ficheros \verb|.y| y \verb|.l|, que son totalmente independientes a otros ficheros de reglas. No solo eso, además, la compilación también es independiente. Se puede considerar que cada modelo se implementa como un plugin al sistema.
 
 En el Listado \ref{lst:fuentes-del-procesador-de-lenguajes} del Apéndice se pueden ver todos los ficheros fuente que forman parte del procesador de lenguaje. Alternativamente, en la Tabla \ref{tab:modulos-procesador-lenguaje} están relacionados los más relevantes.
 
@@ -429,8 +427,8 @@ En el Listado \ref{lst:fuentes-del-procesador-de-lenguajes} del Apéndice se pue
         \hline
         \multicolumn{2}{c}{tool-parser/plugin/ ↓} \\            
         \hline        
-        \verb|*.{l}| & Fuentes Flex para todos los modelos \\
-        \verb|*.{y}| & Fuentes Bison para todos los modelos \\
+        \verb|*.l| & Fuentes Flex para todos los modelos \\
+        \verb|*.y| & Fuentes Bison para todos los modelos \\
         \hline
         \multicolumn{2}{c}{tool-parser/lib/ ↓} \\     
         \hline
@@ -454,13 +452,13 @@ Luego se realiza la apertura de la librería dinámica que se quiere utilizar, p
 handle = dlopen(app_config->plugin_path, RTLD_LAZY);
 \end{lstlisting}
 
-Se obtiene la dirección de memoria del símbolo que se quiere utilizar, en este caso la función \verb|yyparse()|. Esta es la función la define Bison:
+Se obtiene la dirección de memoria del símbolo que se quiere utilizar, en este caso la función \verb|yyparse()|. Esta función la define Bison:
 
 \begin{lstlisting}[language=C,caption={},label={}]
 parse = dlsym(handle, PARSER_NAME);
 \end{lstlisting}
 
-Y por último se ejecuta el parser a través del puntero a función. Cuando el proceso finaliza correctamente la variable \verb|completed| valdrá 0. En caso de valer 1, lo más habitual es que se produjese un error de parser:
+Y por último se ejecuta el parser a través del puntero a función. Cuando el proceso finaliza correctamente la variable \verb|completed| valdrá 0. En caso de valer 1, lo más habitual es que se produjese un error de sintáctico en el parser:
 
 \begin{lstlisting}[language=C,caption={},label={}]
 int completed = (*parse)();
@@ -475,7 +473,7 @@ fclose(yyin);
 
 \subsection{Dependencias entre módulos}
 
-Al tener una colección de parsers, las secciones de los prólogos y el epílogo de Bison tienen partes comunes en todos los casos. Para evitar redundancias se crearon módulos específicos para albergar todo aquello que es común a todos los parsers y realiza su inclusión previamente a cualquier otro contenido. Haciéndolo así, los analizadores no pierden las secciones sino que estas contienen únicamente las definiciones específicas para tratar cada una su modelo. La relación de dependencias puede verse en las Figuras \ref{fig:dependencia-flex} y \ref{fig:dependencia-bison}
+Al tener una colección de parsers, las secciones de los prólogos y el epílogo de Bison tienen partes comunes en todos los casos. Para evitar redundancias y seguir la propuesta del principio de diseño DRY, se crearon módulos específicos para albergar todo aquello que es común a todos los parsers y se realiza su inclusión previamente a cualquier otro contenido. Haciéndolo así, los analizadores no pierden las secciones sino que estas contienen únicamente las definiciones específicas para tratar cada una las particularidades de su modelo. La relación de dependencias puede verse en las Figuras \ref{fig:dependencia-flex} y \ref{fig:dependencia-bison}
 
 \begin{figure}
     \centering
@@ -513,7 +511,7 @@ typedef struct word {
     \end{lstlisting}
 \end{minipage}
 
-Para evitar la necesidad de conversiones en cualquier otros punto del programa, los identificadores se guardan como strings, útil durante escritura en disco, y como enteros, en el caso de necesitar realizar cualquier operación con ellos.
+Para evitar la necesidad de conversiones de tipos en cualquier otro punto del programa, los identificadores se guardan como strings, lo que resulta útil durante escritura en disco, y también como enteros, en el caso de necesitar realizar cualquier operación con ellos.
 
 El fichero \verb|bison-prologue.h| contiene las definiciones de prototipos de \verb|yyerror()| e \verb|yylex()|, que son llamadas durante la ejecución de \verb|yyparse()|. \verb|yylex()| es la función para ejecutar el escáner. \verb|yyerror()|, que se define en \verb|bison-epilogue.c| tienen por finalidad mostrar los errores del tratamiento por la salida de error, \verb|stderr|.
 
@@ -527,20 +525,20 @@ Debido a la reestructuración, las variables que se definen en el epílogo de Bi
     \item Y la ruta al plugin, para poder realizar la carga dinámica.
 \end{itemize}
 
-El path del fichero del lenguaje intermedio se descompone en partes (ruta de salida, número de documento) y se utilizan en la fase de generación para escribir los ficheros de resultados en la ruta y con el nombre correctos. Para la generación de los datos de las tablas en formato CSV no se utiliza el \acrshort{ast} sino que se utiliza una lista donde se guardan únicamente los datos relacionados.
+El path del fichero del lenguaje intermedio se descompone en partes (ruta de salida, número de documento) y se utilizan en la fase de generación para escribir los ficheros de resultados en la ruta y con el nombre correctos. Para la generación de los datos de las tablas en formato CSV no se utiliza el \acrshort{ast} sino que se utiliza una lista donde se guardan únicamente los datos relacionados con un tipo de dato para este caso.
 
 El acceso a esta información no es posible si no se emplean variables globales. El \verb|struct app_config| disponible en el módulo de cabecera \verb|app-conf.h| contiene los tipos de datos para guardar toda la información relativa a los parámetros de entrada y cualquier otro dato de configuración que fuese necesario. En el módulo \verb|global-vars.h| están las declaraciones de las variables que contendrán los datos de importes.
 
 \subsection{Compilación separada}
 
-La obtención los ejecutables se automatiza con GNU Make y dado que la carga de los parser se realiza como librerías dinámicas, la compilación se puede llevarse a cabo de forma separada ya que los parsers no se enlazan con el programa principal. Para su ejecución es posible crear distribuciones que contengan algunos parsers y no otros.
-Para la obtención de las librerías dinámicas se compilan primero los módulos dependientes de los que se ha hablado anteriormente, prólogos y epílogo, y también los módulos utilizados en la generación en la fase de generación \footnote{En las líneas de código de ejemplo la variable $ \$@ $, propia de Make, contiene el nombre del fichero que se va a compilar.}:
+La obtención los ejecutables se automatiza con GNU Make y dado que la carga de los parsers se realiza como librerías dinámicas, la compilación se puede llevar a cabo de forma separada ya que los parsers no se enlazan con el programa principal. Para su distribución, es posible crear versiones que contengan algunos parsers y no otros.
+Para la obtención de las librerías dinámicas se compilan primero los módulos dependientes de los que se ha hablado anteriormente, prólogos y epílogo, y también los módulos utilizados en la fase de generación. En las líneas de Código de ejemplo la variable $ \$@ $, propia de Make, contiene el nombre del fichero que se va a compilar:
 
 \begin{lstlisting}[language=C,caption={},label={}]
 gcc -fPIC -c $@.c
 \end{lstlisting}
 
-El parámetro \verb|fPIC| de GCC compila los módulos de manera que el código generado no depende de estar en una dirección específica para funcionar y es necesario para las librerías dinámicas. A continuación ya se puede compilar cada uno de los parsers:
+El parámetro \verb|fPIC| de GCC compila los módulos de manera que el código generado no depende de estar en una dirección de memoria específica para funcionar y es necesario para el correcto funcionamiento de las librerías dinámicas. A continuación ya se puede compilar cada uno de los parsers:
 
 \begin{lstlisting}[language=C,caption={},label={}]
 bison -y -Wno-yacc -d -r all -o $(PLUGIN)/$@.tab.c $(PLUGIN)/$@.y
@@ -550,7 +548,7 @@ gcc -fPIC -c $(PLUGIN)/$@.yy.c
 gcc -o $@.so -shared bison-epilogue.o flex-prologue.o $@.tab.o $@.yy.o
 \end{lstlisting}
 
-Las dos primeras líneas generan los analizadores sintáctico y léxico, respectivamente. Se hace en este orden para poder incluir el fichero \verb|*.tab.c| en el analizador léxico. Este fichero contienen las definiciones de tokens compartidas por ambos. En la quinta línea se compila la librería y se obtiene el fichero \verb|.so|.
+Las dos primeras líneas generan los analizadores sintáctico y léxico, respectivamente. Se hace en este orden para poder incluir el fichero \verb|*.tab.c| en el analizador léxico. Este fichero es generado por Bison contiene y contiene, por ejemplo, las definiciones de tokens compartidas por ambos. En la quinta línea se compila la librería y se obtiene el fichero \verb|.so|.
 
 \subsection{Análisis léxico}
 
@@ -562,7 +560,7 @@ En el programa, para la manipulación de strings se recurre a funciones de la li
 
 Tanto \verb|lista.c| como \verb|strbuf| han sido desarrolladas por terceros y no forma parte del trabajo realizado para este TFG.
 
-Para almacenar los tipos de regiones se creó el tipo \verb|region| como un \verb|struct| compuesto de un enumerado y un \verb|union|. Cuando se crea una nueva región le asigna un tipo del enumerado y se utiliza para los datos la variable correspondiente del \verb|union|. Más tarde en la generación se sigue el mismo mecanismo para recuperar los datos de la lista o tabla correcta:
+Para almacenar los tipos de regiones se creó el tipo \verb|region| como un \verb|struct| compuesto de un enumerado y un \verb|union|. Cuando se crea una nueva región le asigna un tipo del enumerado y se utiliza para los datos la variable correspondiente del \verb|union|. Más tarde en la generación, se sigue el mismo mecanismo para recuperar los datos de la lista o tabla correcta:
 
 \noindent\begin{minipage}{.45\textwidth}
     \begin{lstlisting}[language=C,caption={},frame=tlrb,label={}]{}
@@ -627,9 +625,9 @@ Otra responsabilidad de los analizadores léxicos es limpiar los datos recibidos
 
 \subsection{Análisis sintáctico}
 
-Aunque las reglas analizan en Bison desde las hojas al axioma, para facilitar la exposición se mostrarán de forma inversa, mostrando aquellas que son comunes a todos los parsers.
+Aunque las reglas se analizan en Bison desde las hojas al axioma, para facilitar la exposición se mostrarán de forma inversa, mostrando aquellas que son comunes a todos los parsers.
 
-El axioma es equivalente a una lista de regiones y en la acción se llama a las dos funciones de generación, \verb|gen_contents()| y \verb|gen_table_amounts()|. Cuando el flujo retorna a la acción llama a una última función, \verb|free_ast()| cuyo cometido es la liberación de la memoria reservada para el \acrshort{ast}.
+El axioma es equivalente a una lista de regiones y en la acción se llama a las dos funciones de generación, \verb|gen_contents()| y \verb|gen_table_amounts()|. Cuando el flujo retorna a la acción después de la generación, se llama a una última función, \verb|free_ast()| cuyo cometido es la liberación de la memoria reservada para el \acrshort{ast}.
 
 Las regiones almacenan en el árbol mediante dos reglas, la primera de ellas recursiva:
 
@@ -642,9 +640,9 @@ regions: regions region  {
     lista_append(&$$, $1); }
 \end{lstlisting}
 
-La recursividad sucede porque el no terminal resultado, \verb|regions|, aparece también en la parte derecha de la regla. Se utiliza recursividad por la izquierda, según se recomienda en el manual de Bison para mantener el uso del espacio del stack acotado. Utilizando recursividad por la derecha el espacio utilizado es proporcional al número de elementos de la secuencia, que necesitan ser movidos a la pila antes de que la regla pueda ser aplicada.
+La recursividad sucede porque el no terminal resultado, \verb|regions|, aparece también en la parte derecha de la primera regla. Se utiliza recursividad por la izquierda, según se recomienda en el manual de Bison para mantener el uso del espacio del stack acotado. En caso de utilizar recursividad por la derecha, el espacio utilizado es proporcional al número de elementos de la secuencia, que necesitan ser movidos a la pila antes de que la regla pueda ser aplicada.
 
-Cuando llega la primera región se produce una reducción por la segunda de las reglas. En ese momento se inicializa la lista de regiones, \verb|$$|, y se  guarda la región actual accediendo al valor semántico de su no terminal, \verb|$1|. Para las sucesivas regiones aplica la primera regla, que tiene que conservar el puntero a la lista y guardar la región desde el segundo no terminal.
+Cuando llega la primera región se produce una reducción por la segunda de las reglas. En ese momento se inicializa la lista de regiones, accesible en la variable \verb|$$|, y se  guarda la región actual accediendo al valor semántico de su no terminal, \verb|$1|. Para las sucesivas regiones aplica la primera regla, que tiene que conservar el puntero a la lista y guardar la región desde el segundo no terminal.
 
 Descendiendo un nivel están las reglas para formar las regiones. En este punto se inicializa el \verb|struct region|, asignándose el tipo correspondiente:
 
@@ -663,7 +661,7 @@ Las líneas de las tablas son otra estructura recursiva que opera de manera simi
 
 La regla para el token \verb|WORD| pasa los datos al no terminal \verb|word| y además se utiliza para encontrar el mayor número de página dentro del documento. Este dato se utiliza en la generación pero no se recibe como parámetro ya que se puede calcular a partir de las propias palabras. Solo es necesario actualizar el dato en \verb|app_config_->max_page_number|.
 
-Una característica de Bison no comentada es que tanto los terminales como los no terminales pueden tener un tipo de dato si es necesario para trasladar un valor semántico. En la sección de definiciones se pueden encontrar todos los terminales y no terminales conocidos para el parser y los tipos asignados, Listado \ref{lst:definiciones-tipos-bison}. Para poder subir información por el árbol, todos los símbolos de la gramática deben tener el dato correcto.
+Una característica de Bison no comentada es que tanto los terminales como los no terminales pueden tener un tipo de dato asociado, si es necesario, para trasladar un valor semántico hacia arriba en el árbol de parseo. En la sección de definiciones se pueden encontrar todos los terminales y no terminales conocidos para el parser y los tipos asignados, Listado \ref{lst:definiciones-tipos-bison}. Para poder subir información por el árbol, todos los símbolos de la gramática deben tener el dato correcto.
 
 \noindent\begin{minipage}{.45\textwidth}
     \begin{lstlisting}[language=C,caption={Definiciones de tipos para tokens y no terminales},frame=tlrb,label={lst:definiciones-tipos-bison}]{}
@@ -734,13 +732,13 @@ La Tabla \ref{tab:datos-de-salida} presenta un resumen de los datos que se obtie
         Esquema del nombre del fichero & Contenido \\
         \hline
         \hline
-        \verb|#doc-#pag-lines.json| & Líneas de la página, ubicaciones y palabras asociadas. \\
-        \verb|#doc-#pag-selected.json| & Palabras de la página seleccionadas como relevantes. \\
-        \verb|#doc-#pag-words.json| & Todas las palabras del documento y sus ubicaciones. \\
-        \verb|#doc.jpg| & Imagen de la página. \\
-        \verb|#doc-amounts.json| & Importes totales e individuales obtenidos de las tablas. \\
-        \verb|#doc-table.csv| & Datos de la tabla de datos principal. \\
-        \verb|#doc.name| & Nombre original del fichero PDF.\\
+        \verb|<#doc>-<#pag>-lines.json| & Líneas de la página, ubicaciones y palabras asociadas \\
+        \verb|<#doc>-<#pag>-selected.json| & Palabras de la página seleccionadas como relevantes \\
+        \verb|<#doc>-<#pag>-words.json| & Todas las palabras del documento y sus ubicaciones \\
+        \verb|<#doc>.jpg| & Imagen de la página \\
+        \verb|<#doc>-amounts.json| & Importes totales e individuales obtenidos de las tablas \\
+        \verb|<#doc>-table.csv| & Datos de la tabla de datos principal \\
+        \verb|<#doc>.name| & Nombre original del fichero PDF\\
     \end{tabular}
     \caption{Resumen de los datos de salida}    
     \label{tab:datos-de-salida}
@@ -748,18 +746,18 @@ La Tabla \ref{tab:datos-de-salida} presenta un resumen de los datos que se obtie
 
 \section{Despliegue}
 
-Inicialmente no se pensó en Docker para el proyecto. Si se deseaba disponer de algún mecanismo para automatizar los deployments \footnote{Se entiende por deployment todas aquellas actividades necesarias para que un software esté disponible para su uso en un entorno de producción.} y para ello se seleccionó Ansible, del se desarrolló un script inicial. A raíz de las adaptaciones para la construcción del prototipo surgió la necesidad de ejecutar la aplicación en un entorno Windows. Aunque algunas de las herramientas utilizadas en el proyecto están disponibles en este sistema operativo, por ejemplo a través de Cygwin \footnote{\url{https://www.cygwin.com/}}, tanto el rendimiento como la disponibilidad de todos los paquetes era incierta. Además de otros posibles problemas que pudieran surgir, como el tratamiento de paths en Windows vs. Linux. Docker proporciona una solución apropiada en esta situación.
+Inicialmente no se pensó en Docker para el proyecto. Si se deseaba disponer de algún mecanismo para automatizar los deployments \footnote{Se entiende por deployment todas aquellas actividades necesarias para que un software esté disponible para su uso en un entorno de producción.} y para ello se seleccionó Ansible, con el que se desarrolló un script inicial. A raíz de las adaptaciones para la construcción del prototipo surgió la necesidad de ejecutar la aplicación en un entorno Windows. Aunque algunas de las herramientas utilizadas en el proyecto están disponibles en este sistema operativo, por ejemplo a través de Cygwin \footnote{\url{https://www.cygwin.com/}}, tanto el rendimiento como la disponibilidad de todos los paquetes era incierta. Además de otros posibles problemas que pudieran surgir, como el tratamiento de paths en Windows vs. Linux. Docker proporciona una solución apropiada en este escenario.
 
 \subsection{Docker}
 
-Para \emph{Dockerizar} un aplicación se necesita escribir un \verb|Dockerfile|. Este fichero está en la raíz del proyecto. Las sentencias del \verb|Dockerfile| se ejecutan en secuencia para construir la imagen Docker de la aplicación. Una imagen, en este contexto, es el conjunto de instrucciones que permiten a Docker crear un contenedor. Las imágenes se forman a partir de capas superpuestas y cuando una capa cambia también se reconstruyen las superiores. En este caso se utiliza como base Ubuntu 18.04, indicado en el fichero con la instrucción \verb|FROM ubuntu:bionic|. Sobre ella se crean las capas adicionales por medio de varias instrucciones \verb|RUN|. Con ellas se lleva a cabo \footnote{Ver Apéndice, Sección \ref{sec:instalacion-software} para más detalles del repositorio y los paquetes.}:
+Para \emph{Dockerizar} un aplicación se necesita escribir un \verb|Dockerfile|. Este fichero está en la raíz del proyecto. Las sentencias del \verb|Dockerfile| se ejecutan en secuencia para construir la imagen Docker de la aplicación. Una imagen, en este contexto, es el conjunto de instrucciones que permiten a Docker crear un contenedor. Las imágenes se forman a partir de capas de software superpuestas y cuando una capa cambia, también se reconstruyen las superiores. En este caso se utiliza como base Ubuntu 18.04, indicado en el fichero con la instrucción \verb|FROM ubuntu:bionic|. Sobre ella se crean las capas adicionales por medio de varias instrucciones \verb|RUN|. Con ellas se lleva a cabo \footnote{Ver Apéndice, Sección \ref{sec:instalacion-software} para más detalles del repositorio y los paquetes.}:
 
 \begin{enumerate}
     \item El alta del repositorio de Tesseract actualizado.
     \item Se instalan todas las dependencias para la ejecución de la aplicación.
     \item Se instalan paquetes para la compilación en C (\verb|build-essential|, por ejemplo).
     \item Se copia el proyecto a una carpeta dentro de la imagen.
-    \item Se compila y exporta el directorio de distribución. La instrucción completa es \verb|RUN make -C galiasdoc|, donde \verb|-C| indica a Make que cambie al directorio \verb|galiasdoc| y luego ejecute el target \verb|all| en él. Tras la compilación, todos los ficheros necesarios para la ejecución en el directorio \verb|dist| de la imagen.
+	\item Con \verb|RUN make -C galiasdoc| se compila la aplicación. Donde \verb|-C| indica a Make que cambie al directorio \verb|galiasdoc| y luego ejecute el target \verb|all| en él. Tras la compilación se exporta el directorio de distribución, \verb|dist|, que contiene todos los ficheros necesarios para la ejecución.	
 \end{enumerate}
 
 % TODO Mostrar fichero de configuración Docker y su uso
