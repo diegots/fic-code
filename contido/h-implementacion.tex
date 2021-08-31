@@ -34,19 +34,19 @@ El componente referido como engine o motor se ocupa de conducir todas estas acti
 
 Si bien la Imagen \ref{fig:vision-general-del-sistema} representa el flujo de datos a nivel general, para comenzar el tratamiento se sigue un proceso formalizado en tres pasos. 
 
-Primero el Sistema Externo solicita un identificador para el nuevo job. En ese momento el motor genera el código y lo utiliza para crear las rutas de directorios necesarias para ubicar los resultados de cada etapa. El identificador se obtiene de la fecha UTC actual concatenando segundos y nanosegundos. Se recurre al comando \verb|date| para ello, como se muestra en el Listado \ref{lst:creacion-job-id}).
+Primero el Sistema Externo solicita un identificador para el nuevo job. En ese momento el motor genera el código y lo utiliza para crear las rutas de directorios necesarias para ubicar los resultados de cada etapa. El identificador se obtiene de la fecha UTC actual concatenando segundos y nanosegundos. Se recurre al comando \verb|date| para ello, como se muestra en el Listado \ref{lst:creacion-job-id}.
 
 \begin{lstlisting}[language=bash,caption={Obtención del identificador de un trabajo},label=lst:creacion-job-id]
 job_id=$(date -u +%s%6N)
 \end{lstlisting}
 
-Utilizando el identificador, el Sistema Externo forma el path donde deberá depositar el fichero comprimido. Tras realizar la copia, se le debe indicar al motor que comience el procesamiento del trabajo para el id deseado.
+Utilizando el identificador, el Sistema Externo forma el path donde deberá depositar el fichero comprimido. Tras realizar la copia, se le debe indicar al motor que comience el procesamiento del trabajo para el identificador deseado.
 
 % TODO valorar si incluir el comando de inicio de procesamiento
 
 \subsection{Clasificación de los ficheros}
 
-Como primera acción para tratar correctamente los ficheros se realiza un saneamiento de los nombres. Aplicar un nombrado homogéneo evitará problemas en la construcción de las rutas en el sistema de archivos. Para no perder la relación entre los nombres originales y los nuevos se crea en la ruta de salida un fichero para este dato con el el patrón \#doc.name. También se descartan los directorios que el fichero comprimido facilitado pudiera contener. El esquema de nombrado para los ficheros utiliza los números naturales comenzando en 1 y de forma creciente.
+Como primera acción para tratar correctamente los ficheros se realiza un saneamiento de los nombres. Aplicar un nombrado homogéneo evitará problemas en la construcción de las rutas en el sistema de archivos. Para no perder la relación entre los nombres originales y los nuevos se crea en la ruta de salida un fichero para este dato con el el patrón <\#doc>.name. También se descartan los directorios que el fichero comprimido facilitado pudiera contener. El esquema de nombrado para los ficheros utiliza los números naturales comenzando en 1 y de forma creciente.
 
 Los PDF recibidos deben ser clasificados dependiendo de su contenido. En unos casos es posible utilizar directamente el texto presenten en el documento. Para los restantes se procederá a utilizar el procedimiento OCR, como se ha explicado anteriormente. La clasificación se realiza por medio de un test de extracción de texto y se busca una respuesta positiva en la salida.
 
@@ -74,7 +74,7 @@ fi
 
 \subsection{Extracción de datos}
 
-Previamente al proceso OCR, el script \verb|extract-images.sh| se encarga de extraer las imágenes contenidas en los ficheros seleccionados en el paso anterior. En este proceso se recupera la información original contenida en el PDF, no se trata simplemente de una \emph{foto} de la página, sino que se utiliza la herramienta \verb|pdfimages| con el flag \verb|-j|. Si las imágenes presentes en el PDF fueron almacenadas en formato JPEG, con este flag se conseguirá recuperar la información sin realizar transformaciones y sin mayor pérdida de calidad, ya que el formato PDF soporta la codificación JPEG de forma nativa por medio de los filtros DCTDecode y JPXDecode \cite[23]{adobe_book_iso32000-1}. Además, al no requerir conversión la extracción es mucho más rápida. La situación descrita es la más habitual cuando un escáner profesional digitaliza un número de páginas y crea un PDF final para ellas.
+Previamente al proceso OCR, el script \verb|extract-images.sh| se encarga de extraer las imágenes contenidas en los ficheros seleccionados en el paso anterior. En este proceso se recupera la información original contenida en el PDF, no se trata simplemente de una captura de la página, sino que se utiliza la herramienta \verb|pdfimages| con el flag \verb|-j|. Si las imágenes presentes en el PDF fueron almacenadas en formato JPEG, con este flag se conseguirá recuperar la información sin realizar transformaciones y sin mayor pérdida de calidad, ya que el formato PDF soporta la codificación JPEG de forma nativa por medio de los filtros DCTDecode y JPXDecode \cite[23]{adobe_book_iso32000-1}. Además, al no requerir conversión la extracción es mucho más rápida. La situación descrita es la más habitual cuando un escáner profesional digitaliza un número de páginas y crea un PDF final para ellas.
 
 El siguiente paso obtiene la información de coordenadas de los casos de texto, nuevamente con \verb|pdftotext|. Se generan los ficheros XHTML cuando se invoca la herramienta con el flag \verb|-bbox-layout|. En el Fragmento \ref{lst:extraccion-text-coord} se muestra un extracto del contenido típico que luego será procesado por el generador de código intermedio. Como se puede apreciar, se identifican la palabras individuales con coordenadas y la línea a la cual pertenecen.
 
@@ -86,15 +86,13 @@ El siguiente paso obtiene la información de coordenadas de los casos de texto, 
             xMax="2148.275000" yMax="496.304167">
         <word xMin="1594.583333" yMin="464.608333" xMax="1690.916667" 
                 yMax="495.441667">Fecha</word>
-        <word xMin="1700.183333" yMin="464.608333" xMax="1739.083333"   
-                yMax="495.441667">de</word>
         <word xMin="1748.350000" yMin="464.608333" xMax="1939.116667" 
                 yMax="495.441667">facturación:</word>
     </line>
 </block>
 \end{lstlisting}
 
-Completada la extracción de texto se da paso al proceso de OCR. El script \verb|image-apply-ocr.sh| recorre el directorio donde están almacenadas las imágenes recuperadas y se invoca a Tesseract con la instrucción que se puede ver en el Código \ref{lst:invocacion-de-tesseract}. Se indican varios parámetros importantes. Debe utilizar utilizar los conjuntos de entrenamiento para contenido en castellano (\verb|-l spa|), ya que los documentos están en este idioma. El número de \acrlong{ppp} se fija a 300 (\verb|--dpi 300|) ya que es un tamaño objetivo que las imágenes deben tener para que el proceso OCR tenga calidad suficiente. Tesseract dispone de varios algoritmos para interpretar el layout de documento. En este caso, al trabajar directamente con las coordenadas, no es necesario tener en cuenta el layout y se le indica que capture la máxima información posible independientemente del orden (\verb|--psm 11|). Por otra parte existe un fichero de configuración, apuntado por la variable \verb|$tessconfig_file| que contiene la directiva para activar la salida en formato hOCR, \verb|tessedit_create_hocr 1|.
+Completada la extracción de texto se da paso al proceso de OCR. El script \verb|image-apply-ocr.sh| recorre el directorio donde están almacenadas las imágenes recuperadas y se invoca a Tesseract con la instrucción que se puede ver en el Código \ref{lst:invocacion-de-tesseract}. Se indican varios parámetros importantes. Debe utilizar utilizar los conjuntos de entrenamiento para contenido en castellano (\verb|-l spa|), ya que los documentos están en este idioma. El número de \acrlong{ppp} se fija a 300 (\verb|--dpi 300|) ya que es es el tamaño mínimos que las imágenes deben tener para que el resultado del proceso OCR tenga calidad suficiente. Tesseract dispone de varios algoritmos para interpretar el layout de documento. En este caso, al trabajar directamente con las coordenadas, no es necesario tener en cuenta el layout y se le indica que capture la máxima información posible, independientemente del orden (\verb|--psm 11|). Por otra parte existe un fichero de configuración, apuntado por la variable \verb|$tessconfig_file| que contiene la directiva para activar la salida en formato hOCR, \verb|tessedit_create_hocr 1|.
 
 \begin{lstlisting}[language=XML,caption={Invocación de Tesseract utilizada en el proyecto},label=lst:invocacion-de-tesseract]
 tesseract $file_path "$outputbase" \
@@ -106,7 +104,7 @@ tesseract $file_path "$outputbase" \
     $tessconfig_file
 \end{lstlisting}
 
-Se puede ver una muestra del formato hOCR en el Fragmento \ref{lst:salida-hocr-tesseract}. En el atributo \verb|title| de las palabras se puede ver que aparecen las coordenadas en píxeles respecto al tamaño de la imagen. También hay un indicador de confianza, \verb|x_wconf| que indica la certeza que asigna Tesseract a la identificación de cada palabra en particular.
+Se puede ver una muestra del formato hOCR en el Fragmento \ref{lst:salida-hocr-tesseract}. En el atributo \verb|title| de las palabras se puede ver que aparecen las coordenadas en píxeles respecto al tamaño de la imagen. También hay un indicador de confianza, \verb|x_wconf| que indica la certeza que asigna Tesseract a la correcta identificación de cada palabra en particular.
 
 \begin{lstlisting}[language=XML,caption={Fragmento de la salida hOCR de Tesseract},label=lst:salida-hocr-tesseract]
 <div class='ocr_page' id='page_1' 
@@ -142,7 +140,7 @@ read_identifiers() {
 }
 \end{lstlisting}
 
-A continuación se obtiene la lista de ficheros para los cuales se ha extraído información y se iteran buscando ocurrencias de los identificadores conocidos, En el Código \ref{lst:identifica-documentos} se le indica a \verb|grep| que tenga en cuenta solo los casos en los que el patrón abarque una palabra completa (\verb|-w|), y que cambie la salida habitual por otra con el recuento de ocurrencias (\verb|-c|).
+A continuación se obtiene la lista de ficheros para los cuales se ha extraído información y se iteran buscando ocurrencias de los identificadores conocidos. En el Código \ref{lst:identifica-documentos} se le indica a \verb|grep| que tenga en cuenta solo los casos en los que el patrón abarque una palabra completa (\verb|-w|), y que cambie la salida habitual por otra con el recuento de ocurrencias (\verb|-c|).
 
 \begin{lstlisting}[language=bash,caption={Identificación de los documentos},label=lst:identifica-documentos]
 for file in $files; do
@@ -165,10 +163,10 @@ Cuando se encuentra un identificador válido, se registra en el directorio del d
 % TODO page
 % TODO doc_pages
 
-Las plantillas contienen la información de coordenadas de las regiones de interés seleccionadas para el modelo de documento. En el ejemplo de Código \ref{ejemplo-plantilla} se ver que para almacenar esta información se utiliza el formato JSON. Además de las coordenadas en si mismas, se utilizan otras claves para dar más flexibilidad a la información y poder tratar casos como los documentos de OVH. La clave \verb|id| que aparece al comienzo se utiliza para asociar con los identificadores de los documentos. Luego el array \verb|regions| contiene la colección de regiones existentes en el modelo. Se utiliza \verb|type| para identificar el tipo de región, \verb|yMin| y \verb|yMax| para las coordenadas horizontales. Los límites verticales se almacenan en el array de columnas \verb|cols|. En el caso de regiones con una única columna se utiliza igualmente el array pero con un único elemento.
+Las plantillas contienen la información de coordenadas de las regiones de interés seleccionadas para el modelo de documento. En los ejemplos de Código \ref{comienzo-plantilla} y \ref{plantilla-ref-t1} se ver que para almacenar esta información se utiliza el formato JSON. Además de las coordenadas en si mismas, se utilizan otras claves para dar más flexibilidad a la información y poder tratar casos como los documentos de OVH. La clave \verb|id| que aparece al comienzo se utiliza para asociar con los identificadores de los documentos. Luego, el array \verb|regions| contiene la colección de regiones existentes en el modelo. Se utiliza \verb|type| para identificar el tipo de región, \verb|yMin| y \verb|yMax| para las coordenadas horizontales. Los límites verticales se almacenan en el array de columnas \verb|cols|. En el caso de regiones con una única columna, con el objetivo de mantener el formato homogéneo, se utiliza igualmente el array, pero con un único elemento.
 
 \noindent\begin{minipage}{.45\textwidth}
-    \begin{lstlisting}[language=Java,caption=Comienzo de la plantilla,frame=tlrb]{Name}
+    \begin{lstlisting}[language=Java,caption={Comienzo de la plantilla},label={comienzo-plantilla},frame=tlrb]{Name}
 {
   "id": "A48941488",
   "is_global": false,
@@ -188,7 +186,7 @@ Las plantillas contienen la información de coordenadas de las regiones de inter
     \end{lstlisting}
 \end{minipage}\hfill
 \begin{minipage}{.45\textwidth}
-    \begin{lstlisting}[language=Java,caption=Región T1,frame=tlrb]{Name}
+    \begin{lstlisting}[language=Java,caption={Región T1},label={plantilla-ref-t1},frame=tlrb]{Name}
     {
       "page": "0",
       "type": "T1",
@@ -208,14 +206,13 @@ Las plantillas contienen la información de coordenadas de las regiones de inter
     \end{lstlisting}
 \end{minipage}
 
-Es un formato homogéneo que para representar todas las regiones. Las primeras plantillas fueron creadas a mano durante el desarrollo utilizando el programa de edición de imágenes GIMP \footnote{\url{http://www.gimp.org.es/}}.
+Es un formato aplicable para representar todas las regiones. Las coordenadas para las plantillas fueron creadas a mano durante el desarrollo utilizando el programa de edición de imágenes GIMP \footnote{\url{http://www.gimp.org.es/}}.
 
 \subsection{Un engine modular}
-% TODO Detalle de la estructura de directorios considerada
-% TODO Se imita un modelo de procesamiento en batch
-% TODO Se generan códigos de identificación de los jobs recibidos. También marca final.
 
-El motor del sistema es el componente implementado en Bash. Esta decisión se tomó para facilitar el manejo de los ficheros dentro de la estructura de directorios. Además se utilizan herramientas en la consola, que sería más engorroso utilizar desde otros lenguajes de programación.
+% TODO Se imita un modelo de procesamiento en batch
+
+El motor del sistema es el componente implementado en Bash. Esta decisión se tomó para facilitar el manejo de los ficheros dentro de la estructura de directorios. Además facilita el uso de herramientas en la shell, que sería más engorroso utilizar desde otros lenguajes de programación. 
 
 \section{Generación del lenguaje intermedio}
 

@@ -11,11 +11,11 @@
 
 Un caso de uso describe una interacción en entre un rol y el sistema. O cómo es utilizado por un usuario para completar una tarea u alcanzar un objetivo. En el Diagrama \ref{fig:casos-de-uso} se presentan los casos de uso de la aplicación. 
 
-Existen dos actores que interactúan con la aplicación, un sistema externo y una base de datos:
+Existen dos actores que interactúan con la aplicación, un Sistema Externo y una Base de Datos:
 
 \begin{itemize}
-	\item \textbf{Sistema externo}: la aplicación está diseñada para comunicarse con sistemas externo mediante invocación directa de comandos o bien un API REST. Si bien mediante comandos un usuario podrían solicitar la ejecución de trabajos en el engine, el objetivo principal es ser un backend conectado empleado por otros sistemas.
-	\item \textbf{Base de datos}: este agente es consultado para la obtención de datos de identificación de los documentos.
+	\item \textbf{Sistema Externo}: la aplicación está diseñada para comunicarse con el Sistemas Externo mediante invocación directa de comandos o bien un por medio del motor que gestiona el procesamiento. Si bien mediante comandos un usuario podría solicitar la ejecución de trabajos, el objetivo principal es ser un backend en disposición de ser empleado por otros sistemas.
+	\item \textbf{Base de Datos}: este agente es consultado para la obtención de datos de identificación de los documentos.
 \end{itemize}
 
 Se presentan a continuación los casos de uso de forma detallada:
@@ -23,7 +23,7 @@ Se presentan a continuación los casos de uso de forma detallada:
 \begin{itemize}
 	\item \textbf{CU-01} - Registrar nuevo trabajo
 	\begin{itemize}
-		\item \textbf{Descripción}: el sistema externo solicita la generación de un nuevo identificador para un trabajo.
+		\item \textbf{Descripción}: el Sistema Externo solicita la generación de un nuevo identificador para un trabajo.
 		\item \textbf{Precondición}: el motor está operativo y esperando trabajo.
 		\item \textbf{Postcondición}: se genera el identificador y se ha creado la ruta correspondiente en el sistema de ficheros para el trabajo.
 	\end{itemize}
@@ -37,7 +37,7 @@ Se presentan a continuación los casos de uso de forma detallada:
 	\begin{itemize}
 		\item \textbf{Descripción}: el sistema genera imágenes para cada una de las páginas de los documentos.
 		\item \textbf{Precondición} se han podido recuperar los PDF individuales y se encuentran en las rutas previstas.
-		\item \textbf{Postcondición}: existe un fichero para cada página de cada documento.
+		\item \textbf{Postcondición}: existe un fichero para cada página de cada documento en la ruta de salida.
 \end{itemize}
 \item \textbf{CU-04} - Informar error
 	\begin{itemize}
@@ -87,7 +87,7 @@ Se exponen ahora los requisitos no funcionales de la aplicación:
 	\item La entrada podrá contener uno o más ficheros para su tratamiento en el mismo lote.
 	\item Procesamiento de los modelos de imagen y texto de forma transparente al usuario.
 	\item La salida de una ejecución debe facilitar los resultados de forma individualizada para cada documento.
-	\item Se deben poder identificar las líneas individuales de las tablas existentes en los documentos.
+	\item Se deben poder identificar las líneas individuales de contenido en  las tablas presentes en los documentos.
 \end{itemize}
 
 \section{Sobre los documentos}
@@ -117,13 +117,13 @@ En la parte inferior se encuentran los datos de resumen como importe, tipo de IV
 
 \subsection{OVH}
 
-Este modelo es el que presenta más variabilidad en su construcción. En la parte superior de la primera página siempre aparece el logotipo de la empresa, a la izquierda, y los datos de identificación de la factura, a la derecha. La información de identificación si que ocupa el mismo tamaño y ubicación en todas las primeras páginas. Para la identificación de las filas de las tablas se utilizará la Transformada de Hough ya que existen casos donde el contenido ocupa varias líneas pero las tablas están perfectamente delimitadas. Las tablas no tienen longitud fija, sino que se extienden tanto como sea necesario para alojar los datos, ocupando incluso páginas enteras. Esto quiere decir que no se puede utilizar el tamaño como indicador del final. El interior de las tablas es siempre el mismo. Hay 5 columnas y una primera fila de cabecera con los nombres de las columnas. Encima de la primera fila hay un texto que categoriza la partida de gasto. La última fila de cada tabla contiene la suma del importe de las filas de la tabla precedido de la etiqueta \emph{SUBTOTAL}. Cuando una de las tablas llega hasta el final de la página, siempre sen respeta una altura máxima. Esto quiere quiere decir que las regiones se pueden definir utilizando este máximo.
+Este modelo es el que presenta más variabilidad en su construcción. En la parte superior de la primera página siempre aparece el logotipo de la empresa, a la izquierda, y los datos de identificación de la factura, a la derecha. La información de identificación si que ocupa el mismo tamaño y ubicación en todas las primeras páginas. Para la identificación de las filas de las tablas se utilizará la Transformada de Hough ya que existen casos donde el contenido ocupa varias líneas pero las tablas están perfectamente delimitadas. Por otra parte, las tablas no tienen longitud fija, sino que se extienden tanto como sea necesario para alojar los datos, extendiéndose incluso páginas enteras. Esto quiere decir que no se puede utilizar el tamaño como indicador del final. El interior de las tablas es siempre el mismo. Hay 5 columnas y una primera fila de cabecera con los nombres de las columnas. Encima de la primera fila hay un texto que categoriza la partida de gasto. La última fila de cada tabla contiene la suma del importe de las filas de la tabla precedido de la etiqueta \emph{SUBTOTAL}. Cuando una de las tablas llega hasta el final de la página, siempre se respeta una altura máxima. Esto quiere quiere decir que las regiones se pueden definir utilizando este máximo.
 
 En la última página, si tienen más de una, o en la parte final si solo tienen una, aparece siempre un resumen con los importes. Tras el resumen existe siempre una línea de texto \emph{Factura pagadera en el momento de la recepción}. La ubicación de esta última tabla puede ser calculada a partir de los texto de la cabecera y de la última línea.
 
 \subsection{AC}
 
-Los documentos de esta empresa pueden tener una o varias páginas. El caso con varias páginas respeta los tamaños y posiciones de los datos. En la parte superior se encuentra el logotipo y datos de la empresa, a la izquierda, y los datos identificativos del cliente, a la derecha. Debajo de la identificación hay regiones simples con los datos identificativos de la factura. En tercer lugar se encuentra la tabla principal de datos que contienen doce columnas. Si bien no se dan casos donde una línea de contenido ocupe más de una línea física, en este modelo algunos datos de columnas diferentes se presentan muy próximos entre si. Aunque el final de la tabla principal no está dibujado, se puede observar que todas las páginas respetan un tamaño máximo que será el punto hasta el que se extienda la región. En la aparte inferior se encuentran los datos de resumen de la factura, con importes desglosados por tipo de IVA y los totales.
+Los documentos de esta empresa pueden tener una o varias páginas. El caso con varias páginas respeta los tamaños y posiciones de los datos. En la parte superior se encuentra el logotipo y datos de la empresa, a la izquierda, y los datos identificativos del cliente, a la derecha. Debajo de la identificación hay regiones simples con los datos identificativos de la factura. En tercer lugar se encuentra la tabla principal de datos que contienen doce columnas. Si bien no se dan casos donde una línea de contenido ocupe más que una línea física, en este modelo algunos datos de columnas diferentes se presentan muy próximos entre si. Aunque el final de la tabla principal no está dibujado, se puede observar que todas las páginas respetan un tamaño máximo que será el punto hasta el que se extienda la región. En la aparte inferior se encuentran los datos de resumen de la factura, con importes desglosados por tipo de IVA y los totales.
  
 \subsection{Tipos de regiones}
 
@@ -155,13 +155,13 @@ Vistos los documentos se concluye que las regiones existentes se pueden categori
     \label{fig:tipos-de-regiones}
 \end{figure}
 
-Una caso especial son las tablas bidimensionales donde se necesita utilizar la Transformada de Hough. Tienen el código \verb|T2| en las plantillas y por lo demás son similares a las \verb|T1|.
+Una caso especial son las tablas bidimensionales donde se necesita utilizar la Transformada de Hough. Tendrán el código \verb|T2| en las plantillas y por lo demás son similares a las \verb|T1|.
 
-En los documentos de OVH, dado que las tablas no tienen una longitud fija, se consideran en su lugar las relaciones entre las propias tablas y la página en la que se encuentran u otros elementos fijos, como la línea del final, mencionada anteriormente. En las plantillas se han definido regiones contiguas, por ejemplo, \verb|T2_T2|. Esto indica al generador de código intermedio que esta región aplica siempre y cuando se encuentre dos regiones \verb|T2| anexas.
+En los documentos de OVH, dado que las tablas no tienen una longitud fija, se consideran en su lugar las relaciones entre las propias tablas y la página en la que se encuentran u otros elementos fijos, como la línea del final, mencionada anteriormente. En las plantillas definirán regiones contiguas, por ejemplo, \verb|T2_T2|. Esto indicará al generador de código intermedio que esta región aplica siempre y cuando se encuentre dos regiones \verb|T2| anexas.
 
 % TODO aumentar explicación de los tipos de regiones en OVH
 
 \subsection{Características para la identificación}
 
-Para emparejar los documentos con las plantillas que los resuelven se identifican datos específicos a los modelos. Dado que los casos tratados son todos facturas, necesariamente aparecerá en ellas el NIF o CIF del emisor. Esta información ha resultado suficiente para. Los mecanismos empleados para realizar el emparejamiento se explican en la Subsección \ref{subsec:impl-identificacion}.
+Para emparejar los documentos con las plantillas que los resuelven se identifican datos específicos presentes en modelos. Dado que todos los casos son facturas, necesariamente aparecerá en ellas el NIF o CIF del emisor. Esta información será suficiente para la identificación. Los mecanismos empleados para realizar el emparejamiento se explican en la Subsección \ref{subsec:impl-identificacion}.
 

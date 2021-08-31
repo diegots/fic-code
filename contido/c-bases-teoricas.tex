@@ -114,7 +114,7 @@ La representación de las localizaciones de los elementos identificados por el p
 
 \subsection{El microformato hOCR}
 
-hOCR es un estándar abierto que utiliza HTML como base tecnológica. Se diseñó siguiendo los modelos de los microformatos \footnote{\url{http://microformats.org/}}. Los microformatos son una tecnología ligada al auge de los blogs durante el año 2004. Su objetivo es aportar significado semántico a construcciones HTML, que de otro modo no lo tendrían ya que no forman parte como tal del lenguaje. La especificación hOCR hace uso de etiquetas \verb|DIV| y \verb|SPAN| para los elementos. Para la información se utilizan atributos como \verb|class|, \verb|title| o \verb|style|. Uno de los motivos para para basarse en HTML a la hora de diseñar el formato fue que este tiene soporte nativo para muchas de las características habituales en los documentos como el estilo, tipografías, espaciado, etc. Además, para ampliar las capacidades de representación se combina con CSS.
+hOCR es un estándar abierto que utiliza HTML como base tecnológica. Se diseñó siguiendo los modelos de los microformatos \footnote{\url{http://microformats.org/}}. Los microformatos son una tecnología ligada al auge de los blogs durante el año 2004. Su objetivo es aportar significado semántico a construcciones HTML, que de otro modo no lo tendrían ya que no forman parte como tal del lenguaje. El funcionamiento es sencillo, se incorporan a ciertos tags, atributos con la información necesaria. En el caso de hOCR, la especificación hace uso de etiquetas \verb|DIV| y \verb|SPAN| para los elementos. Para la información se utilizan atributos como \verb|class|, \verb|title| o \verb|style|. Uno de los motivos para basarse en HTML a la hora de diseñar el formato fue que este tiene soporte nativo para muchas de las características habituales en los documentos como el estilo, tipografías, espaciado, etc. Además, para ampliar las capacidades de representación se combina con CSS.
 
 La especificación hOCR define tres tipos de marcado:
 
@@ -124,7 +124,7 @@ La especificación hOCR define tres tipos de marcado:
     \item Un ultimo tipo para el \textbf{nivel físico} representado por líneas, figuras, y las palabras. Es específico para la implementación de cada motor de OCR. 
 \end{itemize}
 
-El formato proporciona también información geométrica, posiciones, de las palabras y valores de confianza respecto a la calidad que el motor tiene sobre el reconocimiento realizado.
+El formato proporciona también información geométrica, posiciones, de las palabras y valores de confianza respecto a la calidad que el motor otorga al reconocimiento realizado.
 
 \section{Reconocimiento Óptico de Caracteres}
 \label{sec:rec-optico-caracteres}
@@ -132,7 +132,7 @@ El formato proporciona también información geométrica, posiciones, de las pal
 Para realizar el Reconocimiento Óptico de Caracteres se seleccionó Tesseract \cite{ocr_tesseract_raysmithetal.TesseractocrTesseract2021}. Existen otros proyectos de fuente abierta que se pueden considerar:
 
 \begin{itemize}
-    \item \textbf{OCRopus} \cite{ocr_ocropus_ocropy_project}, \textbf{Kraken}  y \textbf{Calamary} \cite{ocr_calamari_journal}: OCRopus es una colección de herramientas más que un producto final. Kraken y Calamary son dos derivaciones de OCRopus que proporcionan un producto final. Sin embargo los tres proyectos están enfocados en resolver el problema de reconocer textos históricos con tipografías clásicas. Revisando la documentación de los tres no se encontraron modelos preentrenados en castellano.
+    \item \textbf{OCRopus} \cite{ocr_ocropus_ocropy_project}, \textbf{Kraken} y \textbf{Calamary} \cite{ocr_calamari_journal}: OCRopus es una colección de herramientas para el análisis, más que un producto final utilizable. Kraken y Calamary son dos derivaciones de OCRopus que proporcionan un producto final. Sin embargo los tres proyectos están enfocados en resolver el problema de reconocer textos históricos con tipografías clásicas. Revisando la documentación de los tres no se encontraron modelos preentrenados en castellano.
     \item \textbf{EasyOCR} (\cite{ocr_easyocr_official}, \cite{ocr_easyocr_project}) es la alternativa más viable. Es un proyecto que se actualiza regularmente y tiene soporte comercial. Como punto negativo destaca que aunque proporciona información de bounding-box, no sigue ninguno de los estándares comentados con anterioridad.
 \end{itemize}
 
@@ -159,7 +159,7 @@ b = -a*x + y
 
 es posible transformar cada punto borde al espacio de Hough y obtener una recta en dicho espacio.
 
-Considerando dos puntos del espacio imagen (\ref{fig:hough-punto-imagen}), al trasladarlos (\ref{fig:hough-intersection}) al espacio Hough se puede calcular su intersección resolviendo el sistema de ecuaciones. Esta intersección proporciona los parámetros para construir, en el espacio imagen, la recta (\ref{fig:hough-recta-a-b}) que une ambos puntos.
+Considerando dos puntos del espacio imagen (\ref{fig:hough-punto-imagen}), al trasladarlos al espacio Hough (\ref{fig:hough-intersection}) se puede calcular su intersección resolviendo el sistema de ecuaciones. Esta intersección proporciona los parámetros para construir, en el espacio imagen, la recta (\ref{fig:hough-recta-a-b}) que une ambos puntos.
 
 \begin{figure}
     \centering
@@ -195,14 +195,14 @@ El procedimiento general del algoritmo es como sigue:
         \item Se busca la celda donde coincide el punto intersección.
         \item Se aumenta en uno el recuento de votos de esta celda.
     \end{enumerate}
-    \item Al final las celdas más votadas son las candidatas a ser líneas reales.
+    \item Al finalizar, las celdas más votadas son las candidatas a ser líneas reales.
 \end{enumerate}
 
 \section{Análisis léxico y sintáctico}
 
 \subsection{Introducción}
 
-Como parte del proyecto se ha desarrollado una herramienta que utiliza análisis léxico y sintáctico para crear una salida estructurada, acorde a los requisitos. Estas dos tareas de análisis son etapas típicas de los compiladores de lenguajes de programación. Los siguientes apartados explican algunos de los conceptos elementales para poder entender como se han aplicado en la implementación (ver Capítulo \ref{chap:implemetación}).
+Como parte del proyecto se ha desarrollado una herramienta que utiliza análisis léxico y sintáctico para crear una salida estructurada, acorde a los requisitos. Estas dos tareas de análisis son etapas habituales para los compiladores de lenguajes de programación. Los siguientes apartados explican algunos de los aspectos principales para poder entender como se han aplicado en la implementación (en el Capítulo \ref{chap:implemetación}).
 
 \subsection{Conceptos básicos}
 
@@ -211,18 +211,17 @@ En primer lugar se presentan algunos de los conceptos elementales que serán cit
 \begin{itemize}
     \item Un \textbf{lenguaje} es un conjunto de cadenas de longitud finita creadas a partir de un alfabeto finito.
     \item Los \textbf{alfabetos} son colecciones finitas de símbolos.
-    \item Las \textbf{palabras} o \emph{cadenas} son secuencias de símbolos tomados de un alfabeto. La cadena vacía es aquella cadena que carece de símbolos. Se representa habitualmente con el símbolo $\epsilon$.
-    \item Las \textbf{producciones} son reglas de sustitución para la generación de cadenas del lenguaje.
+    \item Las \textbf{palabras} o \textbf{cadenas} son secuencias de símbolos tomados de un alfabeto. La cadena vacía es aquella cadena que carece de símbolos. Se representa habitualmente con el símbolo $\epsilon$.
+    \item Las \textbf{producciones} son reglas de sustitución que al aplicarse generan cadenas en el lenguaje.
     \item Un \textbf{token} es la unidad mínima que se caracteriza por aportar significado léxico. Por ejemplo, en un lenguaje de programación cualquier palabra reservada es un token. Como también lo son los caracteres de los operadores matemáticos. Se les llama también símbolos terminales.
-    \item Los \textbf{símbolos no terminales} son aquellos símbolos que deben ser sustituidos por otros para generar totalmente una cadena.
-    \item Un \textbf{árbol de derivación} un árbol de derivación es la representación gráfica que muestra la secuencia de sucesivas transformaciones necesarias para obtener una cadena particular partiendo desde el axioma de una gramática independiente del contexto.
     \item El \textbf{axioma} en una gramática es el elemento desde el que se construyen todos los árboles de derivación en dicha gramática
-
+    \item Los \textbf{símbolos no terminales} son aquellos símbolos que deben ser sustituidos por otros para generar totalmente una cadena.
+    \item Un \textbf{árbol de derivación} es la representación gráfica que muestra la secuencia de transformaciones sucesivas que son necesarias para obtener una cadena particular, partiendo desde el axioma de una gramática.
 \end{itemize}
 
 \subsection{Teoría de Autómatas y Lenguajes Formales}
 
-La Teoría de autómatas y los Lenguajes Formales son uno de los pilares que definen lo que un ordenador es capaz de hacer y qué cosas no son computables. Es la base científica sobre la que se construyen los compiladores. Estas herramientas son capaces de transformar código fuente, escrito en un lenguaje de programación, en otro lenguaje que el ordenador sabe interpretar.
+La Teoría de autómatas y los Lenguajes Formales son dos de los pilares que definen lo que un ordenador es capaz de hacer y qué cosas no son computables. Es la base científica sobre la que se construyen los compiladores. Estas herramientas son capaces de transformar código fuente, escrito en un lenguaje de programación, en otro lenguaje que el ordenador es capaz interpretar.
 
 % lenguajes
 
@@ -232,7 +231,7 @@ Los Lenguajes Formales son aquellos donde las reglas para unir los símbolos del
 
 La definición formal viene dada por las Gramáticas Formales. Estas indican como construir cadenas que son válidas según las reglas sintácticas. Las gramáticas contienen conjuntos de reglas de transformación o reglas de producción que se aplican sucesivamente hasta obtener la palabra deseada. Cuando no existe una combinación de reglas que permita obtener una cadena determinada se conoce que esa cadena no pertenece al lenguaje.
 
-Las reglas son de la forma $A\rightarrow S$ y pueden estar formadas por símbolos terminales y no terminales \footnote{Por consenso los símbolos no terminales se indican en mayúscula y en minúscula los terminales}. Este es un ejemplo de gramática:
+Las reglas son de la forma $A\rightarrow S$ y pueden estar formadas por símbolos terminales y no terminales \footnote{Por consenso, los símbolos no terminales se utilizan en mayúscula y en minúscula los terminales, en Bison sin empbargo el criterio es el opuesto.}. Este es un ejemplo de gramática:
 \begin{center}
 $S\rightarrow AB$ (regla 1) \\
 $A\rightarrow aA$ (r. 2) \\
@@ -252,7 +251,7 @@ Los primeros autómatas fueron construidos en la Grecia clásica como pequeños 
 
 En su visión más inmediata, un autómata, es un diagrama que sirve para encontrar las palabras de un lenguaje. Se utiliza un grafo dirigido al que se le aporta información adicional. Los nodos del grafo son los estados e indican en qué punto del análisis de la cadena se encuentra. Las aristas van etiquetadas con caracteres del alfabeto y se llaman transiciones.
 
-Un autómata especifica un lenguaje como el conjunto de aquellas cadenas que lo llevan del estado inicial a alguno de los estados de aceptación. Al mismo tiempo un autómata puede ser visto como un generador de las cadenas de un lenguaje si se comienza con la cadena vacía y se añaden símbolos según se recorren las transiciones, hasta llevar a un estado de aceptación.
+Un autómata especifica un lenguaje como el conjunto de aquellas cadenas que lo llevan del estado inicial a alguno de los estados finales o de aceptación. Al mismo tiempo un autómata puede ser visto como un generador de las cadenas de un lenguaje, si se comienza con la cadena vacía y se añaden símbolos según se recorren las transiciones, hasta llevar al autómata a un estado de aceptación.
 
 A partir del diagrama de estados del autómata es posible obtener expresiones de la forma $S\rightarrow A$ que representan las  transiciones del autómata y se pueden aplicar como reglas de sustitución para la generación de cadenas.
 
@@ -281,7 +280,7 @@ En la jerarquía de Chomsky se definen cuatro tipos de gramáticas. Comenzando c
 $A\rightarrow a$ o bien $A\rightarrow aB$
 \end{center}
 
-Se permite $A\rightarrow\epsilon$ siempre y cuando no aparezca S en la parte derecha de una regla. Este tipo de gramáticas generan los mismos tipos de lenguajes que se pueden describir con las expresiones regulares.
+Se permiten también reglas que generen la cadena vacía, $A\rightarrow\epsilon$. Este tipo de gramáticas generan los mismos tipos de lenguajes que se pueden describir con las expresiones regulares.
 
 Las gramáticas de Tipo 2 o Gramáticas Independientes del Contexto tienen producciones de la forma 
 
@@ -289,7 +288,7 @@ Las gramáticas de Tipo 2 o Gramáticas Independientes del Contexto tienen produ
 $A\rightarrow \beta$
 \end{center}
 
-donde A es un no terminal y $\beta$ es una cadena que puede contener terminales y no terminales. Estas gramáticas son reconocidas por un autómata de pila, como se explica en la Página \pageref{automatas-pila}. Son las gramáticas empleadas habitualmente en los lenguajes de programación.
+donde A es un no terminal y $\beta$ es una cadena que puede contener terminales y no terminales. Estas gramáticas son reconocidas por un autómata de pila, como el caso de Bison, que se explica en la Página \pageref{automatas-pila}. Estas son las gramáticas empleadas habitualmente en los lenguajes de programación.
 
 La siguiente categoría son las Gramáticas Sensibles al Contexto o gramáticas de Tipo 1. En este caso, las reglas en forma normal son:
 
@@ -300,7 +299,7 @@ $\alpha A\beta\rightarrow \alpha\gamma\beta$
 de tal manera que A es un no terminal, $\alpha, \beta$ y $\gamma$ son cadenas de terminales y no terminales. Además $\alpha$ y $\beta$ pueden ser vacíos mientras que $\gamma$ no.
 Estos lenguajes son reconocidos por una Máquina de Turing con una cinta de memoria acotada o limitada.
 
-Las gramáticas más generales son las gramáticas de Tipo 0 o No Restringidas. Los lados izquierdos de las reglas pueden estar formatos por cualquier combinación de terminales y no terminales, siempre y cuando contengan algún símbolo terminal. Sobre el lado derecho no existen restricciones.
+Las gramáticas más generales son las gramáticas de Tipo 0 o No Restringidas. Los lados izquierdos de las reglas pueden estar formados por cualquier combinación de terminales y no terminales, siempre y cuando contengan algún símbolo terminal. Sobre el lado derecho no existen restricciones.
 
 Todos los lenguajes hasta aquí comentados son recursivamente enumerables ya que existe para todos ellos una Máquina de Turing que acepta y se detiene con cualquier cadena del lenguaje. Pero, si la cadena no pertenece, puede parar y rechazar o bien iterar indefinidamente.
 
@@ -312,7 +311,7 @@ Los lenguajes regulares, Independientes del Contexto y los Sensibles al contexto
 
 La notación Backus-Naur se utiliza para describir una gramática. Fue desarrollada por John Backus para el lenguaje Fortran y mejorada por Peter Naur para poder describir el lenguaje Algol 60.
 
-En el Listado \ref{lst:ejemplo-gramatica-bnf} se muestra una pequeña gramática. Los símbolos \verb|::=| deben leerse \emph{se define como}. Para indicar alternativa, \emph{or}, se utiliza una barra (\verb|||).
+En el Listado \ref{lst:ejemplo-gramatica-bnf} se muestra una pequeña gramática. Los símbolos \verb|::=| deben leerse \emph{se define como}. Para indicar alternativa, \emph{or}, se utiliza una barra vertical "|".
 
 \begin{lstlisting}[caption={Gramática en notación BNF},label=lst:ejemplo-gramatica-bnf]
 numero ::= val
@@ -346,13 +345,13 @@ El proceso de compilación se divide en varias fases. En la Imagen \ref{fig:anal
     
     Los analizadores más habituales son de tipo LL (descendentes) o LR (ascendentes). La primera L indica que en ambos casos la entrada se trata de izquierda a derecha. La segunda L en LL indica que la derivación se realiza por la izquierda. Y la R en LR indica que la derivación es por la derecha. En el caso de Bison, el analizador utilizado en el proyecto, es un parser de tipo LALR, lo que quiere decir es un LR que utiliza un símbolo de anticipación (\emph{look ahead} LR) para construir el árbol de derivación. 
 
-    \item En la fase de \textbf{análisis semántico} se explota el árbol sintáctico y la tabla de símbolos con el propósito de verificar que el código fuente es consistente con el lenguaje. Algunos ejemplos de tareas realizadas en esta fase son la comprobación de los tipos que comprueba que las operaciones realizadas utilicen los tipos correctamente. Otro aspecto que se realiza es la conversión automática de ciertos tipos como sucede en el caso de Java con las operaciones de Autoboxing y Unboxing. El compilador en este paso añadiría la llamada al método correspondiente para para realizar la conversión entre tipos primitivos y objetos.
+    \item En la fase de \textbf{análisis semántico} se explota el árbol sintáctico y la tabla de símbolos con el propósito de verificar que el código fuente es consistente con el lenguaje. Algunos ejemplos de tareas realizadas en esta fase son la comprobación de los tipos de datos, que comprueba que las operaciones realizadas utilicen los tipos correctamente. Otro aspecto que se realiza es la conversión automática de ciertos tipos como sucede en el caso de Java con las operaciones de Autoboxing y Unboxing. El compilador, en este paso, añadiría la llamada al método correspondiente para para realizar la conversión entre tipos primitivos y objetos.
     
     \item La \textbf{generación de código intermedio} consiste en la creación de una representación no final del programa fuente. Tras el análisis léxico y sintáctico suele ser habitual generar una representación no final del programa fuente en un formato similar al código máquina pero pensado para una máquina abstracta en lugar de la máquina destino. Algunas tareas habituales en esta fase consisten en la reordenación de las sentencias en base a la prioridad de los operadores. También se produce la generación nombres temporales para los resultados de cálculos intermedios.
     
-    \item La fase de \textbf{optimización del código} intermedio es utilizada para mejorar el código intermedio creando un mejor código para la máquina final. Estas mejoras afectarán a la complejidad del código, consiguiendo reducir el número de sentencias. Si el código tiene menos sentencias el programa final será más pequeño. También se traducir llamadas a métodos por valores finales, como en el caso de Autoboxing mencionado anteriormente. El número o cantidad de optimizaciones van a implicar unos tiempos de compilación muy diferentes. Los compiladores generales tratan de encontrar un equilibrio entre entre los dos parámetros. O se deja en manos del usuario especificar el nivel de optimización deseado.
+    \item La fase de \textbf{optimización del código} intermedio es utilizada para mejorar el código intermedio creando un mejor código para la máquina final. Estas mejoras afectarán a la complejidad del código, consiguiendo reducir el número de sentencias. Si el código tiene menos sentencias el programa final será más pequeño. También se traducen llamadas a métodos por valores finales, como en el caso de Autoboxing mencionado anteriormente. El número o cantidad de optimizaciones van a implicar unos tiempos de compilación muy diferentes. Los compiladores generales tratan de encontrar un equilibrio entre entre los dos parámetros. O se deja en manos del usuario especificar el nivel de optimización deseado.
     
-    \item La generación del código final sirve para traducir la representación intermedia en el lenguaje de destino, como ensamblador para una máquina en particular. Primero se toma la representación y se asigna al lenguaje de destino. También se seleccionan los registros necesarios para las variables del programa. Luego las instrucciones en lenguaje intermedio se trasladan a las instrucciones de la máquina.
+    \item La \textbf{generación del código final} sirve para traducir la representación intermedia en el lenguaje de destino, por ejemplo ensamblador, para una arquitectura física en particular. Primero se toma la representación y se asigna al lenguaje de destino. También se seleccionan los registros necesarios para las variables del programa. Luego las instrucciones en lenguaje intermedio se trasladan a las instrucciones de la máquina.
 
 \end{enumerate}
 
