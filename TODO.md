@@ -10,13 +10,6 @@
 	9. Casos del algoritmo de selección de regiones. 2 regiones
 
 
-svn-credentials.ylm:
----
-# Lia2 subersion credentials
-username: diego
-password: die2017
-
-
 staging-playbook.yml
 ---
 - name: deploy project to staging
@@ -38,7 +31,7 @@ staging-playbook.yml
 
     - name: Check out latest version from SVN
       subversion:
-        repo: https://lia2.tic.udc.es/svn/SOLCOerp
+        repo: "{{ repo_url }}"
         dest: "{{ repo_dir }}"
         username: "{{ username }}"
         password: "{{ password }}"
@@ -69,49 +62,6 @@ staging-playbook.yml
         path: "{{ repo_dir }}"
         state: absent
 
-
-deploy-playbook.yml
----
-- name: deploy project to staging
-  vars:
-    repo_dir: solcoerp
-  vars_files:
-    - svn-credentials.yml
-  hosts: backendservers
-  remote_user: solcoerp-deploy
-  gather_facts: false
-  tasks:
-    - name: Check out latest version from SVN
-      subversion:
-        repo: https://lia2.tic.udc.es/svn/SOLCOerp
-        dest: "{{ repo_dir }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-    - name: Creating directories
-      file:
-        path: "{{ item }}"
-        state: directory
-      with_items:
-        - "{{ repo_dir }}/input-content-image"
-        - "{{ repo_dir }}/input-content-text"
-        - "{{ repo_dir }}/input-frontend"
-        - "{{ repo_dir }}/input-system"
-        - "{{ repo_dir }}/input-system-renamed"
-
-
-ansible-ping.yml
----
-- name: first ansible playbook
-  hosts: backendservers
-  remote_user: solcoerp-deploy
-  gather_facts: false
-  tasks: 
-    - name: do a ping
-      ping:
-    - name: do a second ping
-      ping:
-    - name: do a third ping
-      ping:
 
 /home/diego/win/2.sync/static/grado-en-informática/4to-trabajo-fin-grado/galiasdoc-org/2020-01-enero/01-repositorios-iniciales/solcoerp-git-1/doc/ansible/ansible-ping.yml
 /home/diego/win/2.sync/static/grado-en-informática/4to-trabajo-fin-grado/galiasdoc-org/2020-01-enero/01-repositorios-iniciales/solcoerp-git-2/ansible/deploy-playbook.yml
