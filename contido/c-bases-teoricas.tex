@@ -83,7 +83,7 @@ El Trailer es un objeto de tipo diccionario. Contiene claves y valores que aport
 0000000335 00000 n
 \end{lstlisting}
 
-No existe una gran cantidad de herramientas visuales para explorar el árbol de objetos de un PDF, al menos fáciles de encontrar y gratuitas. En la Imagen \ref{fig:estructura-interna-pdf} se presenta una de ellas, PDFXplorer \footnote{\url{https://www.o2sol.com/pdfxplorer/overview.htm}}, con un ejemplo de documento cuyo único contenido es el texto \emph{Hola mundo!}. En la imagen se visualiza un fragmento del stream que alberga el texto, en particular las líneas 22 a 32 equivales a cada uno de los caracteres de la página. Alternativamente también se puede analizar un PDF de forma manual con herramientas simples en la línea de comandos \cite{filodej_blog_pdfstreamcontent}.
+No existe una gran cantidad de herramientas visuales para explorar el árbol de objetos de un PDF, al menos fáciles de encontrar y gratuitas. En la Imagen \ref{fig:estructura-interna-pdf} se presenta una de ellas, PDFXplorer \footnote{\url{https://www.o2sol.com/pdfxplorer/overview.htm}}, con un ejemplo de documento cuyo único contenido es el texto \emph{Hola mundo!}. En la imagen se visualiza un fragmento del stream que alberga el texto, en particular las líneas 22 a 32, equivales a cada uno de los caracteres de la página. Alternativamente también se puede analizar un PDF de forma manual con herramientas simples en la línea de comandos \cite{filodej_blog_pdfstreamcontent}.
 
 \begin{figure}
 	\centering
@@ -114,7 +114,7 @@ La representación de las localizaciones de los elementos identificados por el p
 
 \subsection{El microformato hOCR}
 
-hOCR es un estándar abierto que utiliza HTML como base tecnológica. Se diseñó siguiendo los modelos de los microformatos \footnote{\url{http://microformats.org/}}. Los microformatos son una tecnología ligada al auge de los blogs durante el año 2004. Su objetivo es aportar significado semántico a construcciones HTML, que de otro modo no lo tendrían ya que no forman parte como tal del lenguaje. El funcionamiento es sencillo, se incorporan a ciertos tags, atributos con la información necesaria. En el caso de hOCR, la especificación hace uso de etiquetas \verb|DIV| y \verb|SPAN| para los elementos. Para la información se utilizan atributos como \verb|class|, \verb|title| o \verb|style|. Uno de los motivos para basarse en HTML a la hora de diseñar el formato fue que este tiene soporte nativo para muchas de las características habituales en los documentos como el estilo, tipografías, espaciado, etc. Además, para ampliar las capacidades de representación se combina con CSS.
+hOCR es un estándar abierto que utiliza HTML como base tecnológica. Se diseñó siguiendo los modelos de los microformatos \footnote{\url{http://microformats.org/}}. Los microformatos son una tecnología ligada al auge de los blogs durante el año 2004. Su objetivo es aportar significado semántico a construcciones HTML, que de otro modo no lo tendrían, ya que no forman parte como tal del lenguaje. El funcionamiento es sencillo, se incorporan a ciertos tags, atributos con la información necesaria. En el caso de hOCR, la especificación hace uso de etiquetas \verb|DIV| y \verb|SPAN| para los elementos. Para la información se utilizan atributos como \verb|class|, \verb|title| o \verb|style|. Uno de los motivos para basarse en HTML a la hora de diseñar el formato fue que este tiene soporte nativo para muchas de las características habituales en los documentos como el estilo, tipografías, espaciado, etc. Además, para ampliar las capacidades de representación se combina con CSS.
 
 La especificación hOCR define tres tipos de marcado:
 
@@ -231,7 +231,7 @@ Los Lenguajes Formales son aquellos donde las reglas para unir los símbolos del
 
 La definición formal viene dada por las Gramáticas Formales. Estas indican como construir cadenas que son válidas según las reglas sintácticas. Las gramáticas contienen conjuntos de reglas de transformación o reglas de producción que se aplican sucesivamente hasta obtener la palabra deseada. Cuando no existe una combinación de reglas que permita obtener una cadena determinada se conoce que esa cadena no pertenece al lenguaje.
 
-Las reglas son de la forma $A\rightarrow S$ y pueden estar formadas por símbolos terminales y no terminales \footnote{Por consenso, los símbolos no terminales se utilizan en mayúscula y en minúscula los terminales, en Bison sin empbargo el criterio es el opuesto.}. Este es un ejemplo de gramática:
+Las reglas son de la forma $A\rightarrow S$ y pueden estar formadas por símbolos terminales y no terminales \footnote{Por consenso, los símbolos no terminales se utilizan en mayúscula y en minúscula los terminales, en Bison sin embargo el criterio es el opuesto.}. Este es un ejemplo de gramática:
 \begin{center}
 $S\rightarrow AB$ (regla 1) \\
 $A\rightarrow aA$ (r. 2) \\
@@ -301,7 +301,7 @@ Estos lenguajes son reconocidos por una Máquina de Turing con una cinta de memo
 
 Las gramáticas más generales son las gramáticas de Tipo 0 o No Restringidas. Los lados izquierdos de las reglas pueden estar formados por cualquier combinación de terminales y no terminales, siempre y cuando contengan algún símbolo terminal. Sobre el lado derecho no existen restricciones.
 
-Todos los lenguajes hasta aquí comentados son recursivamente enumerables ya que existe para todos ellos una Máquina de Turing que acepta y se detiene con cualquier cadena del lenguaje. Pero, si la cadena no pertenece, puede parar y rechazar o bien iterar indefinidamente.
+Todos los lenguajes hasta aquí comentados son recursivamente enumerables, ya que existe para todos ellos una Máquina de Turing que acepta y se detiene con cualquier cadena del lenguaje. Pero, si la cadena no pertenece, puede parar y rechazar o bien iterar indefinidamente.
 
 Sin formar parte de la jerarquía, existe otra categoría intermedia entre los sensibles al contexto y los recursivamente enumerables, son los lenguajes recursivos. En estos, se requiere que la Máquina de Turing pare en todos los casos, por este motivo se los conoce como lenguajes decidibles.
 
@@ -325,7 +325,7 @@ n      ::= '0' | '1' | '2' | '3' | '4'
 \begin{figure}[hp!]
     \centering
     \includegraphics[width=0.6\textwidth]{imaxes/c-bases-teoricas/hauser-2016.png}
-    \caption{Comparativa de los 4 modelos en relación a su dificultad de reconocimiento \cite{teoriaCompiladores_hauser_automatas}}
+    \caption{Comparativa de los 4 modelos en relación con su dificultad de reconocimiento \cite{teoriaCompiladores_hauser_automatas}}
     \label{fig:hauser-2016}
 \end{figure}
 
@@ -349,7 +349,7 @@ El proceso de compilación se divide en varias fases. En la Imagen \ref{fig:anal
     
     \item La \textbf{generación de código intermedio} consiste en la creación de una representación no final del programa fuente. Tras el análisis léxico y sintáctico suele ser habitual generar una representación no final del programa fuente en un formato similar al código máquina pero pensado para una máquina abstracta en lugar de la máquina destino. Algunas tareas habituales en esta fase consisten en la reordenación de las sentencias en base a la prioridad de los operadores. También se produce la generación nombres temporales para los resultados de cálculos intermedios.
     
-    \item La fase de \textbf{optimización del código} intermedio es utilizada para mejorar el código intermedio creando un mejor código para la máquina final. Estas mejoras afectarán a la complejidad del código, consiguiendo reducir el número de sentencias. Si el código tiene menos sentencias el programa final será más pequeño. También se traducen llamadas a métodos por valores finales, como en el caso de Autoboxing mencionado anteriormente. El número o cantidad de optimizaciones van a implicar unos tiempos de compilación muy diferentes. Los compiladores generales tratan de encontrar un equilibrio entre entre los dos parámetros. O se deja en manos del usuario especificar el nivel de optimización deseado.
+    \item La fase de \textbf{optimización del código} intermedio es utilizada para mejorar el código intermedio creando un mejor código para la máquina final. Estas mejoras afectarán a la complejidad del código, consiguiendo reducir el número de sentencias. Si el código tiene menos sentencias el programa final será más pequeño. También se traducen llamadas a métodos por valores finales, como en el caso de Autoboxing mencionado anteriormente. El número o cantidad de optimizaciones van a implicar unos tiempos de compilación muy diferentes. Los compiladores generales tratan de encontrar un equilibrio entre los dos parámetros. O se deja en manos del usuario especificar el nivel de optimización deseado.
     
     \item La \textbf{generación del código final} sirve para traducir la representación intermedia en el lenguaje de destino, por ejemplo ensamblador, para una arquitectura física en particular. Primero se toma la representación y se asigna al lenguaje de destino. También se seleccionan los registros necesarios para las variables del programa. Luego las instrucciones en lenguaje intermedio se trasladan a las instrucciones de la máquina.
 

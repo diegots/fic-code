@@ -8,7 +8,7 @@
 \section{Textract y Document AI}
 \label{sec:textract-y-document-ai}
 
-Dos servicios diferentes a los productos mencionados en el Capítulo \ref{chap:estado-arte}, pero en un ámbito relacionado con el problema son, Textract de Amazon \cite{solucionesComerciales_amazon_textract} y Document AI de Google \cite{solucionesComerciales_google_documentAI}. Ninguno de los dos suporta el flujo de información explicado, ni están pensados para ser solución para el usuario final. Lo que ofrecen es un \emph{\acrshort{api}} capaz de recibir documentos y generar información estructurada como salida. El caso de Textract es totalmente opaco y por tanto no configurable. La salida consiste en ficheros JSON donde puede haber varios tipos de objetos: páginas, líneas y palabras, información de formularios (en formato par clave-valor), tablas, y elementos seleccionables, como casillas. Además es capaz de identificar notas manuscritas. El servicio de Google permite definir \emph{processors}, que son plantillas específicas para modelos de documentos conocidos. Parece que el servicio es muy reciente y la mayor parte de las funcionalidades ofrecitas están una beta cerrada. Cualquiera de ellos podría utilizarse como parte de una solución más completa. Como otros servicios en la nube, se paga en base a la cantidad de uso que se hace del servicio o lo que es lo mismo, la carga de trabajo procesada.
+Dos servicios diferentes a los productos mencionados en el Capítulo \ref{chap:estado-arte}, pero en un ámbito relacionado con el problema son, Textract de Amazon \cite{solucionesComerciales_amazon_textract} y Document AI de Google \cite{solucionesComerciales_google_documentAI}. Ninguno de los dos suporta el flujo de información explicado, ni están pensados para ser solución para el usuario final. Lo que ofrecen es un \emph{\acrshort{api}} capaz de recibir documentos y generar información estructurada como salida. El caso de Textract es totalmente opaco y por tanto no configurable. La salida consiste en ficheros JSON donde puede haber varios tipos de objetos: páginas, líneas y palabras, información de formularios (en formato par clave-valor), tablas, y elementos seleccionables, como casillas. Además es capaz de identificar notas manuscritas. El servicio de Google permite definir \emph{processors}, que son plantillas específicas para modelos de documentos conocidos. Parece que el servicio es muy reciente y la mayor parte de las funcionalidades publicitadas están una beta cerrada. Cualquiera de ellos podría utilizarse como parte de una solución más completa. Como otros servicios en la nube, se paga según la cantidad de uso que se hace del servicio o lo que es lo mismo, la carga de trabajo procesada.
 
 \section{Instalación de software}
 \label{chap:instalacion-software}
@@ -17,7 +17,7 @@ La instalación completa desde el código fuente implica la descarga del conteni
 
 En esta sección se asume que se utilizará una distribución Ubuntu 18.04 igual a la empleada durante el desarrollo. Para la correcta compilación y ejecución, es necesario que varias aplicaciones y librerías estén disponibles en el sistema. En el caso de las nuevas versiones de Ubuntu, la lista de paquetes a instalar no presentará diferencias, pero si se utiliza Fedora u otras distribuciones, será necesario averiguar qué paquetes contienen el software utilizado e instalarlos.
 
-Se pueden distinguir dos escenarios distintos. Los requisitos necesarios para compilar los fuentes y aquellos imprescindibles únicamente para ejecutar la aplicación. Para el primer caso se debe utilizar el comando mostrado en \ref{lst:requisitos-para-compilacion}. El paquete \verb|build-essential| instala la mayor parte de las aplicaciones, como el compilador de C y Make.
+Se pueden distinguir dos escenarios distintos. Los requisitos necesarios para compilar los ficheros fuente y aquellos imprescindibles únicamente para ejecutar la aplicación. Para el primer caso se debe utilizar el comando mostrado en \ref{lst:requisitos-para-compilacion}. El paquete \verb|build-essential| instala la mayor parte de las aplicaciones, como el compilador de C y Make.
 
 \begin{lstlisting}[language=bash,caption={Dependencias para la compilación},label=lst:requisitos-para-compilacion]
     sudo apt-get build-essential libpcre2-dev bison flex
@@ -36,7 +36,7 @@ De manera opcional pero recomendable, se puede utilizar un PPA específico para 
     sudo apt-get update
 \end{lstlisting}
 
-No se ahondará en el uso del software ya que ha sido explicado en detalle en el capítulo \ref{chap:implemetación}.
+No se ahondará en el uso del software por haber sido explicado en detalle en el capítulo \ref{chap:implemetación}.
 
 \section{Visor del formato hOCR}
 
@@ -53,24 +53,82 @@ Existen herramientas para trabajar con el formato hOCR, por ejemplo, las que est
 
 % TODO Presentar Ansible y mostrar el script desarrollado
 
-Ansible es una tecnología para automatizar la administración y configuración de ordenadores. Fue creado inicialmente en el año 2012 por Michael DeHaan, hoy en día forma parte del catálogo de productos de Red Hat.
+Ansible es una tecnología para automatizar la administración y configuración de ordenadores. Fue creada inicialmente en el año 2012 por Michael DeHaan, hoy en día forma parte del catálogo de productos de Red Hat.
 
 \begin{wrapfigure}{R}{0.3\textwidth}
     \centering
     \includegraphics[width=0.25\textwidth]{imaxes/e-fundamentos-tecnologicos/logo-ansible.png}
 \end{wrapfigure}
 
-Ansible es una tecnología del ámbito de la Gestión de la Configuración. Durante los años 50, el Departamento de Defensa de los Estados Unidos tenía necesidad de crear una metodología para mantener el inventario de los recursos materiales disponibles. La Gestión de la Configuración es aquel conjunto de procesos que permiten gestionar los cambios en un sistema, utilizando un método conocido, de tal manera que se mantenga la integridad del sistema a lo largo del tiempo. La manera de conseguirlo es llevando un registro de los cambios a los que a sido sometido y se consigue conocer cual es el estado actual y como se ha llegado hasta este estado. MÉTRICA v3 es un ejemplo de sistema español para la Gestión de la Configuración.
+Ansible es una tecnología del ámbito de la Gestión de la Configuración. Durante los años 50, el Departamento de Defensa de los Estados Unidos, tenía necesidad de crear una metodología para mantener actualizado el inventario de los recursos materiales disponibles. La Gestión de la Configuración es aquel conjunto de procesos que permiten gestionar los cambios en un sistema, utilizando un método conocido, de tal manera que se mantenga la integridad del sistema a lo largo del tiempo. La manera de lograrlo es manteniendo un registro de los cambios a los que a sido sometido, consiguiendo así conocer cual es el estado actual y como se ha llegado hasta este él. MÉTRICA v3 es un ejemplo de sistema español para la Gestión de la Configuración.
 
 Estas ideas se comenzaron a aplicar a los ordenadores para llevar registro tanto del hardware como de los Sistemas Operativos y aplicaciones instaladas. Gracias al avance y aparición de tecnologías como Ansible, en lugar de generar documentos describiendo los estados, se pasa directamente a especificar cuales son los estados deseados y la herramienta realiza los cambios necesarios para asegurar que el estado alcanzado sea el correcto tras la intervención.
 
-Ansible está escrito en Python y su funcionamiento es simple. Para realizar la gestión conecta a las máquinas por SSH y aplica los cambios indicados en los ficheros conocidos como Playbooks. Estos ficheros son guiones escritos en lenguaje YAML que indican a Ansible las acciones a acometer. La sintaxis de YAML guarda parecidos con Markdown y es fácil de comprender.
+Ansible está escrito en Python y su funcionamiento es simple. Para realizar la gestión, conecta a las máquinas mediante el protocolo SSH y aplica los cambios indicados en los ficheros conocidos como Playbooks. Estos ficheros son guiones escritos en lenguaje YAML que indican a Ansible las acciones a acometer. La sintaxis de YAML guarda parecidos con Markdown y es fácil de comprender.
 
-En el Listado \ref{lst:ejemplo-playbook} se muestra un Playbook mínimo que da instrucciones a Ansible para realizar un ping a todos los anfitriones definidos.
+En el Listado \ref{lst:playbook-deploy-servidor-remoto} se muestra un Playbook mínimo que da instrucciones a Ansible para realizar un ping a todos los anfitriones definidos.
 
-\begin{lstlisting}[language=Python,caption={Ejemplo mínimo de Playbook},label=lst:ejemplo-playbook]
-    ---
-    - hosts: all
-    tasks:
-    - ping:
+\begin{lstlisting}[language=Python,caption={Playbook para deploy del sistema en un servidor remoto},label=lst:playbook-deploy-servidor-remoto]
+---
+- name: deploy project to staging
+vars:
+app_dir: solcoerp
+repo_dir: solcoerp-repo
+deploy_dir: deploy
+input_dir: input
+vars_files:
+- svn-credentials.yml
+hosts: backendservers
+remote_user: solcoerp-deploy
+gather_facts: false
+tasks:
+- name: Remove old deploy directory
+file:
+path: "{{ app_dir }}"
+state: absent
+
+- name: Check out latest version from SVN
+subversion:
+repo: "{{ repo_url }}"
+dest: "{{ repo_dir }}"
+username: "{{ username }}"
+password: "{{ password }}"
+
+- name: Call Makefile deploy task
+make:
+chdir: "{{ repo_dir }}"
+target: deploy
+
+- name: Create a root dir for the app
+file:
+path: "{{ app_dir }}"
+state: directory
+
+- name: Create input directory inside root one
+file:
+path: "{{ app_dir  }}/{{ input_dir }}"
+state: directory
+
+- name: Copy deploy dir as app dir
+copy:
+src: "$HOME/{{ repo_dir }}/{{ deploy_dir }}/"
+dest: "$HOME/{{ app_dir }}/app"
+remote_src: yes
+
+- name: Remove repo directory
+file:
+path: "{{ repo_dir }}"
+state: absent
 \end{lstlisting}
+
+
+\noindent\begin{minipage}{.45\textwidth}
+	\begin{lstlisting}[language=C,caption={Definiciones de tipos para tokens y no terminales},frame=tlrb,label={lst:definiciones-tipos-bison}]{}
+
+	\end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}{.45\textwidth}
+	\begin{lstlisting}[language=C,caption={Tipo de variables compartidas entre Bison y Flex},frame=tlrb,label={lst:union-variables-compartidas}]{}
+
+	\end{lstlisting}
+\end{minipage}
