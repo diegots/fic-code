@@ -19,7 +19,7 @@ Existen librerías y también aplicaciones capaces de manipular ficheros PDF par
 
 La implementación original de esta utilidad fue realizada por Glyph \& Cog \footnote{\url{http://www.glyphandcog.com/}}, autores del visor Xpdf. En el año 2005 apareció la librería Poppler a partir del fork de la versión 3.0.3 de Xpdf. Esta es la implementación disponible mayormente en las distribuciones Linux. Por ejemplo, en Ubuntu se puede instalar con el paquete \verb|poppler-utils| e incluye otras muchas herramientas relacionadas.
 
-Cuando se invoca la herramienta con el parámetro \verb|-bbox| se genera una salida en lenguaje XHTML. Esta variante del HTML tiene la ventaja de ser admitida por cualquier parser XML. Se identifican tags para los elementos que representan bloques, lineas y palabras. En cada uno se informa con cuatro valores de la localización del rectángulo que engloba al elemento: \emph{xMin}, \emph{xMax}, \emph{yMin}, \emph{yMax}. La generación de información de coordenadas o bounding box, además del texto, existe gracias a una aportación al proyecto en el año 2010 de Kenneth Berland. 
+Cuando se invoca la herramienta con el parámetro \verb|-bbox| se genera una salida en lenguaje XHTML. Esta variante del HTML tiene la ventaja de ser admitida por cualquier parser XML. Se identifican tags para los elementos que representan bloques, lineas y palabras. En cada uno se informa con cuatro valores de la localización del rectángulo que engloba al elemento: \emph{xMin}, \emph{xMax}, \emph{yMin}, \emph{yMax}. La generación de información de coordenadas o bounding box, además del texto, existe gracias a una aportación al proyecto en el año 2010 de Kenneth Berland \cite{berland_mail_addingCoordinates}. 
 
 \begin{figure}[hp!]
     \centering
