@@ -53,7 +53,7 @@ externo<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:Mo
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="65.0" width="143.0" x="201.0" y="510.0"/>
-          <y:Fill color="#CCFFCC" transparent="false"/>
+          <y:Fill color="#EBD699" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="14" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="55.4541015625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="79.482421875" x="31.7587890625" xml:space="preserve" y="4.77294921875">CU06
 Identificar la
@@ -67,7 +67,7 @@ finalización<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="61.0" width="134.2" x="222.00000000000003" y="177.0"/>
-          <y:Fill color="#CCFFCC" transparent="false"/>
+          <y:Fill color="#EBD699" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="14" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="55.4541015625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="102.8271484375" x="15.686425781249994" xml:space="preserve" y="2.77294921875">CU01
 Registrar nuevo
@@ -81,7 +81,7 @@ trabajo<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:Mo
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="59.0" width="129.8" x="235.99999999999997" y="355.0"/>
-          <y:Fill color="#CCFFCC" transparent="false"/>
+          <y:Fill color="#EBD699" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="14" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="55.4541015625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="59.248046875" x="35.275976562500006" xml:space="preserve" y="1.77294921875">CU02
 Generar 
@@ -95,7 +95,7 @@ JSON<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:Model
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="60.0" width="132.0" x="414.0" y="203.0"/>
-          <y:Fill color="#CCFFCC" transparent="false"/>
+          <y:Fill color="#EBD699" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="14" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="55.4541015625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="64.703125" x="33.6484375" xml:space="preserve" y="2.27294921875">CU03
 Generar 
@@ -109,7 +109,7 @@ imágenes<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="59.0" width="120.26923076923077" x="522.0" y="318.0"/>
-          <y:Fill color="#CCFFCC" transparent="false"/>
+          <y:Fill color="#EBD699" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="14" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="55.4541015625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="56.1240234375" x="32.07260366586536" xml:space="preserve" y="1.77294921875">CU04
 Informar
@@ -138,7 +138,7 @@ de error<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:M
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="79.0" width="173.8" x="454.0" y="468.0"/>
-          <y:Fill color="#CCFFCC" transparent="false"/>
+          <y:Fill color="#EBD699" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="14" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="72.60546875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="84.158203125" x="44.82089843749998" xml:space="preserve" y="3.197265625">CU05
 Relacionar
