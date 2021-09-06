@@ -77,3 +77,7 @@ textract-y-document-ai
 
 +Dos servicios diferentes a los productos anteriores pero aplicables al problema son, Textract de Amazon \cite{solucionesComerciales_amazon_textract} y Document AI de Google \cite{solucionesComerciales_google_documentAI}. Ninguno de los dos suporta el flujo de informaciÃ³n explicado ni estÃ¡n pensados para ser soluciÃ³n para el usuario final. Lo que ofrecen es un \emph{\acrlong{api}} capaz de recibir documentos y generar informaciÃ³n estructurada como salida. El caso de Textract es totalmente opaco y por tanto no configurable. La salida consiste en ficheros JSON donde puede haber varios tipos de objetos: pÃ¡ginas, lÃ­neas y palabras, informaciÃ³n de formularios (pares clave-valor), tablas, y elementos seleccionables como casillas. AdemÃ¡s es capaz de identificar notas manuscritas. El servicio de Google permite definir \emph{processors}, que son plantillas especÃ­ficas para modelos de documentos concretos. Actualmente parece que el servicio es muy reciente y estÃ¡ mayormente en beta. Cualquiera de ellos podrÃ­a utilizarse para construir una soluciÃ³n mÃ¡s completa. Como otros servicios en la nube, el coste depende de la carga de trabajo procesada.
 
+ebd699 dorado
+cc0000 rojo
+3777c0 azul
+58975b verde

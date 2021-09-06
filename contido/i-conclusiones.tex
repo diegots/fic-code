@@ -5,32 +5,30 @@
 \chapter{Conclusiones}
 \label{chap:conclusiones}
 
-\lettrine{E}{ste} capítulo presenta las conclusiones finales del proyecto y algunas líneas de mejora para el futuro.
+\lettrine{E}{ste} capítulo presenta las conclusiones finales del TFG y algunas líneas de mejora que se pueden acometer en el futuro.
 
-Decidir en qué fase realizar un tratamiento determinado no es siempre trivial.
+Al comienzo de este proyecto se desconocían muchos aspectos del dominio. Gracias al trabajo realizado, ese conocimiento es ahora más completo y ha permitido crear un software capaz de resolver satisfactoriamente todos los objetivos propuestos en el Capítulo \ref{chap:introduccion}.
 
-Los documentos deben ser tratados individualmente. Cada PDF no debe contener páginas mezcladas. Separar páginas de distintos documentos es otro problema en si mismo.
+De forma general, se ha conseguido realizar la extracción del contenido vía OCR y/o texto. También se ha conseguido filtrar la información presente en los documentos gracias a unas plantillas que delimitan las regiones de interés. La salida creada está estandarizada, tanto en formato como en contenido.
 
-Para un correcto procesamiento los documentos que se proporcionen 
-al sistema deben ser digitalizados.
+Más concretamente, a partir del estudio de los documentos se ha conseguido identificar regiones equivalentes, aplicables a varios modelos e identificar el tipo de información que contienen.
+Esta información se ha concretado en unas plantillas en formato JSON que el sistema toma como criterio para poder operar sobre los datos.
+Gracias a la investigación sobre la salida de los sistemas de OCR y la constitución del formato PDF se ha conseguido comprender que la información de coordenadas está disponible y ha podido encontrar un método para explotarla en el trabajo. Se ha creado un software de entorno servidor capaz de procesar lotes de ficheros PDF y crear con ellos una salida ordenada y estructurada. La prueba de su funcionamiento se ha podido hacer con los documentos facilitados para el proyecto. Por último, se ha conseguido adaptar el desarrollo ya realizado para su incorporación con otra aplicación frontend de esta.
 
-Se espera que el tipo de regiones posibles en los documentos crezca pero se estabilice y los tipos existentes puedan ser reutilizados con mayor facilidad en nuevos tipos de documentos.
+\section{Lecciones aprendidas}
 
-\section{Limitaciones de la solución}
-La resolución seleccionada para las imágenes tiene gran implicación en varios aspectos.
+El carácter abierto del proyecto, en lo que se refiere a su desarrollo, ha aportado muchas oportunidades para el aprendizaje. Se comentan algunas de ellas:
+
 \begin{itemize}
-    \item Las plantillas solo representan una resolución determinada
-    \item Imposibilidad de distinguir lineas distintas en las tablas
-    \item Digitalización automática de los documentos para un mejor OCR
+	\item De forma tardía se descubrió importancia de realizar una historia del arte que permita comprender cuales son las funcionalidades y qué se esperaría de una solución en un entorno real. De otros trabajos existentes se puede aprender como enfocar correctamente un problema, ahorrando mucho trabajo.
+	\item En varias ocasiones se planteó la cuestión de donde realizar cierta parte del tratamiento de un modelo, si en el generador de lenguaje intermedio o más adelante en Flex o Bison. Tomar la decisión no siempre es trivial y conlleva comprender mejor como se están repartiendo las responsabilidades en el software.
 \end{itemize}
 
 \section{Trabajo futuro}
 
-\begin{itemize}
-    \item Generación de coordenadas homogéneas para los casos procedentes de imagen y los procedentes de texto.
-    \item Construcción de un asistente para generar las plantillas. Seleccionar el tipo de región y coordenadas de forma visual.
-    \item Implementar un sistema para la notificación asíncrona a la finalización de los trabajos mediante un callback que sea invocado a la finalización del trabajo.
-    \item incorporación de una base de datos no relacionar para el almacenamiento de las plantillas.
-    \item Paralelizar las operaciones de extracción de texto y OCR.
-\end{itemize}
+Llegados a este punto quedan, muchas áreas de posible mejora o refinamiento, como por ejemplo:
 
+\begin{itemize}
+	\item Sería de gran utilidad disponer de un asistente para las plantillas. Consistiría en una vista donde se presenta el documento y se pueden seleccionar regiones de forma visual. Al mismo tiempo se podría asignar las caracterizaciones deseadas, como por ejemplo el tipo de región o su aplicación teniendo en cuenta el número de página del documento.
+	\item Para reducir los tiempos de procesamiento sería interesante paralelizar las operaciones de extracción de texto y OCR. De forma análoga, la construcción del lenguaje intermedio y el procesamiento del lenguaje son tareas que se pueden realizar de manera simultánea para páginas y documentos diferentes.
+\end{itemize}

@@ -60,75 +60,65 @@ Ansible es una tecnología para automatizar la administración y configuración 
     \includegraphics[width=0.25\textwidth]{imaxes/e-fundamentos-tecnologicos/logo-ansible.png}
 \end{wrapfigure}
 
-Ansible es una tecnología del ámbito de la Gestión de la Configuración. Durante los años 50, el Departamento de Defensa de los Estados Unidos, tenía necesidad de crear una metodología para mantener actualizado el inventario de los recursos materiales disponibles. La Gestión de la Configuración es aquel conjunto de procesos que permiten gestionar los cambios en un sistema, utilizando un método conocido, de tal manera que se mantenga la integridad del sistema a lo largo del tiempo. La manera de lograrlo es manteniendo un registro de los cambios a los que a sido sometido, consiguiendo así conocer cual es el estado actual y como se ha llegado hasta este él. MÉTRICA v3 es un ejemplo de sistema español para la Gestión de la Configuración.
+Ansible es una tecnología del ámbito de la Gestión de la Configuración. Durante los años 50, el Departamento de Defensa de los Estados Unidos, tenía necesidad de crear una metodología para mantener actualizado el inventario de los recursos materiales disponibles. La Gestión de la Configuración es aquel conjunto de procesos que permiten gestionar los cambios en un sistema, utilizando un método conocido, de tal manera que se mantenga la integridad del sistema a lo largo del tiempo. La manera de lograrlo es manteniendo un registro de los cambios a los que a sido sometido, consiguiendo así conocer cual es el estado actual y como se ha llegado hasta este él. Métrica v.3 es un ejemplo de metodología española que incluye la Gestión de la Configuración entre actividades.
 
 Estas ideas se comenzaron a aplicar a los ordenadores para llevar registro tanto del hardware como de los Sistemas Operativos y aplicaciones instaladas. Gracias al avance y aparición de tecnologías como Ansible, en lugar de generar documentos describiendo los estados, se pasa directamente a especificar cuales son los estados deseados y la herramienta realiza los cambios necesarios para asegurar que el estado alcanzado sea el correcto tras la intervención.
 
 Ansible está escrito en Python y su funcionamiento es simple. Para realizar la gestión, conecta a las máquinas mediante el protocolo SSH y aplica los cambios indicados en los ficheros conocidos como Playbooks. Estos ficheros son guiones escritos en lenguaje YAML que indican a Ansible las acciones a acometer. La sintaxis de YAML guarda parecidos con Markdown y es fácil de comprender.
 
-En el Listado \ref{lst:playbook-deploy-servidor-remoto} se muestra un Playbook mínimo que da instrucciones a Ansible para realizar un ping a todos los anfitriones definidos.
-
-\begin{lstlisting}[language=Python,caption={Playbook para deploy del sistema en un servidor remoto},label=lst:playbook-deploy-servidor-remoto]
----
-- name: deploy project to staging
-vars:
-app_dir: solcoerp
-repo_dir: solcoerp-repo
-deploy_dir: deploy
-input_dir: input
-vars_files:
-- svn-credentials.yml
-hosts: backendservers
-remote_user: solcoerp-deploy
-gather_facts: false
-tasks:
-- name: Remove old deploy directory
-file:
-path: "{{ app_dir }}"
-state: absent
-
-- name: Check out latest version from SVN
-subversion:
-repo: "{{ repo_url }}"
-dest: "{{ repo_dir }}"
-username: "{{ username }}"
-password: "{{ password }}"
-
-- name: Call Makefile deploy task
-make:
-chdir: "{{ repo_dir }}"
-target: deploy
-
-- name: Create a root dir for the app
-file:
-path: "{{ app_dir }}"
-state: directory
-
-- name: Create input directory inside root one
-file:
-path: "{{ app_dir  }}/{{ input_dir }}"
-state: directory
-
-- name: Copy deploy dir as app dir
-copy:
-src: "$HOME/{{ repo_dir }}/{{ deploy_dir }}/"
-dest: "$HOME/{{ app_dir }}/app"
-remote_src: yes
-
-- name: Remove repo directory
-file:
-path: "{{ repo_dir }}"
-state: absent
-\end{lstlisting}
-
+En los Listados \ref{lst:script-ansible-1} y \ref{lst:script-ansible-2} se muestra el Playbook desarrollado para realizar la instalación del software en un servidor remoto.
 
 \noindent\begin{minipage}{.45\textwidth}
-	\begin{lstlisting}[language=C,caption={Definiciones de tipos para tokens y no terminales},frame=tlrb,label={lst:definiciones-tipos-bison}]{}
-
+	\begin{lstlisting}[language=C,caption={Playbook parte 1},label={lst:script-ansible-1}]{}
+---
+- name: deploy project to staging
+  vars:
+    app_dir: solcoerp
+    repo_dir: solcoerp-repo
+    deploy_dir: deploy
+    input_dir: input
+  vars_files:
+    - svn-credentials.yml
+  hosts: backendservers
+  remote_user: "{{user}}"
+  gather_facts: false
+  tasks:
+    - name: Remove old deploy directory
+      file:
+        path: "{{ app_dir }}"
+        state: absent
+    - name: Check out from repository
+      subversion: 
+        repo: "{{ repo_url }}"
+        dest: "{{ repo_dir }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
 	\end{lstlisting}
 \end{minipage}\hfill
 \begin{minipage}{.45\textwidth}
-	\begin{lstlisting}[language=C,caption={Tipo de variables compartidas entre Bison y Flex},frame=tlrb,label={lst:union-variables-compartidas}]{}
-
+	\begin{lstlisting}[language=C,caption={Playbook parte 2},label=lst:script-ansible-2]{}
+- name: Call Makefile deploy task
+  make:
+    chdir: "{{ repo_dir }}"
+    target: deploy
+- name: Create a root dir for the app 
+  file:
+    path: "{{ app_dir }}"
+    state: directory
+- name: Create input directory
+  file:
+    path: "{{ app_dir  }}/{{ input_dir }}"
+    state: directory
+- name: Copy deploy dir as app dir 
+  copy:
+    src: "$HOME/{{ repo_dir }}/{{ deploy_dir }}/"
+    dest: "$HOME/{{ app_dir }}/app"
+    remote_src: yes 
+- name: Remove repo directory
+  file:
+    path: "{{ repo_dir }}"
+    state: absent
 	\end{lstlisting}
 \end{minipage}
+
+

@@ -127,7 +127,7 @@ Los documentos de esta empresa pueden tener una o varias páginas. El caso con v
  
 \subsection{Tipos de regiones}
 
-Vistos los documentos se concluye que las regiones existentes se pueden categorizar en cuatro tipos y variantes para poder tratar todos los escenarios
+Vistos los documentos, se concluye que las regiones existentes se pueden categorizar en cuatro tipos y variantes para poder tratar todos los escenarios:
 
 \begin{enumerate}
 	\item Tablas simples de dos columnas, cabecera en la columna de la derecha y $m$ filas. Estas son las regiones \verb|R1|, tal como se ejemplifica en la Imagen \ref{fig:region-r1}.
@@ -158,6 +158,8 @@ Vistos los documentos se concluye que las regiones existentes se pueden categori
 Una caso especial son las tablas bidimensionales donde se necesita utilizar la Transformada de Hough. Tendrán el código \verb|T2| en las plantillas y por lo demás son similares a las \verb|T1|.
 
 En los documentos de OVH, dado que las tablas no tienen una longitud fija, se consideran en su lugar las relaciones entre las propias tablas y la página en la que se encuentran u otros elementos fijos, como la línea del final, mencionada anteriormente. En las plantillas definirán regiones contiguas, por ejemplo, \verb|T2_T2|. Esto indicará al generador de código intermedio que esta región aplica siempre y cuando se encuentre dos regiones \verb|T2| anexas.
+
+Como conclusión, es de esperar que el tipo de regiones diferentes crezca según se incorporan más y más modelos al sistema. Pero, al mismo tiempo, dado que los tipos de regiones representan un concepto general y son aplicables a cualquier modelo, el objetivo es que su número tienda a estabilizarse con el tiempo.
 
 % TODO aumentar explicación de los tipos de regiones en OVH
 
