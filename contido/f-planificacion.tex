@@ -36,16 +36,16 @@ De los recursos utilizados para el proyecto se deducen directamente los costes e
         Recurso & Coste (€/h) & Tiempo (h) & Coste total (€) \\
         \hline
         \hline
-        Jefe de proyecto & 42 & x & x \\
-        Analista & 35 & x & x \\
-        Diseñador & 35 & x & x \\
-        Programador & 30 & x & x \\
-        Equipamiento informático & -- & x & 900 \\
+        Jefe de proyecto & 42 & 18 & 756 \\
+        Analista & 35 & 65 & 2275 \\
+        Diseñador & 35 & 50 & 1750 \\
+        Programador & 30 & 445 & 13350 \\
+        Equipamiento informático & -- & -- & 900 \\
         Microsoft Project (licencia universitaria) & -- & - & 0 \\
 		Otro software & -- & - & 0 \\    
         \hline
         \hline
-        TOTAL & & - & x \\        
+        TOTAL & & - & 19031 \\        
     \end{tabular}
 	\caption{Costes del proyecto}    
 	\label{tab:costes-proyecto}
@@ -53,7 +53,7 @@ De los recursos utilizados para el proyecto se deducen directamente los costes e
 
 \section{Planificación temporal inicial}
 
-En la Imagen \ref{fig:gantt-inicial} se presenta el diagrama de Gantt inicial de la planificación con el desglose de tareas. Una de las dificultades para la planificación consistió en no saber en qué momento del proyecto sería necesario abordar la integración con la interfaz web. Inicialmente se asumió que ocurriría con posterioridad al trabajo de desarrollo y antes de comenzar la escritura de la memoria. En este plan inicial se contemplaban 524 horas de trabajo.
+En la Imagen \ref{fig:gantt-inicial} se presenta el diagrama de Gantt inicial de la planificación con el desglose de tareas. Una de las dificultades para la planificación consistió en no saber en qué momento del proyecto sería necesario abordar la integración con la interfaz web. Inicialmente se asumió que ocurriría con posterioridad al trabajo de desarrollo y antes de comenzar la escritura de la memoria. En este plan inicial se contemplaban 520 horas de trabajo.
 
 \begin{figure}[hp!]
     \centering
@@ -64,7 +64,7 @@ En la Imagen \ref{fig:gantt-inicial} se presenta el diagrama de Gantt inicial de
 
 \section{Sprints}
 
-Se expone a continuación la distribución del trabajo a lo largo de los Sprints. Por motivos de compatibilidad con el trabajo y responsabilidades personales, se escogió una fórmula de 20 horas de trabajo semanal y una duración de cada Sprint de 2 semanas.
+Se expone a ahora la distribución del trabajo a lo largo de los Sprints. Por motivos de compatibilidad con el trabajo y responsabilidades personales, se escogió una fórmula de 20 horas de trabajo semanal y Sprints semanales. Al realizarse a media jornada, los Sprints tuvieron dos semanas reales de duración, completando de esta manera una jornada completa en cada uno.
 
 \subsection{Sprint 1}
 
@@ -80,11 +80,11 @@ Este primer Sprint consistió por completo en un spike con el objetivo de recaba
 
 \subsection{Sprint 2}
 
-Con el conocimiento reunido se procedió a la construcción inicial del sistema para el procesamiento por lotes de los trabajos. Además de diseñar la estructura de directorios utilizada por el proyecto, se crearon el Makefile general, utilizado para las compilaciones y los scripts para implementar el motor.
+Con el conocimiento adquirido se procedió a la construcción inicial del sistema para el procesamiento por lotes de los trabajos. Además de diseñar la estructura de directorios utilizada por el proyecto, se crearon el Makefile general, utilizado para las compilaciones y los scripts para implementar el motor.
 
 \subsection{Sprint 3}
 
-En el Sprint 3 se crearon las implementaciones iniciales del generador de lenguaje intermedio y se preparó el primer parser, que se probó con los documentos de Adobe. Para la construcción de los analizadores léxico-sintácticos se deseaba un enfoque modular, que no es habitual en este tipo de herramientas. El objetivo era tener un único programa ejecutable para el parser y un conjunto de plugins que implementarían cada uno un modelo de documento. Obtener esta aproximación llevó más tiempo que el esperado, que en el caso de ser un planteamiento más sencillo.
+En el Sprint 3 se crearon las implementaciones iniciales del generador de lenguaje intermedio y se preparó el primer parser, que se probó con los documentos de Adobe. Para la construcción de los analizadores léxico-sintácticos se deseaba un enfoque modular, que no es la fórmula directa con en este tipo de herramientas. Construir la herramienta siguiendo esta aproximación llevó más tiempo que el habitual en el caso de escoger un planteamiento más sencillo.
 
 \subsection{Sprint 4}
 
@@ -100,16 +100,18 @@ En estas tres semanas se abordó la escritura inicial de la memoria, con la prev
 
 \subsection{Sprint 9}
 
-Implementación del modelo basado en imagen.
+Implementación del modelo de AC, basado en imagen.
 
 \subsection{Sprint 10}
 
-Implementación del modelo basado en imagen.
+Implementación del modelo de AC, basado en imagen.
 
-\subsection{Sprint 11 y 12}
+\subsection{Sprints 11 al 14}
 
-Los últimos dos Sprints se dedicaron a finalizar la escritura de la memoria.
+Los últimos Sprints se dedicaron a finalizar la escritura de la memoria.
 
 \section{Planificación temporal final}
+
+La planificación final tuvo un desvío claro en la elaboración de la memoria, que finalmente llevó dos semanas más de las previstas. Así mismo, para ir incorporando los sucesivos documentos fue necesario cierto retrabajo en la parte del generador de código intermedio, al tener que ampliar sus funcionalidades, manteniendo los resultados conseguidos hasta el momento.
 
 % TODO explicar que las reuniones se adelantaron a las fechas previstas
