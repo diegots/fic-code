@@ -18,7 +18,7 @@ Los datos son sometidos a un proceso por etapas tal como se ve en la Figura \ref
     \label{fig:vision-general-del-sistema}
 \end{figure}
 
-El proceso comienza cuando se proporcionan al sistema un nuevo conjunto de ficheros PDF. La primera acción realiza la clasificación, según el tipo contenido de los PDF sean páginas con texto o con imágenes. El sistema mantiene el estado interno basándose en la creación de los ficheros respetando un esquema de rutas particular.
+El proceso comienza cuando se proporcionan al sistema un nuevo conjunto de ficheros PDF. La primera acción realiza la clasificación, según el tipo de contenido de los PDF sean páginas con texto o con imágenes. El sistema mantiene el estado interno basándose en la creación de los ficheros respetando un esquema de rutas particular.
 
 A continuación se procede a la extracción de la información de los documentos. Además del propio texto, directamente visible, se genera la información de coordenadas que se utilizará para seleccionar los contenidos relevantes.
 
@@ -34,7 +34,7 @@ El componente referido como engine o motor se ocupa de conducir todas estas acti
 
 Si bien la Imagen \ref{fig:vision-general-del-sistema} representa el flujo de datos a nivel general, para comenzar el tratamiento se sigue un proceso formalizado en tres pasos. 
 
-Primero el Sistema Externo solicita un identificador para el nuevo job. En ese momento el motor genera el código y lo utiliza para crear las rutas de directorios necesarias para ubicar los resultados de cada etapa. El identificador se obtiene de la fecha UTC actual concatenando segundos y nanosegundos. Se recurre al comando \verb|date| para ello, como se muestra en el Listado \ref{lst:creacion-job-id}.
+Primero, el Sistema Externo solicita un identificador para el nuevo job. En ese momento el motor genera el código y lo utiliza para crear las rutas de directorios necesarias para ubicar los resultados de cada etapa. El identificador se obtiene de la fecha UTC actual concatenando segundos y nanosegundos. Se recurre al comando \verb|date| para ello, como se muestra en el Listado \ref{lst:creacion-job-id}.
 
 \begin{lstlisting}[language=bash,caption={Obtención del identificador de un trabajo},label=lst:creacion-job-id]
 job_id=$(date -u +%s%6N)
@@ -48,9 +48,9 @@ Utilizando el identificador, el Sistema Externo forma el path donde deberá depo
 
 Como primera acción para tratar correctamente los ficheros se realiza un saneamiento de los nombres. Aplicar un nombrado homogéneo evitará problemas en la construcción de las rutas en el sistema de archivos. Para no perder la relación entre los nombres originales y los nuevos se crea en la ruta de salida un fichero para este dato con el patrón <\#doc>.name. También se descartan los directorios que el fichero comprimido facilitado pudiera contener. El esquema de nombrado para los ficheros utiliza los números naturales comenzando en 1 y de forma creciente.
 
-Los PDF recibidos deben ser clasificados dependiendo de su contenido. En unos casos es posible utilizar directamente el texto presenten en el documento. Para los restantes se procederá a utilizar el procedimiento OCR, como se ha explicado anteriormente. La clasificación se realiza por medio de un test de extracción de texto y se busca una respuesta positiva en la salida.
+Los PDF recibidos deben ser clasificados dependiendo de su contenido. En unos casos es posible utilizar directamente el texto presente en el documento. Para los restantes se procederá a utilizar el procedimiento OCR, como se ha explicado anteriormente. La clasificación se realiza por medio de un test de extracción de texto y se busca una respuesta positiva en la salida.
 
-En \verb|extract-text.sh| se trata cada fichero PDF de tal manera que por cada uno se obtiene su número de páginas. La extracción de texto se realiza página a página, generando como salida un fichero individual para cada una. Desde este punto y para todos los demás procesos los documentos se tratan también página por página hasta llegar al procesamiento del lenguaje intermedio que recibe un único fichero para todas las páginas del documento. En el Listado \ref{lst:extraccion-text-inicial} se puede ver el cálculo del número de páginas y la instrucción de extracción.
+En \verb|extract-text.sh| se trata cada fichero PDF de tal manera que por cada uno se obtiene su número de páginas. La extracción de texto se realiza página a página, generando como salida un fichero individual para cada una. Desde este punto y para todos los demás procesos, los documentos se tratan también página por página hasta llegar al procesamiento del lenguaje intermedio que recibe un único fichero para todas las páginas del documento. En el Listado \ref{lst:extraccion-text-inicial} se puede ver el cálculo del número de páginas y la instrucción de extracción.
 
 \begin{lstlisting}[language=bash,caption={Extracción tentativa del texto},label=lst:extraccion-text-inicial]
 last_page="$(pdfinfo $line | grep 'Pages:' | cut -c 7- | sed 's_ *__')"
@@ -92,7 +92,7 @@ El siguiente paso obtiene la información de coordenadas de los casos de texto, 
 </block>
 \end{lstlisting}
 
-Completada la extracción de texto se da paso al proceso de OCR. El script \verb|image-apply-ocr.sh| recorre el directorio donde están almacenadas las imágenes recuperadas y se invoca a Tesseract con la instrucción que se puede ver en el Código \ref{lst:invocacion-de-tesseract}. Se indican varios parámetros importantes. Debe utilizar los conjuntos de entrenamiento para contenido en castellano (\verb|-l spa|), ya que los documentos están en este idioma. El número de \acrlong{ppp} se fija a 300 (\verb|--dpi 300|) ya que es el tamaño mínimo que las imágenes deben tener para que el resultado del proceso OCR tenga calidad suficiente. Tesseract dispone de varios algoritmos para interpretar el layout de documento. En este caso, al trabajar directamente con las coordenadas, no es necesario tener en cuenta el layout y se le indica que capture la máxima información posible, independientemente del orden (\verb|--psm 11|). Por otra parte existe un fichero de configuración, apuntado por la variable \verb|$tessconfig_file| que contiene la directiva para activar la salida en formato hOCR, \verb|tessedit_create_hocr 1|.
+Completada la extracción de texto se da paso al proceso de OCR. El script \verb|image-apply-ocr.sh| recorre el directorio donde están almacenadas las imágenes recuperadas y se invoca a Tesseract con la instrucción que se puede ver en el Código \ref{lst:invocacion-de-tesseract}. Se indican varios parámetros importantes. Debe utilizar los conjuntos de entrenamiento para contenido en castellano (\verb|-l spa|), ya que los documentos están en este idioma. El número de \acrlong{ppp} se fija a 300 (\verb|--dpi 300|) ya que es el tamaño mínimo que las imágenes deben tener para que el resultado del proceso OCR tenga calidad suficiente. Tesseract dispone de varios algoritmos para interpretar el layout de un documento. En este caso, al trabajar directamente con las coordenadas, no es necesario tener en cuenta el layout y se le indica que capture la máxima información posible, independientemente del orden (\verb|--psm 11|). Por otra parte existe un fichero de configuración, apuntado por la variable \verb|$tessconfig_file| que contiene la directiva para activar la salida en formato hOCR, \verb|tessedit_create_hocr 1|.
 
 \begin{lstlisting}[language=XML,caption={Invocación de Tesseract utilizada en el proyecto},label=lst:invocacion-de-tesseract]
 tesseract $file_path "$outputbase" \
@@ -247,14 +247,14 @@ Las palabras siguen siempre el mismo patrón. Por ejemplo, en el caso \verb|P1·
         printer\_region.py & Funciones para la impresión de las regiones \\
         region.py & Tratamiento de las regiones \\
         task.py & Tareas definidas en la aplicación \\
-        util.py & Utilidades comunes para toda el software \\
+        util.py & Utilidades comunes para todo el software \\
         main.py & Punto de entrada a la aplicación \\
     \end{tabular}
     \caption{Módulos del generador de lenguaje intermedio}    
     \label{tab:modulo-generador-codigo-intermedio}
 \end{table}
 
-Cuando se invoca la herramienta, el primer paso, además de realizar el tratamiento de argumentos de entrada, consiste en configurar la aplicación para que pueda generar la salida solicitada. En una ejecución interactiva, con el flag \verb|-h| se obtendrá ayuda sobre de los parámetros disponibles. En el Listado \ref{lst:ayuda-generador-codigo-intermedio} se puede ver este mensaje de ayuda y el significado de cada uno de los parámetros. Estos argumentos pueden ser de dos tipos, posicionales u opcionales. Los parámetros posicionales son obligatorios y deben ser indicados en el mismo orden que se muestra en la segunda línea del mensaje de ayuda. 
+Cuando se invoca la herramienta, el primer paso, además de realizar el tratamiento de argumentos de entrada, consiste en configurar la aplicación para que pueda generar la salida solicitada. En una ejecución interactiva, con el flag \verb|-h| se obtendrá ayuda sobre los parámetros disponibles. En el Listado \ref{lst:ayuda-generador-codigo-intermedio} se puede ver este mensaje de ayuda y el significado de cada uno de los parámetros. Estos argumentos pueden ser de dos tipos, posicionales u opcionales. Los parámetros posicionales son obligatorios y deben ser indicados en el mismo orden que se muestra en la segunda línea del mensaje de ayuda. 
 
 \begin{lstlisting}[caption={Ayuda del generador de código intermedio},label=lst:ayuda-generador-codigo-intermedio]
 usage: main.py [-h] [-w WORKTASK]
@@ -277,7 +277,7 @@ optional arguments:
 Escoge el tipo de salida deseada. Por detecto produce la lista de palabras del fichero de entrada
 \end{lstlisting}
 
-El flag \verb|-w| se utiliza para escoger el tipo de salida que se desea. Seleccionando \verb|GENERATE| se obtiene el lenguaje intermedio. \verb|LIST_WORDS| produce un listado de todas las líneas y palabras asociadas. Mostrando por la salida estándar sus identificadores y coordenadas. Internamente estas tareas se definen como clases diferentes que exponen un método, \verb|run()|. Este método recibe los datos de la entrada y realiza el procesamiento de acuerdo a su objetivo. De esta manera es sencillo extender la aplicación para realizar distintos tipos de procesamientos.
+El flag \verb|-w| se utiliza para escoger el tipo de salida que se desea. Seleccionando \verb|GENERATE| se obtiene el lenguaje intermedio. \verb|LIST_WORDS| produce un listado de todas las líneas y palabras asociadas, mostrando por la salida estándar sus identificadores y coordenadas. Internamente estas tareas se definen como clases diferentes que exponen un método, \verb|run()|. Este método recibe los datos de la entrada y realiza el procesamiento de acuerdo a su objetivo. De esta manera es sencillo extender la aplicación para realizar distintos tipos de procesamientos.
 
 El script \verb|generate-json.sh| es el encargado de realizar la invocación del generador de código intermedio con la parametrización necesaria para tratar cada página de forma individual.
 
@@ -321,15 +321,15 @@ def get_coords(self, attrs):
     \end{lstlisting}
 \end{minipage}
 
-En el Listado \ref{lst:captura-de-palabras} se puede como se utiliza una lista donde se almacenan estructuras de tipo diccionario para todos los datos de una palabra. Las coordenadas se recuperaron previamente leyendo los atributos en el método de apertura, tal como se muestra en el Listado \ref{lst:recuperacion-coordenadas}. También se utiliza un contador para generar los identificadores de las palabras en la variable \verb|self.word_counter|. Por último, al almacenar las líneas, se les asocian las palabras que contienen por medio de los identificadores descritos. 
+En el Listado \ref{lst:captura-de-palabras} se puede ver como se utiliza una lista donde se almacenan estructuras de tipo diccionario para todos los datos de una palabra. Las coordenadas se recuperaron previamente leyendo los atributos en el método de apertura, tal como se muestra en el Listado \ref{lst:recuperacion-coordenadas}. También se utiliza un contador para generar los identificadores de las palabras en la variable \verb|self.word_counter|. Por último, al almacenar las líneas, se les asocian las palabras que contienen por medio de los identificadores descritos. 
 
 \subsection{Truncado de líneas y reasignación de líneas a regiones}
 
 Una vez leída la información, se tienen en memoria todas las líneas y palabras con sus posiciones. El siguiente paso consiste en asignar las líneas a las regiones que les corresponden atendiendo a las coordenadas de ambas.
 
-Para asociar líneas o palabras las regiones definidas en las plantillas se utiliza un algoritmo genérico. Es genérico ya que compara dos regiones rectangulares y resuelve si una está sobre la otra, basándose en sus coordenadas y dimensiones. Este algoritmo se utiliza en varios puntos del programa para clasificar líneas en regiones o líneas en columnas de las regiones.
+Para asociar líneas o palabras, las regiones definidas en las plantillas se utiliza un algoritmo genérico. Es genérico ya que compara dos regiones rectangulares y resuelve si una está sobre la otra, basándose en sus coordenadas y dimensiones. Este algoritmo se utiliza en varios puntos del programa para clasificar líneas en regiones o líneas en columnas de las regiones.
 
-Al comienzo del desarrollo se realizó una primera implementación para resolver esta clasificación pero utilizaba Sets de Python como tipo de dato y resultaba excesivamente lenta. Con la aproximación actual se comparan nueve casos. Si hay dos rectángulos, $ \alpha $ y $ \beta $ y se quiere saber $ \alpha $ está dentro de $ \beta $, primero se comprueba si, atendiendo a sus coordenadas, está totalmente dentro. Este es un caso muy frecuente. En los demás se mira si $ \alpha $ podría estar sobre alguno de los lados de $ \beta $ y por último si $ \alpha $ podría estar en alguna sobre alguna de las esquinas de $ \beta $. Una representación gráfica de los casos puede verse en la Imagen \ref{fig:casos-algoritmo-seleccion-regiones} del Apéndice. 
+Al comienzo del desarrollo se realizó una primera implementación para resolver esta clasificación pero utilizaba Sets de Python como tipo de dato y resultaba excesivamente lenta. Con la aproximación actual se comparan nueve casos. Si hay dos rectángulos, $ \alpha $ y $ \beta $ y se quiere saber $ \alpha $ está dentro de $ \beta $, primero se comprueba si, atendiendo a sus coordenadas, está totalmente dentro. Este es un caso muy frecuente. En los demás se mira si $ \alpha $ podría estar sobre alguno de los lados de $ \beta $ y por último si $ \alpha $ podría estar sobre alguna de las esquinas de $ \beta $. Una representación gráfica de los casos puede verse en la Imagen \ref{fig:casos-algoritmo-seleccion-regiones} del Apéndice. 
 
 Los datos de entrada son la lista de áreas que se quieren clasificar y la zona sobre la que se quiere realizar el test. Un bucle recorre las áreas evaluando los criterios. La asignación de un área a la zona se produce si todas las condiciones son verdaderas en alguno de los casos. Para considerar las situaciones donde $ \alpha $ está sobre el borde de $ \beta $, se tiene en cuenta un margen de proximidad, configurado para el $ 30\% $. Con esto se regula cuanto puede sobresalir $ \alpha $ de $ \beta $ para seguir siendo considerada válida para el caso. En el Listado \ref{lst:condiciones-caso-b} se puede ver el código donde se evalúan las condiciones para ser perteneciente al caso B mostrado en \ref{fig:casos-algoritmo-seleccion-regiones}.
 
@@ -367,13 +367,13 @@ Type "help", "copyright", "credits" or "license" for more information.
 [2, 3, 4, 5, 6, 7, 8, 9]
 \end{lstlisting}
 
-Una vez seleccionadas las regiones se procede a procesarlas. En el módulo \verb|region.py| existe una clase para cada una de ellas. La mayoría definen únicamente un método, \verb|assign_lines()| y también el constructor, para inicializar la clase con las coordenadas de la región. Si la región tienen columnas, se informa también de las posiciones de las mismas. El objetivo de método \verb|assign_lines()| es recorrer las columnas, o el espacio principal si no hay columnas y llamar a \verb|assign_words_to_regions_geometric()| con cada una de ellas. El método anterior corresponde al algoritmo genérico de clasificación de regiones comentado en la Subsección anterior. Una responsabilidad más de \verb|assign_lines()| es guardar, junto con los demás datos de la región, la implementación necesaria para crear el texto de salida. Lo que se hace es asignar directamente la referencia a alguno de los métodos del módulo \verb|printer_region.py|. Las funciones de impresión se comentarán más adelante, pero es en este punto cuando se realiza la selección, dado que cada tipo de región genera un texto diferente.
+Una vez seleccionadas las regiones se comienza a procesarlas. En el módulo \verb|region.py| existe una clase para cada una de ellas. La mayoría definen únicamente un método, \verb|assign_lines()| y también el constructor, para inicializar la clase con las coordenadas de la región. Si la región tiene columnas, se informa también de las posiciones de las mismas. El objetivo del método \verb|assign_lines()| es recorrer las columnas, o el espacio principal si no hay columnas y llamar a \verb|assign_words_to_regions_geometric()| con cada una de ellas. El método anterior corresponde al algoritmo genérico de clasificación de regiones comentado en la Subsección anterior. Una responsabilidad más de \verb|assign_lines()| es guardar, junto con los demás datos de la región, la implementación necesaria para crear el texto de salida. Lo que se hace es asignar directamente la referencia a alguno de los métodos del módulo \verb|printer_region.py|. Las funciones de impresión se comentarán más adelante, pero es en este punto cuando se realiza la selección, dado que cada tipo de región genera un texto diferente.
 
 Estas clases descritas están diseñadas para ser genéricas, no estando asociadas a ningún tipo de modelo en particular. En el caso de los documentos de OVH se crearon unas regiones diferentes, \verb|T2_T2_R1|, por ejemplo, ya las regiones que están contiguas unas a otras indican como se han de asignar los datos. A pesar de ello, nada limita que cualquiera de ellas se pueda aplicar en el futuro a otros modelos de documentos que compartan las mismas características.
 
 \subsection{Impresión del lenguaje}
 
-En este punto del proceso ya se han asignado las líneas a las regiones que les corresponde. En el módulo \verb|printer_region.py| se encuentran las funciones que toman las regiones, líneas y palabras y crean el texto que finalmente se escribirá a disco. Por ejemplo, en la implementación para las tablas T1, los pasos que se siguen consisten en buscar todas las líneas \emph{reales} de la tabla. Por líneas reales se entienden aquellas que forman una unidad de contenido, independientemente de cuantas líneas físicas tenga dicho contenido. Para ello se toman como referencia las líneas de la primera columna. Estas líneas se comparan en altura con todas las demás que están en la tabla. Para ser consideradas al mismo nivel, la altura debe ser la misma, aceptando un margen del $ 25\% $ de desviación. Este porcentaje es el que mejor resultados ofreció en las pruebas. A continuación se trasladan a la primera línea todas las palabras que están en segundas líneas físicas. Por último, solo queda recorrer las líneas, columnas y palabras acumulando el string generado y que se corresponde con el lenguaje intermedio.
+En este punto del proceso ya se han asignado las líneas a las regiones que les corresponden. En el módulo \verb|printer_region.py| se encuentran las funciones que toman las regiones, líneas y palabras y crean el texto que finalmente se escribirá a disco. Por ejemplo, en la implementación para las tablas T1, los pasos que se siguen consisten en buscar todas las líneas \emph{reales} de la tabla. Por líneas reales se entienden aquellas que forman una unidad de contenido, independientemente de cuantas líneas físicas tenga dicho contenido. Para ello se toman como referencia las líneas de la primera columna. Estas líneas se comparan en altura con todas las demás que están en la tabla. Para ser consideradas al mismo nivel, la altura debe ser la misma, aceptando un margen del $ 25\% $ de desviación. Este porcentaje es el que mejor resultados ofreció en las pruebas. A continuación se trasladan a la primera línea todas las palabras que están en segundas líneas físicas. Por último, solo queda recorrer las líneas, columnas y palabras acumulando el string generado y que se corresponde con el lenguaje intermedio.
 
 La escritura en disco se realiza una vez el flujo a llegado de vuelta a la tarea GENERATE, donde además se imprimen los ficheros de líneas y palabras que se listan en la Tabla \ref{tab:datos-de-salida}.
 
@@ -390,7 +390,7 @@ Por último, en la Tabla \ref{tab:datos-intermedios} se presenta la relación de
         \hline
         \verb|<#doc>-<#pag>-language.txt| & Lenguaje intermedio para una página \\
         \verb|<#doc>-<#pag>.box| & Lista carácter a carácter y coordenadas (Tesseract) \\
-        \verb|<#doc-<#pag>.hocr| & Dados en formato hOCR (Tesseract) \\
+        \verb|<#doc-<#pag>.hocr| & Datos en formato hOCR (Tesseract) \\
         \verb|<#doc>-xxx-language.txt| & Documento global del lenguaje intermedio \\
         \verb|<#doc>.id| & Identificador de la plantilla \\
         \verb|<#doc>-<#pag>.xml| & XML resultado de la extracción de texto \\
@@ -403,7 +403,7 @@ Por último, en la Tabla \ref{tab:datos-intermedios} se presenta la relación de
 \section{Procesamiento del lenguaje intermedio}
 
 % Diferencias organizativas
-La organización de la aplicación a nivel código fuente en esta parte del proyecto presenta diferencias respecto a los que sería un programa clásico hecho en Flex y Bison, tal y como se presenta en la Subsección \ref{subsec:flex}. En caso de proceder del modo tradicional, las reglas de distintos modelos estaría todas en el mismo fichero, que crecería con cada nuevo modelo a tratar. Además, organizar las reglas para evitar colisiones supondría un alto coste de mantenimiento. Se hacía necesario encontrar una aproximación más flexible para permitir que con un mismo ejecutable fuese posible iniciar múltiples analizadores léxicos y sintácticos. Una alternativa que se barajó fue la de crear un ejecutable por cada modelo, aplicaciones independientes, pero se descartó por ser excesivamente compleja y poco elegante. En la aproximación utilizada, cada modelo de documento tienen su par de ficheros \verb|.y| y \verb|.l|, que son totalmente independientes a otros ficheros de reglas. No solo eso, además, la compilación también es independiente. Se puede considerar que cada modelo se implementa como un plugin al sistema.
+La organización de la aplicación a nivel código fuente en esta parte del proyecto presenta diferencias respecto a lo que sería un programa clásico hecho en Flex y Bison, tal y como se presenta en la Subsección \ref{subsec:flex}. En caso de proceder del modo tradicional, las reglas de distintos modelos estarían todas en el mismo fichero, que crecería con cada nuevo modelo a tratar. Además, organizar las reglas para evitar colisiones supondría un alto coste de mantenimiento. Se hacía necesario encontrar una aproximación más flexible para permitir que con un mismo ejecutable fuese posible iniciar múltiples analizadores léxicos y sintácticos. Una alternativa que se barajó fue la de crear un ejecutable por cada modelo, aplicaciones independientes, pero se descartó por ser excesivamente compleja y poco elegante. En la aproximación utilizada, cada modelo de documento tienen su par de ficheros \verb|.y| y \verb|.l|, que son totalmente independientes a otros ficheros de reglas. No solo eso, además, la compilación también es independiente. Se puede considerar que cada modelo se implementa como un plugin al sistema.
 
 En el Listado \ref{lst:fuentes-del-procesador-de-lenguajes} del Apéndice se pueden ver todos los ficheros fuente que forman parte del procesador de lenguaje. Alternativamente, en la Tabla \ref{tab:modulos-procesador-lenguaje} están relacionados los más relevantes.
 
@@ -458,7 +458,7 @@ Se obtiene la dirección de memoria del símbolo que se quiere utilizar, en este
 parse = dlsym(handle, PARSER_NAME);
 \end{lstlisting}
 
-Y por último se ejecuta el parser a través del puntero a función. Cuando el proceso finaliza correctamente la variable \verb|completed| valdrá 0. En caso de valer 1, lo más habitual es que se produjese un error de sintáctico en el parser:
+Y por último se ejecuta el parser a través del puntero a función. Cuando el proceso finaliza correctamente la variable \verb|completed| valdrá 0. En caso de valer 1, lo más habitual es que se produjese un error sintáctico en el parser:
 
 \begin{lstlisting}[language=C,caption={},label={}]
 int completed = (*parse)();
@@ -517,7 +517,7 @@ El fichero \verb|bison-prologue.h| contiene las definiciones de prototipos de \v
 
 \subsection{Variables globales}
 
-Debido a la reestructuración, las variables que se definen en el epílogo de Bison no están disponibles durante el parseo. El epílogo es donde está normalmente la función \verb|main()|. Aquí, la función \verb|main()| es totalmente independiente y tienen su módulo propio. Esto es un inconveniente debido a que hay información necesaria que no va a ser accesible fuera del \verb|main()|. Por ejemplo, los parámetros de entrada al programa, que son tres:
+Debido a la reestructuración, las variables que se definen en el epílogo de Bison no están disponibles durante el parseo. El epílogo es donde está normalmente la función \verb|main()|. Aquí, la función \verb|main()| es totalmente independiente y tiene su módulo propio. Esto es un inconveniente debido a que hay información necesaria que no va a ser accesible fuera del \verb|main()|. Por ejemplo, los parámetros de entrada al programa, que son tres:
 
 \begin{itemize}
     \item La ruta al fichero del lenguaje intermedio.
@@ -525,13 +525,13 @@ Debido a la reestructuración, las variables que se definen en el epílogo de Bi
     \item Y la ruta al plugin, para poder realizar la carga dinámica.
 \end{itemize}
 
-El path del fichero del lenguaje intermedio se descompone en partes (ruta de salida, número de documento) y se utilizan en la fase de generación para escribir los ficheros de resultados en la ruta y con el nombre correctos. Para la generación de los datos de las tablas en formato CSV no se utiliza el \acrshort{ast} sino que se utiliza una lista donde se guardan únicamente los datos relacionados con un tipo de dato para este caso.
+El path del fichero del lenguaje intermedio se descompone en partes (ruta de salida, número de documento) y se utilizan en la fase de generación para escribir los ficheros de resultados en la ruta y con el nombre correcto. Para la generación de los datos de las tablas en formato CSV no se utiliza el \acrshort{ast} sino que se utiliza una lista donde se guardan únicamente los datos relacionados con un tipo de dato para este caso.
 
 El acceso a esta información no es posible si no se emplean variables globales. El \verb|struct app_config| disponible en el módulo de cabecera \verb|app-conf.h| contiene los tipos de datos para guardar toda la información relativa a los parámetros de entrada y cualquier otro dato de configuración que fuese necesario. En el módulo \verb|global-vars.h| están las declaraciones de las variables que contendrán los datos de importes.
 
 \subsection{Compilación separada}
 
-La obtención los ejecutables se automatiza con GNU Make y dado que la carga de los parsers se realiza como librerías dinámicas, la compilación se puede llevar a cabo de forma separada, dado que los parsers no se enlazan con el programa principal. Para su distribución, es posible crear versiones que contengan algunos parsers y no otros.
+La obtención de los ejecutables se automatiza con GNU Make y dado que la carga de los parsers se realiza como librerías dinámicas, la compilación se puede llevar a cabo de forma separada, dado que los parsers no se enlazan con el programa principal. Para su distribución, es posible crear versiones que contengan algunos parsers y no otros.
 Para la obtención de las librerías dinámicas se compilan primero los módulos dependientes de los que se ha hablado anteriormente, prólogos y epílogo, y también los módulos utilizados en la fase de generación. En las líneas de Código de ejemplo la variable $ \$@ $, propia de Make, contiene el nombre del fichero que se va a compilar:
 
 \begin{lstlisting}[language=C,caption={},label={}]
@@ -548,7 +548,7 @@ gcc -fPIC -c $(PLUGIN)/$@.yy.c
 gcc -o $@.so -shared bison-epilogue.o flex-prologue.o $@.tab.o $@.yy.o
 \end{lstlisting}
 
-Las dos primeras líneas generan los analizadores sintáctico y léxico, respectivamente. Se hace en este orden para poder incluir el fichero \verb|*.tab.c| en el analizador léxico. Este fichero es generado por Bison contiene y contiene, por ejemplo, las definiciones de tokens compartidas por ambos. En la quinta línea se compila la librería y se obtiene el fichero \verb|.so|.
+Las dos primeras líneas generan los analizadores sintáctico y léxico, respectivamente. Se hace en este orden para poder incluir el fichero \verb|*.tab.c| en el analizador léxico. Este fichero es generado por Bison y contiene, por ejemplo, las definiciones de tokens compartidas por ambos. En la quinta línea se compila la librería y se obtiene el fichero \verb|.so|.
 
 \subsection{Análisis léxico}
 
@@ -603,7 +603,7 @@ typedef lista cols;
     \end{lstlisting}
 \end{minipage}
 
-Los ficheros de reglas Flex tienen similitudes en lo que se refiere a los tokens para los delimitadores de las regiones y las palabras. En el Listado \ref{lst:reglas-lexicas} se pueden ver reglas disponibles. Las dos primeras líneas encuentras los delimitadores para el tipo de región T1. En este caso no es necesario ningún valor semántico. La tercera regla corresponde a una palabra de una cabecera (lleva \verb|H| en lugar de \verb|W|). La última regla se utiliza para encontrar las palabras que forman el contenido. Nótese que aquí si se devuelve un valor semántico por medio de la variable \verb|yylval.word_value|. Además se define en la regla una función útil si se necesita depurar el escáner. La activación de esta función se controla por medio del flag \verb|-DDEBUG_LEXER| del preprocesador de C. De tal manera que si este flag no se indica, la función no está presente en el código generado.
+Los ficheros de reglas Flex tienen similitudes en lo que se refiere a los tokens para los delimitadores de las regiones y las palabras. En el Listado \ref{lst:reglas-lexicas} se pueden ver reglas disponibles. En las dos primeras líneas se encuentran los delimitadores para el tipo de región T1. En este caso no es necesario ningún valor semántico. La tercera regla corresponde a una palabra de una cabecera (lleva \verb|H| en lugar de \verb|W|). La última regla se utiliza para encontrar las palabras que forman el contenido. Nótese que aquí si se devuelve un valor semántico por medio de la variable \verb|yylval.word_value|. Además se define en la regla una función útil si se necesita depurar el escáner. La activación de esta función se controla por medio del flag \verb|-DDEBUG_LEXER| del preprocesador de C. De tal manera que si este flag no se indica, la función no está presente en el código generado.
 
 \begin{lstlisting}[language=C,caption={Reglas léxicas habituales},label={lst:reglas-lexicas}]
 "T1_START" {return T1_START;}
@@ -659,7 +659,7 @@ table_amounts_->total = word_total;
 
 Las líneas de las tablas son otra estructura recursiva que opera de manera similar al caso de las regiones. Y ocurre de igual manera con las columnas y las palabras.
 
-La regla para el token \verb|WORD| pasa los datos al no terminal \verb|word| y además se utiliza para encontrar el mayor número de página dentro del documento. Este dato se utiliza en la generación, pero no se recibe como parámetro, ya que se puede calcular a partir de las propias palabras. Solo es necesario actualizar el dato en \verb|app_config_->max_page_number|.
+La regla para el token \verb|WORD| pasa los datos al no terminal \verb|word| y además se utiliza para encontrar el mayor número de páginas dentro del documento. Este dato se utiliza en la generación, pero no se recibe como parámetro, ya que se puede calcular a partir de las propias palabras. Solo es necesario actualizar el dato en \verb|app_config_->max_page_number|.
 
 Una característica de Bison no comentada es que tanto los terminales como los no terminales pueden tener un tipo de dato asociado, si es necesario, para trasladar un valor semántico hacia arriba en el árbol de parseo. En la sección de definiciones se pueden encontrar todos los terminales y no terminales conocidos para el parser y los tipos asignados, Listado \ref{lst:definiciones-tipos-bison}. Para poder subir información por el árbol, todos los símbolos de la gramática deben tener el dato correcto.
 
@@ -703,7 +703,7 @@ handler handlers_selected_words[] = {
     #undef X };
 \end{lstlisting}
 
-Por último solo queda recorrer la lista de regiones invocando a al método necesarios con el array: 
+Por último solo queda recorrer la lista de regiones invocando al método necesarios con el array: 
 
 \begin{lstlisting}[caption={},label={}]
     for (int i = 0; i < regions.len; i++) {
