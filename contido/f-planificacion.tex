@@ -68,27 +68,27 @@ Se expone a ahora la distribución del trabajo a lo largo de los Sprints. Por mo
 
 \subsection{Sprint 1}
 
-Este primer Sprint consistió por completo en un spike con el objetivo de recabar toda la información necesaria para plantear el proyecto a nivel técnico. Algunos de los aspectos sobre los que se adquirió conocimiento fueron:
+Este primer Sprint consistió por completo en un Spike con el objetivo de recabar toda la información necesaria para plantear el proyecto a nivel técnico. Algunos de los aspectos sobre los que se adquirió conocimiento fueron:
 
 \begin{itemize}
     \item Alternativas comerciales en la misma temática.
     \item Herramientas y librerías disponibles en Linux para manipular PDF.
     \item Funcionamiento del formato PDF a nivel interno.
     \item Formatos de salida de los motores de OCR, en especial del seleccionado, hOCR.
-    \item Posibles engines de OCR candidatos para el proyecto
+    \item Posibles \emph{engines} de OCR candidatos para el proyecto
 \end{itemize}
 
 \subsection{Sprint 2}
 
-Con el conocimiento adquirido se procedió a la construcción inicial del sistema para el procesamiento por lotes de los trabajos. Además de diseñar la estructura de directorios utilizada por el proyecto, se crearon el Makefile general, utilizado para las compilaciones y los scripts para implementar el motor.
+Con el conocimiento adquirido se procedió a la construcción inicial del sistema para el procesamiento por lotes de los trabajos. Además de diseñar la estructura de directorios utilizada por el proyecto, se crearon el Makefile general, utilizado para las compilaciones y los \emph{scripts} para implementar el motor.
 
 \subsection{Sprint 3}
 
-En el Sprint 3 se crearon las implementaciones iniciales del generador de lenguaje intermedio y se preparó el primer parser, que se probó con los documentos de Adobe. Para la construcción de los analizadores léxico-sintácticos se deseaba un enfoque modular, que no es la fórmula directa con en este tipo de herramientas. Construir la herramienta siguiendo esta aproximación llevó más tiempo que el habitual en el caso de escoger un planteamiento más sencillo.
+En el Sprint 3 se crearon las implementaciones iniciales del generador de lenguaje intermedio y se preparó el primer \emph{parser}, que se probó con los documentos de Adobe. Para la construcción de los analizadores léxico-sintácticos se deseaba un enfoque modular, que no es la fórmula directa con este tipo de herramientas. Construir la herramienta siguiendo esta aproximación llevó más tiempo que el habitual en el caso de escoger un planteamiento más sencillo.
 
 \subsection{Sprint 4}
 
-En este Sprint se añadió soporte para la generación de código intermedio y parsing del modelo de Adobe y parte del de OVH. También tuvieron lugar las primeras reuniones de trabajo para explicar el proyecto y decidir las adaptaciones necesarias de cara al prototipo.
+En este Sprint se añadió soporte para la generación de código intermedio y \emph{parsing} del modelo de Adobe y parte del de OVH. También tuvieron lugar las primeras reuniones de trabajo para explicar el proyecto y decidir las adaptaciones necesarias de cara al prototipo.
 
 \subsection{Sprint 5}
 
@@ -96,7 +96,7 @@ Se completó el modelo de documento del proveedor OVH. Además se abordaron de f
 
 \subsection{Sprint 6}
 
-El Sprint 6 se dedicó a realizar el modelo de Prodware y a finalizar las integración con la aplicación web.
+El Sprint 6 se dedicó a realizar el modelo de Prodware y a finalizar la integración con la aplicación web.
 
 \subsection{Sprints 7 y 8}
 
@@ -116,7 +116,7 @@ Los últimos Sprints se dedicaron a completar la escritura de la memoria.
 
 \section{Planificación temporal final}
 
-La planificación final tuvo un desvío claro en la elaboración de la memoria, que finalmente llevó cuatro semanas más de las previstas (2 sprints). Así mismo, para ir incorporando los sucesivos documentos fue necesario cierto retrabajo en la parte del generador de código intermedio, al tener que ampliar sus funcionalidades, manteniendo los resultados conseguidos hasta el momento. Las reuniones de integración sucedieron, aproximadamente, dentro del periodo esperado, antes de dar comienzo a la primera parte de la escritura de la memoria. El resultado final de la planificación se puede consultar en la Imagen \ref{fig:gantt-final}.
+La planificación final tuvo un desvío claro en la elaboración de la memoria, que finalmente llevó cuatro semanas más de las previstas (2 Sprints). Así mismo, para ir incorporando los sucesivos documentos fue necesario cierto retrabajo en la parte del generador de código intermedio, al tener que ampliar sus funcionalidades, manteniendo los resultados conseguidos hasta el momento. Las reuniones de integración sucedieron, aproximadamente, dentro del periodo esperado, antes de dar comienzo a la primera parte de la escritura de la memoria. El resultado final de la planificación se puede consultar en la Imagen \ref{fig:gantt-final}.
 
 \begin{figure}[hp!]
 	\centering

@@ -42,7 +42,7 @@ sudo apt-get update
 
 \subsection{Ejecución manual}
 
-Para una correcta ejecución totalmente manual, es necesario primero inicializar algunos parámetros de configuración. Se procederá primero leyendo el fichero de configuración que define todas las rutas utilizadas por el engine. Así mismo se creará el directorio para los ficheros de entrada:
+Para una correcta ejecución totalmente manual, es necesario primero inicializar algunos parámetros de configuración. Se procederá primero leyendo el fichero de configuración que define todas las rutas utilizadas por el \emph{engine}. Así mismo se creará el directorio para los ficheros de entrada:
 
 \begin{lstlisting}[language=bash,caption={},label={}]
 conf_file='conf/engine-dev.sh'
@@ -68,7 +68,7 @@ Y finalmente se da comienzo al proceso:
 $app_dir/engine/run.sh $job_id
 \end{lstlisting}
 
-Al finalizar, los resultados estarán ubicados en \verb|$input_dir/$job_id/frontend|. El script \verb|run-develop.sh| disponible en el directorio \verb|script| realiza de forma automática una ejecución completa con el fichero zip que se le indique por parámetro, como se muestra en la Imagen \ref{fig:ejecucion-manual}
+Al finalizar, los resultados estarán ubicados en \verb|$input_dir/$job_id/frontend|. El \emph{layout} \verb|run-develop.sh| disponible en el directorio \verb|script| realiza de forma automática una ejecución completa con el fichero zip que se le indique por parámetro, como se muestra en la Imagen \ref{fig:ejecucion-manual}
 
 \begin{figure}[hp!]
     \centering
@@ -79,7 +79,7 @@ Al finalizar, los resultados estarán ubicados en \verb|$input_dir/$job_id/front
 
 \section{Visor del formato hOCR}
 
-Existen herramientas para trabajar con el formato hOCR, por ejemplo, las que están disponibles en el repositorio git del proyecto OCRopus \footnote{\url{https://github.com/ocropus/hocr-tools}}. Pero si lo que se quiere es poder visualizar gráficamente como aplican las líneas y regiones de un hOCR sobre una página en particular, el Pattern Recognition \& Image Analysis (PRImA) Research Lab de la Universidad de Salford mantiene una utilidad para hacer justo esto \cite{prima_tool_page_viewer}. En la imagen \ref{fig:visor-formato-hocr}, el visor muestra las líneas detectadas para una página del proveedor AC. Además de hOCR, la herramienta soporta otros formatos, algunos ya mencionados en la memoria como, PAGE XML, ALTO XML o FineReader XML.
+Existen herramientas para trabajar con el formato hOCR, por ejemplo, las que están disponibles en el repositorio de código del proyecto OCRopus \footnote{\url{https://github.com/ocropus/hocr-tools}}. Pero si lo que se quiere es poder visualizar gráficamente como aplican las líneas y regiones de un hOCR sobre una página en particular, el Pattern Recognition \& Image Analysis (PRImA) Research Lab de la Universidad de Salford mantiene una utilidad para hacer justo esto \cite{prima_tool_page_viewer}. En la imagen \ref{fig:visor-formato-hocr}, el visor muestra las líneas detectadas para una página del proveedor AC. Además de hOCR, la herramienta soporta otros formatos, algunos ya mencionados en la memoria como, PAGE XML, ALTO XML o FineReader XML.
 
 \begin{figure}[hp!]
     \centering
