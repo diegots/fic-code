@@ -42,7 +42,7 @@ sudo apt-get update
 
 \subsection{Ejecución manual}
 
-Para una correcta ejecución totalmente manual, es necesario primero inicializar algunos parámetros de configuración. Se procederá primero leyendo el fichero de configuración que define todas las rutas utilizadas por el engine. Así mismo se creará el directorio para los ficheros de entrada:
+Para una correcta ejecución totalmente manual, es necesario primero inicializar algunos parámetros de configuración. Se procederá primero leyendo el fichero de configuración que define todas las rutas utilizadas por el \emph{engine}. Así mismo se creará el directorio para los ficheros de entrada:
 
 \begin{lstlisting}[language=bash,caption={},label={}]
 conf_file='conf/engine-dev.sh'
@@ -68,7 +68,7 @@ Y finalmente se da comienzo al proceso:
 $app_dir/engine/run.sh $job_id
 \end{lstlisting}
 
-Al finalizar, los resultados estarán ubicados en \verb|$input_dir/$job_id/frontend|. El script \verb|run-develop.sh| disponible en el directorio \verb|script| realiza de forma automática una ejecución completa con el fichero zip que se le indique por parámetro, como se muestra en la Imagen \ref{fig:ejecucion-manual}
+Al finalizar, los resultados estarán ubicados en \verb|$input_dir/$job_id/frontend|. El \emph{layout} \verb|run-develop.sh| disponible en el directorio \verb|script| realiza de forma automática una ejecución completa con el fichero zip que se le indique por parámetro, como se muestra en la Imagen \ref{fig:ejecucion-manual}
 
 \begin{figure}[hp!]
     \centering

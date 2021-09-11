@@ -14,7 +14,7 @@ Un caso de uso describe una interacción entre un rol y el sistema. O cómo es u
 Existen dos actores que interactúan con la aplicación, un Sistema Externo y una Base de Datos:
 
 \begin{itemize}
-	\item \textbf{Sistema Externo}: la aplicación está diseñada para comunicarse con el Sistema Externo mediante invocación directa de comandos o bien por medio del motor que gestiona el procesamiento. Si bien mediante comandos un usuario podría solicitar la ejecución de trabajos, el objetivo principal es ser un backend en disposición de ser empleado por otros sistemas.
+	\item \textbf{Sistema Externo}: la aplicación está diseñada para comunicarse con el Sistema Externo mediante invocación directa de comandos o bien por medio del motor que gestiona el procesamiento. Si bien mediante comandos un usuario podría solicitar la ejecución de trabajos, el objetivo principal es ser un \emph{backend} en disposición de ser empleado por otros sistemas.
 	\item \textbf{Base de Datos}: este agente es consultado para la obtención de datos de identificación de los documentos.
 \end{itemize}
 
@@ -43,7 +43,7 @@ Se presentan a continuación los casos de uso de forma detallada:
 	\begin{itemize}
 		\item \textbf{Descripción}: en caso de problemas durante el procesamiento se informa al sistema externo del error ocurrido.
 		\item \textbf{Precondición}: sucede una condición de error en el sistema.
-		\item \textbf{Postcondición}: dependiendo del tipo de error el engine consigue finalizar el procesamiento o se finaliza si no es posible recuperarse del error.
+		\item \textbf{Postcondición}: dependiendo del tipo de error el \emph{engine} consigue finalizar el procesamiento o se finaliza si no es posible recuperarse del error.
 \end{itemize}
 \item \textbf{CU-05} - Relacionar documento y plantilla
 	\begin{itemize}
@@ -106,12 +106,12 @@ Durante la generación de código y posterior tratamiento del lenguaje intermedi
 
 \subsection{Prodware}
 
-Los documentos presentan un layout fijo que se repite en todos los ejemplares. En la parte superior se encuentran los datos de emisor y receptor. Aunque los cuadros no están dibujados, las dimensiones y localización son constantes. Más abajo aparece una primera tabla con una fila para la cabecera y otra fila para la información. La tabla principal de datos tiene tres columnas relativas a la fecha, descripción e importe. En algunos documentos las líneas de la columna \emph{Descripción} ocupan varias líneas físicas. Para la identificación de las líneas de contenido se pueden utilizar las fechas de la primera columna dado que aunque la descripción ocupe varias líneas físicas, las fechas contienen espacios en las segundas o terceras líneas. En la parte inferior están las tablas con información de resumen del documento. Esta información de resumen emplea las mismas dimensiones y espacios en todos los documentos de la muestra. A mayores, dos casos son diferentes en cuanto a que no presentan las líneas de las tablas. No obstante, dado que no es necesario recurrir a la Transformada de Hough para este modelo y que las posiciones se mantienen sin cambios, no supone diferencia para el tratamiento.
+Los documentos presentan un \emph{layout} fijo que se repite en todos los ejemplares. En la parte superior se encuentran los datos de emisor y receptor. Aunque los cuadros no están dibujados, las dimensiones y localización son constantes. Más abajo aparece una primera tabla con una fila para la cabecera y otra fila para la información. La tabla principal de datos tiene tres columnas relativas a la fecha, descripción e importe. En algunos documentos las líneas de la columna \emph{Descripción} ocupan varias líneas físicas. Para la identificación de las líneas de contenido se pueden utilizar las fechas de la primera columna dado que aunque la descripción ocupe varias líneas físicas, las fechas contienen espacios en las segundas o terceras líneas. En la parte inferior están las tablas con información de resumen del documento. Esta información de resumen emplea las mismas dimensiones y espacios en todos los documentos de la muestra. A mayores, dos casos son diferentes en cuanto a que no presentan las líneas de las tablas. No obstante, dado que no es necesario recurrir a la Transformada de Hough para este modelo y que las posiciones se mantienen sin cambios, no supone diferencia para el tratamiento.
  
 \subsection{Adobe}
 
 Los ejemplares de facturas de Adobe presentan todos dos páginas. No obstante la segunda página carece de contenido relevante, ya que replica los datos de resumen de la factura, que aparecen idénticos en la primera página. Por tanto, las regiones definidas en la plantilla omitirán estas segundas páginas en este modelo.
-Todos los casos presentan el mismo layout, con idéntica ubicación para las tablas, celdas y datos individuales. En la parte superior de los documentos aparece la información de identificación del cliente y emisor, a la izquierda, y los datos relativos a la factura, en la parte derecha.
+Todos los casos presentan el mismo \emph{layout}, con idéntica ubicación para las tablas, celdas y datos individuales. En la parte superior de los documentos aparece la información de identificación del cliente y emisor, a la izquierda, y los datos relativos a la factura, en la parte derecha.
 La tabla principal contiene seis columnas. Tras la revisión de los casos no es posible determinar si existen líneas de contenido que se extiendan más allá de una línea física de la tabla.
 En la parte inferior se encuentran los datos de resumen como importe, tipo de IVA aplicado y totales.
 
