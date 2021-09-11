@@ -81,3 +81,20 @@ ebd699 dorado
 cc0000 rojo
 3777c0 azul
 58975b verde
+
+- Poner las palabras inglesas en cursiva
+- Que no quede ninguna página completamente en blanco
+- Planificación: análisis de riesgos. Plantear algunas tareas como arriesgadas por desconocimiento. Añadir plan de contingencia. Una carilla.
+- Conclusiones:
+  1. un párrafo introductorio
+  2. los objetivo por puntos
+  3. Un párrafo indicando que es un proyecto real
+    - Que he aprendido mucho.
+    - Que la formación en el grado es muy útil.
+    - "de forma tardía" queda raro
+- Trabajo futuro
+  - Iniciar el comentario indicando que "hay funcionalidades que, estando fuera del alcance, han ido surgiendo"
+- Símbolo de missing ref ⁇ pag 44.
+- El índice no permite saltar a las páginas... creo que deberías arreglarlo
+  -> se corrige compilando en Linux
+
