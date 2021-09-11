@@ -7,7 +7,6 @@
 
 \lettrine{L}{a} creación de este TFG comparte las características generales de cualquier proyecto, ya que tiene un objetivo concreto y definido, no es una actividad rutinaria, tiene unas fechas de comienzo y de fin. Un proyecto necesita recursos en forma de tiempo, mano de obra, herramientas y conocimiento. En este capítulo se aborda la planificación elaborada.
 
-
 \section{Recursos necesarios}
 
 Para acometer el proyecto son necesarios varios tipos de recursos:
@@ -53,7 +52,7 @@ De los recursos utilizados para el proyecto se deducen directamente los costes e
 
 \section{Planificación temporal inicial}
 
-En la Imagen \ref{fig:gantt-inicial} se presenta el diagrama de Gantt inicial de la planificación con el desglose de tareas. Una de las dificultades para la planificación consistió en no saber en qué momento del proyecto sería necesario abordar la integración con la interfaz web. Inicialmente se asumió que ocurriría durante el trabajo de desarrollo y antes de comenzar la escritura de la memoria. En este plan inicial se contemplaban 520 horas de trabajo.
+En la Imagen \ref{fig:gantt-inicial} se presenta el diagrama de Gantt inicial de la planificación con el desglose de tareas. Una de las dificultades para la planificación consistió en no saber en qué momento del proyecto sería necesario abordar la integración con la interfaz web. Inicialmente se asumió que ocurriría durante el trabajo de desarrollo y antes de comenzar la escritura de la memoria. En este plan inicial se contemplan 520 horas de trabajo.
 
 \begin{figure}[hp!]
     \centering
@@ -64,11 +63,11 @@ En la Imagen \ref{fig:gantt-inicial} se presenta el diagrama de Gantt inicial de
 
 \section{Sprints}
 
-Se expone a ahora la distribución del trabajo a lo largo de los Sprints. Por motivos de compatibilidad con el trabajo y responsabilidades personales, se escogió una fórmula de 20 horas de trabajo semanal y Sprints semanales. Al realizarse a media jornada, los Sprints tuvieron dos semanas reales de duración, completando de esta manera una jornada completa en cada uno.
+Se expone a ahora la distribución del trabajo a lo largo de los Sprints. Por motivos de compatibilidad a nivel laboral y otras responsabilidades personales, se optó por una fórmula de 20 horas de trabajo semanal y Sprints de 5 días (de lunes a viernes). Al realizarse a media jornada, los Sprints tiene dos semanas reales de duración, completando de esta manera una jornada completa en cada uno.
 
 \subsection{Sprint 1}
 
-Este primer Sprint consistió por completo en un Spike con el objetivo de recabar toda la información necesaria para plantear el proyecto a nivel técnico. Algunos de los aspectos sobre los que se adquirió conocimiento fueron:
+Este primer Sprint consiste por completo en un Spike con el objetivo de recabar toda la información necesaria para plantear el proyecto a nivel técnico. Algunos de los aspectos sobre los que se necesita adquirir conocimiento son:
 
 \begin{itemize}
     \item Alternativas comerciales en la misma temática.
@@ -80,27 +79,27 @@ Este primer Sprint consistió por completo en un Spike con el objetivo de recaba
 
 \subsection{Sprint 2}
 
-Con el conocimiento adquirido se procedió a la construcción inicial del sistema para el procesamiento por lotes de los trabajos. Además de diseñar la estructura de directorios utilizada por el proyecto, se crearon el Makefile general, utilizado para las compilaciones y los \emph{scripts} para implementar el motor.
+Con el conocimiento adquirido se procederá a la construcción inicial del sistema para el procesamiento por lotes de los trabajos. Además de diseñar la estructura de directorios utilizada por el proyecto, se crearán el Makefile general, utilizado para las compilaciones y los \emph{scripts} para implementar el motor.
 
 \subsection{Sprint 3}
 
-En el Sprint 3 se crearon las implementaciones iniciales del generador de lenguaje intermedio y se preparó el primer \emph{parser}, que se probó con los documentos de Adobe. Para la construcción de los analizadores léxico-sintácticos se deseaba un enfoque modular, que no es la fórmula directa con este tipo de herramientas. Construir la herramienta siguiendo esta aproximación llevó más tiempo que el habitual en el caso de escoger un planteamiento más sencillo.
+En el Sprint 3 crearán las implementaciones iniciales del generador de lenguaje intermedio y se preparará el primer \emph{parser}, que se probará con los documentos de Adobe. Para la construcción de los analizadores léxico-sintácticos se desea un enfoque modular, que no es la fórmula directa con este tipo de herramientas. Construir la herramienta siguiendo esta aproximación llevará más tiempo que el habitual en el caso de escoger un planteamiento más sencillo.
 
 \subsection{Sprint 4}
 
-En este Sprint se añadió soporte para la generación de código intermedio y \emph{parsing} del modelo de Adobe y parte del de OVH. También tuvieron lugar las primeras reuniones de trabajo para explicar el proyecto y decidir las adaptaciones necesarias de cara al prototipo.
+En el Sprint 4 se añadirá soporte para la generación de código intermedio y \emph{parsing} del modelo de Adobe y parte del de OVH. Se reservarán algunas horas del Sprint para las reuniones de cara a prepara el prototipo web y cuales adaptaciones serán necesarias.
 
 \subsection{Sprint 5}
 
-Se completó el modelo de documento del proveedor OVH. Además se abordaron de forma paralela las tareas relacionadas con el prototipo web. Hubo varias reuniones para facilitar la implementación de aspectos que no habían sido considerados, como  la necesidad de generar imágenes de las páginas individuales de cada documento, cambio del formato de la marca de tiempo para mejorar la compatibilidad entre sistemas de ficheros y la dockerización de la aplicación.
+Se completará el modelo de documento del proveedor OVH. Además se abordarán de forma paralela las tareas relacionadas con el prototipo web. También en este Sprint se reservarán horas para las reuniones que sean necesarias con motivo del prototipo web. Con seguridad se necesitará tiempo para discutir cualquier aspecto técnico no considerado inicialmente.
 
 \subsection{Sprint 6}
 
-El Sprint 6 se dedicó a realizar el modelo de Prodware y a finalizar la integración con la aplicación web.
+El Sprint 6 se dedicará a realizar el modelo de Prodware y a finalizar la integración con la aplicación web.
 
 \subsection{Sprints 7 y 8}
 
-En estos dos Sprints se abordó la escritura inicial de la memoria, con la previsión de dejar tiempo al final del proyecto para completarla.
+En estos dos Sprints se abordará la escritura inicial de la memoria, con la previsión de dejar tiempo al final del proyecto para completarla.
 
 \subsection{Sprint 9}
 
@@ -110,26 +109,30 @@ Implementación del modelo de AC, basado en imagen.
 
 Implementación del modelo de AC, basado en imagen.
 
-\subsection{Sprints 11 al 15}
+\subsection{Sprints 11 al 13}
 
-Los últimos Sprints se dedicaron a completar la escritura de la memoria.
+Los últimos Sprints se dedicarán a completar la escritura de la memoria.
+
+\section{Análisis de riesgos}
+
+En esta sección se aborda el análisis de riesgos que el proyecto podría tener que asumir y acciones para mitigarlos, cuando sea posible.
+
+\begin{itemize}
+	\item Selección de alguna tecnología que cese de tener soporte en  forma de un equipo de desarrollo que realice mantenimiento y mejoras. Probablemente la tecnología más frágil en este sentido sea la formada por Flex y Bison. Especialmente el primero solo tienen un mantenedor en la actualidad. Deberían considerarse algunos de los analizadores alternativos como ANTLR \footnote{\url{https://www.antlr.org/}}. Si este cambio fuese necesario se necesitaría más tiempo para familiarizarse con la tecnología.
+	\item No se encuentra ninguna herramienta capaz de extraer las coordenadas de los elementos de un documento. Si no se dispusiese de los datos para poder emparejar las plantillas tampoco se podría avanzar con el proyecto tal como se plantea inicialmente. En ese caso se podría valorar incluir la generación de coordenadas como parte del proyecto.
+	\item Algún aspecto del desarrollo, o de la elaboración de la memoria, podría llevar más tiempo del considerado. Se debe reservar un margen temporal suficiente al final del proyecto para asumir desvíos, en lugar de planificar las tareas del proyecto hasta la fecha máxima de entrega.
+	\item La disponibilidad de horas para completar el trabajo está ligada al disfrute de una jornada laboral de 7 horas durante el verano. En caso no disfrutar de esta reducción horaria se podría pedir una excedencia para poder completar el trabajo en tiempo, o utilizar las vacaciones.
+	\item En caso de destrucción o robo de la máquina de desarrollo en algún momento del proyecto. Todo el trabajo realizado debe ser copiado a repositorios remotos, como Github. En el caso de ficheros que no necesiten versionado, se deberá realizar copias periodicas en el almacenamiento en la nube proporcionado por la universidad.
+	\item Enfermedad del alumno, y desarrollador principal, que impida avanzar el proyecto. Al ser un trabajo de carácter personal, no transferible a otra persona, no habría acción posible y supondría la cancelación si se consume todo el tiempo disponible.
+\end{itemize}
 
 \section{Planificación temporal final}
 
-La planificación final tuvo un desvío claro en la elaboración de la memoria, que finalmente llevó cuatro semanas más de las previstas (2 Sprints). Así mismo, para ir incorporando los sucesivos documentos fue necesario cierto retrabajo en la parte del generador de código intermedio, al tener que ampliar sus funcionalidades, manteniendo los resultados conseguidos hasta el momento. Las reuniones de integración sucedieron, aproximadamente, dentro del periodo esperado, antes de dar comienzo a la primera parte de la escritura de la memoria. El resultado final de la planificación se puede consultar en la Imagen \ref{fig:gantt-final}.
+La planificación final tuvo un desvío claro en la elaboración de la memoria, que finalmente llevó cuatro semanas más de las previstas (2 Sprints), haciendo un total de 560 horas. Así mismo, para ir incorporando los sucesivos documentos fue necesario cierto retrabajo en la parte del generador de código intermedio, al tener que ampliar sus funcionalidades, manteniendo los resultados conseguidos hasta el momento. Las reuniones de integración sucedieron, aproximadamente, dentro del periodo esperado, antes de dar comienzo a la primera parte de la escritura de la memoria. El resultado final de la planificación se puede consultar en la Imagen \ref{fig:gantt-final}.
 
 \begin{figure}[hp!]
 	\centering
 	\includegraphics[angle=0,width=1.0\textwidth]{imaxes/f-planificacion/gantt-final}
 	\caption{Diagrama de Gantt del final del proyecto}
 	\label{fig:gantt-final}
-\end{figure}
-
-Por último, en la imagen \ref{fig:tablero-github} se muestra parte del tablero de tareas creado en Github y que ha sido utilizado de referente para llevar el control de las tareas realizadas y pendientes durante la realización del proyecto.
-
-\begin{figure}[hp!]
-	\centering
-	\includegraphics[angle=90,width=0.70\textwidth]{imaxes/f-planificacion/tablero-planificacion}
-	\caption{Tablero en Github con las tareas del proyecto}
-	\label{fig:tablero-github}
 \end{figure}
