@@ -22,7 +22,7 @@ Tanto si se quieren tratar uno o varios documentos la unidad de trabajo es el lo
     
     \item Las dos últimas fases son la \textbf{validación de los resultados} y la \textbf{importación a terceros sistemas}. La validación tiene como objetivo detectar errores en los datos extraídos y notificar a los usuarios del sistema para el análisis y corrección de estos errores. Para la detección se emplean un conjunto de técnicas. La más sencilla consiste en detectar campos obligatorios que estén vacíos. Otra idea consiste en comprobar si se han aplicado correctamente los tipos de datos configurados a una celda o un par clave-valor. El campo se marcará para su revisión en caso de fallo. Esto se puede utilizar para las fechas o los importes, por ejemplo. Un caso más elaborado consiste en corregir o complementar la validación a partir de datos en bases de datos externas. Se puede utilizar para validar los datos de contacto de un cliente, razón social, dirección, teléfono; a partir de información parcial.
     
-    La importación a terceros sistemas consiste en la publicación de los resultados en las bases de datos, sistemas ERP o cualquier otro software donde los datos puedan ser explotados. El caso más sencillo generará ficheros estructurados a un directorio particular. Estas salidas pueden ser a distintos formatos estándar, por ejemplo, imágenes de ciertos elementos, \emph{\acrshort{csv}}, \emph{\acrshort{xml}} o \emph{\acrshort{json}}, para los documentos más complejos
+    La importación a terceros sistemas consiste en la publicación de los resultados en las bases de datos, sistemas ERP o cualquier otro software donde los datos puedan ser explotados. El caso más sencillo generará ficheros estructurados a un directorio particular. Estas salidas pueden ser a distintos formatos estándar, por ejemplo, imágenes de ciertos elementos, CSV, XML o JSON, para los documentos más complejos
 \end{itemize}
 
 \begin{figure}
@@ -49,8 +49,7 @@ Las dos soluciones con mayor número de características son FlexiCapture de Abb
 
 \subsection{Grooper}
 
-Grooper \cite{solucionesComerciales_bisok_grooper} (ver Imagen \ref{fig:grooper-bisok}) está hecho por Bisok y a priori parece seguir próxima en características a las dos anteriores. No obstante, durante la investigación para la elaboración de este Capítulo ha llamado la atención la mala organización de la información en la web oficial, donde no existe una página o documento lineal que explique las funcionalidades de la aplicación. Una característica publicitada consiste en el uso de técnicas de Procesamiento de Lenguajes Naturales para encontrar párrafos y frases en un documento o ser capaz de distinguir las cláusulas en un contrato, por ejemplo. También permite seleccionar el \emph{engine} de \emph{\acrlong{ocr}} utilizado, entre un abanico de opciones.
-
+Grooper \cite{solucionesComerciales_bisok_grooper} (ver Imagen \ref{fig:grooper-bisok}) está hecho por Bisok y a priori parece seguir próxima en características a las dos anteriores. No obstante, durante la investigación para la elaboración de este Capítulo ha llamado la atención la mala organización de la información en la web oficial, donde no existe una página o documento lineal que explique las funcionalidades de la aplicación. Una característica publicitada consiste en el uso de técnicas de Procesamiento de Lenguajes Naturales para encontrar párrafos y frases en un documento o ser capaz de distinguir las cláusulas en un contrato, por ejemplo. También permite seleccionar el \emph{engine} de \emph{Optical Character Recognition} utilizado, entre un abanico de opciones.
 
 \subsection{Capture de ChronoScan}
 
@@ -58,9 +57,10 @@ Capture de ChronoScan \cite{solucionesComerciales_chronoScanCapture_chronoScanDo
 
 \subsection{DocAcquire}
 
-DocAcquire \cite{solucionesComerciales_docAcquire_docAcquire} es una solución \emph{\acrlong{saas}} y no dispone de versión de escritorio. Se puede probar de forma gratuita acudiendo a la web oficial. Es la aplicación más simple de todas y, al menos en la versión de prueba, parece que las acciones están bastante limitadas ya que, por ejemplo, no permite eliminar los tipos de documentos una vez creados. Utiliza el \emph{engine} Tesseract para realizar el \acrshort{ocr}.
+DocAcquire \cite{solucionesComerciales_docAcquire_docAcquire} es una solución \emph{Software as a Service} y no dispone de versión de escritorio. Se puede probar de forma gratuita acudiendo a la web oficial. Es la aplicación más simple de todas y, al menos en la versión de prueba, parece que las acciones están bastante limitadas ya que, por ejemplo, no permite eliminar los tipos de documentos una vez creados. Utiliza el \emph{engine} Tesseract para realizar el OCR.
 
 \newpage
+
 Después de revisar todas estas alternativas uno de los elementos comunes es el procesado por lotes. En general se deja en manos de los usuarios definir cómo son los modelos de los documentos por medio de un editor que selecciona regiones fijas y les asigna una topología. Una propuesta comercial diferente la ofrecen nuevos servicios en la nube de Amazon y Google. Dado que hay cierta proximidad pero no aplicarían directamente como soluciones equivalentes a las de este proyecto, se presentan en la sección \ref{sec:textract-y-document-ai} del Apéndice.
 
 \begin{figure}
