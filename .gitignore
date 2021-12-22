@@ -1,0 +1,26 @@
+# Extensions
+*.acn
+*.aux
+*.blg
+*.bbl
+*.glo
+*.gz
+*.ist
+*.lof
+*.log
+*.lot
+*.out
+*.pdf
+*.pyg
+*.sty
+*.toc
+*.sav
+*.lol
+
+# Directories
+_minted-memoria_tfg
+memoria_tfg_html
+
+# Files
+psheader.txt
+*.synctex(busy)

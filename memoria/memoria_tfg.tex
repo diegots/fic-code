@@ -1,0 +1,145 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Preámbulo                                                                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt,a4paper,titlepage,twoside,openright,openbib]{report}
+
+%%% RELACIÓN DE VARIABLES A PERSONALIZAR %%%
+%\def\lingua{gal}
+\def\lingua{esp} % descomenta esta liña se redactarás a memoria en español
+%\def\lingua{eng} % descomenta esta liña se redactarás a memoria en inglés
+\def\nome{Diego Trabazo Sardón}                             % substitúe aquí o teu nome
+\def\nomedirectorA{José Carlos Dafonte Vázquez}             % substitúe aquí o nome de quen dirixe
+\def\titulo{Sistema para la extracción automática de información estructurada a partir de documentos con
+elementos de maquetación comunes} % substitúe aquí o título do teu TFG
+%\def\mencion{NOME DA MENCIÓN}                        % descomenta a mención correspondente
+\def\mencion{COMPUTACIÓN}
+%\def\mencion{ENXEÑARÍA DO SOFTWARE}
+%\def\mencion{ENXEÑARÍA DE COMPUTADORES}
+%\def\mencion{SISTEMAS DE INFORMACIÓN}
+%\def\mencion{TECNOLOXÍAS DA INFORMACIÓN}
+
+\def\renomearcadros{si} % descomenta esta liña se redactas a memoria en español e prefires que
+                         % os "cuadros" e o "índice de cuadros" se renomeen
+                         % a "tablas" e "índice de tablas" respectivamente
+
+\usepackage{estilo_tfg}
+
+% Cambia el tipo y tamaño de la fuente monoespaciada en todo el documento
+\setmonofont[Scale=MatchLowercase]{IBMPlexMono}
+
+% Lista de paquetes potencialmente interesantes (uso baixo demanda)
+
+% \usepackage{alltt}       % proporciona o entorno alltt, semellante a verbatim pero que respecta comandos
+% \usepackage{enumitem}    % permite personalizar os entornos de lista
+% \usepackage{eurofont}    % proporciona o comando \euro
+% \usepackage{float}       % permite máis opcións para controlar obxectos flotantes (táboas, figuras)
+% \usepackage{hhline}      % permie personalizar as liñas horizontais en arrays e táboas
+% \usepackage{longtable}   % permite construir táboas que ocupan máis dunha páxina
+% \usepackage{lscape}      % permite colocar partes do documento en orientación apaisada
+% \usepackage{moreverb}    % permite personalizar o entorno verbatim
+% \usepackage{multirow}    % permite crear celdas que ocupan varias filas da mesma táboa
+% \usepackage{pdfpages}    % permite insertar ficheiros en PDF no documento
+% \usepackage{rotating}    % permite diferentes tipos de rotacións para figuras e táboas
+% \usepackage{subcaption}  % permite a inclusión de varias subfiguras nunha figura
+% \usepackage{tabu}        % permite táboas flexibles
+% \usepackage{tabularx}    % permite táboas con columnas de anchura determinada
+\usepackage{xcolor}
+\usepackage{wrapfig}
+\usepackage{url}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    frame=none
+}
+
+\lstset{style=mystyle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Corpo                                                                        %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ % Preliminares do documento            %
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ \include{portada/portada}
+ \paxinaenbranco
+ \dedicatoria{A mi madre y a Laura, que me han acompañado en este viaje} % escribe neste comando o teu texto de dedicatoria
+ \paxinaenbranco
+ \paxinaenbranco
+ \begin{agradecementos}
+Quiero agradecer primero a mi director Carlos Dafonte la oportunidad y confianza depositadas para la realización de este proyecto. También a Pedro Lorenzo y Adolfo Pérez por la idea inicial y el apoyo en distintos momentos. Por último, a la Facultad de Informática y los profesores por todo lo recibido durante este periodo.
+ \end{agradecementos}
+ \paxinaenbranco
+ \include{portada/resumo}
+ \paxinaenbranco
+
+ \pagenumbering{roman}
+ \setcounter{page}{1}
+ \bstctlcite{IEEEexample:BSTcontrol}
+
+ \tableofcontents
+ \listoffigures
+ \listoftables
+ \lstlistoflistings
+ \cleardoublepage
+
+ \pagenumbering{arabic}
+ \setcounter{page}{1}
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ % Capítulos                            %
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ \include{contido/a-introduccion}
+ \include{contido/b-estado-arte}
+ \include{contido/c-bases-teoricas}
+ \include{contido/d-metodologia}
+ \include{contido/e-fundamentos-tecnologicos}
+ \include{contido/f-planificacion}
+ \include{contido/g-analisis}
+ \include{contido/h-implementacion}
+ \include{contido/i-conclusiones} 
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ % Apéndices, glosarios e bibliografía  %
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ \appendix
+ \appendixpage
+ \include{anexos/z-adicional-1}
+ \include{anexos/z-adicional-2}
+  
+ \printglossary[type=\acronymtype,title=\nomeglosarioacronimos]
+ \printglossary[title=\nomeglosariotermos]
+
+ \bibliographystyle{IEEEtranN}
+ \bibliography{\bibconfig,bibliografia/bibliografia}
+ \cleardoublepage
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

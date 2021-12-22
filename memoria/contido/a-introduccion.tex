@@ -1,0 +1,51 @@
+%%%%                 %%%%
+%%%% INTRODUCCIÓN    %%%%
+%%%%                 %%%%
+
+\chapter{Introducción}
+\label{chap:introduccion}
+
+\lettrine{A}{unque} las empresas realizan un esfuerzo por sumarse a la digitalización, sigue siendo habitual que no existan canales de comunicación estandarizados para el intercambio de información con clientes, proveedores o trabajadores \cite{moncloa_announcement_inversionGobierno}. El modelo tradicional se basa en la utilización de documentos en papel como base para dejar evidencia de las operaciones ocurridas. Suponiendo, por ejemplo, un escenario donde una empresa realiza una compra a un proveedor, para completar la entrega del producto, se utiliza un albarán que el transportista presenta en la empresa y se lleva firmado tras el depósito de la mercancía. El cliente se queda con una copia del documento y la operación finaliza o pasa a una siguiente fase, como puede ser el pago de la mercancía. ¿Pero, qué sucede luego con estos documentos? Deben ser archivados como prueba del intercambio y la información tiene que estar disponible en las aplicaciones empresariales de la organización para llevar el control de gastos, nivel del inventario, etc. Esta adquisición de información, al tener origen en un documento en papel, implica un tratamiento manual. En otras situaciones, el mismo documento puede ser un PDF generado de forma digital pero que, nuevamente, es tratado de forma manual como única vía.
+
+El personal de administración suele ser encargado de registrar toda la información pertinente de los procesos y esto implica varios inconvenientes para la empresa. En primer lugar, debido a los posibles errores tipográficos en que se puede incurrir durante la incorporación. No ayuda lo monótono de la tarea. Además, al tratarse de un proceso lento, la información no está inmediatamente disponible para su consulta, lo que tiene un claro impacto durante la toma de decisiones con conocimiento incompleto de las situaciones. El coste de este modelo crece con el número de documentos que han de ser procesados. Esto se deriva del hecho de que existe una cantidad máxima de trabajo que una persona puede hacer en una jornada laboral y la única manera de escalar el número de documentos tratados es aumentando el personal dedicado a estas tareas.
+
+El problema no se limita al intercambio de albaranes, facturas o formularios de los departamentos de Recursos Humanos. Existen todo tipo procesos que implican a un documento y donde además, este documento tiene un modelo fijo. Estos modelos tienen características comunes como celdas, tablas, casillas o pares de tipo clave-valor. La única variación entre dos ejemplares distintos estará en los datos pero no en su estructura. Esto abre la oportunidad de crear una solución capaz de procesar ejemplares de estos modelos de forma automática, siempre y cuando la solución tenga conocimiento de la distribución y tipo de información representada. 
+
+Mientras la integración de los procesos y la creación de nuevas soluciones completamente digitales \cite{elpais_news_utopiaOficinaSinPapel} no sea una realidad para organizaciones de todos los tamaños \cite{confidencial_news_transformacionOnline}, existirá necesidad de acceder a la información disponible en formato papel. En ese camino pueden existir soluciones que permitan mantener los procesos actuales y al mismo tiempo conseguir explotar el soporte existente y, así, minimizar los costes para la empresa. 
+
+\section{Motivación}
+
+Son varias las motivaciones para proponer este proyecto. El formato PDF es un rotundo éxito comercial y consecuencia de ello es la ubicuidad que presenta en todos los ámbitos de la sociedad. Pese a ello, es poco conocida la manera en que la información está almacenada en el formato o por qué no es posible extraer información estructurada directamente de él. En este sentido el proyecto permitirá ahondar y comprender mejor esta estructura en la que confiamos para que en un futuro sus contenidos permanezcan accesibles.
+
+Por otra parte, esta es una oportunidad para profundizar más en algunos de los conocimientos adquiridos en el transcurso de la carrera como son los Procesadores de Lenguajes o las técnicas de Visión por Computador.
+
+Por último, se espera lograr adquirir conocimientos necesarios para conseguir construir una solución que pueda llegar a madurar para convertirse en una propuesta comercial interesante, y que pueda aportar a la evolución de la manera en que las empresas adquieren información de sus procesos rutinarios. No hay que olvidar que ya existen propuestas comerciales que llevan tiempo ofertándose como soluciones en este ámbito. No obstante, una ventaja en este proyecto reside en los bajos costes de desarrollo e implantación, frente a esas otras soluciones.
+
+\section{Objetivos} 
+
+Presentado el problema, los objetivos concretos son varios. En este proyecto se propone afrontar la cuestión en tres fases separadas. De forma general, se comenzaría realizando la extracción del texto por medio de Reconocimiento Óptico de Caracteres o de forma directa si los PDF lo permiten. El siguiente paso implicará seleccionar la información relevante a partir de plantillas que delimiten las regiones de interés y tipo de información que contienen. Por último estandarizar la salida empleando para ello formatos estructurados como JSON o CSV. Para lograrlo, las Tecnologías de Procesamiento de Lenguajes ayudarán a modelar la información, filtrar los detalles innecesarios y generar la salida deseada.
+
+\begin{itemize}
+    \item A partir de un conjunto de documentos de trabajo se identificarán las regiones y tipo de información que contienen.
+    \item Del conocimiento de los documentos se generarán plantillas que especifiquen las partes relevantes.
+    \item Aunque se ha comentado de forma general como será el producto final, será necesario resolver ciertas incógnitas, por ejemplo, cómo obtener información de coordenadas para emparejar el contenido con las plantillas.
+    \item Se creará una herramienta \emph{backend} capaz de realizar un procesamiento por lotes automático.
+    \item Se tratarán los documentos disponibles para demostrar la herramienta. Se incluirán tipos de documentos basados en texto y en imagen.
+    \item Se acometerán las adaptaciones necesarias para facilitar la integración con la interfaz web.
+\end{itemize}
+
+\section{Estructura de la memoria}
+
+En esta sección se presenta la estructura del resto del documento.
+
+\begin{itemize}
+    \item \textbf{Introducción}. Es el capítulo actual. En él se presenta el problema que se va a tratar y las motivaciones para realizar este Trabajo Fin de Grado.
+    \item \textbf{Estado del arte}: el Capítulo \ref{chap:estado-arte} está dedicado a mostrar algunas de las soluciones comerciales existentes en el mismo ámbito de aplicación que este trabajo y entender cuál es su propuesta de valor.
+    \item \textbf{Bases teóricas}. En el Capítulo \ref{chap:bases-teoricas} se explica en que pilares teóricos se apoya la solución para lograr sus objetivos.
+    \item \textbf{Metodología}. El Capítulo \ref{chap:metodologia} expone la metodología escogida para completar el proyecto en tiempo y forma.
+    \item \textbf{Fundamentos tecnológicos}. El Capítulo \ref{chap:fundamentos-tecnologicos}, sobre los fundamentos tecnológicos, presenta cuales son las aplicaciones y librerías utilizadas en el desarrollo.
+    \item La \textbf{Planificación} se encuentra en el Capítulo \ref{chap:planificación}. Se explica tanto la propuesta inicial de planificación como los resultados finales. Una parte de este capítulo se dedica a relacionar la metodología con las fases individuales del proyecto. También tratarán los costes económicos asociados.
+    \item \textbf{Análisis}. El Capítulo \ref{chap:analisis}, dedicado al análisis, presenta casos de uso, requisitos y se presentan también los documentos tratados en el proyecto.
+    \item \textbf{Implementación}. En el capítulo dedicado a la implementación se exponen los detalles técnicos de la construcción del software.
+    \item \textbf{Conclusiones}. El último Capítulo presenta los objetivos conseguidos y las lecciones aprendidas durante la realización del trabajo.
+\end{itemize}
