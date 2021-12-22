@@ -1,0 +1,7 @@
+net-test/trunk/.gradle
+net-test/trunk/local.properties
+net-test/trunk/.DS_Store
+net-test/trunk/build
+net-test/trunk/trunk.iml
+net-test/trunk/.idea/
+net-test/trunk/app/app.iml
