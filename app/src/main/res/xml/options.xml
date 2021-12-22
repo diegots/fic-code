@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Storage">
+
+        <EditTextPreference
+            android:key="KEY_FN"
+            android:title="Storage file name"
+            android:defaultValue="myDataFile.txt"/>
+
+        <ListPreference
+            android:key="KEY_STORAGE_TYPE"
+            android:title="Storage type"
+            android:entryValues="@array/storageCode"
+            android:entries="@array/storage">
+        </ListPreference>
+    </PreferenceCategory>
+
+
+</PreferenceScreen>
