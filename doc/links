@@ -1,0 +1,23 @@
+# Links related to this assignment
+
+## Convolution
+https://es.wikipedia.org/wiki/Operador_Sobel
+https://en.wikipedia.org/wiki/Kernel_(image_processing)
+http://www.songho.ca/dsp/convolution/convolution2d_example.html
+
+## Integer Gaussian Filter
+http://www.crisluengo.net/index.php/archives/695
+http://www.maplesoft.com/support/help/Maple/view.aspx?path=applications/ImageProcessing
+http://dsp.stackexchange.com/questions/18390/discrete-approximation-to-gaussian-filter
+http://homepages.inf.ed.ac.uk/rbf/HIPR2/gsmooth.htm
+http://www.cs.cornell.edu/courses/cs6670/2011sp/lectures/lec02_filter.pdf
+https://en.wikipedia.org/wiki/Scale_space_implementation#The_discrete_Gaussian_kernel
+
+## Canny
+http://oefa.blogspot.com.es/2009/04/deteccion-de-bordes-algoritmo-de-canny.html
+http://isa.umh.es/doct/pava/DeteccionBordes.pdf
+https://sites.google.com/site/graficacion22012/ubaldino/algoritmo-de-canny
+
+## Non-maximum Suppression
+http://users.ecs.soton.ac.uk/msn/book/new_demo/nonmax/
+http://stackoverflow.com/questions/13659517/non-max-suppression
