@@ -1,0 +1,28 @@
+Gnome Human Interface Guidelines: https://developer.gnome.org/hig/stable/design-principles.html.es
+
+-Mantenga la complejidad de la interfaz de usuario al mínimo.
+-Utilice la revelación progresiva para mostrar los controles cuando son necesarios
+-Requiere el menor trabajo por parte del usuario como sea posible
+-Cree una jerarquía clara
+-De prioridad al contenido
+-Anticípese a los errores
+-Evitar interrupciones
+-Ofrecer una búsqueda rápida y efectiva
+-Utilice las opciones de configuración con moderación
+-Dele a su aplicación un nombre instructivo y un icono atractivo
+-Use de emoción y humor (con moderación)
+
+
+
+Interface características:
+-Requiere el menor trabajo por parte del usuario como sea posible: En nuestra anterior interface en vez de poner el nombre de la funcionalidad poniamos icono, pero este requeria un esfuerzo por parte del usuario a la hora de saber que funcionalidad hacia cada uno de los botones, aunque nosotros le mostrabamos una pequeña reseña al pasar por el boton, esto no es igual es por eso que ahora con el nombre no es suficiente.
+
+-Utilice la revelación progresiva para mostrar los controles cuando son necesarios: Para que el usuario se de cuenta que para subir un archivo a la red tiene que tener seleccionado uno, vamos a avisar al usuario que debe escoger al menos un item. 
+
+-Requiere el menor trabajo por parte del usuario como sea posible: El apartado anterior nos ayuda a evitar que el usuario realice mayor trabajo ya que si no selecciona luego le tendriamos que mostrar con un mensaje que seleccione el libro que desea subir a la red.
+
+-Ofrecer una búsqueda rápida y efectiva: Antes para realizar una busqueda se nos mostraba una ventana emergente para mostrar los criterios, pues esto ya lo hemos eliminado y dejado en la ventana principal, esto nos ayuda a realizar la búsqueda más rapida.
+
+-Dele a su aplicación un nombre instructivo y un icono atractivo: En el task 2 habiamos puesto un nombre a la aplicación, pero no un icono atractivo, por lo que le hemos añadido un icono.
+
+
