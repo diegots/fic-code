@@ -1,3 +1,5 @@
+# Reconocimiento del disco óptico en imágenes de la retina mediante técnicas de Visión Artificial con MATLAB
+
 El contenido de este repositorio se corresponde con la práctica de la 
 asignatura de Visión Artificial del curso 2017/2018. 
 
