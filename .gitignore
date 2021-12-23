@@ -1,0 +1,14 @@
+# IDE stuff
+.idea/workspace.xml
+.idea/usage.statistics.xml
+.idea/tasks.xml
+
+# Directories
+out/
+p1811002/input/
+META-INF
+
+# Extensions
+*.data
+*.swp
+*.swo
