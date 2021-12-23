@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Lab08.Trabazo</string>
+
+    <string name="but_send">Send</string>
+    <string name="but_cancel">Cancel</string>
+    <string name="action_settings">Settings</string>
+    <string name="tv_host">Host: </string>
+    <string name="tv_port">Port: </string>
+    <string name="tv_msg">Message: </string>
+    <string name="title_activity_socket_task">SocketTask</string>
+    <string name="tv_last_echo_line">Last line: </string>
+    <string name="echo_message">ECHO</string>
+    <string name="http_message">HTTP</string>
+    <string name="but_back">Bac</string>
+    <string name="but_forward">Fo</string>
+    <string name="but_clear">Clr</string>
+    <string name="but_reload">Re</string>
+    <string name="but_get">Get</string>
+    <string name="title_activity_post">PostActiv</string>
+    <string name="tv_user_name">User name: </string>
+    <string name="tv_passwd">Password: </string>
+    <string name="tv_ip">IP: </string>
+    <string name="action_post_activ">PostActiv</string>
+    <string name="title_activity_post_task">PostTask</string>
+    <string name="post_activ_but_send">POST</string>
+    <string name="post_activ_but_json">JSON</string>
+    <string name="post_activ_but_xml">XML</string>
+    <string name="title_activity_json_task">JsonTask</string>
+    <string name="action_server_activ">ServerActiv</string>
+    <string name="title_activity_xml_task">XmlTask</string>
+    <string name="title_activity_server">ServerActiv</string>
+    <string name="hello_world">hello_world</string>
+    <string name="server_activ_but_listen">Listen</string>
+    <string name="server_activ_but_close">Close</string>
+    <string name="server_activ_et_port_text">Port: </string>
+    <string name="server_activ_tv_ip_text">Server IP: </string>
+
+</resources>

@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".NetActiv">
+
+    <item
+        android:id="@+id/action_post_activ"
+        android:title="@string/action_post_activ"
+        android:orderInCategory="100"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_server_activ"
+        android:title="@string/action_server_activ"
+        android:orderInCategory="100"
+        app:showAsAction="always" />
+
+</menu>
