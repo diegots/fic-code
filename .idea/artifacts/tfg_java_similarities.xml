@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="tfg-java-similarities">
+    <output-path>$PROJECT_DIR$/out/artifacts/tfg_java_similarities</output-path>
+    <root id="archive" name="tfg-java-similarities.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="tfg-java-similarities" />
+      <element id="extracted-dir" path="$USER_HOME$/.m2/repository/org/mockito/mockito-core/2.2.7/mockito-core-2.2.7.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.m2/repository/net/bytebuddy/byte-buddy/1.4.33/byte-buddy-1.4.33.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.m2/repository/net/bytebuddy/byte-buddy-agent/1.4.33/byte-buddy-agent-1.4.33.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.m2/repository/org/objenesis/objenesis/2.4/objenesis-2.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.m2/repository/junit/junit/4.12/junit-4.12.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

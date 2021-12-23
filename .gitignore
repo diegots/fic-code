@@ -1,0 +1,7 @@
+.idea/dictionaries/*.xml
+.idea/workspace.xml
+*.csv
+TODO
+
+out/
+META-INF/
