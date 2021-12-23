@@ -1,0 +1,31 @@
+{% extends "dashboard/dashboard.html" %}
+
+{% block title %} {{ block.super }} :: clusters{% endblock %}
+
+{% block header_menu_list %}
+<ul class="navbar-nav mr-auto">
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'dashboard:index' %}">Home <span class="sr-only">(current)</span></a>
+    </li>
+    <li class="nav-item active">
+        <a class="nav-link" href="{% url 'dashboard:cluster-list' %}">Clusters</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'dashboard:recommend' %}">Recommendations</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'dashboard:result' %}">Results</a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block main_one %}
+<div class="col-sm-auto my-2">
+    <nav class="nav flex-column nav-pills">
+        {% block cluster_links %}{% endblock %}
+    </nav>
+</div>
+<div class="col-sm my-3">
+    {% block cluster_content %}{% endblock %}
+</div>
+{% endblock %}

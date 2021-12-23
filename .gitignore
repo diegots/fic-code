@@ -1,0 +1,14 @@
+# Extensions
+*.pyc
+*.sqlite3
+*.swp
+
+# Files
+.idea/workspace.xml
+
+# Directories
+.idea/dictionaries/
+.idea/codeStyles/
+env-tfg/
+dashboard/migrations/
+

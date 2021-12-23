@@ -1,0 +1,31 @@
+{% extends "dashboard/cluster.html" %}
+
+{% block cluster_links %}
+<a class="nav-link text-center" href="{% url 'dashboard:cluster-launch' %}">Launch</a>
+<a class="nav-link text-center" href="{% url 'dashboard:cluster-list' %}">List</a>
+<a class="nav-link text-center active" href="">Terminate</a>
+{% endblock %}
+
+{% block cluster_content %}
+{% if data|length <= 0 %}
+  There are no running clusters at the moment. Try <a href="{% url 'dashboard:cluster-launch' %}">launching one</a> first.
+
+{% else %}
+<form action="{% url 'dashboard:cluster-terminate-action' %}" method="post">
+  {% csrf_token %}
+
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <label class="input-group-text" for="cluster_id">Select a cluster Id</label>
+    </div>
+    <select class="custom-select" id="cluster_id" name="cluster_id">
+      {% for item in data %}
+      <option value="{{ item.cluster_id }}">{{ item.cluster_id }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-danger">Terminate this cluster now</button>
+</form>
+{% endif %}
+{% endblock %}

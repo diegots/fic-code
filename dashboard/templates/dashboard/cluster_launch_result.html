@@ -1,0 +1,14 @@
+{% extends "dashboard/cluster.html" %}
+
+{% block cluster_links %}
+<a class="nav-link text-center" href="{% url 'dashboard:cluster-launch' %}">Launch</a>
+<a class="nav-link text-center" href="{% url 'dashboard:cluster-list' %}">List</a>
+<a class="nav-link text-center" href="{% url 'dashboard:cluster-terminate' %}">Terminate</a>
+{% endblock %}
+
+{% block cluster_content %}
+<p>Launched cluster <b>{{ cluster_name }}</b> with <b>{{ cluster_number_nodes }}</b>
+    {% if cluster_number_nodes == 1 %}node{% else %}nodes{% endif %}
+    and id <b>{{ cluster_id }}</b>.</p>
+</p>
+{% endblock %}

@@ -1,0 +1,178 @@
+{% extends "dashboard/dashboard.html" %}
+
+{% block title %} {{ block.super }} :: recommendations{% endblock %}
+
+{% block header_menu_list %}
+<ul class="navbar-nav mr-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'dashboard:index' %}">Home <span class="sr-only">(current)</span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'dashboard:cluster-list' %}">Clusters</a>
+  </li>
+  <li class="nav-item active">
+    <a class="nav-link" href="{% url 'dashboard:recommend' %}">Recommendations</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'dashboard:result' %}">Results</a>
+  </li>
+</ul>
+{% endblock %}
+
+{% block main_one %}
+<div class="row">
+    <div class="col-md-12 ">
+    <h3>Tasks</h3>
+    <p>This page shows the tasks that can be performed to compute recommendations</p>
+  </div>
+  <div class="col-md-12">
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link" id="nav-active-users-tab" data-toggle="tab" href="#nav-active-users" role="tab" aria-controls="nav-contact" aria-selected="false">Active users</a>
+        <a class="nav-item nav-link active" id="nav-load-tab" data-toggle="tab" href="#nav-load" role="tab" aria-controls="nav-home" aria-selected="true">HDFS</a>
+        <a class="nav-item nav-link" id="nav-unique-items-tab" data-toggle="tab" href="#nav-unique-items" role="tab" aria-controls="nav-profile" aria-selected="false">Unique items</a>
+        <a class="nav-item nav-link" id="nav-shards-tab" data-toggle="tab" href="#nav-shards" role="tab" aria-controls="nav-contact" aria-selected="false">Generate shards</a>
+        <a class="nav-item nav-link" id="nav-similarity-tab" data-toggle="tab" href="#nav-similarity" role="tab" aria-controls="nav-contact" aria-selected="false">Neighborhood similarity</a>
+        <a class="nav-item nav-link" id="nav-recommend-tab" data-toggle="tab" href="#nav-recommend" role="tab" aria-controls="nav-contact" aria-selected="false">Recommend</a>
+      </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+
+      <!-- Load data tab content -->
+      <div class="tab-pane fade show active" id="nav-load" role="tabpanel" aria-labelledby="nav-load-tab">
+        <p>Choose both a dataset size and an active cluster to load data from S3 to HDFS.</p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <!-- if the user clicks on the text within the <label> element, it toggles the control
+                     https://www.w3schools.com/tags/tag_label.asp -->
+                <label for="load-dataset-size">Movielens dataset size</label>
+                <select class="form-control" id="load-dataset-size" name="load-dataset-size">
+                  <option>100K</option>
+                  <option>1M</option>
+                  <option>10M</option>
+                  <option>20M</option>
+                </select>
+                <label for="load-cluster-id">Active cluster Id</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="load-cluster-id"
+                        name="load-cluster-id"
+                        placeholder="Starts with j-"
+                        required>
+            </div>
+            <button
+                    type="submit"
+                    class="btn btn-primary"
+                    formaction="{% url 'dashboard:recommend-load-action' %}">Load
+            </button>
+        </form>
+      </div>
+
+      <!-- Unique items content -->
+      <div class="tab-pane fade" id="nav-unique-items" role="tabpanel" aria-labelledby="nav-unique-items-tab">
+        <p>Launch a Hadoop job to compute both the list of unique items and the max item Id. A dataset size and cluster Id is needed.</p>
+        <form method="post">
+        {% csrf_token %}
+          <div class="form-group">
+            <label for="unique-items-dataset-size">Movielens dataset size</label>
+            <select class="form-control" id="unique-items-dataset-size" name="unique-items-dataset-size">
+              <option>100K</option>
+              <option>1M</option>
+              <option>10M</option>
+              <option>20M</option>
+            </select>
+            <label for="unique-items-cluster-id">Cluster Id</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="unique-items-cluster-id"
+                    name="unique-items-cluster-id"
+                    placeholder="Starts with j-" required>
+          </div>
+          <button
+                  type="submit"
+                  class="btn btn-primary"
+                  formaction="{% url 'dashboard:recommend-unique-items-action' %}">Compute unique items</button>
+        </form>
+      </div>
+
+      <!-- Active users content -->
+      <div class="tab-pane fade" id="nav-active-users" role="tabpanel" aria-labelledby="nav-active-users-tab">
+        <p>Generate a list of active users, then upload it to HDFS for further processing.</p>
+        <form method="post">
+        {% csrf_token %}
+          <div class="form-group">
+            <label for="active-users-dataset-size">Movielens dataset size</label>
+            <select class="form-control" id="active-users-dataset-size" name="active-users-dataset-size">
+              <option>100K</option>
+              <option>1M</option>
+              <option>10M</option>
+              <option>20M</option>
+            </select>
+            <input type="hidden"
+                   id="active-users-output-file"
+                   name="active-users-output-file"
+                   value="active-users.csv">
+            <label for="active-users-n-active-users">Number of active users</label>
+            <input type="number"
+                   class="form-control"
+                   id="active-users-n-active-users"
+                   name="active-users-n-active-users"
+                   placeholder="15" required>
+            <label for="active-users-seed">Seed for the random generator</label>
+            <input type="number"
+                   class="form-control"
+                   id="active-users-seed"
+                   name="active-users-seed"
+                   placeholder="0" required>
+          </div>
+          <button
+                  type="submit"
+                  class="btn btn-primary"
+                  formaction="{% url 'dashboard:recommend-generate-active-users' %}">Generate active users</button>
+        </form>
+      </div>
+
+      <!-- Shards content -->
+      <div class="tab-pane fade" id="nav-shards" role="tabpanel" aria-labelledby="nav-shards-tab">
+        Generate shards
+      </div>
+
+      <!-- Compute similarities content -->
+      <div class="tab-pane fade" id="nav-similarity" role="tabpanel" aria-labelledby="nav-similarity-tab">
+        Compute neighborhood similarities
+      </div>
+
+      <!-- Compute recommendations content -->
+      <div class="tab-pane fade" id="nav-recommend" role="tabpanel" aria-labelledby="nav-recommend-tab">
+        <p>Launch a Hadoop job to compute recommendations</p>
+        <form method="post">
+        {% csrf_token %}
+          <div class="form-group">
+            <label for="recommend-cluster-id">Cluster Id</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="recommend-cluster-id"
+                    name="recommend-cluster-id"
+                    placeholder="Starts with j-" required>
+            <label for="recommend-no-of-shards">Number of shards</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="recommend-no-of-shards"
+                    name="recommend-no-of-shards"
+                    placeholder="1" required>
+          </div>
+          <button
+                  type="submit"
+                  class="btn btn-primary"
+                  formaction="{% url 'dashboard:recommend-compute-action' %}">Compute unique items</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

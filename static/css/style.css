@@ -1,0 +1,119 @@
+/*
+ * Global elements
+ */
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+    margin: 0;
+    padding: 0
+}
+
+ul {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* Estructure:
+ wrapper
+    top
+        header
+        menu
+    main
+        column
+            left
+            content
+    footer
+ */
+
+/* Top elements */
+.header {
+    font-size: 30px;
+}
+
+.menu {
+    background:#696B6F; /* background2 */
+}
+
+.separator {
+    background:#696B6F; /* background2 */
+    padding-top: 10px;
+}
+
+.main::after {
+    content: "";
+    clear: both;
+    width: 100%;
+}
+
+.column {
+    display: table;
+}
+
+.separator2 {
+    background:#e5e7e7; /* background1 */
+    display: table-cell;
+    width: 2%;
+}
+
+.left {
+    background:#e5e7e7; /* background1 */
+    width: 10%;
+    display: table-cell;
+}
+
+.content {
+    width: 86%;
+    display: table-cell;
+}
+
+
+/* Top menu */
+.menu a {
+    color:white; /* foreground2 */
+    font-size: 18px;
+    display:inline-block;
+    padding-left:12px;
+    padding-right:12px;
+}
+
+.menu a:hover {
+    background:black; /* hoover-background */
+    color:white; /* hoover-foreground */
+}
+
+.menu a:hover[style] {
+    background:black !important; /* hoover-background */
+    color:white !important; /* hoover-foreground */
+}
+
+/* */
+.column ul {
+    display: table;
+}
+
+/* */
+.left a {
+    color:black; /* foreground1 */
+    width: 100%;
+    text-align: center;
+}
+
+.left li {
+    padding-left:8px;
+    padding-right:8px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    text-align: center;
+}
+
+.left li:hover {
+    background:#c1c3c4; /* hoover2-background */
+    color:white; /* hoover2-foreground */
+}
+
+

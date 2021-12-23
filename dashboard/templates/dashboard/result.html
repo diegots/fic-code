@@ -1,0 +1,24 @@
+{% extends "dashboard/dashboard.html" %}
+
+{% block title %} {{ block.super }} :: results{% endblock %}
+
+{% block header_menu_list %}
+<ul class="navbar-nav mr-auto">
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'dashboard:index' %}">Home <span class="sr-only">(current)</span></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'dashboard:cluster-list' %}">Clusters</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'dashboard:recommend' %}">Recommendations</a>
+    </li>
+    <li class="nav-item active">
+        <a class="nav-link" href="{% url 'dashboard:result' %}">Results</a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block main_one %}
+<p>Results page</p>
+{% endblock %}

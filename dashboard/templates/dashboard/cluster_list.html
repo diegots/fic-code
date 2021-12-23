@@ -1,0 +1,46 @@
+{% extends "dashboard/cluster.html" %}
+
+{% block cluster_links %}
+<a class="nav-link text-center" href="{% url 'dashboard:cluster-launch' %}">Launch</a>
+<a class="nav-link text-center active" href="">List</a>
+<a class="nav-link text-center" href="{% url 'dashboard:cluster-terminate' %}">Terminate</a>
+{% endblock %}
+
+{% block cluster_content %}
+
+{% if data|length > 0 %}
+  <h3>Cluster List</h3>
+  <p>History of requested clusters:</p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Id</th>
+        <th scope="col">Name</th>
+        <th scope="col">Number of nodes</th>
+        <th scope="col">Master DNS</th>
+        <th scope="col">State</th>
+        <th scope="col">Ready date time</th>
+        <th scope="col">End date time</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in data %}
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ item.cluster_id }}</td>
+        <td>{{ item.cluster_name }}</td>
+        <td>{{ item.cluster_number_nodes }}</td>
+        <td>{{ item.cluster_master_public_dns_name }}</td>
+        <td>{{ item.cluster_state }}</td>
+        <td>{{ item.cluster_ready_date_time }}</td>
+        <td>{{ item.cluster_end_date_time }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>No active clusters at the moment. Try <a href="{% url 'dashboard:cluster-launch' %}">launching</a> one.</p>
+{% endif %}
+
+{% endblock %}
