@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>	
+        <meta charset="utf-8">
+        <title>Title</title>
+    </head>	
+    <body>
+        <script>
+            function f0 () {
+                document.write("f0 function");
+
+                function f1 () {
+                    document.write("<br>f1 function");
+
+                    function f2 () {
+                        document.write("<br>f2 function");
+                    }
+
+                    f2();
+                }
+
+                f1();
+
+            }
+            f0();
+        </script>
+    </body>
+</html>

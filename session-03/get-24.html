@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>	
+        <meta charset="utf-8">
+        <title>Get 24 problem</title>
+    </head>	
+    <body>
+        <script>
+            /* **************************************************************   
+               *************** Generate alphabet ****************************
+             * ************************************************************** */
+
+            /* Recursive version
+             * recursive_alg and helper constructs the set of values using recursion
+             */
+
+            function decimal_to_b6 (decinal_number) {
+                var result = "";
+
+                while (decinal_number >= 1) {
+                    result = decinal_number % 6 + result;
+                    decinal_number = Math.floor(decinal_number / 6); 
+                }
+
+                return result;
+            }
+
+            function helper (element, index, ar) {
+                for (var i=0; i<this.length; i++) {
+                    ar.push(element + this[i]);
+                    ar[index] = "";
+                }
+            }
+
+            function recursive_alg (l, input, syms) {
+                if (l>0) {
+                    var _l = input.length;
+                    input.forEach(helper, syms);
+                    input.splice(0, _l);
+
+                    return recursive_alg(l-1, input, syms);
+
+                } else { return input; }
+            }
+            /* End of the recursive version */
+
+            /* Easier solution using base 6 numbering */
+            function base_6_alg (l, input, syms) {
+                    var n_elemts = Math.pow (syms.length, l); // Number of elements in the language.
+                    var n_syms = syms.length;
+                    input = new Array(n_elemts); 
+                    var j;
+
+                    for (var i=0; i<n_elemts; i++) {
+                         /* Builds string of length l on the array to store language words */
+
+                        // Two options. Convert to base 6 with toString() method
+                        // or decimal_to_b6() function.
+                        //input[i] = i.toString(6);
+                        input[i] = decimal_to_b6(i);
+
+                        while(input[i].length < l) {
+                            input[i] = "0" + input[i];
+                        }
+
+                        /* Generate language words from the initialized base syms.length values */
+                        var tmp = new Array (l); 
+                        for (j=0; j<input[i].length; j++) {
+                            tmp[j] = syms[input[i][j]];
+                        }
+                        input[i] = tmp.join("");
+                    }
+                     
+                    return input;
+            }
+
+            /* Main function that builds the alphabet set */
+            function generate_language_set (l, syms) {
+                var a = [];
+                for (var i=0; i<syms.length; i++) {
+                    a.push(syms[i]);
+                }
+
+                /* Choose either an recursive algorithm or one based on numbering
+                 * system properties: */
+                // return recursive_alg (l-1, a, syms);
+                return base_6_alg (l, (a = []), syms);
+            }   
+
+            /* **************************************************************   
+               *************** Evaluate alphabet ****************************
+             * ************************************************************** */
+
+            function eval_helper_operate(v0, v1, oper) {
+                if (oper == "+") return v0 + v1;
+                else if (oper == "-") return v0 - v1;
+                else if (oper == "*") return v0 * v1; 
+                else if (oper == "/") return v0 / v1;
+            }
+
+            /* Evaluate alphabet */
+            function evaluate_language_set (alphabet) {
+                var counter_3s=0, counter_8s=0;
+                var stack = [];
+                var character = 0;
+                var solution = "";
+                var i=0, j=0;
+                var v0=0, v1=0, v=0;
+                const WORD_LENGTH = alphabet[0].length;
+
+                for (i=0; i<alphabet.length; i++) {
+                    // Rules
+                    if ( stack.length == 1 
+                    && Math.round(stack) == 24
+                    && counter_3s == 2
+                    && counter_8s == 2 ) {
+
+                        const delta = 0.00000001;
+                        if ((stack) >= 24) {
+                            if ((stack - 24) < delta)
+                                return solution;
+                        } else if ((24 - stack) < delta ) 
+                            return solution;
+                    }
+
+                    solution = ""; // Clean all variables
+                    counter_3s = 0;
+                    counter_8s = 0;
+                    stack = [];
+                    v0 = 0; 
+                    v1 = 0;
+
+                    //console.log("word: " + alphabet[i]);
+                    for (j=0; j<WORD_LENGTH; j++) {
+                        solution += alphabet[i][j];
+                        character = alphabet[i][j] * 1;
+
+                        if (character !== character) { // Checks if character is NaN, so it's an operand
+                            //console.log("operate value: " + alphabet[i][j]);
+                            v0 = stack.pop();
+                            v1 = stack.pop();
+
+                            if (v0 != undefined && v1 != undefined) { // stack has at least two elements
+                                v = eval_helper_operate (v0, v1, alphabet[i][j]);
+                                if (v !== v){ // Don't put NaN into stack
+                                    //console.log("Nan");
+                                    break;
+                                } else stack.push(v); 
+
+                            } else {
+                                //console.log("Some undefined"); 
+                                break; // Not valid word
+                            }
+                            
+
+                        } else { // character is a number
+                            if (character == 3) counter_3s++;
+                            else counter_8s++;
+
+                            stack.push(character);
+                            //console.log("pushing char: " + character);
+                        }
+
+                        //console.log("stack: " + stack);
+                    }
+                }
+                return "";
+            }
+
+            /* **************************************************************   
+               *************** Set parameters and solve problem *************
+             * ************************************************************** */
+
+            /* Obtain any set of words of any length. Just define the desired 
+             * alphabet and the words length below. */
+            var alphabet = ["3", "8", "+", "-", "*", "/"];
+            var words_length = 7;
+
+            /* Not strictly necessary but machine time is retrieved to calculate
+             * how it takes to calculate the set of numbers */
+            var d0 = Date.now();
+            var language = generate_language_set (words_length, alphabet);
+            var d1 = Date.now();
+
+            var d2 = Date.now();
+            var solution = evaluate_language_set(language);
+            var d3 = Date.now();
+
+            /* Outputs time to console */
+            console.log("To generate " + language.length + " elements took " + (d1 - d0) + " miliseconds.");
+            console.log("First element is: " + language[0] + ", last one: " + language[language.length-1]);
+            console.log("Solution found in " + (d3-d2) + " miliseconds.");
+            console.log("Solution: " + solution);
+            
+        </script>
+    </body>
+</html>
