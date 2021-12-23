@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin">
+
+            <LinearLayout
+                android:id="@+id/linearLayoutNameLocality"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="false"
+                android:layout_centerHorizontal="true"
+                android:orientation="horizontal">
+
+                <!-- Locality name-->
+
+                <TextView
+                    android:id="@+id/place_name"
+                    style="?android:attr/textAppearanceLarge"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:padding="5dp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="5dp"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@android:color/background_dark"
+                    android:textIsSelectable="true"
+                    android:textSize="32sp"
+                    android:textStyle="normal|bold"
+                    tools:context=".PlacesFragment" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/linearLayoutMunicipalityLocality"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linearLayoutNameLocality"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/place_municipality_tag"
+                    style="?android:attr/textAppearanceSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="@string/place_municipality_tag"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textIsSelectable="true"
+                    tools:context=".PlacesFragment" />
+
+                <TextView
+                    android:id="@+id/place_municipality"
+                    style="?android:attr/textAppearanceSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textIsSelectable="true"
+
+                    tools:context=".PlacesFragment" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/linearLayoutProvinceLocality"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linearLayoutMunicipalityLocality"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/place_province_tag"
+                    style="?android:attr/textAppearanceSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="@string/place_province_tag"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textIsSelectable="true"
+                    tools:context=".PlacesFragment" />
+
+                <TextView
+                    android:id="@+id/place_province"
+                    style="?android:attr/textAppearanceSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textIsSelectable="true"
+
+                    tools:context=".PlacesFragment" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutLocality"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linearLayoutProvinceLocality"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/place_type_tag"
+                    style="?android:attr/textAppearanceSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="@string/place_type_tag"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textIsSelectable="true"
+                    tools:context=".PlacesFragment" />
+
+                <TextView
+                    android:id="@+id/place_type"
+                    style="?android:attr/textAppearanceSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textIsSelectable="true"
+                    tools:context=".PlacesFragment" />
+            </LinearLayout>
+
+            <!-- Temperatura actual-->
+            <!-- Here the current weather data -->
+
+            <RelativeLayout
+                android:id="@+id/tempLyt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linearLayoutLocality"
+                android:layout_centerHorizontal="true">
+
+                <TextView
+                    android:id="@+id/place_temperature"
+                    style="?android:attr/textAppearanceLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentTop="true"
+                    android:textAlignment="center"
+                    android:textSize="80sp"
+                    android:textStyle="bold|italic" />
+                <!-- -->
+
+                <TextView
+                    android:id="@+id/lineTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="3dp"
+                    android:layout_alignLeft="@+id/place_temperature"
+                    android:layout_alignRight="@+id/place_temperature"
+                    android:layout_below="@+id/place_temperature"
+                    android:layout_marginTop="0dp"
+                    android:visibility="visible" />
+
+
+                <!-- imagen del tiempo actual-->
+                <ImageView
+                    android:id="@+id/img_place_temperature"
+                    android:layout_width="68dp"
+                    android:layout_height="68dp"
+                    android:layout_alignTop="@+id/place_temperature"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/place_temperature"
+                    android:contentDescription="@string/place_temperature_tag" />
+
+                <!-- Unidad del tiempo-->
+                <TextView
+                    android:id="@+id/tempUnit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/img_place_temperature"
+                    android:layout_alignStart="@+id/img_place_temperature"
+                    android:layout_below="@+id/lineTxt"
+                    android:text=""
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#2b4bca"
+                    android:textStyle="bold" />
+                <!-- -->
+
+                <TextView
+
+                    android:id="@+id/sky_state"
+                    style="?android:attr/textAppearanceMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@id/tempUnit"
+                    android:layout_below="@id/img_place_temperature"
+                    android:layout_toRightOf="@+id/place_temperature" />
+            </RelativeLayout>
+
+            <!-- Here the current weather data -->
+            <!-- Wind data -->
+            <ImageView
+                android:id="@+id/place_wind_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_below="@id/tempLyt"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/place_wind_tag"
+                android:src="@mipmap/wind" />
+
+            <TextView
+                android:id="@+id/place_wind_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/place_wind_icon"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="12dp"
+                android:layout_toRightOf="@+id/place_wind_icon"
+                android:text="@string/place_wind_tag" />
+
+            <TextView
+                android:id="@+id/place_wind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/place_wind_tag"
+                android:layout_toLeftOf="@+id/place_cloud_area_fraction"
+                android:layout_toRightOf="@+id/place_wind_tag"
+                android:paddingLeft="1dp"
+                android:textStyle="bold" />
+            <!-- End wind Data -->
+
+
+            <!-- Wind_directio data -->
+            <ImageView
+                android:id="@+id/place_wind_direction_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_below="@id/place_wind_icon"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/place_wind_direction_tag"
+                android:src="@mipmap/wind_direction" />
+
+
+            <TextView
+                android:id="@+id/place_wind_direction_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/place_wind_direction_icon"
+                android:layout_toEndOf="@+id/place_wind_direction_icon"
+                android:layout_toRightOf="@+id/place_wind_direction_icon"
+                android:text="@string/place_wind_direction_tag" />
+
+            <TextView
+                android:id="@+id/place_wind_direction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="1dp"
+                android:textStyle="bold"
+                android:layout_alignBottom="@+id/place_wind_direction_tag"
+                android:layout_alignTop="@+id/place_wind_direction_tag"
+                android:layout_toRightOf="@+id/place_wind_direction_tag"/>
+            <!-- End wind Data -->
+
+            <!-- precipitation data -->
+            <ImageView
+                android:id="@+id/place_precipitation_amount_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_below="@+id/place_wind_direction_icon"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/place_precipitation_amount_tag"
+                android:src="@mipmap/precipitation" />
+
+            <TextView
+                android:id="@+id/place_precipitation_amount_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/place_precipitation_amount_icon"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="12dp"
+                android:layout_toRightOf="@+id/place_precipitation_amount_icon"
+                android:text="@string/place_precipitation_amount_tag" />
+
+
+            <TextView
+                android:id="@+id/place_precipitation_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:padding="1dp"
+                android:layout_alignTop="@+id/place_precipitation_amount_tag"
+                android:layout_alignLeft="@+id/place_wind_direction"
+                android:layout_alignStart="@+id/place_wind_direction" />
+            <!-- End precipation Data -->
+
+
+            <!-- humidity data -->
+            <ImageView
+                android:id="@+id/place_relative_humidity_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_below="@+id/place_precipitation_amount_icon"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/place_relative_humidity_tag"
+                android:src="@mipmap/humidity" />
+
+            <TextView
+                android:id="@+id/place_relative_humidity_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/place_relative_humidity_icon"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="12dp"
+                android:layout_toRightOf="@+id/place_relative_humidity_icon"
+                android:text="@string/place_relative_humidity_tag" />
+
+            <TextView
+                android:id="@+id/place_relative_humidity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="1dp"
+                android:textStyle="bold"
+                android:layout_alignTop="@+id/place_relative_humidity_tag"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentRight="false"
+                android:layout_alignWithParentIfMissing="false"
+                android:layout_toRightOf="@+id/place_relative_humidity_tag" />
+            <!-- End humidity Data -->
+
+
+            <!-- place_cloud_area_fraction data -->
+            <ImageView
+                android:id="@+id/place_cloud_area_fraction_Icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_below="@+id/place_relative_humidity_icon"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/place_cloud_area_fraction_tag"
+                android:src="@mipmap/cloud_area" />
+
+            <TextView
+                android:id="@+id/place_cloud_area_fraction_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/place_cloud_area_fraction_Icon"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="12dp"
+                android:layout_toRightOf="@+id/place_cloud_area_fraction_Icon"
+                android:text="@string/place_cloud_area_fraction_tag" />
+
+
+            <TextView
+                android:id="@+id/place_cloud_area_fraction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="1dp"
+                android:textStyle="bold"
+                android:layout_alignTop="@+id/place_cloud_area_fraction_tag"
+                android:layout_toRightOf="@+id/sea_significative_wave_height"
+                android:layout_toEndOf="@+id/sea_significative_wave_height" />
+            <!-- End place_cloud_area_fraction Data -->
+
+
+            <!-- snow_level data -->
+            <ImageView
+                android:id="@+id/place_snow_level_Icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_below="@+id/place_cloud_area_fraction_Icon"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/place_snow_level_tag"
+                android:src="@mipmap/snow_level" />
+
+            <TextView
+                android:id="@+id/place_snow_level_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/place_snow_level_Icon"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="12dp"
+                android:layout_toRightOf="@+id/place_snow_level_Icon"
+                android:text="@string/place_snow_level_tag" />
+
+
+            <TextView
+                android:id="@+id/place_snow_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/place_snow_level_tag"
+                android:layout_centerHorizontal="true"
+                android:layout_toRightOf="@+id/place_snow_level_tag"
+                android:paddingLeft="5dp"
+                android:textStyle="bold" />
+            <!-- End snow_level Data -->
+
+            <!-- SEA DATA -->
+            <!-- sea_water_temperature data -->
+            <ImageView
+                android:id="@+id/sea_water_temperature_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_below="@+id/place_snow_level_Icon"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/sea_sea_water_temperature_tag"
+                android:src="@mipmap/water_temperature"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/sea_water_temperature_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/sea_water_temperature_icon"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="12dp"
+                android:layout_toRightOf="@+id/sea_water_temperature_icon"
+                android:text="@string/sea_sea_water_temperature_tag"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/sea_water_temperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/sea_water_temperature_tag"
+                android:layout_centerHorizontal="true"
+                android:layout_toRightOf="@+id/sea_water_temperature_tag"
+                android:paddingLeft="5dp"
+                android:text="value"
+                android:textStyle="bold"
+                android:visibility="invisible" />
+            <!-- End place_cloud_area_fraction Data -->
+
+            <!-- wave_height data -->
+            <ImageView
+                android:id="@+id/sea_significative_wave_height_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_below="@+id/sea_water_temperature_icon"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/place_snow_level_tag"
+                android:src="@mipmap/wave_height"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/sea_significative_wave_height_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/sea_significative_wave_height_icon"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="12dp"
+                android:layout_toRightOf="@+id/sea_significative_wave_height_icon"
+                android:text="@string/sea_significative_wave_height_tag"
+                android:visibility="invisible" />
+
+
+            <TextView
+                android:id="@+id/sea_significative_wave_height"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="2dp"
+                android:text=" value"
+                android:textStyle="bold"
+                android:layout_alignTop="@+id/sea_significative_wave_height_tag"
+                android:layout_toRightOf="@+id/sea_significative_wave_height_tag"
+                android:layout_toEndOf="@+id/sea_significative_wave_height_tag"
+                android:visibility="invisible" />
+            <!-- End sea_significative_wave_height Data -->
+
+
+            <!-- mean_wave_directio data -->
+            <ImageView
+                android:id="@+id/sea_mean_wave_direction_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_below="@id/sea_significative_wave_height_icon"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/sea_mean_wave_direction_tag"
+                android:src="@mipmap/wave_direction"
+                android:visibility="invisible" />
+
+
+            <TextView
+                android:id="@+id/sea_mean_wave_direction_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/sea_mean_wave_direction_icon"
+                android:layout_toEndOf="@+id/sea_mean_wave_direction_icon"
+                android:layout_toRightOf="@+id/sea_mean_wave_direction_icon"
+                android:text="@string/sea_mean_wave_direction_tag"
+                android:visibility="invisible" />
+
+            <!-- End wave_direction Data -->
+
+
+            <!-- sea_water_salinity data -->
+
+            <TextView
+                android:id="@+id/sea_water_salinity_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sea_sea_water_salinity_tag"
+                android:paddingLeft="5dp"
+                android:paddingTop="15dp"
+                android:layout_below="@+id/sea_mean_wave_direction_icon"
+                android:layout_toLeftOf="@+id/sea_mean_wave_direction"
+                android:layout_toStartOf="@+id/sea_sea_water_salinity_tag"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/sea_water_salinity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="value"
+                android:textStyle="bold"
+                android:layout_alignParentBottom="true"
+                android:layout_alignRight="@+id/place_precipitation_amount"
+                android:layout_alignStart="@+id/place_precipitation_amount"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/sea_mean_wave_direction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:text="asdasdsa"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                android:layout_above="@+id/sea_water_salinity_tag"
+                android:layout_alignLeft="@+id/sea_water_salinity"
+                android:layout_alignStart="@+id/sea_water_salinity"
+                android:visibility="invisible" />
+            <!-- end data-->
+
+        </RelativeLayout>
+    </ScrollView>
+</FrameLayout>
+
+

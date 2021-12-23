@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="locality">
+        <item>Vigo</item>
+        <item>A Coruña</item>
+        <item>Ourense</item>
+        <item>Lugo</item>
+        <item>Santiago de Compostela</item>
+        <item>Pontevedra</item>
+        <item>Ferrol</item>
+        <item>Narón</item>
+        <item>Vilagarcía de Arousa</item>
+        <item>Oleiros</item>
+        <item>Carballo</item>
+        <item>Arteixo</item>
+        <item>Ames</item>
+        <item>Redondela</item>
+        <item>Culleredo</item>
+        <item>Ribeira</item>
+        <item>Cangas</item>
+        <item>Marín</item>
+        <item>Cambre</item>
+        <item>Estrada</item>
+        <item>Lalín</item>
+        <item>Moaña</item>
+        <item>Monforte de Lemos</item>
+        <item>Boiro</item>
+        <item>Porriño</item>
+        <item>Teo</item>
+        <item>Sanxenxo</item>
+        <item>Tui</item>
+        <item>Poio</item>
+        <item>Viveiro</item>
+        <item>Mos</item>
+        <item>Sada</item>
+        <item>Vilalba</item>
+        <item>Verín</item>
+        <item>Noia</item>
+        <item>Carballiño</item>
+        <item>Gondomar</item>
+        <item>Barco de Valdeorras</item>
+        <item>Tomiño</item>
+        <item>Sarria</item>
+        <item>Fene</item>
+        <item>Cambados</item>
+        <item>Betanzos</item>
+        <item>Ordes</item>
+        <item>Bueu</item>
+        <item>Baiona</item>
+        <item>Rianxo</item>
+        <item>Laracha</item>
+    </string-array>
+
+
+</resources>
