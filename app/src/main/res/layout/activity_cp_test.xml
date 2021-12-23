@@ -1,0 +1,47 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="es.udc.psi14.lab07trabazo.cpTestActivity">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TableRow>
+            <Button
+                android:id="@+id/cp_but_search"
+                android:layout_width="wrap_content"
+                android:text="Search"/>
+            <EditText
+                android:id="@+id/cp_et_word"
+                android:layout_width="match_parent"/>
+        </TableRow>
+
+        <TableRow>
+            <Button
+                android:id="@+id/cp_but_insert"
+                android:layout_width="wrap_content"
+                android:text="Insert"/>
+            <Button
+                android:id="@+id/cp_but_delete"
+                android:layout_width="wrap_content"
+                android:text="Delete"/>
+            <Button
+                android:id="@+id/cp_but_edit"
+                android:layout_width="wrap_content"
+                android:text="Edit"/>
+        </TableRow>
+
+        <TableRow>
+            <ListView
+                android:id="@+id/cp_lv">
+
+            </ListView>
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>

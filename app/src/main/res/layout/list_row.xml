@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TableRow>
+            <TextView
+                android:id="@+id/lv_tv_nombre"
+                android:text="@string/tv_nombre"/>
+            <TextView
+                android:id="@+id/nombre"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:id="@+id/lv_tv_apellido"
+                android:text="@string/tv_apellido"/>
+            <TextView
+                android:id="@+id/apellido"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:id="@+id/lv_tv_materia"
+                android:text="@string/tv_materia"/>
+            <TextView
+                android:id="@+id/materia"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:id="@+id/lv_tv_mencion"
+                android:text="@string/tv_mencion"/>
+            <TextView
+                android:id="@+id/mención"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:id="@+id/lv_tv_nota"
+                android:text="@string/tv_nota"/>
+            <TextView
+                android:id="@+id/nota"/>
+        </TableRow>
+    </TableLayout>
+</LinearLayout>
