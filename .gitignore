@@ -1,0 +1,11 @@
+java/build/
+java/dist/
+java/nbproject/private/
+.swp
+*~
+*.tgz
+java/.ant-targets-build.xml
+ocaml/bindir/
+c/bindir/
+Report.pdf
+*.swp
