@@ -1,4 +1,4 @@
-# tfg-java-similarities 
+# Similarities computation for kNN algorithm
 
 This program *computes* and *sorts* similarities for a kNN algorithm.      
 
