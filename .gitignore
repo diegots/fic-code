@@ -1,0 +1,7 @@
+*.yy.c
+*.tab.c
+*.tab.h
+sololexico
+heroquest
+*.swo
+*.swp

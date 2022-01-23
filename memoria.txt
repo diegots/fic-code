@@ -1,0 +1,69 @@
+	
+	Autores:
+		- Diego Trabazo Sardón
+		- Raúl Santoveña Gómez
+
+	Funcionamiento:
+
+		- El funcionamiento base del juego es sencillo, en la función main existe un bucle while que en su condición llama a yyparse(), que espera a que el usuario introduzca un comando por teclado. Cuando esto sucede, el analizador procesa el comando y en función de lo que tenga que hacer, se devolverá un 1 que hará que se entre en el bucle o un 0 para salir y que el juego finalice (por ejemplo si el usuario ha escrito el comando correspondiente para finalizar). Dentro del bucle se hace siempre una comprobación para ver si el personaje ha muerto, si esto sucede, el juego finaliza.
+
+		- Para cada regla se llama a la función correspondiente, que ejecuta la funcionalidad deseada.
+
+		- En las siguientes lineas se detallan con más profundidad el funcionamiento del juego:
+
+			+ Comandos:
+				+ Para ver las reglas del juego: ver reglas
+				+ Para ver la información asociada al personaje: ver informacion
+				+ Lanzar dados: lanzar dado
+				+ Moverse: avanzar [nº pasos] [direccion]
+					- "direccion" puede ser 'arriba', 'abajo', 'izquierda' o 'derecha'
+					- Ejemplo: avanzar 3 arriba 1 izquierda 3 abajo
+				+ Usar objeto: usar [nombre_objeto]
+					- Ejemplo: usar pocion
+				+ Tirar objeto: tirar [nombre_objeto]
+					- Ejemplo: tirar llave
+				+ Equipar objeto: equipar objeto [mano derecha/mano izquierda]
+					- Ejemplo: equipar espada mano derecha
+				+ Abrir puertas: abrir puerta
+				+ Abrir cofres: abrir cofre
+				+ Atacar: atacar [direccion]
+					- Se indica la posicion del enemigo respecto al protagonista, que puede ser 'arriba, 'abajo', 'izquierda' o 'derecha'
+					- Ejemplo: atacar abajo
+				+ Ayuda: ayuda
+				+ Finalizar turno: finalizar turno
+				+ Salir: salir
+
+			+ Reglas:
+				- Juego basado en turnos
+				- El jugador comienza con 100 de vida y una mochila con capacidad limitada.
+				- Secuencia de turno:
+					1º Lanzar dado [Opcional] [Obligatorio si se quiere mover al personaje]
+					2º Atacar, abrir cofre, utilizar objeto... [Opcional]
+					3º Moverse [Opcional]
+					4º Atacar, abrir cofre, utilizar objeto... [Opcional]
+					5º Finalizar turno [Obligatorio]
+				- Solo se puede atacar una vez por turno.
+				- Una vez realizado un ataque, no se pueden hacer movimientos hasta el siguiente turno.
+
+	Peculiaridades:
+
+		- El diseño de la parte léxica permite cierta flexibilidad, ya que todo aquello que no reconoce no se envía a la parte sintáctica. Por este motivo hay comandos que aunque contentan errores funcionan perfectamente, a continuación se ilustran varios ejemplos:
+
+			+ atacar izquierdo -> Como las palabras de direccion pueden escribirse de varias maneras, aunque haya un error en la segunda palabra, en vez de reconocer 'izquierda' reconoce 'izq' y el resto de letras a continuación las ignora.
+
+			+ lanzar asdfadsf -> A la hora de utilizar este comando, que simula el lanzamiento del dado para moverse, detecta varios comandos como 'lanza', 'lanzar', 'lanzar los dados', etc.. Por el motivo explicado, si escribimos 'lanza asdfasdf', el analizador identificara el token 'lanza', y ejecutara la regla correspondiente, ignorando el resto, y funcionando correctamente.
+	
+			Este comportamiento intencionado le da al juego una cierta flexibilidad permitiendo al usuario cometer ciertos errores sin tener que ser gestionados.
+
+
+
+
+	Además del código necesario para la compilación, el makefile y la memoria, se incluye un carpeta 'maps' con distintos archivos .txt que son usados para cargar los mapas.
+
+
+
+
+	Para la ejecución del proyecto se incluye un fichero Makefile con las siguientes instrucciones:
+		- Para compilar: 'make compile'
+		- Para ejecutar: 'make run'
+		- Para eliminar los archivos generados: 'make clean'
